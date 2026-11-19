@@ -2,7 +2,6 @@
 # wortgetreu, Ansprache „ihr“. Route bleibt /drohnenshow-indoor/ (Moritz: /drohnenshow/indoor/, Umstellung offen).
 # Zahlen nach Moritz; Preis, Drohnenzahl, Deckenhöhe und Showdauer als Faktenplatzhalter (show-extras.json, show-duration.json).
 title: Magische Indoor-Drohnenshow buchen (20+ Drohnen)
-navLabel: "Indoor"
 description: "Indoor-Drohnenshows für Messen, Konzerte & Co. ✓ Projekte u.a. für Siemens ✓ Ab {{offer.indoor.priceAmount}} ☎︎ {{contact.phone.international}}"
 image: https://flyingstars.art/wp-content/uploads/2025/04/IMG_0201.jpg
 sections:

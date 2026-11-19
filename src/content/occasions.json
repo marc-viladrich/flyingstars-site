@@ -3,41 +3,37 @@
     {
       "id": "unternehmen",
       "label": { "de": "Unternehmen", "en": "Businesses", "nl": "Bedrijven" },
-      "href": "/drohnenshow-werbung/",
-      "menu": true
+      "page": "/drohnenshow-werbung/",
+      "menuLabel": { "de": "Marken & Werbung", "en": "Brands & advertising", "nl": "Merken & reclame" }
     },
     {
       "id": "agenturen",
       "label": { "de": "Agenturen", "en": "Agencies", "nl": "Bureaus" },
-      "href": "/drohnenshow-werbung/#agenturen",
-      "menu": true
+      "page": "/drohnenshow-werbung/#agenturen"
     },
     {
       "id": "gemeinden",
-      "label": { "de": "Gemeinden", "en": "Municipalities", "nl": "Gemeenten" },
-      "menu": false
+      "label": { "de": "Gemeinden", "en": "Municipalities", "nl": "Gemeenten" }
     },
     {
       "id": "konzerte-festivals",
       "label": { "de": "Konzerte & Festivals", "en": "Concerts & festivals", "nl": "Concerten & festivals" },
-      "href": "/musikalischer-teaser-bokkenrijders/",
-      "menu": false
+      "href": "/musikalischer-teaser-bokkenrijders/"
     },
     {
       "id": "privat",
       "label": { "de": "Privat", "en": "Private", "nl": "Privé" },
-      "href": "/drohnenshow-hochzeit/",
-      "menu": true
+      "page": "/drohnenshow-hochzeit/",
+      "menuLabel": { "de": "Hochzeit", "en": "Wedding", "nl": "Bruiloft" }
     },
     {
       "id": "indoor",
       "label": { "de": "Indoor", "en": "Indoor", "nl": "Indoor" },
-      "href": "/drohnenshow-indoor/",
-      "menu": true
+      "page": "/drohnenshow-indoor/"
+    },
+    {
+      "id": "sonstiges",
+      "label": { "de": "Sonstiges", "en": "Other", "nl": "Anders" }
     }
-  ],
-  "fallback": {
-    "id": "sonstiges",
-    "label": { "de": "Sonstiges", "en": "Other", "nl": "Anders" }
-  }
+  ]
 }

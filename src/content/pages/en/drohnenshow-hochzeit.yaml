@@ -2,7 +2,6 @@ title: "Book a drone show for your wedding: magical moments"
 description: Paint your love story across the sky ✓ 150+ shows ✓ Family-friendly & little effort ☎︎ {{contact.phone.international}}
 noindex: false
 image: https://flyingstars.art/wp-content/uploads/2025/07/Heiratsantrag_Headerbild.jpg
-navLabel: Wedding
 sections:
   - type: landingHero
     kicker: Book a wedding drone show
@@ -315,20 +314,20 @@ sections:
       - hochzeit-moritz
     _key: k_9db54091e8c639b6fa66
 translationContractVersion: 2
-translationSourceHash: 9af75a87d73b020b275cdfe2af1058ada063729ab33a5e9f2a3d8e90d73822f9
+translationSourceHash: b8fba9bd7dfed5aef7ceb1f01c920b2bffb40359625fc9dfbbdde6efc3f8a61f
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: en
-  sourceFingerprint: 9af75a87d73b020b275cdfe2af1058ada063729ab33a5e9f2a3d8e90d73822f9
+  sourceFingerprint: b8fba9bd7dfed5aef7ceb1f01c920b2bffb40359625fc9dfbbdde6efc3f8a61f
   fields:
     - address: /description
       sourceFingerprint: 4733405fe5e0d5b46e7f29ad6818082582d82bdbdf1157d8086a665cbacacf6b
       targetFingerprint: ba6d8103fdc7f2dcbc35928d269d773ac229cda57d6cfa7abb0e5827ae9a092a
       status: adopted-existing
     - address: /navLabel
-      sourceFingerprint: 751396d87d0f085711b458d2d133083b8fbd68794ba02c16b9ddbbd634748cee
-      targetFingerprint: 3a1046d6b538ea9ee2b2d00618048c9516b174ead30207bd15cf319a112537f1
+      sourceFingerprint: 778e56605837fb47bb4e04625043052699e674fb2e6d598b987ef1b04f556daa
+      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
     - address: /sections/@k_3ed49f154258b655d578/cta/label
       sourceFingerprint: 0319ed4521d617c8f88ab18d1bf28e14f7e080ce027ec940b96e7b90a7253be8

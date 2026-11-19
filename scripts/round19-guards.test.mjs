@@ -29,9 +29,9 @@ test('Anlässe im Menü: nur Seiten, die es gibt, kein „Unternehmen“ auf die
   const nav = JSON.parse(read('src/content/navigation.json')).nav;
   const item = nav.find((entry) => entry.label === 'base.occasions');
   assert.equal(item.occasions, true); assert.equal(item.children, undefined, 'zweite Anlass-Liste im Menü');
-  const menu = JSON.parse(read('src/content/occasions.json')).occasions.filter((o) => o.menu);
+  const menu = JSON.parse(read('src/content/occasions.json')).occasions.filter((o) => o.page);
   assert.deepEqual(menu.map((o) => o.id), ['unternehmen', 'agenturen', 'privat', 'indoor']);
-  assert.ok(menu.every((o) => o.href && o.href !== '/' && existsSync(`src/content/pages/${o.href.split('#')[0].replaceAll('/', '')}.yaml`)), 'Menü-Anlass ohne eigene Seite');
+  assert.ok(menu.every((o) => o.page !== '/' && existsSync(`src/content/pages/${o.page.split('#')[0].replaceAll('/', '')}.yaml`)), 'Menü-Anlass ohne eigene Seite');
 });
 
 test('Jeder horizontale Slider hat Pfeile unter sich, auf allen Breiten', () => {

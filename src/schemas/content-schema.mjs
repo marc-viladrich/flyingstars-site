@@ -520,7 +520,7 @@ export const pageSchema = keyedSchema(z.object({
     noindex: fieldPolicy(z.boolean().default(false), 'shared'),
     // Optional preview image for social shares; must come from an approved media host.
     image: fieldPolicy(z.url().optional(), 'shared'),
-    navLabel: fieldPolicy(z.string().optional().describe('Kurzer Name in Footer-Listen, z. B. "Hochzeit" (Anlass-Seiten drohnenshow-*)'), 'translatable'),
+    navLabel: fieldPolicy(z.string().optional().describe('Kurzer Name in Listen. Anlass-Seiten: Menü und Footer nutzen menuLabel aus src/content/occasions.json'), 'translatable'),
     sections: z.array(sectionSchema).min(1),
   }));
 

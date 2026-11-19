@@ -6,26 +6,29 @@ import {readFileSync,readdirSync} from 'node:fs';
 import {parse} from 'yaml';
 import data from '../src/content/occasions.json' with {type:'json'};
 import {occasionsSchema} from '../src/schemas/occasions.mjs';
-import {OCCASIONS,OCCASION_IDS,FORM_OCCASION_IDS,FALLBACK_OCCASION,CONFIGURATOR_FORM_MAP,formOccasionFor,formOccasions,menuOccasions,occasionHref,occasionLabel,occasionForPath,inquiryPath,projectOccasions} from '../src/content/occasions.mjs';
+import {OCCASIONS,OCCASION_IDS,FORM_OCCASION_IDS,CONFIGURATOR_FORM_MAP,formOccasionFor,formOccasions,menuOccasions,footerOccasions,menuLabel,occasionHref,occasionLabel,occasionForPath,inquiryPath,projectOccasions} from '../src/content/occasions.mjs';
 import {parseInquiry} from '../src/content/inquiry.mjs';
 import {getConfiguratorContent} from '../src/content/show-configurator.js';
 import {LOCALES,localizedHref} from '../src/i18n/routing.mjs';
 import {onRequestPost} from '../functions/api/contact.ts';
 const read=file=>readFileSync(file,'utf8');
+const pick=(o,locale)=>(o.menuLabel??o.label)[locale];
 const walk=dir=>readdirSync(dir,{recursive:true}).map(f=>`${dir}/${f}`);
 const front=file=>{const raw=read(file).split(/^---$/m)[1];return raw.trim().startsWith('{')?JSON.parse(raw):parse(raw);};
 const projects=walk('src/content/projects').filter(f=>f.endsWith('.md')).map(file=>({file,data:front(file)}));
 
-test('Die zentrale Liste ist gültig: eindeutige Schlüssel, alle drei Sprachen, „Sonstiges“ nur als Formular-Ausweichwert',()=>{
+test('Die zentrale Liste ist gültig: eindeutige Schlüssel, alle drei Sprachen, „Sonstiges“ ist ein echter Anlass',()=>{
  occasionsSchema.parse(data);
- assert.deepEqual(OCCASION_IDS,['unternehmen','agenturen','gemeinden','konzerte-festivals','privat','indoor']);
- assert.deepEqual(FORM_OCCASION_IDS,[...OCCASION_IDS,FALLBACK_OCCASION.id]);
+ assert.deepEqual(OCCASION_IDS,['unternehmen','agenturen','gemeinden','konzerte-festivals','privat','indoor','sonstiges']);
+ assert.deepEqual(FORM_OCCASION_IDS,OCCASION_IDS,'Formular und Referenzen haben dieselben Schlüssel');
  for(const id of FORM_OCCASION_IDS)for(const locale of LOCALES)assert.ok(occasionLabel(id,locale).trim(),`${id}:${locale}`);
  assert.throws(()=>occasionLabel('firma'),/Unbekannter Anlass/);
 });
 
 test('Jede Referenz hat genau einen gültigen Hauptanlass, weitere Anlässe nur zusätzlich, in DE/EN/NL gleich',()=>{
  assert.ok(projects.length>=60,'Projektdateien nicht gefunden');
+ // Marc, 19.11.2026: Protest-/Aktivismus-Shows unter Sonstiges, AirPower24 unter Unternehmen
+ for(const [slug,want] of [['boellerciao','sonstiges'],['airpower24','unternehmen'],['movie-park-germany','unternehmen']])for(const {file,data} of projects.filter(p=>p.file.endsWith('/'+slug+'.md')))assert.equal(data.occasion,want,file);
  const bySlug=new Map();
  for(const {file,data} of projects){
   assert.ok(OCCASION_IDS.includes(data.occasion),`${file}: Hauptanlass fehlt oder ungültig (${data.occasion})`);
@@ -41,7 +44,8 @@ test('Startseiten-Karten: jede Kategorie genau einmal, Kicker und Ziel nur aus d
  for(const locale of LOCALES){
   const page=parse(read(`src/content/pages/${locale==='de'?'':locale+'/'}index.yaml`));
   const cards=page.sections.find(s=>s.type==='occasions').cards;
-  assert.deepEqual([...cards.map(c=>c.occasion)].sort(),[...OCCASION_IDS].sort(),`${locale}: Karten ≠ Anlässe`);
+  // „Sonstiges“ ist der Sammelanlass für Referenzen und Formular, keine Startseiten-Karte (Marc, 19.11.2026)
+  assert.deepEqual([...cards.map(c=>c.occasion)].sort(),OCCASION_IDS.filter(id=>id!=='sonstiges').sort(),`${locale}: Karten ≠ Anlässe`);
   for(const card of cards){assert.equal(card.category,undefined,`${locale}: eigener Kicker neben Anlass ${card.occasion}`);assert.equal(card.cta.href,undefined,`${locale}: eigenes Ziel neben Anlass ${card.occasion}`);}
  }
  const source=read('src/components/sections/Occasions.astro');
@@ -53,12 +57,22 @@ test('Menü und Footer zeigen die Anlässe mit eigener Seite, in Reihenfolge und
  assert.deepEqual(nav.filter(item=>item.occasions).map(item=>item.label),['base.occasions']);
  assert.ok(nav.every(item=>!(item.occasions&&item.children)),'zweite Anlass-Liste im Menü');
  for(const locale of LOCALES){
+  // Jeder Anlass mit eigener Seite erscheint automatisch; menuLabel hat Vorrang vor der Anlass-Bezeichnung
   const menu=menuOccasions(locale);
-  assert.deepEqual(menu.map(o=>o.id),OCCASIONS.filter(o=>o.menu).map(o=>o.id));
-  assert.ok(menu.every(o=>o.label===occasionLabel(o.id,locale)&&o.href===occasionHref(o.id)));
+  assert.deepEqual(menu.map(o=>o.id),OCCASIONS.filter(o=>o.page).map(o=>o.id));
+  assert.ok(menu.every(o=>o.label===pick(OCCASIONS.find(x=>x.id===o.id),locale)&&o.href===occasionHref(o.id)));
+  assert.deepEqual(footerOccasions(locale).map(o=>o.href).sort(),menu.filter(o=>!o.href.includes('#')).map(o=>o.href).sort());
  }
+ // Marc, 19.11.2026: im Menü wieder die alten Bezeichnungen und Einträge
+ assert.deepEqual(menuOccasions('de').map(o=>o.label),['Marken & Werbung','Agenturen','Hochzeit','Indoor']);
+ assert.deepEqual(menuOccasions('en').map(o=>o.label),['Brands & advertising','Agencies','Wedding','Indoor']);
+ assert.deepEqual(footerOccasions('de').map(o=>o.label),['Hochzeit','Indoor','Marken & Werbung']);
+ assert.equal(menuLabel('gemeinden'),occasionLabel('gemeinden'));
+ // Bekommt ein Anlass eine Seite, steht er ohne weitere Änderung im Menü
+ const saved=OCCASIONS.find(o=>o.id==='gemeinden');saved.page='/drohnenshow-gemeinden/';
+ try{assert.ok(menuOccasions('de').some(o=>o.id==='gemeinden'&&o.href==='/drohnenshow-gemeinden/'));}finally{delete saved.page;}
  assert.match(read('src/site.config.ts'),/item\.occasions\)\{\s*item\.children=menuOccasions\(locale\)/);
- assert.match(read('src/layouts/Base.astro'),/const occasionPages = menuOccasions\(locale\);/);
+ assert.match(read('src/layouts/Base.astro'),/const occasionPages = footerOccasions\(locale\);/);
 });
 
 test('Anfrageformular und Function nutzen dieselben Schlüssel; alte Schlüssel werden abgewiesen',async()=>{
@@ -73,7 +87,7 @@ test('Anfrageformular und Function nutzen dieselben Schlüssel; alte Schlüssel 
 
 test('Keine zweite Liste: alte Kategorie-Schlüssel und Labels kommen im Code nicht mehr vor',()=>{
  const files=['src/components','src/layouts','src/scripts','src/pages','functions'].flatMap(walk).filter(f=>/\.(astro|ts|js|mjs)$/.test(f));
- const forbidden=/REFERENCE_OCCASIONS|REFERENCE_FORM_MAP|contactform\.(corporateEvent|cityFestival|agency|weddingPrivate|other)|references\.(brands|cities|culture|indoor)\b|site\.(brandsAdvertising|agencies)\b|'(Firmenevent|Stadt & Festival|Marken & Unternehmen|Städte & Festivals|Kultur & Bühne|Hochzeit & Privat|Konzerte & Festivals|Gemeinden)'/;
+ const forbidden=/REFERENCE_OCCASIONS|REFERENCE_FORM_MAP|contactform\.(corporateEvent|cityFestival|agency|weddingPrivate|other)|references\.(brands|cities|culture|indoor)\b|site\.(brandsAdvertising|agencies)\b|'(Firmenevent|Stadt & Festival|Marken & Unternehmen|Städte & Festivals|Kultur & Bühne|Hochzeit & Privat|Konzerte & Festivals|Gemeinden|Marken & Werbung)'/;
  for(const file of files)assert.doesNotMatch(read(file),forbidden,file);
  const ui=JSON.parse(read('src/i18n/ui.json'));
  for(const key of Object.keys(ui))assert.doesNotMatch(key,/^(contactform\.(corporateEvent|cityFestival|agency|weddingPrivate|other)|references\.(brands|cities|culture|indoor)|site\.(brandsAdvertising|agencies))$/,key);

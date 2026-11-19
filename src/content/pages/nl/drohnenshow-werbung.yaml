@@ -2,7 +2,6 @@ title: Droneshow voor reclame & marketing (150+ shows)
 description: Jullie logo, product & claim op het grootste podium ter wereld ✓ o.a. Spotify, L’Oréal, E.ON ☎︎ {{contact.phone.international}}
 noindex: false
 image: https://flyingstars.art/wp-content/uploads/2024/12/VW50Golf.jpg
-navLabel: Merken & reclame
 sections:
   - type: landingHero
     kicker: Droneshow voor reclame en marketing
@@ -411,20 +410,20 @@ sections:
       - werbung-moritz
     _key: k_92cbd2df611f3954dfc2
 translationContractVersion: 2
-translationSourceHash: 6e3c5834dbee4d553f5ff60b782bdef6e80d2bea14ec14dec22bade7ec1e5a6d
+translationSourceHash: d81c92858d791c12c18183ac4ed6a1fa9397ee61d744bbab37c2b17850f787fc
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: nl
-  sourceFingerprint: 6e3c5834dbee4d553f5ff60b782bdef6e80d2bea14ec14dec22bade7ec1e5a6d
+  sourceFingerprint: d81c92858d791c12c18183ac4ed6a1fa9397ee61d744bbab37c2b17850f787fc
   fields:
     - address: /description
       sourceFingerprint: ae9a3a3509ada232c6e310f27ea8973366e6fa59884951bb5ee52b38c17d423a
       targetFingerprint: 3bd4294d4300ecf0379cfde034e3f613230359f9da2987e532725eba81ecef83
       status: adopted-existing
     - address: /navLabel
-      sourceFingerprint: 21884897da369363d8be954772a527600f051444707c7d61aaf06238e66befdb
-      targetFingerprint: 7dfa4add2d615a8e65c0f3e635caaac9377c75503c30b60928e9f20de53128b2
+      sourceFingerprint: 056aaf71c2d3216b23221385a1d1ec83c801314068a5349a7e2d99f994aefb62
+      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
     - address: /sections/@k_0a54e0d092548e4f7d56/headline
       sourceFingerprint: 9e167a272bc7fd9700aba883fa2d979982f34ed15bc89bfbe9c4273cd1300ee6

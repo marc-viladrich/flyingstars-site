@@ -13,7 +13,7 @@
     "project": "airpower24",
     "field": "location"
   },
-  "occasion": "konzerte-festivals",
+  "occasion": "unternehmen",
   "summary": "FlyingStars zeigte zur AIRPOWER24 an zwei Abenden Shows mit {{project.airpower24.drones}} Drohnen in Österreich.",
   "featured": false,
   "draft": false,

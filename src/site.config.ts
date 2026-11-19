@@ -17,10 +17,10 @@ const localized=(value:unknown,path:(string|number)[]=[]):any=>{
  return value;
 };
 const navigation=localized(navigationData) as {nav:{label:string;href:string;children?:{label:string;href:string}[]}[];cta:{label:string;href:string};footer:{legal:{label:string;href:string}[]}};
-// „Anlässe“ führt keine eigene Liste: Unterpunkte sind die Anlässe mit menu: true aus src/content/occasions.json, in
-// deren Reihenfolge und mit deren Bezeichnung (Marc, 19.11.2026). Der Editor bearbeitet sie dort (Sammlung occasions).
+// „Anlässe“ führt keine eigene Liste: Unterpunkte sind die Anlässe mit eigener Seite (page) aus src/content/occasions.json,
+// in deren Reihenfolge, mit menuLabel bzw. Bezeichnung (Marc, 19.11.2026). Der Editor bearbeitet sie dort (Sammlung occasions).
 for(const item of navigation.nav as {occasions?:boolean;children?:{label:string;href:string}[]}[])if(item.occasions){
- item.children=menuOccasions(locale).map(o=>{const value={label:o.label,href:o.href},index=OCCASIONS.findIndex(x=>x.id===o.id);Object.defineProperty(value,Symbol.for('afe.source'),{value:{owner:{collection:'occasions',id:'configuration'},part:'data',path:['occasions',index],strict:true,fields:{label:{owner:{collection:'occasions',id:'configuration'},part:'data',path:['occasions',index,'label',locale]},href:{owner:{collection:'occasions',id:'configuration'},part:'data',path:['occasions',index,'href']}}}});return value;});
+ item.children=menuOccasions(locale).map(o=>{const value={label:o.label,href:o.href},index=OCCASIONS.findIndex(x=>x.id===o.id);Object.defineProperty(value,Symbol.for('afe.source'),{value:{owner:{collection:'occasions',id:'configuration'},part:'data',path:['occasions',index],strict:true,fields:{label:{owner:{collection:'occasions',id:'configuration'},part:'data',path:['occasions',index,OCCASIONS[index].menuLabel?'menuLabel':'label',locale]},href:{owner:{collection:'occasions',id:'configuration'},part:'data',path:['occasions',index,'page']}}}});return value;});
 }
 const result = {
   name: 'FlyingStars', locale,

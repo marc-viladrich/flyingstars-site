@@ -2,7 +2,6 @@ title: Book a magical indoor drone show (20+ drones)
 description: Indoor drone shows for trade fairs, concerts & more ✓ Projects incl. for Siemens ✓ From {{offer.indoor.priceAmount}} ☎︎ {{contact.phone.international}}
 noindex: false
 image: https://flyingstars.art/wp-content/uploads/2025/04/IMG_0201.jpg
-navLabel: Indoor
 sections:
   - type: landingHero
     todo: FlyingStars muss die Zuordnung von Siemens-Film und Hallen-Standbildern zur Hannover Messe bestätigen.
@@ -581,20 +580,20 @@ sections:
       - indoor-moritz
     _key: k_b9b4c25755db13474604
 translationContractVersion: 2
-translationSourceHash: 3d24ee209d23b412b713378ad6eaca8cb7ab2435a066920ab46354791387453f
+translationSourceHash: dfd7ea8578269c2081079020a69df227bc1064d8affa5668bb5b356a13c85968
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: en
-  sourceFingerprint: 3d24ee209d23b412b713378ad6eaca8cb7ab2435a066920ab46354791387453f
+  sourceFingerprint: dfd7ea8578269c2081079020a69df227bc1064d8affa5668bb5b356a13c85968
   fields:
     - address: /description
       sourceFingerprint: 4d5051e328cee118ca9b76923a1c52a5429d4b38d4a1ecbf0e55d4228e214194
       targetFingerprint: e118f0b1d4fdb74b282059e60264dd2821855c636fb5059c2b72a65f0cf8b9ee
       status: adopted-existing
     - address: /navLabel
-      sourceFingerprint: c997969bf3cf570e7f05502d9974614a394b0d1298209961c5e95d391015dc21
-      targetFingerprint: 5e750c906fad8b8ad504278bb20eeafc53b4906a50d3d54d11983ab4ce7cdfe3
+      sourceFingerprint: 863843db56e886a8b27823bc36d3681126b62500ec02d7739a0cee3606919688
+      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
     - address: /sections/@k_1060f8471da9620b9d94/additionalResponsibilities
       sourceFingerprint: b57f7565dd7e19d2a25b4a05d35ee1ba2adc7ecca46bbd98518ad2aa49491a43

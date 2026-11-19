@@ -1,6 +1,6 @@
 ---
 import {factText} from '../content/show-extras.mjs';
-import { menuOccasions } from '../content/occasions.mjs';
+import { footerOccasions } from '../content/occasions.mjs';
 import {record,field} from 'astro-frontend-editor/markers';
 import {CONTACT_OWNER} from '../content/contact.mjs';
 import { forPath } from '../i18n/server';
@@ -45,8 +45,8 @@ const social = image ? await optimizedImage(image, 960, undefined, 'jpg') : unde
 const fullBleed = bleed || ['/', '/drohnenshow-preise/'].includes(current) || (navSection === '/referenzen/' && current !== '/referenzen/');
 // Bildkopf ab Oberkante (Startseite, Fallstudien, Prüfseiten); alle anderen Seiten beginnen auf derselben Höhe (--hero-top)
 const flushTop = bleed || current === '/' || (navSection === '/referenzen/' && current !== '/referenzen/');
-// Footer „Anlässe“: dieselben Anlässe wie im Menü, aus src/content/occasions.json (Marc, 19.11.2026: überall dieselben Kategorien)
-const occasionPages = menuOccasions(locale);
+// Footer „Anlässe“: die Anlass-Seiten aus src/content/occasions.json (ganze Seiten, Menübezeichnung, alphabetisch)
+const occasionPages = footerOccasions(locale);
 const inNav = (href: string) => site.nav.some((item) => item.href === href);
 ---
 <!doctype html>
