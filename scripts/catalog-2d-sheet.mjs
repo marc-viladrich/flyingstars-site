@@ -7,7 +7,8 @@ import './show-node-env.mjs';
 import { writeFileSync } from 'node:fs';
 
 const { catalogScene, CATALOG, variantFor, catalogMinDrones } = await import('../src/scripts/scenes/catalog.js');
-const [out, countsArg = '100,200,300,390', ...given] = process.argv.slice(2);
+const args = process.argv.slice(2), ref3d = args.find((a) => a.startsWith('--3d='))?.slice(5); // --3d=geburtstag: Vergleichszeile 3D (HORIZON)
+const [out, countsArg = '100,200,300,390', ...given] = args.filter((a) => !a.startsWith('--'));
 const counts = countsArg.split(',').map(Number);
 const keys = given.length ? given : Object.keys(CATALOG).filter((k) => CATALOG[k].dimension !== '3D');
 const { readFile } = await import('node:fs/promises');
@@ -24,6 +25,11 @@ function frame(beat, t = 0) {
   return res;
 }
 const rows = [];
+if (ref3d) {
+  const cells = [{ label: '3D (HORIZON)', pts: [] }];
+  for (const n of counts) { const beat = (await catalogScene(ref3d, 'HORIZON', n, ref3d)).beats.at(-1), pts = frame(beat); cells.push({ label: `${n}: ${pts.length} hell (3D)`, pts }); }
+  rows.push({ key: `${ref3d}-3d`, name: `${CATALOG[ref3d].name.de} 3D`, cells });
+}
 for (const key of keys) {
   const m = CATALOG[key], min = catalogMinDrones(key);
   const big = m.variants.at(-1), f = JSON.parse(await readFile(new URL(`../public/media/katalog/${big.id}.json`, import.meta.url), 'utf8'));
@@ -32,7 +38,7 @@ for (const key of keys) {
     if (n < min) { cells.push({ label: `${n}: ab ${min}`, pts: [] }); continue; }
     const t0 = performance.now(), beat = (await catalogScene(key, 'SPARK', n, key)).beats[0], ms = performance.now() - t0;
     const pts = frame(beat);
-    cells.push({ label: `${n}: ${pts.length} hell · ${variantFor(key, n)?.points}`, pts, ms });
+    cells.push({ label: `${n}: ${pts.length} hell · ${variantFor(key, n)?.points}${beat.drones ? ` · Lichter wie ${beat.drones}` : ''}`, pts, ms, drones: beat.drones });
   }
   rows.push({ key, name: m.name.de, cells });
   console.log(key, cells.map((c) => c.label).join(' | '));

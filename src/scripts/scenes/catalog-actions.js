@@ -40,12 +40,22 @@ export function catalogAction(key,f,pts) {
       [[-1,.53],[-.65,.48],[-.30,.47],[-.15,.39],[.02,.25],[.23,.08],[.43,-.11],[.40,-.21],[.30,-.23],[.10,-.08],[.34,-.28],[.29,-.38],[.19,-.38],[-.02,-.22],[.19,-.42],[.11,-.50],[.02,-.48],[-.19,-.30],[-.04,-.49],[-.14,-.55],[-.31,-.46],[-.62,-.23],[-1,-.13]],
       [[1,.53],[.64,.49],[.33,.50],[.10,.47],[-.05,.38],[-.11,.20],[-.06,.09],[.05,.07],[.14,.20],[.25,.18],[.42,.01],[.55,-.08],[.35,-.34],[.08,-.57],[-.12,-.56],[-.31,-.46],[-.37,-.35],[-.28,-.29],[-.13,-.39],[-.26,-.26],[-.19,-.18],[-.04,-.27],[-.16,-.15],[-.07,-.08],[.11,-.20],[.42,-.28],[.68,-.15],[1,.03]],
     ];
-    for(let side=0;side<2;side++) {
-      const idx=pts.flatMap((p,j)=>(p[0]<0?0:1)===side?[j]:[]);
-      const q=sampleOutline([{pts:contours[side],closed:false}],idx.length).map(([x,y])=>[x,y,0]);
-      const order=assign(Float64Array.from(idx.flatMap(j=>start[j].slice(0,3))),Float64Array.from(q.flat()));
-      idx.forEach((j,i)=>targets.set(j,q[order[i]]));
-    }
+    // Runde 9 (Claude): die Konturen laufen an den Fingern hin und zurück, dort lagen Ziele doppelt (Klumpen im Händedruck).
+    // Ziele jetzt aus beiden Konturen gemeinsam: dicht abgetastet, so ausgedünnt, dass keine zwei näher als g stehen
+    // (g auf die Drohnenzahl gelöst), und allen Drohnen gemeinsam optimal zugeordnet.
+    const N=pts.length, dense=sampleOutline(contours.map(c=>({pts:c,closed:false})),N*8);
+    const thin=(g)=>{const out=[],grid=new Map(),key=(x,y)=>`${Math.floor(x/g)},${Math.floor(y/g)}`;
+      for(const p of dense){const gx=Math.floor(p[0]/g),gy=Math.floor(p[1]/g);let ok=true;
+        for(let dx=-1;dx<=1&&ok;dx++)for(let dy=-1;dy<=1&&ok;dy++)for(const q of grid.get(`${gx+dx},${gy+dy}`)??[])if(Math.hypot(q[0]-p[0],q[1]-p[1])<g){ok=false;break;}
+        if(ok){out.push(p);const k=key(p[0],p[1]);if(!grid.has(k))grid.set(k,[]);grid.get(k).push(p);}}
+      return out;};
+    let lo=1e-4,hi=.5; for(let it=0;it<22;it++){const mid=(lo+hi)/2; if(thin(mid).length>=N) lo=mid; else hi=mid;}
+    // knapp zu wenige (Abstand hi): die fehlenden dorthin, wo auf der Kontur am meisten Platz ist
+    const q=thin(hi), far=dense.map(c=>Math.min(...q.map(p=>Math.hypot(p[0]-c[0],p[1]-c[1]))));
+    while(q.length<N){let j=0;for(let k=1;k<dense.length;k++)if(far[k]>far[j])j=k;const c=dense[j];q.push(c);for(let k=0;k<dense.length;k++)far[k]=Math.min(far[k],Math.hypot(dense[k][0]-c[0],dense[k][1]-c[1]));}
+    for(let i=0;i<q.length;i++) q[i]=[q[i][0],q[i][1],0];
+    const order=assign(Float64Array.from(pts.flatMap((_,j)=>start[j].slice(0,3))),Float64Array.from(q.flat()));
+    pts.forEach((_,j)=>targets.set(j,q[order[j]]));
     return {pts:start, duration:4.5, live:(b,j,t,o)=>interpolate(b,targets.get(j),progress(t,.5,3.5),o)};
   }
   if(key==='anstossen') {

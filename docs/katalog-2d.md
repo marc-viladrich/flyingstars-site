@@ -25,15 +25,36 @@ Drohnenzahl.
        Stöcke und ein Herz), Herz mit Initialen (Herzkurve, A & T auf gemeinsamer Grundlinie, eine Farbe je Buchstabe),
        Eheringe (zwei gleich große Ellipsen), Unendlich (Lemniskate), Lachendes Gesicht (Kreis, zwei Augenbögen, lachender
        Mund; das rechte Auge liegt im Zwinkerbereich von catalog-actions.js) und Doppelherz (zwei Herzkurven).
-     - `keep`: Flächen- und Rastermotive bzw. Zeichnungen, die als Linien nicht sauber werden. Sie behalten FlyingStars'
-       Punkte, weitere Drohnen bleiben dunkel. Regel (Marc, Nachrunde 19.11.2026): Kein Motiv darf nach dem Umbau schlechter
-       aussehen als seine Katalogpunkte. Jedes Motiv wurde auf dem Kontaktbogen einzeln entschieden; die Liste steht in
-       `HINTS` (45 Motive, u. a. Fahnen, Regenbogen, Sonne, Gläser, Blüten, Kuh und UFO, Lebensbaum, Elefant, Glocke, Tor).
+     - `anchor` (Runde 9, `KEEP`/`FIELD` in `HINTS`, 45 Motive): FlyingStars' Punkte bleiben exakt an ihrer Stelle
+       (Anker). Neue Drohnen entstehen nur auf den Kanten des Nachbarschaftsgraphen zwischen benachbarten Katalogpunkten
+       derselben Linie, höchstens 1,6 × der Punktabstand vor Ort (gedeckelt auf 1,5 Katalog-Punktabstände). Größere
+       Lücken sind im Katalog gewollt und bleiben offen. Liegt eine Kante mitten in einer Linie (beide Enden mit genau zwei
+       Nachbarn, Knick unter 60°), folgt sie dem Bogen durch die Nachbarn (Catmull-Rom), damit Räder und Ballons rund
+       bleiben; der Bogen weicht höchstens 0,12 Punktabstände von der Sehne ab. Verworfen in Runde 9: neu verfolgte Ketten
+       (verformten Räder und Kabinen) und Flächenraster (Auffüllung, von Marc in Runde 7 abgelehnt). Auch Flächenmotive
+       (Fahnen, Sektflasche, Golfer) laufen über die Anker, ohne Innenfüllung.
+       Nachrunde: verdichtet wird nur, was Linie ist (`lineEdges()`): Kanten, deren beide Enden höchstens zwei Nachbarn
+       haben, oder Kanten am Rand einer Fläche (auf einer Seite kein Katalogpunkt). Naben, Speichen und Kanten zwischen
+       Innenpunkten einer Fläche (Golfer-Körper, Kettenlaufwerk) bleiben unverdichtet, ihre Punkte stehen einzeln.
+     - Rastermotive (`grid`, `gridOf()`): Ist das Katalogbild selbst ein Gitter (wehende Fahne, 9 × 13), wird im Gitter
+       bilinear verfeinert, Zeilen und Spalten im selben Verhältnis, r · c ≤ n. Regelmäßig, die Welle bleibt; die paar
+       übrigen Drohnen bleiben dunkel.
+     - Bild-Varianten (`bild-*`, aus Fotos ausgelesen): Punkte unter 0,6 der mittleren Helligkeit sind Auslese-Reste (Straße
+       unter dem Feuerwehrauto, Schatten unter Rädern, Streupunkte neben der Blume). Sie fallen weg (`drop` in der
+       Linien-Datei) und sind keine Elternpunkte; `bright()` hätte sie sonst auf volle Helligkeit gehoben.
    - Stern zeichnet immer aus der 100er-Variante (die 143er hat doppelte Binnenlinien), `LINE_SOURCE` in `scenes/catalog.js`.
 2. **Abtasten zur Laufzeit** (`lineSample()` in `scenes/catalog-resample.js`): Jeder Knoten bekommt genau eine Drohne,
-   dazwischen gleiche Abstände; der Abstand ist der kleinste, bei dem die Drohnenzahl reicht, aber nie enger als
-   `DENSE_SPACING` (0,021 Motivgrößen, etwa 48 Drohnen über die Breite). Kein Paar steht enger als `CLEAR` (0,55)
-   Linienabstände. Was übrig bleibt, wartet dunkel in Reserve.
+   dazwischen gleiche Abstände. Runde 9 (Marc: „dass die aber halt jetzt nicht nach 300 Drohnen aussehen … da brauchen wir
+   mehr Consistency“): Der Abstand wird auf die gewählte Zahl gelöst, es gibt keine Dichtegrenze mehr. Ein 2D-Motiv zeigt bei
+   n Drohnen sichtbar n (gemessen: 217 von 244 Fällen genau, sonst höchstens 2 weniger) und wirkt so dicht wie ein 3D-Motiv
+   derselben Zahl. Kein Paar steht enger als `CLEAR` (0,55) Linienabstände; die letzten Drohnen kommen in die größten
+   Lücken (`topUp()`). Kurze Lücken zwischen einem Linienende und einer Nachbarlinie werden bei dichter Abtastung überbrückt
+   (`bridgesOf()`, nur bei abgeleiteten Linien, nie bei Ankermotiven). Ankermotive (`anchorSample()`) behalten alle
+   Katalogpunkte; die übrigen Drohnen verteilen sich so auf die Ankerkanten, dass die Summe genau n ergibt.
+   Stehen die Zwischenpunkte enger als `DOT_MERGE` (0,009 Motivgrößen, gemessen an der 3D-Geburtstagstorte bei 300), setzt
+   die Szene `drones` für die Lichtgröße höher (`dotDrones()`), die Lichter werden kleiner (show-field begrenzt auf 0,76).
+   Reicht auch die kleinste Lichtgröße nicht (`DOT_MAX`, `stageSample()`), leuchten nur so viele Drohnen, wie die Linien
+   tragen, der Rest wartet dunkel: Blume ab 190, Unendlich ab 350, Zuckerstange ab 370, Marienkäfer ab 390 Drohnen.
 3. **Farbe und Bewegung** (`attach()`): Jede Drohne erbt Farbe und Bewegungsgruppe vom nächsten Katalogpunkt (bei
    idealisierten Formen die Farbe der Linie). Profile (Räder, Nadel, Flügel, Ballons …) rechnen mit der eigenen Lage und der
    Gruppe des Elternpunkts. Zwinkern und Handschlag lesen nur Lagen und laufen direkt auf den neuen Drohnen. Anstoßen und
@@ -52,8 +73,19 @@ Räumliche Katalogmotive (Kugel, Atom, Spirale …) in der Show-Art 2D sind davo
 node scripts/catalog-2d-lines.mjs                                   # Linien neu (nach Änderung an Methode oder Hinweisen)
 node scripts/catalog-2d-sheet.mjs /tmp/bogen.json 100,200,300,390    # Kontaktbogen aller 2D-Motive (oder Motive nennen)
 python3 scripts/catalog-2d-sheet.py /tmp/bogen.json /tmp/bogen.png 8 # 8 Motive je Bild, braucht numpy + Pillow
+node scripts/catalog-2d-sheet.mjs /tmp/b.json 100,200,300,399 --3d=geburtstag   # mit 3D-Vergleichszeile
+python3 scripts/catalog-2d-sheet.py /tmp/b.json /tmp/raster.png raster:300           # alle Motive bei 300 als Raster
+node scripts/catalog-2d-audit.mjs                                    # Artefakt-Prüfung aller 2D-Motive (Tabelle)
 node --test scripts/catalog-resample.test.mjs src/scripts/scenes/catalog-actions.test.mjs
 ```
+
+`scripts/catalog-2d-audit.mjs` prüft jede Szene so, wie der Konfigurator sie zeigt (Show-Art 2D, Aktionsmotive in ihrem
+Endbild), bei 100/200/300/399 Drohnen auf: sichtbare Zahl, Klumpen mit einer neuen Drohne (zwei Katalogpunkte, die
+schon im Katalog dicht stehen, bleiben als Anker und zählen getrennt), Lücken und Streupunkte (gewollte Einzelpunkte des
+Katalogs ausgenommen), offene Linienenden mit sichtbarem Loch und Drohnen abseits des Katalogbilds. Für Ankermotive prüft
+`catalog-resample.test.mjs` zusätzlich: jeder Katalogpunkt exakt erhalten, jeder neue Punkt höchstens 0,15
+Punktabstände neben einer Ankerkante, keine Kante über eine gewollte Lücke, genau n Drohnen. Der Handschlag dedupliziert
+seine Zielkonturen (`catalog-actions.js`, Runde 9): Die Finger liefen hin und zurück, dort lagen Drohnen doppelt.
 
 Jeden Bogen ansehen: Ist ein Motiv verzerrt, verfüllt oder zerrissen? Gibt es Klumpen an Kreuzungen oder Punkte neben der
 Linie? Der Wächter prüft, dass die Linien-Dateien aktuell sind, höchstens n Drohnen auf einer Linie stehen, der Mindestabstand

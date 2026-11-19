@@ -42,15 +42,20 @@ const bbox = (P) => { let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -In
 /** Ellipse (achsparallel) aus Punkten auf ihrem Umfang: Mitte und Halbachsen aus den zweiten Momenten. */
 const ellipseOf = (P) => { const n = P.length, mx = P.reduce((s, p) => s + p[0], 0) / n, my = P.reduce((s, p) => s + p[1], 0) / n; return [mx, my, Math.sqrt((2 * P.reduce((s, p) => s + (p[0] - mx) ** 2, 0)) / n), Math.sqrt((2 * P.reduce((s, p) => s + (p[1] - my) ** 2, 0)) / n)]; };
 const smoothOpen = (p, n = 3) => { let q = p; for (let k = 0; k < n; k++) { const r = [q[0]]; for (let i = 0; i < q.length - 1; i++) r.push([0.75 * q[i][0] + 0.25 * q[i + 1][0], 0.75 * q[i][1] + 0.25 * q[i + 1][1]], [0.25 * q[i][0] + 0.75 * q[i + 1][0], 0.25 * q[i][1] + 0.75 * q[i + 1][1]]); r.push(q.at(-1)); q = r; } return q; };
-const KEEP = { keep: true };
+// anchor (Runde 9): FlyingStars' Punkte bleiben exakt an ihrer Stelle (Anker); neue Drohnen entstehen nur auf den Kanten
+// zwischen benachbarten Katalogpunkten derselben Linie (anchorLines()). Die Form kann sich nicht verformen, es gibt keine
+// Schlaufen und keine Füllung. KEEP und FIELD unterschieden in Runde 9 zunächst Ketten und Flächenraster; beides ist
+// verworfen (Raster = Auffüllung, Ketten verformten Räder und Kabinen), beide Gruppen laufen jetzt über die Anker.
+const KEEP = { anchor: true };
+const FIELD = { anchor: true };
 export const HINTS = {
-  fahnen: KEEP, sektflasche: KEEP, batterie: KEEP, zuckerstange: KEEP, blume: KEEP, sonne: KEEP, jubilaeum30: KEEP, leuchtturm: KEEP,
-  foerderturm: KEEP, schiff: KEEP, drehzahl: KEEP, golfer: KEEP, flugzeug: KEEP, golfcaddy: KEEP, palme: KEEP, regenbogen: KEEP,
+  fahnen: FIELD, sektflasche: FIELD, batterie: FIELD, zuckerstange: FIELD, blume: FIELD, sonne: KEEP, jubilaeum30: KEEP, leuchtturm: FIELD,
+  foerderturm: KEEP, schiff: KEEP, drehzahl: FIELD, golfer: FIELD, flugzeug: FIELD, golfcaddy: KEEP, palme: FIELD, regenbogen: KEEP,
   // Nachrunde (Marc, 19.11.2026: „Kein Motiv darf nach dem Umbau schlechter aussehen als seine Katalogpunkte“): jedes Motiv auf
   // den Bögen 01–10 einzeln angesehen; diese wurden als Linien unförmiger, zerschnitten oder unruhiger als der Katalog
-  anstossen: KEEP, blueten: KEEP, kuhufo: KEEP, lebensbaum: KEEP, traktor: KEEP, tor: KEEP, golfplatz: KEEP, planierraupe: KEEP,
-  berge: KEEP, hubschrauber: KEEP, elefant: KEEP, glocke: KEEP, schneemann: KEEP, lebkuchen: KEEP, diskokugel: KEEP, biene: KEEP,
-  marienkaefer: KEEP, schluessel: KEEP, bagger: KEEP, feuerwehr: KEEP, basketball: KEEP, amor: KEEP, kind: KEEP, heldin: KEEP,
+  anstossen: KEEP, blueten: KEEP, kuhufo: KEEP, lebensbaum: KEEP, traktor: FIELD, tor: FIELD, golfplatz: FIELD, planierraupe: FIELD,
+  berge: KEEP, hubschrauber: FIELD, elefant: KEEP, glocke: KEEP, schneemann: KEEP, lebkuchen: KEEP, diskokugel: FIELD, biene: FIELD,
+  marienkaefer: FIELD, schluessel: KEEP, bagger: FIELD, feuerwehr: KEEP, basketball: KEEP, amor: KEEP, kind: KEEP, heldin: KEEP,
   geburtstag: KEEP, anker: KEEP, mikrofon: KEEP, konfetti: KEEP, lkw: KEEP,
   smiley: { shape(P) {
     // lachendes Gesicht: Kreis, zwei Augenbögen auf gleicher Höhe, lachender Mund (gerade Oberkante, runder Unterbogen).
@@ -146,7 +151,7 @@ export const HINTS = {
 };
 
 /** Mittlerer Punktabstand und RNG-Kanten (nur direkte Nachbarn). */
-function graph(P, reach = REACH) {
+export function graph(P, reach = REACH) {
   const m = P.length, d = (i, j) => Math.hypot(P[i][0] - P[j][0], P[i][1] - P[j][1]);
   const nn = new Float64Array(m).fill(Infinity);
   for (let i = 0; i < m; i++) for (let j = 0; j < m; j++) if (i !== j) { const q = d(i, j); if (q > 1e-9 && q < nn[i]) nn[i] = q; }
@@ -283,14 +288,23 @@ function simplify(p, tol) {
  * Linien einer Katalogvariante. pts: [[x, y, …], …]. Rückgabe { s0, nodes: [[x, y]], curves: [{ a, b, p }],
  * loops: [{ p } | { circle: [cx, cy, r] }], dots: [[x, y]] }; p sind Polylinien (offen von Knoten a nach b).
  */
-export function deriveLines(pts, hint = {}) {
+export function deriveLines(pts0, hint = {}) {
+  // Runde 9: Bild-Varianten (aus Fotos ausgelesen) tragen dunkle Reste der Auslesung (Straße unter dem Feuerwehrauto,
+  // Schatten unter Rädern, Streupunkte neben der Blume). bright() in catalog.js hebt sie sonst auf volle Helligkeit.
+  const drop = hint.bild ? noise(pts0) : [], gone = new Set(drop), pts = pts0.filter((_, i) => !gone.has(i));
   const P = pts.map((p) => [p[0], p[1]]);
   const { s0, edges } = graph(P, hint.reach);
   const r4 = (v) => Math.round(v * 1e4) / 1e4, R = (q) => [r4(q[0]), r4(q[1])];
-  if (hint.keep) return { s0: r4(s0), keep: true, nodes: [], curves: [], loops: [], dots: P.map(R) };
+  const extra = drop.length ? { drop } : {};
+  if (hint.anchor) {
+    const G = gridOf(P, s0);
+    if (G) return { s0: r4(s0), grid: { R: G.R, C: G.C, p: G.p.map(R), cv: r4(G.cv) }, nodes: [], curves: [], loops: [], dots: [], ...extra };
+    const A = anchorLines(P, edges, s0);
+    return { s0: r4(s0), anchor: true, nodes: P.map(R), curves: A.curves.map((c) => ({ a: c.a, b: c.b, p: c.p.map(R) })), loops: [], dots: [], ...extra };
+  }
   if (hint.shape) {
     const B = hint.shape(P, pts);
-    return { s0: r4(s0), shape: true, nodes: B.nodes.map(R), curves: B.curves.map((c) => ({ a: c.a, b: c.b, p: simplify(c.p, 0.005 * s0).map(R), ...(c.ci != null ? { ci: c.ci } : {}) })), loops: B.loops.map((l) => ({ p: simplify([...l.p, l.p[0]], 0.005 * s0).slice(0, -1).map(R), ...(l.ci != null ? { ci: l.ci } : {}) })), dots: B.dots.map(R) };
+    return { s0: r4(s0), shape: true, ...extra, nodes: B.nodes.map(R), curves: B.curves.map((c) => ({ a: c.a, b: c.b, p: simplify(c.p, 0.005 * s0).map(R), ...(c.ci != null ? { ci: c.ci } : {}) })), loops: B.loops.map((l) => ({ p: simplify([...l.p, l.p[0]], 0.005 * s0).slice(0, -1).map(R), ...(l.ci != null ? { ci: l.ci } : {}) })), dots: B.dots.map(R) };
   }
   const r = (hint.ink ?? R_INK) * s0, cell = s0 / 5;
   let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
@@ -508,8 +522,100 @@ export function deriveLines(pts, hint = {}) {
     curves: curves.map((c) => ({ a: c.a, b: c.b, p: simplify(c.p, 0.012 * s0).map(R) })),
     loops: loops.map((l) => (l.circle ? { circle: l.circle.map(r4) } : { p: simplify(l.p, 0.012 * s0).map(R) })),
     dots: dots.map(R),
+    ...extra,
   };
 }
+
+/** Indizes der Auslese-Reste einer Bild-Variante: deutlich dunkler als der Rest (unter 0,6 der mittleren Helligkeit). */
+export function noise(pts) {
+  const br = pts.map((p) => Math.max(p[3], p[4], p[5])), med = [...br].sort((a, b) => a - b)[pts.length >> 1];
+  return br.flatMap((b, i) => (b < 0.6 * med ? [i] : []));
+}
+
+/**
+ * Kanten eines Ankermotivs mit Einordnung (für anchorLines() und den Wächter): ij, deg (Nachbarn der Enden), rim (auf
+ * einer Seite der Kante kein Katalogpunkt), line (wird verdichtet).
+ */
+export function lineEdges(P, edges, s0) {
+  const m = P.length, d = (i, j) => Math.hypot(P[i][0] - P[j][0], P[i][1] - P[j][1]);
+  const nn = P.map((_, i) => { let b = Infinity; for (let j = 0; j < m; j++) if (j !== i) b = Math.min(b, d(i, j)); return b; });
+  const near = edges.filter(([i, j]) => d(i, j) <= LOCAL * Math.min(1.5 * s0, Math.max(nn[i], nn[j])));
+  // Nachrunde Runde 9: verdichtet wird nur, was Linie ist. Eine Kante gehört zu einem Linienzug (beide Enden höchstens zwei
+  // Nachbarn) oder zum Rand einer Fläche (auf einer Seite der Kante steht kein Katalogpunkt). Speichen und Naben (Stern aus
+  // einem Mittelpunkt) und Kanten zwischen Innenpunkten einer Fläche (Golfer-Körper, Kettenlaufwerk) bleiben unverdichtet;
+  // ihre Punkte stehen als einzelne Katalogpunkte.
+  const deg0 = new Uint16Array(m); for (const [i, j] of near) { deg0[i]++; deg0[j]++; }
+  const side = (i, j, sgn) => {
+    const L = d(i, j), mx = (P[i][0] + P[j][0]) / 2, my = (P[i][1] + P[j][1]) / 2, nx = -(P[j][1] - P[i][1]) / L, ny = (P[j][0] - P[i][0]) / L;
+    const px = mx + sgn * nx * 0.6 * L, py = my + sgn * ny * 0.6 * L;
+    return P.some((q, k) => k !== i && k !== j && Math.hypot(q[0] - px, q[1] - py) < 0.55 * L);
+  };
+  const rim = (i, j) => !side(i, j, 1) || !side(i, j, -1);
+  return near.map(([i, j]) => { const r = rim(i, j); return { ij: [i, j], deg: [deg0[i], deg0[j]], rim: r, line: (deg0[i] <= 2 && deg0[j] <= 2) || r }; });
+}
+
+
+/**
+ * Ankerkanten (Runde 9): Kanten des Nachbarschaftsgraphen (RNG, siehe graph()) zwischen Katalogpunkten derselben Linie,
+ * höchstens 1,6 × der Punktabstand vor Ort (größere Lücken sind im Katalog gewollt und bleiben offen). Liegt eine Kante
+ * mitten in einer Linie (beide Enden haben genau zwei Nachbarn, sanfter Knick), folgt sie dem Bogen durch die Nachbarn
+ * (Catmull-Rom, zentripetal), damit Kreise Kreise bleiben; sonst ist sie gerade. Der Bogen weicht höchstens BOW · s0
+ * von der Sehne ab, sonst bleibt auch diese Kante gerade.
+ */
+const BOW = 0.12, LOCAL = 1.6;
+function anchorLines(P, edges, s0) {
+  const m = P.length, d = (i, j) => Math.hypot(P[i][0] - P[j][0], P[i][1] - P[j][1]);
+  const keep = lineEdges(P, edges, s0).filter((e) => e.line).map((e) => e.ij);
+  const adj = Array.from({ length: m }, () => []);
+  for (const [i, j] of keep) { adj[i].push(j); adj[j].push(i); }
+  const turn = (a, b, c) => { const ux = P[b][0] - P[a][0], uy = P[b][1] - P[a][1], vx = P[c][0] - P[b][0], vy = P[c][1] - P[b][1]; return Math.acos(Math.max(-1, Math.min(1, (ux * vx + uy * vy) / (Math.hypot(ux, uy) * Math.hypot(vx, vy) || 1)))); };
+  const cr = (p0, p1, p2, p3, t) => { // zentripetales Catmull-Rom zwischen p1 und p2
+    const tj = (a, b) => Math.sqrt(Math.hypot(b[0] - a[0], b[1] - a[1])) || 1e-6;
+    const t0 = 0, t1 = t0 + tj(p0, p1), t2 = t1 + tj(p1, p2), t3 = t2 + tj(p2, p3), u = t1 + (t2 - t1) * t;
+    const L = (a, b, ta, tb) => [0, 1].map((k) => ((tb - u) * a[k] + (u - ta) * b[k]) / (tb - ta));
+    const A1 = L(p0, p1, t0, t1), A2 = L(p1, p2, t1, t2), A3 = L(p2, p3, t2, t3), B1 = L(A1, A2, t0, t2), B2 = L(A2, A3, t1, t3);
+    return L(B1, B2, t1, t2);
+  };
+  const curves = keep.map(([a, b]) => {
+    const straight = { a, b, p: [P[a], P[b]] };
+    if (adj[a].length !== 2 || adj[b].length !== 2) return straight;
+    const a0 = adj[a].find((k) => k !== b), b1 = adj[b].find((k) => k !== a);
+    if (turn(a0, a, b) > Math.PI / 3 || turn(a, b, b1) > Math.PI / 3) return straight;
+    const p = [P[a]]; for (let t = 1; t < 8; t++) p.push(cr(P[a0], P[a], P[b], P[b1], t / 8)); p.push(P[b]);
+    const [A, B] = [P[a], P[b]], L = d(a, b) || 1e-9;
+    const dev = Math.max(...p.map((q) => Math.abs((B[0] - A[0]) * (A[1] - q[1]) - (A[0] - q[0]) * (B[1] - A[1])) / L));
+    return dev <= BOW * s0 ? { a, b, p } : straight;
+  });
+  return { curves };
+}
+
+/**
+ * Rastermotiv (Nachrunde Runde 9): Ist das Katalogbild ein (verzerrtes) Gitter, etwa die wehende Fahne, werden Zeilen und
+ * Spalten erkannt: je Punkt der rechte Nachbar (nächster Punkt in Hauptrichtung, höchstens 40° daneben, gegenseitig), die
+ * Ketten sind Zeilen. Ein Gitter liegt vor, wenn alle Punkte in mindestens drei Zeilen gleicher Länge (mindestens drei)
+ * liegen. Rückgabe { R, C, p (zeilenweise, von links nach rechts), cv (Streuung der Zeilenabstände) } oder null.
+ */
+function gridOf(P, s0) {
+  const m = P.length; if (m < 9) return null;
+  // Hauptrichtung: die längere Achse der Punktwolke
+  let mx = 0, my = 0; for (const p of P) { mx += p[0]; my += p[1]; } mx /= m; my /= m;
+  let sxx = 0, syy = 0, sxy = 0; for (const p of P) { const x = p[0] - mx, y = p[1] - my; sxx += x * x; syy += y * y; sxy += x * y; }
+  const th = 0.5 * Math.atan2(2 * sxy, sxx - syy), ux = Math.cos(th), uy = Math.sin(th);
+  const along = (i, j) => (P[j][0] - P[i][0]) * ux + (P[j][1] - P[i][1]) * uy, across = (i, j) => -(P[j][0] - P[i][0]) * uy + (P[j][1] - P[i][1]) * ux;
+  const right = P.map((_, i) => { let best = -1, bd = 1.8 * s0; for (let j = 0; j < m; j++) { const a = along(i, j), c = across(i, j); if (a > 0.3 * s0 && Math.abs(c) < Math.tan((40 * Math.PI) / 180) * a) { const dd = Math.hypot(a, c); if (dd < bd) { bd = dd; best = j; } } } return best; });
+  const left = new Int32Array(m).fill(-1); right.forEach((j, i) => { if (j >= 0) { if (left[j] >= 0) left[j] = -2; else left[j] = i; } });
+  if (left.some((v) => v === -2)) return null;
+  const rows = []; for (let i = 0; i < m; i++) if (left[i] < 0) { const r = [i]; let c = i; while (right[c] >= 0) { c = right[c]; r.push(c); if (r.length > m) return null; } rows.push(r); }
+  const C = rows[0]?.length;
+  if (rows.length < 3 || C < 3 || rows.some((r) => r.length !== C) || rows.length * C !== m) return null;
+  rows.sort((a, b) => a.reduce((t, i) => t + across(rows[0][0], i), 0) - b.reduce((t, i) => t + across(rows[0][0], i), 0));
+  const gaps = rows.flatMap((r) => r.slice(1).map((j, k) => Math.hypot(P[j][0] - P[r[k]][0], P[j][1] - P[r[k]][1])));
+  const mean = gaps.reduce((a, b) => a + b, 0) / gaps.length, cv = Math.sqrt(gaps.reduce((a, g) => a + (g - mean) ** 2, 0) / gaps.length) / mean;
+  return { R: rows.length, C, p: rows.flat().map((i) => P[i]), cv };
+}
+
+/** Linien eines Katalogmotivs (Hinweise + Bild-Varianten), wie sie in public/media/katalog/linien/ stehen. */
+export const linesFor = (key, id, pts) => deriveLines(pts, { ...HINTS[key], bild: id.startsWith('bild-') });
 
 // Aufruf als Skript: Linien aller (oder der genannten) 2D-Motive schreiben
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
@@ -520,7 +626,7 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
   mkdirSync(dir, { recursive: true });
   for (const key of keys) for (const v of catalog.motifs[key].variants) {
     const f = JSON.parse(readFileSync(new URL(`public/media/katalog/${v.id}.json`, root), 'utf8'));
-    const t = performance.now(), lines = deriveLines(f.points, HINTS[key]);
+    const t = performance.now(), lines = linesFor(key, v.id, f.points);
     writeFileSync(new URL(`${v.id}.json`, dir), JSON.stringify(lines) + '\n');
     console.log(`${key} ${v.id}: ${lines.curves.length} Linien, ${lines.loops.length} Schleifen, ${lines.dots.length} Punkte, ${(performance.now() - t).toFixed(0)} ms`);
   }

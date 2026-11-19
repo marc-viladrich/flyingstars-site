@@ -16,7 +16,7 @@ import catalog from '../../content/catalog-motifs.json' with { type: 'json' };
 import { TAU, mix, frac, hash, yaw, roll, pitch, sway, breathe, glint, sparkle, chase, trace, wander, lightRank, part, act } from '../show-motion.js';
 
 import { catalogAction } from './catalog-actions.js';
-import { analyse, resample, placeDerived, derive, prepareLines, lineSample, attach } from './catalog-resample.js';
+import { analyse, resample, placeDerived, derive, prepareLines, stageSample, attach } from './catalog-resample.js';
 import { CATALOG_3D, LIT_MAX } from './catalog-3d/index.js';
 
 const cache = new Map();
@@ -46,11 +46,17 @@ async function flatForm(id, source, n) {
     if (!prepared.has(id)) prepared.set(id, load(id, 'linien/').then(prepareLines));
     const L = await prepared.get(id);
     if (flatCache.size > 300) flatCache.clear();
-    flatCache.set(key, attach(lineSample(L, n).pts, source));
+    const sample = stageSample(L, n);
+    flatCache.set(key, { ...attach(sample.pts, source, L.drop), anchors: sample.anchors ?? 0, dots: Math.max(sample.dots, sample.pts.length) });
   }
   return flatCache.get(key);
 }
 const LINE_SOURCE = { stern: 0 };
+/** Variante, die ein Motiv bei n Drohnen zeichnet (flache Motive mit LINE_SOURCE immer aus derselben). */
+export function flatVariant(key, n) {
+  const m = CATALOG[key];
+  return LINE_SOURCE[key] != null && m.dimension !== '3D' && n >= m.variants[LINE_SOURCE[key]].points ? m.variants[LINE_SOURCE[key]] : variantFor(key, n);
+}
 /** Aktionen, die nur Lagen lesen (keine Katalogindizes): sie laufen direkt auf den abgetasteten Drohnen. */
 const BY_PLACE = new Set(['smiley', 'handschlag']);
 /** Profile, deren Motive in SPARK nur Licht bewegen, auch wenn sie räumlich sind (siehe glow, shimmer). */
@@ -190,10 +196,10 @@ export async function catalogScene(key, tier, n, caption) {
   const deep = m.dimension === '3D', name = m.name[lang()] ?? m.name.de;
   // Runde 7: einzelne flache Motive zeichnen ihre Linien immer aus der klarsten Variante (Stern: die größere Variante hat
   // doppelte Binnenlinien), die Drohnenzahl bestimmt nur die Liniendichte
-  const v = LINE_SOURCE[key] != null && !deep && n >= m.variants[LINE_SOURCE[key]].points ? m.variants[LINE_SOURCE[key]] : variantFor(key, n);
+  const v = flatVariant(key, n);
   if (!v) throw new Error(`Katalogmotiv ${key}: keine Variante für ${n} Drohnen`);
   const f = await load(v.id), source = prepare(f, !deep);
-  let front, fit, live, drawLive, hold, parents;
+  let front, fit, live, drawLive, hold, parents, anchorCount = 0, dotCount = n;
   if (deep) {
     // räumliche Formationen: Katalogpunkte behalten Platz und Index, neue Drohnen zeichnen die Linien nach (derive())
     const derived = densify(v.id, source, n), order = lightRank(source);
@@ -205,7 +211,8 @@ export async function catalogScene(key, tier, n, caption) {
     // Runde 7 (Marc, 19.11.2026): flache Motive gleichmäßig auf sauberen Linien, Liniendichte aus der Drohnenzahl. Jede
     // Drohne bewegt sich wie ihr nächster Katalogpunkt: Profile rechnen mit der eigenen Lage und der Gruppe des Elternpunkts
     // (Räder, Nadel, Flügel drehen exakt), Aktionen mit Katalogindizes verschieben die Drohne wie ihren Elternpunkt.
-    const { pts: sampled, parent } = await flatForm(v.id, source, n);
+    const { pts: sampled, parent, anchors, dots } = await flatForm(v.id, source, n);
+    anchorCount = anchors; dotCount = dots;
     const byPlace = BY_PLACE.has(key) ? catalogAction(key, f, sampled) : null;
     const action = byPlace ?? catalogAction(key, f, source);
     let base;
@@ -233,7 +240,8 @@ export async function catalogScene(key, tier, n, caption) {
   }
   const rest = reserve(n - front.length, front), k = front.length;
   const run = (b, j, t, o) => { if (j >= k) { o[3] = 0; return; } live(b, j, t, o); };
-  const extra = { ...(hold ? { hold } : {}), ...(parents ? { parents } : {}) };
+  // anchors: die ersten Drohnen stehen exakt auf FlyingStars' Punkten (Runde 9); drones: Lichtgröße bei dichten Linien
+  const extra = { ...(hold ? { hold } : {}), ...(parents ? { parents, anchors: anchorCount } : {}), ...(dotCount > front.length ? { drones: dotCount } : {}) };
   if (tier !== 'ODYSSEY') return { beats: [{ pts: [...front, ...rest], fitPts: fit, caption, live: run, shimmer: false, ...extra }] };
   return { beats: [
     act([part('form', front), part('reserve', rest, { offstage: true })], { caption: say('lightDraws', name), hold: 1.6, live: (b, j, t, o) => { if (j >= k) { o[3] = 0; return; } drawLive(b, j, t, o); } }),
@@ -245,20 +253,23 @@ export async function catalogScene(key, tier, n, caption) {
 // (scenes/catalog-3d/, Methode in docs/katalog-3d.md) für die Show-Arten 3D und Storytelling. Die Figur wird einmal je
 // Drohnenzahl gebaut und zwischengespeichert; Drohnen über LIT_MAX warten dunkel hinter der Form.
 const bodies = new Map();
-function body3d(key, k) {
-  const id = `${key}|${k}`;
+// Runde 9 (3D-Agent, /tmp/fs-r9/b/BERICHT.md): jede Fassung baut je Stufe eine eigene Form, 3D für die Show-Art 3D
+// (HORIZON), 3D+ für Storytelling (ODYSSEY); die Stufe gehört deshalb in den Zwischenspeicher-Schlüssel.
+function body3d(key, k, stufe = '3D') {
+  const id = `${key}|${k}|${stufe}`;
   if (!bodies.has(id)) {
     if (bodies.size > 40) bodies.clear();
     // Die Punkte sind die Ruhelage bei t = 0 (Dreiviertelansicht, Hut auf dem Kopf …), damit jede Drohne genau auf ihrem
     // Platz startet; die Bewegung rechnet weiter vom Bauzustand aus.
-    const { pts: built, live } = CATALOG_3D[key](k);
+    const { pts: built, live } = CATALOG_3D[key](k, stufe);
     const pts = built.map((p, j) => { const o = [p[0], p[1], p[2], 1]; live(p, j, 0, o); return [o[0], o[1], o[2], p[3], p[4], p[5]]; });
     bodies.set(id, { pts, live: (b, j, t, o) => { const q = built[j]; o[0] = q[0]; o[1] = q[1]; o[2] = q[2]; live(q, j, t, o); } });
   }
   return bodies.get(id);
 }
 function bodyScene(key, tier, n, name) {
-  const k = Math.min(n, LIT_MAX), { pts: front, live } = body3d(key, k), rest = reserve(n - k, front);
+  const stufe = tier === 'ODYSSEY' ? '3D+' : '3D';
+  const k = Math.min(n, LIT_MAX), { pts: front, live } = body3d(key, k, stufe), rest = reserve(n - k, front);
   const run = (b, j, t, o) => { if (j >= k) { o[3] = 0; return; } live(b, j, t, o); };
   // im Bild bleibt, was der Körper beim Schwenken überstreicht
   const fit = [0, 2, 4, 6, 8, 10].flatMap((t) => front.map((p, j) => { const o = [p[0], p[1], p[2], 1]; live(p, j, t, o); return o.slice(0, 3); }));
