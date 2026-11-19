@@ -1,3 +1,6 @@
+# HISTORISCH (Runde 8): Befehle und Pfade des damaligen Stands. Schreibt an src/data/video-lab.json und
+# public/media/video-lab/, die es so nicht mehr gibt; nicht ausführen. Geltende Erzeugung: docs/video-lab/round-9/encode.py,
+# Archiv und Freigabe: archive/video-lab/README.md.
 from pathlib import Path
 import subprocess,json,hashlib,time
 from PIL import Image, ImageChops, ImageStat

@@ -7,7 +7,10 @@ export const SOURCE_OTHER = 'andere';
 export const SOURCE_TEXT_MAX = 120;
 /** Bezug zur Anfrage: 12 Hex-Zeichen, im Browser erzeugt, steht in beiden Meldungen */
 export const INQUIRY_REF = /^[a-f0-9]{12}$/;
+/** sessionStorage-Schlüssel des Bezugs. Das Anfrageformular schreibt ihn erst nach einem vom Endpoint bestätigten
+ * `sent`; nur dann bestätigt die Danke-Seite den Eingang. Ein direkter Aufruf (neuer Tab, Lesezeichen, ohne JavaScript)
+ * zeigt den neutralen Text. */
 export const INQUIRY_REF_KEY = 'fs-anfrage-ref';
-/** Erfolgszustand der Herkunftsfrage auf der Danke-Seite. Ohne JavaScript leitet /api/contact auf dieses Sprungziel
- * weiter, das Skript schaltet denselben Zustand ein. */
+/** Rückmeldung nach bestätigter Herkunftsantwort, nur per Skript. Ohne JavaScript antwortet /api/contact selbst mit
+ * einer Bestätigungsseite; ein frei aufrufbares Sprungziel zeigt nie einen Versand an. */
 export const SOURCE_DONE_ID = 'danke-antwort';

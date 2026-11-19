@@ -127,6 +127,7 @@ if (form) {
         logoInquiry.clear(); form.reset(); restartTimer(); syncDate(); show(0, false);
         // Weiter zur Danke-Seite (Moritz 18.11.2026). Kurz warten, damit Bestätigung, Himmel-Gruß und eine erlaubte
         // Conversion-Meldung noch auf dieser Seite laufen.
+        // Erst hier, nach bestätigtem `sent`: nur mit diesem Bezug bestätigt die Danke-Seite den Eingang der Anfrage.
         try { sessionStorage.setItem(INQUIRY_REF_KEY, ref); } catch { /* privat */ }
         setTimeout(() => location.assign(localizedHref('/danke/', localeFromPath(location.pathname))), 2400);
       }

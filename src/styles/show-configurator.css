@@ -328,7 +328,7 @@ fieldset.cfg-tool { margin: 0; padding: 0; border: 0; min-width: 0; }
 /* Immer dabei: ruhige Liste mit Icons, zwei Spalten; kein Bedienelement */
 .cfg-always { gap: var(--space-2-5); }
 .cfg-always-h { margin: 0; font-size: var(--text-control); color: var(--text); }
-.cfg-always-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-2) var(--space-4); font-size: var(--text-sm); line-height: 1.3; color: var(--muted); }
+.cfg-always-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(11rem, 100%), 1fr)); gap: var(--space-2) var(--space-4); font-size: var(--text-sm); line-height: 1.3; color: var(--muted); } /* zwei Spalten nur, wo „Haftpflichtversicherung“ ungetrennt passt */
 .cfg-always-list li { display: flex; align-items: center; gap: var(--space-2); min-width: 0; }
 .cfg-always-list .ico { flex: none; }
 /* lange Wörter (NL „Aansprakelijkheidsverzekering“) trennen statt die Spalte zu sprengen */

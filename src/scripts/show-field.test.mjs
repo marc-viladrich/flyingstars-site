@@ -85,3 +85,11 @@ test('growth retains drones still leaving after an interrupted shrink', (t) => {
   field.show(scene(11761), 11761); advance(120); complete(11761);
   field.show(scene(300), 300); advance(120); complete(300);
 });
+
+test('a scene without pictures leaves the current picture standing and keeps the clock running', (t) => {
+  const { field, advance, complete } = fixture(t);
+  assert.doesNotThrow(() => field.show({ beats: [] }, 100), 'nothing shown yet');
+  field.show(scene(120), 120, 1, { instant: true }); complete(120);
+  assert.doesNotThrow(() => { field.show({ beats: [] }, 100); field.show(undefined, 100); advance(30); });
+  complete(120);
+});

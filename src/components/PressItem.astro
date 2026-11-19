@@ -1,13 +1,23 @@
 ---
 // Ein Presse-Eintrag (LogoBar): Logo nur mit schriftlicher Freigabe (show), sonst der Name; verlinkt auf den Beitrag oder als
-// Text, die Quellen-Notiz steht im title. Eine Komponente für die Pressezeile unter dem Kundenlaufband und das Presseraster
-// im Belegblock; die Darstellung setzt die jeweilige Liste (.band-press bzw. .proof .press).
+// Text, die Quellen-Notiz steht im title. Eine Komponente für die Pressezeile unter dem Kundenlaufband (layout „inline“) und
+// das Presseraster im Belegblock (layout „cell“: Eintrag als Zelle, links unten ausgerichtet). Die Darstellung von Logo,
+// Name und Hover gehört hierher; die Liste setzt nur ihre Kontextwerte (--press-*: Maximalbreite, Deckkraft, Namensgröße).
 import LocalImage from './LocalImage.astro';
 import { forPath } from '../i18n/server';
-interface Props { name: string; logo?: string; show: boolean; knock?: boolean; height: number; href?: string; note?: string }
-const { name, logo, show, knock, height, href, note } = Astro.props;
+interface Props { name: string; logo?: string; show: boolean; knock?: boolean; height: number; href?: string; note?: string; layout?: 'inline' | 'cell' }
+const { name, logo, show, knock, height, href, note, layout = 'inline' } = Astro.props;
 const { localHref } = forPath(Astro.url.pathname);
 const Tag = href ? 'a' : 'span';
 const attrs = href ? { href: localHref(href), rel: 'noopener', target: '_blank', title: note ? `${name}: ${note}` : undefined } : { class: 'noref', title: note };
 ---
-<li><Tag {...attrs}>{show && logo ? <LocalImage class:list={{ knock }} src={logo} alt={name} style={`height:${height / 16}rem`} loading="lazy" decoding="async" /> : <b>{name}</b>}</Tag></li>
+<li class:list={['press-entry', { 'press-cell': layout === 'cell' }]}><Tag {...attrs}>{show && logo ? <LocalImage class:list={{ knock }} src={logo} alt={name} style={`height:${height / 16}rem`} loading="lazy" decoding="async" /> : <b>{name}</b>}</Tag></li>
+<style>
+  /* Das Bild rendert LocalImage (eigene Komponente, darum :global unter dem eigenen Eintrag) */
+  .press-entry :global(img) { width: auto; max-width: var(--press-max); object-fit: contain; filter: var(--logo-mono); opacity: var(--press-opacity); transition: opacity var(--dur-control); }
+  .press-entry :global(img.knock) { filter: var(--logo-knock); opacity: var(--press-knock-opacity); }
+  .press-entry a:hover :global(img) { opacity: 1; }
+  .press-entry b { font: 600 var(--press-name-size)/1.1 var(--display); letter-spacing: var(--press-name-tracking, normal); color: var(--head); }
+  .press-cell > :is(a, .noref) { display: grid; gap: var(--space-3); place-items: center start; align-content: center; min-height: 3rem; }
+  .press-cell :global(img) { object-position: left bottom; }
+</style>

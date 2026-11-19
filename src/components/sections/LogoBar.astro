@@ -75,7 +75,7 @@ const STILL_MAX = 8;
 {(press.length > 0 || seals.length > 0) && <section class="section proof" id={marks.length > 0 || inlinePress.length > 0 ? `${id}-belege` : id} aria-label={[press.length && pressHeadline, seals.length && qualityHeadline].filter(Boolean).join(', ')}>
   {press.length > 0 && <div class="press">
     <SectionHead variant="embedded" kicker={kicker} headline={pressHeadline} id={`${id}-press-h`} titleClass="proof-h" />
-    <ul>{press.map((p) => <PressItem {...p} />)}</ul>
+    <ul>{press.map((p) => <PressItem {...p} layout="cell" />)}</ul>
   </div>}
   {seals.length > 0 && <div class="quality">
     <SectionHead variant="embedded" kicker={press.length ? undefined : kicker} headline={qualityHeadline} id={`${id}-quality-h`} titleClass="proof-h" />
@@ -95,22 +95,22 @@ const STILL_MAX = 8;
   .band-press { display: grid; justify-items: center; }
   .band-row, .band-press ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: var(--space-6) clamp(var(--space-8), 4vw, var(--space-14)); max-width: 72rem; }
   .band-row { margin-inline: auto; }
-  .band-row img { display: block; width: auto; filter: brightness(0) invert(1); opacity: 0.66; }
+  .band-row img { display: block; width: auto; filter: var(--logo-mono); opacity: 0.66; }
   .band-row img.detail { filter: grayscale(1) brightness(1.15); mix-blend-mode: screen; opacity: 0.8; }
-  /* Einträge rendert PressItem.astro (eigene Komponente, darum :global) */
-  .band-press :global(img) { width: auto; max-width: 8.5rem; object-fit: contain; filter: brightness(0) invert(1); opacity: 0.66; transition: opacity var(--dur-control); }
-  .band-press :global(img.knock) { filter: grayscale(1) brightness(0.85) contrast(1.15); opacity: 0.9; }
-  .band-press :global(a:hover img) { opacity: 1; }
-  .band-press :global(b) { font: 600 1rem/1.1 var(--display); color: var(--head); }
+  /* Einträge: PressItem.astro besitzt Logo, Name und Hover; die beiden Listen setzen nur ihre Kontextwerte */
+  .band-press ul { --press-max: 8.5rem; --press-opacity: 0.66; --press-knock-opacity: 0.9; --press-name-size: 1rem; }
+  .press ul { --press-max: 9.375rem; --press-opacity: 0.82; --press-knock-opacity: 1; --press-name-size: 1.375rem; --press-name-tracking: -0.02em; }
+  /* Presse im Raster wie Qualität und Sicherheit: Logo, darunter leise der Anlass. Keine Kästen */
+  .press ul { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(9.375rem, 100%), 1fr)); gap: var(--space-7) var(--space-6); }
 </style>
 
 <style is:global>
-  /* Laufband und Presseraster des Belegblocks (aus global.css hierher, Audit 18.11.2026 C2). Global, weil die Einträge
-     eigene Komponenten sind (PressItem) und das Laufband über [data-loop] am gemeinsamen Schleifenschalter hängt.
+  /* Laufband (aus global.css hierher, Audit 18.11.2026 C2). Global, weil das Laufband über [data-loop] am gemeinsamen
+     Schleifenschalter hängt; .proof-h, weil SectionHead die Klasse an seine Überschrift setzt.
      .proof und .proof .quality bleiben in global.css: LandingSite nutzt sie ebenfalls. */
   .logo-marquee { display: flex; overflow: hidden; padding: var(--space-1-5) 0; -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
   .logo-marquee .track { list-style: none; margin: 0; padding: 0 clamp(var(--space-11), 5vw, var(--space-19)) 0 0; display: flex; align-items: center; gap: clamp(var(--space-11), 5vw, var(--space-19)); flex: none; animation: logo-slide var(--dur-marquee) var(--ease-linear) infinite; animation-play-state: var(--loop-play, running); }
-  .logo-marquee img { display: block; width: auto; max-width: none; filter: brightness(0) invert(1); opacity: 0.66; }
+  .logo-marquee img { display: block; width: auto; max-width: none; filter: var(--logo-mono); opacity: 0.66; }
   .logo-marquee img.detail { filter: grayscale(1) brightness(1.15); mix-blend-mode: screen; opacity: 0.8; } /* dunkle Innendetails (Bentley) bleiben sichtbar */
   @keyframes logo-slide { to { transform: translateX(-100%); } }
   @media (prefers-reduced-motion: reduce) {
@@ -119,12 +119,4 @@ const STILL_MAX = 8;
     .logo-marquee .track + .track { display: none; }
   }
   .proof-h { font-size: clamp(1.5rem, 2.4vw, 2rem); letter-spacing: -0.02em; }
-  /* Presse im Raster wie Qualität und Sicherheit: Logo, darunter leise der Anlass. Keine Kästen. Einträge: PressItem.astro */
-  .proof .press ul { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(9.375rem, 100%), 1fr)); gap: var(--space-7) var(--space-6); }
-  .proof .press :is(a, .noref) { display: grid; gap: var(--space-3); place-items: center start; align-content: center; min-height: 3rem; }
-  .proof .press img { width: auto; max-width: 9.375rem; object-fit: contain; object-position: left bottom; filter: brightness(0) invert(1); opacity: 0.82; transition: opacity var(--dur-control); }
-  .proof .press a:hover img { opacity: 1; }
-  /* farbige Fläche mit weißer Schrift (ZDF, ntv): Fläche grau, Schrift bleibt weiß */
-  .proof .press img.knock { filter: grayscale(1) brightness(0.85) contrast(1.15); opacity: 1; }
-  .proof .press b { font: 600 1.375rem/1.1 var(--display); letter-spacing: -0.02em; color: var(--head); }
 </style>

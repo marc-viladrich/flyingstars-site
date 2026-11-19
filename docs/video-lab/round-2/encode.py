@@ -1,3 +1,6 @@
+# HISTORISCH (Runde 2): Befehle und Pfade des damaligen Stands. Schreibt an src/data/video-lab.json und
+# public/media/video-lab/, die es so nicht mehr gibt; nicht ausführen. Geltende Erzeugung: docs/video-lab/round-9/encode.py,
+# Archiv und Freigabe: archive/video-lab/README.md.
 from pathlib import Path
 import subprocess,json,hashlib,time
 root=Path(__file__).resolve().parents[3]; source=root/'public/media/video-lab/original-v1.mp4'; master=Path(__import__('tempfile').mkdtemp(prefix='fs-cut15-'))/'master-15s.mkv';out=root/'public/media/video-lab';record=[]

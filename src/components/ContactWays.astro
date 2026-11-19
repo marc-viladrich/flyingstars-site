@@ -13,3 +13,11 @@ import Icon from './Icon.astro';
   <li><a {...field(CONTACT_OWNER,['video', 'href'],{mode:'panel'})} href={localHref(CONTACT.video.href)} rel="noopener" target="_blank"><Icon name="video" class="g" /><span class="hover-line">{t(CONTACT.video.labelKey)}</span></a></li>
   <li><a {...field(CONTACT_OWNER,['mobile'],{mode:'panel'})} href={localHref(CONTACT.whatsapp.href)} rel="noopener" target="_blank"><Icon name="whatsapp" class="g" /><span class="hover-line">{CONTACT.whatsapp.label}</span></a></li>
 </ul>
+
+<style>
+  /* Kontaktwege mit Verlaufs-Icons (aus global.css hierher, Audit 2, C2) */
+  .ways { list-style: none; padding: 0; margin: var(--space-2) 0 0; display: grid; }
+  .ways a { display: flex; gap: var(--space-3-5); align-items: center; padding: var(--space-3-5) 0; border-bottom: 1px solid var(--line); color: var(--text); transition: color var(--dur-control); }
+  .ways li:first-child a { border-top: 1px solid var(--line); }
+  .ways a:hover { color: var(--amber); }
+</style>

@@ -62,8 +62,8 @@ const list = items.map((it, i) => ({ ...it, year: it.date.slice(0, 4), newYear: 
   .press-head :global(.lead) { color: var(--muted); }
   .press-logos ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-5) var(--space-8); justify-content: flex-start; }
   .press-logos a { display: block; padding: var(--space-1) 0; }
-  .press-logos img, .press-logo img { display: block; width: auto; max-width: 100%; filter: brightness(0) invert(1); opacity: 0.72; transition: opacity var(--dur-control); }
-  .press-logos img.knock, .press-logo img.knock { filter: grayscale(1) brightness(0.85) contrast(1.15); opacity: 0.9; }
+  .press-logos img, .press-logo img { display: block; width: auto; max-width: 100%; filter: var(--logo-mono); opacity: 0.72; transition: opacity var(--dur-control); }
+  .press-logos img.knock, .press-logo img.knock { filter: var(--logo-knock); opacity: 0.9; }
   .press-logos a:hover img, .press-logos a:focus-visible img { opacity: 1; }
   .press-logos b { font: 600 1.125rem/1 var(--display); color: var(--fg); }
 

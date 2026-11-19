@@ -11,9 +11,11 @@
 /* Auf schmalen Bildschirmen spielt die Folge in einer eigenen Fläche unter dem Text. Die Höhe steht von Anfang an fest
    (Klasse reveal bzw. motion-paused setzt das Inline-Skript im Kopf vor dem ersten Bild), darum springt nichts; ohne
    JavaScript bleibt die Fläche weg. */
-/* Runde 5: Breit füllt die Show-Folge die Höhe der Section; oben steht dafür weniger Leerraum (Marc, 18.11.2026) */
-@media (min-width: 56.25em) { html:is(.reveal, .motion-paused) #warum-drohnen { padding-top: clamp(5rem, 6vw, 6.5rem); } }
-@media (max-width: 56.24em) {
+/* Platz für Stationen des Schwarms: Die Section-ID ist der Stationsvertrag (schwarm.ts, plan()), darum greifen diese Regeln
+   an IDs; scripts/himmel-stationen.test.mjs prüft, dass jede ID hier eine Station mit passender Bühne in DE/EN/NL ist.
+   Runde 5: Breit füllt die Show-Folge die Höhe der Section; oben steht dafür weniger Leerraum (Marc, 18.11.2026) */
+@media (--folge-beside) { html:is(.reveal, .motion-paused) #warum-drohnen { padding-top: clamp(5rem, 6vw, 6.5rem); } }
+@media (--folge-below) {
   html:is(.reveal, .motion-paused) #warum-drohnen::after { content: ''; display: block; height: clamp(14rem, 62vw, 20rem); }
 }
 

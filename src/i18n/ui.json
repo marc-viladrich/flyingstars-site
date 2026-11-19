@@ -4419,6 +4419,21 @@
     "en": "Please try again later.",
     "nl": "Probeer het later nog eens."
   },
+  "thanks.leadNeutral": {
+    "de": "Innerhalb von maximal 48 Stunden nach eurer Anfrage melden wir uns bei euch zurück.",
+    "en": "We'll get back to you within 48 hours of your enquiry at the latest.",
+    "nl": "Uiterlijk 48 uur na jullie aanvraag nemen we contact met jullie op."
+  },
+  "thanks.answerReceived": {
+    "de": "Eure Antwort ist angekommen.",
+    "en": "Your answer has arrived.",
+    "nl": "Jullie antwoord is aangekomen."
+  },
+  "thanks.answerThanks": {
+    "de": "Danke, das hilft uns sehr!",
+    "en": "Thank you, that helps us a lot!",
+    "nl": "Bedankt, dat helpt ons enorm!"
+  },
   "contactAPI.keepEntries": {
     "de": "Über die Zurück-Taste eures Browsers bleiben eure Eingaben in der Regel erhalten.",
     "en": "Your browser's back button usually keeps what you entered.",
@@ -4428,6 +4443,11 @@
     "de": "Zurück zum Formular",
     "en": "Back to the form",
     "nl": "Terug naar het formulier"
+  },
+  "contactAPI.toHome": {
+    "de": "Zur Startseite",
+    "en": "To the homepage",
+    "nl": "Naar de homepage"
   },
   "contactAPI.otherWays": {
     "de": "Ihr erreicht uns auch direkt:",

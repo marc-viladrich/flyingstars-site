@@ -1,0 +1,79 @@
+---
+// Anfrageformular (aus global.css hierher, Audit 2, C2): Raster der Anfrage (.inquiry) und Formular-Box (.ask). Zwei
+// Besitzer teilen es, die Anfrage (ContactForm.astro) und die Danke-Seite mit der Herkunftsfrage (Thanks.astro); beide
+// binden diese Komponente ein, sie rendert kein Markup. Kopf links oben bündig mit dem Formular; Gesichter und Kontaktwege
+// besitzen Faces.astro und ContactWays.astro.
+// Bewusst eine Komponente mit globalem Style-Block (is:global) und kein CSS-Import: Ein Import (auch ?inline) aus ContactForm verschob
+// Vites Bündelreihenfolge auf der Preisseite (IconFeature vor global.css); scripts/route-css.mjs bricht dann den Build ab.
+---
+<style is:global>
+  .inquiry { display: grid; align-items: start; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); gap: var(--head-gap-content) clamp(var(--space-6), 4vw, var(--space-14)); }
+  .inquiry .intro { align-content: start; }
+  .inquiry .intro h1, .inquiry .intro h2 { font-size: var(--text-3xl); line-height: 1.04; max-width: 16ch; }
+  .inquiry .intro .lead { max-width: 40ch; }
+  .ask { padding: clamp(var(--space-5-5), 3vw, var(--space-9)); border: 1px solid var(--line); border-radius: var(--radius); background: var(--ground); display: grid; gap: var(--space-4-5); min-width: 0; }
+  .ask .ask-steps { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-2-5) var(--space-4); font-size: var(--text-label); color: var(--faint); }
+  .ask .ask-steps .on { color: var(--text); }
+  .ask .ask-steps i { grid-column: 1 / -1; height: 2px; background: var(--line); border-radius: var(--radius-2); position: relative; overflow: hidden; }
+  .ask .ask-steps i::after { content: ""; position: absolute; inset: 0 50% 0 0; background: var(--grad); transition: right var(--dur-fade); }
+  .ask.is-2 .ask-steps i::after { right: 0; }
+  .ask .step { border: 0; padding: 0; margin: 0; display: grid; gap: var(--space-4-5); min-width: 0; }
+  .ask .field { display: grid; gap: var(--space-1-75); min-width: 0; align-content: start; }
+  .ask .lbl { font-size: var(--text-sm); color: var(--text); }
+  .ask .lbl em { font-style: normal; color: var(--faint); margin-left: var(--space-1); }
+  .ask input[type=text], .ask input[type=email], .ask input[type=tel], .ask input[type=date], .ask select, .ask textarea { width: 100%; height: var(--field-height, 3rem); min-height: 3rem; padding: var(--space-2-75) var(--space-3-5); background-color: var(--surface); border: 1px solid var(--line-strong); border-radius: var(--radius-12); color: var(--text); font: inherit; font-size: var(--text-base); color-scheme: dark; }
+  .ask input:disabled { opacity: 0.5; }
+  .ask textarea { --field-height: 6.875rem; resize: vertical; }
+  .ask input:focus-visible, .ask select:focus-visible, .ask textarea:focus-visible { outline: 2px solid var(--cyan); outline-offset: 0.0625rem; }
+  .ask .hint { font-size: var(--text-label); color: var(--faint); }
+  .ask .hint.check { display: flex; gap: var(--space-2); align-items: center; cursor: pointer; }
+  .ask .hint a { text-decoration: underline; text-underline-offset: 0.1875rem; color: var(--muted); }
+  .ask .hint input { accent-color: var(--orchid); width: 1rem; height: 1rem; margin: 0; }
+  .ask .err { font-size: var(--text-label); color: var(--bad); }
+  .ask .err:empty { display: none; }
+  .ask .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3-5); }
+  .ask .step > .btn, .ask .actions { justify-self: start; } /* Knöpfe linksbündig, Hauptknopf zuerst (Marc, 02.11.2026) */
+  /* Optionale Angaben im zweiten Schritt: Zeile kleiner Knöpfe; ein Feld gleitet beim Öffnen weich herein */
+  .ask .opt-add { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }
+  .ask .opt-add[hidden] { display: none; }
+  .ask .opt-add-l { font-size: var(--text-sm); color: var(--faint); margin-right: var(--space-1); }
+  .ask .opt-chip { display: inline-flex; align-items: center; gap: var(--space-1-5); min-height: 2.125rem; padding: var(--space-1-5) 0.8125rem; border: 1px dashed var(--line-strong); border-radius: var(--radius-pill); background: transparent; color: var(--muted); font: 400 var(--text-sm)/1.2 var(--body); cursor: pointer; transition: color var(--dur-control), border-color var(--dur-control), opacity var(--dur-color), transform var(--dur-color); }
+  .ask .opt-chip span { color: var(--accent); }
+  .ask .opt-chip:hover { color: var(--text); border-color: var(--ink-subtle); }
+  .ask .opt-chip:focus-visible { outline: 0.1875rem solid var(--cyan); outline-offset: 0.1875rem; }
+  .ask .opt-chip[aria-expanded="true"] { display: none; }
+  .ask.has-opt .opt:not(.open) { display: none; }
+  .ask.has-opt .opt.open { animation: opt-in var(--dur-enter) var(--ease-enter); }
+  @keyframes opt-in { from { opacity: 0; transform: translateY(-0.5rem); clip-path: inset(0 0 100% 0); } to { opacity: 1; transform: none; clip-path: inset(0); } }
+  /* Eingangsanimationen beginnen unsichtbar: angehaltene Bewegung (Pause-Knopf oder Systemeinstellung) zeigt das Ziel sofort */
+  html.motion-paused .ask.has-opt .opt.open { animation: none; }
+  @media (prefers-reduced-motion: reduce) { .ask.has-opt .opt.open { animation: none; } }
+  .ask .actions { display: flex; gap: var(--space-2-5); }
+  /* Runde 28: übernommenes Logo als Angabe im ersten Schritt (Kacheln wie Anhänge, je einzeln entfernbar) */
+  .ask .logo-att-list { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--space-2-5); }
+  .ask .logo-att-list li { display: flex; align-items: center; gap: var(--space-3); min-height: 3rem; padding: var(--space-1-5) var(--space-1-5) var(--space-1-5) var(--space-1-5); border: 1px solid var(--line-strong); border-radius: var(--radius-12); background: var(--surface); min-width: 0; }
+  .ask .logo-att-list li[data-logo-item="drones"] { padding-left: var(--space-3-5); }
+  .ask .logo-att-thumb { flex: none; display: grid; place-items: center; width: 4rem; height: 4rem; border-radius: var(--radius-9); overflow: hidden; }
+  .ask .logo-att-thumb.is-original { background: var(--text); padding: var(--space-1-5); }
+  .ask .logo-att-thumb.is-preview { background: rgb(var(--rgb-media-ground)); }
+  .ask .logo-att-thumb img { width: 100%; height: 100%; object-fit: contain; }
+  .ask .logo-att-cap { display: grid; gap: var(--space-0-5); min-width: 0; font-size: var(--text-sm); color: var(--text); }
+  .ask .logo-att-cap b { font-weight: 400; }
+  .ask .logo-att-cap small { font-size: var(--text-label); color: var(--faint); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 12rem; }
+  .ask .logo-att-x { flex: none; width: 2.25rem; height: 2.25rem; border: 0; border-radius: var(--radius-round); background: transparent; color: var(--muted); font: 400 var(--text-md)/1 var(--body); cursor: pointer; }
+  .ask .logo-att-x:hover { color: var(--text); background: var(--line-soft); }
+  .ask .logo-att-x:focus-visible { outline: 0.1875rem solid var(--cyan); outline-offset: 0.0625rem; }
+  .ask [aria-invalid="true"] { border-color: var(--bad); }
+  /* deutliche Hover-Zustände */
+  .ask :is(input[type="text"], input[type="email"], input[type="tel"], input[type="date"], select, textarea):hover { border-color: rgb(var(--rgb-text) / 0.4); }
+  .ask .hint.check:hover { color: var(--text); }
+
+  @media (--nav-collapsed) {
+    .inquiry { grid-template-columns: 1fr; }
+  }
+  @media (--compact) {
+    .ask .row2 { grid-template-columns: 1fr; }
+    .ask .step > .btn, .ask .actions { justify-self: stretch; }
+    .ask .actions .btn { flex: 1 1 auto; }
+  }
+</style>

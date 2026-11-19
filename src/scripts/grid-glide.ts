@@ -3,7 +3,8 @@
 // transform von Zelle zu Zelle; dieselben Kurven wie die gleitende Box der Navigation. Zeilen dürfen verschieden hoch
 // sein, deshalb kommt die Lage aus den Zellmaßen (JS) statt aus CSS-Indizes; so läuft es in Safari 18 ohne Anchor
 // Positioning genauso wie in Chromium. Erster Eintritt: die Fläche erscheint an Ort und Stelle (kein Flug aus der Ecke),
-// danach gleitet sie; beim Verlassen blendet sie an ihrer Stelle aus. Maus/Stift und Tastaturfokus, kein Touch.
+// danach gleitet sie; beim Verlassen blendet sie an ihrer Stelle aus, außer der Tastaturfokus steht im Raster: dann gleitet
+// sie zu seiner Zelle zurück. Maus/Stift und Tastaturfokus, kein Touch.
 const cellOf = (grid: HTMLElement, target: EventTarget | null) => {
   const cell = target instanceof Element ? target.closest<HTMLElement>('.ic') : null;
   return cell?.parentElement === grid ? cell : null;
@@ -29,9 +30,11 @@ function glide(grid: HTMLElement) {
     }
   };
   const hide = () => grid.classList.remove('ig-on');
-  const keyboard = () => grid.contains(document.activeElement) && document.activeElement!.matches(':focus-visible');
+  // Zelle des sichtbaren Tastaturfokus: Verlässt die Maus das Raster, kehrt die Fläche dorthin zurück (Audit 2, N6), statt
+  // auf der zuletzt überfahrenen Zelle neben dem Fokusring stehen zu bleiben
+  const focused = () => { const el = document.activeElement; return el && grid.contains(el) && el.matches(':focus-visible') ? cellOf(grid, el) : null; };
   grid.addEventListener('pointerover', (e) => { if (e.pointerType !== 'touch') { const c = cellOf(grid, e.target); if (c) place(c); } });
-  grid.addEventListener('pointerleave', (e) => { if (e.pointerType !== 'touch' && !keyboard()) hide(); });
+  grid.addEventListener('pointerleave', (e) => { if (e.pointerType === 'touch') return; const c = focused(); if (c) place(c); else hide(); });
   grid.addEventListener('focusin', (e) => { const c = cellOf(grid, e.target); if (c && (e.target as Element).matches(':focus-visible')) place(c); });
   grid.addEventListener('focusout', (e) => { if (!grid.contains(e.relatedTarget as Node)) hide(); });
   // Breite oder Umbruch geändert: Fläche ohne Flug an die neue Lage der aktiven Zelle

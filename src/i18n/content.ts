@@ -1,14 +1,18 @@
 import {factText} from '../content/show-extras.mjs';
 import { getCollection, type CollectionEntry, type CollectionKey } from 'astro:content';
 import { LOCALES, localeOfId, sourceId } from './routing.mjs';
+import { contentFingerprint, oncePerSnapshot } from './content-snapshot.mjs';
 
 /** Every query uses the requested locale, including related cards and FAQ. No silent DE fallback. */
 export async function localizedCollection<C extends CollectionKey>(collection: C, locale: string, filter: (entry: CollectionEntry<C>) => unknown = () => true): Promise<CollectionEntry<C>[]> {
   return (await getCollection(collection)).filter((entry) => localeOfId(entry.id) === locale && filter(entry));
 }
 
-/** All languages use the same versioned field contract; raw revisions remain the editor's conflict guard. */
-export async function checkContentCoverage() {
+/** All languages use the same versioned field contract; raw revisions remain the editor's conflict guard. Runs once
+ * per content state (content-snapshot.mjs), however many route files ask for their static paths. */
+export const checkContentCoverage = oncePerSnapshot(validateContent, () => contentFingerprint(process.cwd()));
+
+async function validateContent() {
   const {createFlyingStarsAdapter}=await import('../../editor/flyingstars-adapter.mjs');
   const {readContractRecords,auditContracts}=await import('./read-contracts.mjs');
   const root=process.cwd(),site=await createFlyingStarsAdapter(root),records=readContractRecords(root,site);

@@ -172,6 +172,9 @@
 
   /* Gemeinsame Schatten */
   --shadow-popover: 0 1.5rem 3rem -1.5rem var(--shadow-strong);
+  /* Fremdlogos auf dem Nachthimmel: einfarbig hell; Logos mit ausgesparter Schrift (ZDF, ntv) grau, damit die Schrift bleibt */
+  --logo-mono: brightness(0) invert(1);
+  --logo-knock: grayscale(1) brightness(0.85) contrast(1.15);
 
   /* Marc, 03.11.2026: ACSS-artige globale Typo-Skala für Barrierefreiheit.
      rem folgt der Browser-Grundschrift, ohne feste html-font-size. Seltene Größen bleiben exakt in rem. */
@@ -323,15 +326,17 @@ html.motion-paused { scroll-behavior: auto !important; }
    die Linie an (Navigation). Grundregel in :where() (Spezifität 0), sonst schlägt sie den Auslöser „Karte gehovert“. Links mitten im Fließtext behalten ihre feste Unterstreichung (sonst im Text nicht als Link
    erkennbar). */
 :where(.hover-line, .link, .nav nav > a, .nav-drop > a, .footer ul a:not(:has(.hover-line)), .footer address a, .footer .base nav a, .crumbs a, .member h3) { background-image: var(--grad); background-repeat: no-repeat; background-size: 0% 0.125rem; background-position: right 0 bottom var(--line-y, 0rem); -webkit-box-decoration-break: clone; box-decoration-break: clone; transition: background-size var(--dur-underline) var(--ease-glide), color var(--dur-color) var(--ease-default); }
-:is(.hover-line, .link, .nav nav > a, .footer ul a:not(:has(.hover-line)), .footer address a, .footer .base nav a, .crumbs a):is(:hover, :focus-visible), .nav nav > a[aria-current], a:is(:hover, :focus-visible) .hover-line, .member:is(:hover, :focus-within) h3, .nav-drop:is(:hover, :focus-within) > a, .nav-drop:has(a[aria-current]) > a { background-size: 100% 0.125rem; background-position-x: left; }
+:is(.hover-line, .link, .nav nav > a, .footer ul a:not(:has(.hover-line)), .footer address a, .footer .base nav a, .crumbs a):is(:hover, :focus-visible), .nav nav > a[aria-current], a:is(:hover, :focus-visible) .hover-line, .member:is(:hover, :focus-within) h3, .nav-drop:is(:hover, :focus-within, .is-open):not(.is-dismissed) > a, .nav-drop:has(a[aria-current]) > a { background-size: 100% 0.125rem; background-position-x: left; }
 
 /* header */
-.nav { position: fixed; z-index: 20; inset: 0 0 auto 0; display: flex; align-items: center; gap: var(--space-7-5); padding: calc(var(--space-4-5) + env(safe-area-inset-top, 0rem)) var(--gutter) var(--space-4-5); transition: background var(--dur-standard), border-color var(--dur-standard), padding var(--dur-standard); border-bottom: 1px solid transparent; }
+.nav { position: fixed; z-index: 20; inset: 0 0 auto 0; display: flex; align-items: center; gap: clamp(var(--space-4), 2vw, var(--space-7-5)); padding: calc(var(--space-4-5) + env(safe-area-inset-top, 0rem)) var(--gutter) var(--space-4-5); transition: background var(--dur-standard), border-color var(--dur-standard), padding var(--dur-standard); border-bottom: 1px solid transparent; }
 .nav.scrolled { background: rgb(var(--rgb-ground) / 0.78); backdrop-filter: blur(0.875rem); -webkit-backdrop-filter: blur(0.875rem); border-bottom-color: var(--line); padding-top: calc(var(--space-3) + env(safe-area-inset-top, 0rem)); padding-bottom: var(--space-3); }
 .logo { display: flex; align-items: center; gap: var(--space-3); }
 .logo svg { width: 2rem; height: 2rem; }
 .logo span { font: 600 var(--text-label)/1 var(--body); letter-spacing: 0.24em; }
-.nav nav { margin-left: auto; display: flex; gap: var(--space-7); font-size: var(--text-sm); color: var(--ink-secondary); }
+/* schmale Leiste (1001–1100 px): nur das Zeichen, sonst reicht der Platz für die längeren Menüeinträge (NL) nicht */
+@media (--nav-expanded) and (--grid-stacked) { .logo span { display: none; } }
+.nav nav { margin-left: auto; display: flex; gap: clamp(var(--space-3-5), 1.5vw, var(--space-7)); font-size: var(--text-sm); color: var(--ink-secondary); }
 .menu-btn { display: none; margin-left: auto; width: 2.75rem; height: 2.75rem; border-radius: var(--radius-round); border: 1px solid var(--line-strong); background: var(--overlay-control); color: var(--text); cursor: pointer; place-items: center; }
 .menu-btn svg { width: 1.25rem; height: 1.25rem; }
 /* Die Kopfzeile des Menüs liegt exakt auf der Kopfzeile der Seite: gleicher Innenabstand (--menu-top setzt site.ts beim Öffnen
@@ -427,7 +432,6 @@ td.us { color: var(--text); background: var(--fill-soft); }
 .pack-note { margin-top: var(--space-5); color: var(--faint); display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--space-3); }
 
 /* inquiry */
-.inquiry { display: grid; align-items: start; }
 .form { background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--radius); padding: clamp(var(--space-5-5), 3vw, var(--space-8-5)); display: grid; gap: var(--space-4-5); }
 .form .progress { display: flex; justify-content: space-between; color: var(--faint); }
 .form .bar { height: 2px; background: var(--line); border-radius: var(--radius-2); overflow: hidden; }
@@ -525,9 +529,9 @@ td.us { color: var(--text); background: var(--fill-soft); }
 .c-step { min-height: 78vh; display: grid; align-content: center; gap: var(--space-4); }
 /* Inactive story steps recede like in the reference, but every line keeps WCAG AA contrast:
    large headings >= 3:1, body text and the small accent label >= 4.5:1 on --ground. */
-.c-step .section-head > .k, .c-step .section-head > h2, .c-step .section-head > p { transition: opacity var(--dur-fade); }
-.c-step:not(.on) .section-head > .k { opacity: 0.88; }
-.c-step:not(.on) .section-head > h2 { opacity: 0.42; }
+.c-step .section-head > h2 > :is(.k, .head-line), .c-step .section-head > p { transition: opacity var(--dur-fade); }
+.c-step:not(.on) .section-head > h2 > .k { opacity: 0.88; }
+.c-step:not(.on) .section-head > h2 > .head-line { opacity: 0.42; }
 .c-step:not(.on) .section-head > p { opacity: 0.8; } /* --muted ist seit 30.10. eine Stufe dunkler */
 .c-step .k { color: var(--accent); margin-bottom: 0; }
 .c-step h2 { font-size: clamp(2rem, 3.6vw, 3.375rem); line-height: 1.04; }
@@ -696,10 +700,20 @@ td.us { color: var(--text); background: var(--fill-soft); }
 .crew-note { margin-top: clamp(var(--space-6-5), 4vw, var(--space-10)); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-3-5) var(--space-7); padding-top: var(--space-5-5); border-top: 1px solid var(--line); color: var(--muted); }
 .crew-note b { color: var(--text); font-weight: 500; }
 @media (--grid-stacked) {
-  .crew { grid-template-columns: repeat(min(var(--cols, 5), 3), minmax(0, 1fr)); }
+  /* drei Spalten; fünf Personen ließen rechts unten ein Loch. Eine unvollständige letzte Reihe steht mittig (sechs halbe
+     Spalten, jede Karte belegt zwei) */
+  .crew { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .crew .member { grid-column: span 2; }
+  .crew .member:nth-child(3n + 1):nth-last-child(2) { grid-column: 2 / span 2; }
+  .crew .member:nth-child(3n + 1):last-child { grid-column: 3 / span 2; }
 }
+/* Handy (Marc, 19.11.2026: keine endlosen Scrollstrecken): eine wischbare Reihe statt untereinander gestapelter Karten.
+   Die Reihe läuft bis an die Bildschirmkanten, die erste Karte steht an der Content-Kante, die nächste ist angeschnitten. */
 @media (--compact) {
-  .crew { grid-template-columns: 1fr 1fr; }
+  .crew { display: flex; gap: var(--space-3); margin-inline: calc(-1 * var(--pad)); padding-inline: var(--pad); scroll-padding-inline: var(--pad); overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scrollbar-width: none; }
+  .crew::-webkit-scrollbar { display: none; }
+  .crew:focus-visible { outline: var(--focus-width, 2px) solid var(--cyan); outline-offset: -0.125rem; }
+  .crew .member { flex: 0 0 min(15.5rem, 72%); scroll-snap-align: start; }
 }
 @media (prefers-reduced-motion: reduce) {
   [data-reveal], .member, .portrait, .portrait img, [data-curtain], [data-curtain] > img { transition: none; }
@@ -816,18 +830,6 @@ td.us { color: var(--text); background: var(--fill-soft); }
 .footer .eco { margin: 0; }
 .footer .eco .ico { width: 1.375rem; height: 1.375rem; }
 
-/* Seitenkopf der Unterseiten */
-.page-hero { padding: clamp(var(--space-9), 6vw, var(--space-20)) var(--gutter) clamp(var(--space-12), 7vw, var(--space-24)); display: grid; gap: clamp(var(--space-7), 5vw, var(--space-18)); align-items: center; }
-.page-hero.has-media { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
-.page-hero-copy { display: grid; gap: var(--space-5-5); justify-items: start; align-self: start; } /* erste Zeile auf --hero-top, auch neben einem höheren Bild (Runde 18) */
-.page-hero h1 { font-size: var(--text-page); line-height: 1; letter-spacing: -0.035em; max-width: 16ch; }
-.page-hero .lead { max-width: 52ch; }
-/* Text mit Bild */
-.text-media { display: grid; gap: clamp(var(--space-7), 5vw, var(--space-18)); align-items: start; }
-.text-media.has-media { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
-.text-media .prose h1 { font-size: clamp(2.5rem, 5vw, 4.5rem); line-height: 1.02; letter-spacing: -0.035em; margin-bottom: 0.6em; }
-.text-media .prose p, .text-media .prose li { color: var(--muted); }
-.text-media .prose a { color: var(--text); border-bottom: 1px solid var(--line-strong); }
 /* Abschluss-Karte (cta) */
 .promise-copy { display: grid; }
 .promise .actions { flex: 0 1 auto; }
@@ -844,104 +846,24 @@ td.us { color: var(--text); background: var(--fill-soft); }
 
 .btn.primary .ico { stroke: var(--ground); }
 
-/* Anfrage (Studie 8): Kopf links oben bündig mit dem Formular, Gesichter, Kontaktwege mit Verlaufs-Icons */
-.inquiry { grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); gap: var(--head-gap-content) clamp(var(--space-6), 4vw, var(--space-14)); }
-.inquiry .intro { align-content: start; }
-.inquiry .intro h1, .inquiry .intro h2 { font-size: var(--text-3xl); line-height: 1.04; max-width: 16ch; }
-.inquiry .intro .lead { max-width: 40ch; }
-.faces { list-style: none; margin: 0; padding: 0 0 0 0; display: flex; }
-.faces .face { position: relative; display: block; width: 4rem; height: 4rem; border-radius: var(--radius-round); overflow: hidden; border: 0.1875rem solid var(--surface); margin-right: calc(-1 * var(--space-3-5)); background: var(--media-ground); }
-.faces .face img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 22%; }
-.ways { list-style: none; padding: 0; margin: var(--space-2) 0 0; display: grid; }
-.ways a { display: flex; gap: var(--space-3-5); align-items: center; padding: var(--space-3-5) 0; border-bottom: 1px solid var(--line); color: var(--text); transition: color var(--dur-control); }
-.ways li:first-child a { border-top: 1px solid var(--line); }
-.ways a:hover { color: var(--amber); }
-.ask { padding: clamp(var(--space-5-5), 3vw, var(--space-9)); border: 1px solid var(--line); border-radius: var(--radius); background: var(--ground); display: grid; gap: var(--space-4-5); min-width: 0; }
-.ask .ask-steps { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-2-5) var(--space-4); font-size: var(--text-label); color: var(--faint); }
-.ask .ask-steps .on { color: var(--text); }
-.ask .ask-steps i { grid-column: 1 / -1; height: 2px; background: var(--line); border-radius: var(--radius-2); position: relative; overflow: hidden; }
-.ask .ask-steps i::after { content: ""; position: absolute; inset: 0 50% 0 0; background: var(--grad); transition: right var(--dur-fade); }
-.ask.is-2 .ask-steps i::after { right: 0; }
-.ask .step { border: 0; padding: 0; margin: 0; display: grid; gap: var(--space-4-5); min-width: 0; }
-.ask .field { display: grid; gap: var(--space-1-75); min-width: 0; align-content: start; }
-.ask .lbl { font-size: var(--text-sm); color: var(--text); }
-.ask .lbl em { font-style: normal; color: var(--faint); margin-left: var(--space-1); }
-.ask input[type=text], .ask input[type=email], .ask input[type=tel], .ask input[type=date], .ask select, .ask textarea { width: 100%; height: var(--field-height, 3rem); min-height: 3rem; padding: var(--space-2-75) var(--space-3-5); background-color: var(--surface); border: 1px solid var(--line-strong); border-radius: var(--radius-12); color: var(--text); font: inherit; font-size: var(--text-base); color-scheme: dark; }
-.ask input:disabled { opacity: 0.5; }
-.ask textarea { --field-height: 6.875rem; resize: vertical; }
-.ask input:focus-visible, .ask select:focus-visible, .ask textarea:focus-visible { outline: 2px solid var(--cyan); outline-offset: 0.0625rem; }
-.ask .hint { font-size: var(--text-label); color: var(--faint); }
-.ask .hint.check { display: flex; gap: var(--space-2); align-items: center; cursor: pointer; }
-.ask .hint a { text-decoration: underline; text-underline-offset: 0.1875rem; color: var(--muted); }
-.ask .hint input { accent-color: var(--orchid); width: 1rem; height: 1rem; margin: 0; }
-.ask .err { font-size: var(--text-label); color: var(--bad); }
-.ask .err:empty { display: none; }
-.ask .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3-5); }
-.ask .step > .btn, .ask .actions { justify-self: start; } /* Knöpfe linksbündig, Hauptknopf zuerst (Marc, 02.11.2026) */
-/* Optionale Angaben im zweiten Schritt: Zeile kleiner Knöpfe; ein Feld gleitet beim Öffnen weich herein */
-.ask .opt-add { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }
-.ask .opt-add[hidden] { display: none; }
-.ask .opt-add-l { font-size: var(--text-sm); color: var(--faint); margin-right: var(--space-1); }
-.ask .opt-chip { display: inline-flex; align-items: center; gap: var(--space-1-5); min-height: 2.125rem; padding: var(--space-1-5) 0.8125rem; border: 1px dashed var(--line-strong); border-radius: var(--radius-pill); background: transparent; color: var(--muted); font: 400 var(--text-sm)/1.2 var(--body); cursor: pointer; transition: color var(--dur-control), border-color var(--dur-control), opacity var(--dur-color), transform var(--dur-color); }
-.ask .opt-chip span { color: var(--accent); }
-.ask .opt-chip:hover { color: var(--text); border-color: var(--ink-subtle); }
-.ask .opt-chip:focus-visible { outline: 0.1875rem solid var(--cyan); outline-offset: 0.1875rem; }
-.ask .opt-chip[aria-expanded="true"] { display: none; }
-.ask.has-opt .opt:not(.open) { display: none; }
-.ask.has-opt .opt.open { animation: opt-in var(--dur-enter) var(--ease-enter); }
-@keyframes opt-in { from { opacity: 0; transform: translateY(-0.5rem); clip-path: inset(0 0 100% 0); } to { opacity: 1; transform: none; clip-path: inset(0); } }
-/* Eingangsanimationen beginnen unsichtbar: angehaltene Bewegung (Pause-Knopf oder Systemeinstellung) zeigt das Ziel sofort */
-html.motion-paused .ask.has-opt .opt.open { animation: none; }
-@media (prefers-reduced-motion: reduce) { .ask.has-opt .opt.open { animation: none; } }
-.ask .actions { display: flex; gap: var(--space-2-5); }
-/* Runde 28: übernommenes Logo als Angabe im ersten Schritt (Kacheln wie Anhänge, je einzeln entfernbar) */
-.ask .logo-att-list { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--space-2-5); }
-.ask .logo-att-list li { display: flex; align-items: center; gap: var(--space-3); min-height: 3rem; padding: var(--space-1-5) var(--space-1-5) var(--space-1-5) var(--space-1-5); border: 1px solid var(--line-strong); border-radius: var(--radius-12); background: var(--surface); min-width: 0; }
-.ask .logo-att-list li[data-logo-item="drones"] { padding-left: var(--space-3-5); }
-.ask .logo-att-thumb { flex: none; display: grid; place-items: center; width: 4rem; height: 4rem; border-radius: var(--radius-9); overflow: hidden; }
-.ask .logo-att-thumb.is-original { background: var(--text); padding: var(--space-1-5); }
-.ask .logo-att-thumb.is-preview { background: rgb(var(--rgb-media-ground)); }
-.ask .logo-att-thumb img { width: 100%; height: 100%; object-fit: contain; }
-.ask .logo-att-cap { display: grid; gap: var(--space-0-5); min-width: 0; font-size: var(--text-sm); color: var(--text); }
-.ask .logo-att-cap b { font-weight: 400; }
-.ask .logo-att-cap small { font-size: var(--text-label); color: var(--faint); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 12rem; }
-.ask .logo-att-x { flex: none; width: 2.25rem; height: 2.25rem; border: 0; border-radius: var(--radius-round); background: transparent; color: var(--muted); font: 400 var(--text-md)/1 var(--body); cursor: pointer; }
-.ask .logo-att-x:hover { color: var(--text); background: var(--line-soft); }
-.ask .logo-att-x:focus-visible { outline: 0.1875rem solid var(--cyan); outline-offset: 0.0625rem; }
-.ask [aria-invalid="true"] { border-color: var(--bad); }
 
 /* Presse und „Qualität und Sicherheit“ (Studie 6) */
 .proof { display: grid; }
 .proof .quality ul { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-6); }
-.proof .quality .q-logo { width: auto; object-fit: contain; object-position: left; filter: brightness(0) invert(1); opacity: 0.85; }
+.proof .quality .q-logo { width: auto; object-fit: contain; object-position: left; filter: var(--logo-mono); opacity: 0.85; }
 
-/* 404: Chopper, der Bürohund (src/components/Chopper404.astro) */
-.chopper { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: clamp(var(--space-6), 4vw, var(--space-14)); align-items: center; }
-.chopper-stage { width: 100%; aspect-ratio: 4 / 3; display: block; border-radius: var(--radius); background: radial-gradient(90% 70% at 50% 100%, rgb(var(--rgb-logo-amber) / 0.08), transparent 60%), var(--media-ground); }
-.chopper-copy { display: grid; gap: var(--space-4); justify-items: start; }
-.chopper-copy .code { font: 700 1.125rem/1 var(--display); background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
-.chopper-h { font-size: clamp(2rem, 4vw, 3.5rem); line-height: 1.04; }
-/* ohne ch-Begrenzung (Marc, 03.11.2026): der Text läuft über die ganze Spalte */
-.chopper-copy > p:not(.code) { color: var(--muted); font-size: 1.125rem; }
-.chopper-ways { display: flex; flex-wrap: wrap; gap: var(--space-2-5); margin-top: var(--space-2); }
-.page-404 { padding: 8.75rem var(--gutter) 6.25rem; min-height: 100vh; }
 
 @media (--nav-collapsed) {
-  .page-hero.has-media, .text-media.has-media, .chopper, .inquiry { grid-template-columns: 1fr; }
   .proof .quality ul { grid-template-columns: 1fr 1fr; }
 }
 @media (--compact) {
-  .ask .row2 { grid-template-columns: 1fr; }
   .proof .quality ul { grid-template-columns: 1fr; }
-  .ask .step > .btn, .ask .actions { justify-self: stretch; }
-  .ask .actions .btn { flex: 1 1 auto; }
 }
 
 /* Nachtrag 30.10. abends: Anlass-Raster, Team-Raster ohne Waisen, Referenzen mit Filter, Footer-Anlässe */
 /* Anlass-Karten (Marc 31.10.): vier Spalten auf großen Bildschirmen (ab 1200 px, wie im Prototyp), darunter zwei,
    auf dem Handy eine. Bei 3 oder 6 Karten drei Spalten, sonst entstünden Waisen. */
 @media (min-width: 75em) { .occasions { grid-template-columns: repeat(4, minmax(0, 1fr)); } .occasions[data-count="3"], .occasions[data-count="6"] { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-@media (--compact) { .crew[data-odd] { grid-template-columns: 1fr; } .crew[data-odd] .portrait { aspect-ratio: 4 / 3; } .crew[data-odd] .portrait img { object-position: 50% 25%; } }
 .footer-sub { margin-top: var(--space-7); }
 .ref-item[hidden] { display: none; }
 
@@ -949,18 +871,19 @@ html.motion-paused .ask.has-opt .opt.open { animation: none; }
    der aktuelle Punkt behält ihn, „Anlässe“ auch dann, wenn eine Anlass-Seite offen ist. */
 .nav { --glide: var(--ease-glide); --move: var(--dur-underline); }
 .nav nav { align-items: center; }
-.nav nav > a, .nav-drop > a { display: inline-flex; align-items: center; min-height: 2.5rem; --line-y: 0.3125rem; }
-.nav nav > a:hover, .nav nav > a[aria-current], .nav-drop:hover > a, .nav-drop:focus-within > a, .nav-drop:has(a[aria-current]) > a { color: var(--text); }
+/* Leiste ab 1001 px: Abstände wachsen mit der Breite, Einträge brechen nie um (1024 px: „Über uns“ stand zweizeilig) */
+.nav nav > a, .nav-drop > a { display: inline-flex; align-items: center; min-height: 2.5rem; --line-y: 0.3125rem; white-space: nowrap; }
+.nav nav > a:hover, .nav nav > a[aria-current], .nav-drop:is(:hover, :focus-within, .is-open) > a, .nav-drop:has(a[aria-current]) > a { color: var(--text); }
 
-/* „Anlässe“ öffnet beim Zeigen oder per Tastatur (focus-within). Schließen mit kurzer Verzögerung, damit ein schräger
+/* „Anlässe“ öffnet beim Zeigen, per Tastatur (focus-within) oder per Tipp (.is-open, site.ts); Esc setzt .is-dismissed. Schließen mit kurzer Verzögerung, damit ein schräger
    Mausweg zur Liste sie nicht zuklappt. clip-path statt visibility: die Einträge bleiben für Screenreader erreichbar. */
 .nav-drop { position: relative; }
 .nav-drop > a { gap: var(--space-1-5); }
 .nav-drop .caret { width: 0.5625rem; height: 0.375rem; fill: none; stroke: currentColor; stroke-width: 1.4; transition: transform var(--dur-standard) var(--glide); }
 .nav-drop > ul { position: absolute; left: -1rem; top: calc(100% + 0.375rem); min-width: 13.125rem; list-style: none; margin: 0; padding: var(--space-2); --glide-pad: 0.5rem; display: grid; background: var(--surface-popover); backdrop-filter: blur(0.875rem); -webkit-backdrop-filter: blur(0.875rem); border: 1px solid var(--line); border-radius: var(--radius-12); box-shadow: var(--shadow-popover); opacity: 0; transform: translateY(-0.375rem) scale(0.98); transform-origin: 1.5rem 0; pointer-events: none; clip-path: inset(0 0 100% 0); transition: opacity var(--dur-control) var(--ease-default) var(--dur-delay-popover), transform var(--dur-color) var(--glide) var(--dur-delay-popover), clip-path 0s var(--dur-delay-dismiss); }
 .nav-drop > ul::before { content: ""; position: absolute; inset: -0.75rem 0 auto; height: 0.75rem; }
-.nav-drop:hover > ul, .nav-drop:focus-within > ul { opacity: 1; transform: none; pointer-events: auto; clip-path: inset(-1.25rem -1.25rem -3.75rem -1.25rem); transition: opacity var(--dur-control) var(--ease-default), transform var(--dur-standard) var(--glide); }
-.nav-drop:hover .caret, .nav-drop:focus-within .caret { transform: rotate(180deg); }
+.nav-drop:is(:hover, :focus-within, .is-open):not(.is-dismissed) > ul { opacity: 1; transform: none; pointer-events: auto; clip-path: inset(-1.25rem -1.25rem -3.75rem -1.25rem); transition: opacity var(--dur-control) var(--ease-default), transform var(--dur-standard) var(--glide); }
+.nav-drop:is(:hover, :focus-within, .is-open):not(.is-dismissed) .caret { transform: rotate(180deg); }
 .nav-drop li a { display: block; padding: var(--space-2-25) var(--space-3); border-radius: var(--radius-8); white-space: nowrap; }
 
 /* Gleitende Box in Auswahllisten (Anlässe, Sprache). Zwei Wege, ein Element (li.glide-mark, aria-hidden; kein ::after,
@@ -1031,29 +954,7 @@ html.motion-paused .rec::before { animation: none; }
 .proof .q-minor li { display: flex; align-items: center; gap: var(--space-2-5); color: var(--faint); font-size: var(--text-sm); }
 .proof .q-minor .ico { width: 1.125rem; height: 1.125rem; }
 
-/* Ablauf in Zahlen (Tempo.astro): Zeitstrahl mit Verlaufslinie, die beim Erscheinen von links nach rechts zieht */
-.ruler { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(var(--n, 4), minmax(0, 1fr)); position: relative; }
-.ruler::before, .ruler::after { content: ""; position: absolute; left: 0; right: 0; top: 0.4375rem; height: 2px; border-radius: var(--radius-2); }
-.ruler::before { background: var(--line-strong); }
-.ruler::after { background: var(--grad); transform-origin: left; transform: scaleX(1); transition: transform var(--dur-ruler) var(--ease-ruler); }
-.reveal .ruler:not(.is-in)::after { transform: scaleX(0); }
-.ruler li { position: relative; display: grid; gap: var(--space-2-5); align-content: start; padding: var(--space-9-5) clamp(var(--space-3-5), 2vw, var(--space-8)) 0 0; }
-.ruler .dot { position: absolute; z-index: 1; left: 0; top: 0; width: 1rem; height: 1rem; border-radius: var(--radius-round); background: var(--ground); border: 2px solid var(--line-strong); transition: background var(--dur-fade), border-color var(--dur-fade), box-shadow var(--dur-fade); transition-delay: calc(var(--i, 0) * var(--dur-stagger-ruler) + var(--dur-standard)); }
-.ruler.is-in .dot, html:not(.reveal) .ruler .dot { background: var(--c); border-color: var(--c); box-shadow: 0 0 0.875rem var(--c), 0 0 2px var(--white) inset; }
-.ruler .v { font: 600 clamp(2.25rem, 3.5vw, 3.625rem)/0.95 var(--display); letter-spacing: -0.045em; color: var(--head); white-space: nowrap; }
-.ruler .l { color: var(--accent); }
-.ruler p { color: var(--muted); font-size: var(--text-control); max-width: 30ch; }
-.ruler [data-reveal] { transition-delay: calc(var(--i, 0) * var(--dur-stagger-ruler)); }
 .tempo-note { margin-top: var(--space-6-5); color: var(--faint); }
-@media (--timeline-stacked) {
-  .ruler { grid-template-columns: 1fr; gap: var(--space-7); padding-left: var(--space-8-5); }
-  .ruler::before, .ruler::after { left: 0.4375rem; right: auto; top: 0.5rem; bottom: 0.5rem; width: 2px; height: auto; }
-  .ruler::after { transform-origin: top; }
-  .reveal .ruler:not(.is-in)::after { transform: scaleY(0); }
-  .ruler li { padding: 0; }
-  .ruler .dot { left: -2.125rem; top: 0.375rem; }
-}
-@media (prefers-reduced-motion: reduce) { .ruler::after, .ruler .dot { transition: none; } }
 
 /* CTA-Kasten (Cta.astro, Preisversprechen): schmal und zentriert statt über die volle Breite (Marc 31.10.: auf großen
    Bildschirmen stand der Button verloren allein), Verlaufsrand wie im Prototyp, bei Kontakt-CTAs die Gesichter */
@@ -1065,43 +966,6 @@ html.motion-paused .rec::before { animation: none; }
 .promise .actions { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-3); }
 .promise .faces { justify-content: center; margin: 0; }
 
-/* Netzplan-Zeitstrahl (MetroLine.astro): Hauptlinie mit Stationen (.ruler oben), Abzweigung als durchgezogene orange
-   Linie mit runden Ecken von der ersten zur letzten Station, Schild mittig darauf. --n: Zahl der Stationen. */
-.metro { position: relative; }
-.metro .ruler::before, .metro .ruler::after { height: 0.1875rem; top: 0.40625rem; right: calc(100% / var(--n) - 0.625rem); } /* endet an der letzten Station */
-.metro .dot { width: 1rem; height: 1rem; border-width: 0.1875rem; }
-.metro .ruler li:first-child .dot, .metro .ruler li:last-child .dot { width: 1.25rem; height: 1.25rem; left: -0.125rem; top: -0.125rem; } /* Umsteigestationen */
-.metro.has-branch { padding-top: 4.25rem; }
-/* Express ist ein Nebenweg (Marc, 02.11.2026): gestrichelt und gedämpft statt durchgezogen, das Schild ist ein Knopf */
-.metro { --branch: rgb(var(--rgb-amber) / 0.6); }
-.metro-branch { position: absolute; left: 0.4375rem; top: 1rem; height: 3.75rem; width: calc(100% / var(--n) * (var(--n) - 1)); border: 1.5px dashed var(--branch); border-bottom: 0; border-radius: 1.75rem 1.75rem 0 0; transition: opacity var(--dur-image) var(--ease-default) var(--dur-record); }
-.reveal .metro:has(.ruler:not(.is-in)) .metro-branch, .reveal .metro:has(.ruler:not(.is-in)) .metro-sign { opacity: 0; }
-.metro-sign { position: absolute; z-index: 1; top: 0; left: calc(0.4375rem + 100% / var(--n) * (var(--n) - 1) / 2); transform: translateX(-50%); margin: 0; display: inline-flex; flex-wrap: wrap; align-items: baseline; justify-content: center; gap: var(--space-1) var(--space-3); padding: var(--space-1-25) var(--space-4); border-radius: var(--radius-pill); border: 1.5px dashed var(--branch); background: var(--surface); color: inherit; text-decoration: none; white-space: nowrap; transition: opacity var(--dur-image) var(--ease-default) var(--dur-branch), border-color var(--dur-control) var(--ease-default), background-color var(--dur-control) var(--ease-default); }
-.metro-sign b { font: 500 var(--text-copy)/1.3 var(--display); color: var(--head); letter-spacing: -0.01em; }
-.metro-sign .mono { color: var(--accent); }
-.metro-sign .ico { align-self: center; color: var(--accent); transition: transform var(--dur-control) var(--ease-default); }
-a.metro-sign:hover { border-style: solid; border-color: var(--accent); background: var(--surface-2); }
-a.metro-sign:hover .ico { transform: translateX(0.1875rem); }
-a.metro-sign:focus-visible { outline: 0.1875rem solid var(--cyan); outline-offset: 0.1875rem; }
-.metro-note { display: flex; gap: var(--space-2-5); align-items: baseline; margin: var(--space-7-5) 0 0; color: var(--faint); font-size: var(--text-sm); max-width: 70ch; }
-.metro-sign-key { flex: none; width: 1.375rem; border-top: 1.5px dashed var(--branch); transform: translateY(-0.25rem); }
-@media (--timeline-stacked) {
-  /* senkrecht: Hauptlinie links, Abzweigung als Bogen rechts daneben, Schild über der Liste */
-  .metro.has-branch { padding-top: 0; }
-  .metro.has-branch .ruler { padding-left: 3.875rem; }
-  .metro.has-branch .dot { left: -3.875rem; }
-  .metro.has-branch .ruler li:first-child .dot, .metro.has-branch .ruler li:last-child .dot { left: -4rem; }
-  /* senkrechte Hauptlinie als Abschnitte von Station zu Station, damit sie an der letzten Station endet */
-  .metro .ruler::before, .metro .ruler::after { display: none; }
-  .metro .ruler li:not(:last-child)::before { content: ""; position: absolute; left: -3.46875rem; top: 0.5rem; bottom: -2.25rem; width: 0.1875rem; border-radius: var(--radius-2); background: linear-gradient(var(--c, var(--accent)), var(--c2, var(--accent))); }
-  .metro:not(.has-branch) .ruler li:not(:last-child)::before { left: -1.71875rem; }
-  .metro-branch { display: none; }
-  .metro.has-branch .ruler li::after { content: ""; position: absolute; left: -3.375rem; width: 1.625rem; top: 0; bottom: -1.75rem; border-right: 1.5px dashed var(--branch); }
-  .metro.has-branch .ruler li:first-child::after { top: 0.875rem; border-top: 1.5px dashed var(--branch); border-top-right-radius: 1.375rem; }
-  .metro.has-branch .ruler li:last-child::after { top: 0; bottom: auto; height: 0.875rem; border-bottom: 1.5px dashed var(--branch); border-bottom-right-radius: 1.375rem; }
-  .metro-sign { position: static; transform: none; white-space: normal; justify-content: flex-start; margin: 0 0 var(--space-7); padding: var(--space-3) var(--space-4); border-radius: var(--radius-14); }
-}
-@media (prefers-reduced-motion: reduce) { .metro-branch, .metro-sign { transition: none; } }
 
 
 /* Nachhaltigkeit: Konturschrift für „Kein Rauch.“ wie im Prototyp, auch bei der Rauch-Zahl in der Scrollstory */
@@ -1111,21 +975,16 @@ a.metro-sign:focus-visible { outline: 0.1875rem solid var(--cyan); outline-offse
 @media (--nav-collapsed) { .eco-pillars { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 35em) { .eco-pillars { grid-template-columns: 1fr; } }
 
-/* Formular: deutliche Hover-Zustände; Paket-Pills in den Paketfarben wie überall (Marc, 31.10.2026) */
-.ask :is(input[type="text"], input[type="email"], input[type="tel"], input[type="date"], select, textarea):hover { border-color: rgb(var(--rgb-text) / 0.4); }
-.ask .hint.check:hover { color: var(--text); }
 /* Paketkarten der Startseite sind Links: Klick wählt das Paket im Formular */
 a.pack { color: inherit; cursor: pointer; transition: border-color var(--dur-color), transform var(--dur-color) var(--ease-default), background var(--dur-color), box-shadow var(--dur-color); position: relative; }
 a.pack:hover, a.pack:focus-visible { border-color: color-mix(in srgb, var(--c) 70%, transparent); transform: translateY(-0.25rem); box-shadow: 0 1.125rem 2.5rem -1.5rem color-mix(in srgb, var(--c) 60%, transparent); }
 .promise-copy { justify-items: center; gap: 0; }
-.footer .eco img { height: 1.5rem; filter: brightness(0) invert(1); opacity: 0.75; }
+.footer .eco img { height: 1.5rem; filter: var(--logo-mono); opacity: 0.75; }
 
 /* Kicker überall 14 px über der Headline (Marc 31.10.: „viel zu weit weg“). Im Fließtext entfällt dafür der obere Abstand
    der Headline; in Köpfen steht der Kicker in der Überschrift selbst (SectionHead, Seitenkopf, Showreel-Kopf). */
 .prose > .kicker { margin-bottom: var(--space-3-5); }
 .prose > .kicker + :is(h1, h2, h3) { margin-top: 0; }
-/* Kicker in der h1 des Seitenkopfs: Abstand aus der Kopfrolle */
-.page-hero h1 > .kicker { margin: 0 0 var(--head-gap-kicker); }
 
 /* Leistungsvergleich (Preisseite): Spaltenköpfe mit Paketfigur und Paketfarbe wie auf den Karten, Häkchen statt Fußnote */
 #leistungen thead th.pk { text-align: left; vertical-align: bottom; }
@@ -1198,10 +1057,6 @@ a.pack:hover, a.pack:focus-visible { border-color: color-mix(in srgb, var(--c) 7
    Reel, sobald das Standbild ausblendete (Marc 31.10.: „ich sehe nur einen schmalen Streifen“) */
 .hero .hero-media.video-player { background: transparent; }
 
-/* Zeitstrahl: Punkte liegen vor der Linie. Die Listeneinträge bilden durch den Reveal (transform) eigene Ebenen, deshalb
-   reicht z-index am Punkt allein nicht; die Linie bekommt Ebene 0, die Einträge Ebene 1 (Marc 31.10.: Punkte hinter der Linie) */
-.ruler::before, .ruler::after { z-index: 0; }
-.ruler li { z-index: 1; }
 
 /* Anlässe als Slider (mehr als vier Karten): vier sichtbar, der Rest blendet an der Content-Kante aus (Marc, 02.11.2026:
    alles endet an der Content-Breite, nur das Showreel rechts im Seitenkopf läuft bis an den Fensterrand) */

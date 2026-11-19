@@ -8,3 +8,7 @@
 @custom-media --grid-stacked (max-width: 68.75em);
 @custom-media --grid-expanded (min-width: 68.8125em);
 @custom-media --small-facts (max-width: 37.5em);
+/* Show-Folge der Startseite (himmel.css, schwarm.ts folgeBox): rechts neben dem Text erst, wenn dort mindestens 340 px frei
+   sind (Text 60ch + Abstand), darunter in einer eigenen Fläche unter dem Text */
+@custom-media --folge-below (max-width: 81.99em);
+@custom-media --folge-beside (min-width: 82em);

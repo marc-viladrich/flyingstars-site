@@ -38,6 +38,15 @@ const html = await marked.parse(contactText(body));
 </section>}
 
 <style>
+  /* Grundraster und Fließtext (aus global.css hierher, Audit 2, C2) */
+  .text-media { display: grid; gap: clamp(var(--space-7), 5vw, var(--space-18)); align-items: start; }
+  .text-media.has-media { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  /* h1 im Fließtext (Seitenkopf der Rechtstexte): Größe hier, den Abstand besitzt SectionHead. Der frühere Rand von 0.6em
+     griff nie (SectionHead gewann, Markdown-h1 kommen im Fließtext nicht vor) und entfällt */
+  .text-media .prose :global(h1) { font-size: clamp(2.5rem, 5vw, 4.5rem); line-height: 1.02; letter-spacing: -0.035em; }
+  .text-media .prose :global(p), .text-media .prose :global(li) { color: var(--muted); }
+  .text-media .prose :global(a) { color: var(--text); border-bottom: 1px solid var(--line-strong); }
+  @media (--nav-collapsed) { .text-media.has-media { grid-template-columns: 1fr; } }
   /* wie .more unter Raster und Listen */
   .tm-more { margin-top: var(--head-gap-cta); }
   .text-media.head-above.has-media { align-items: center; }

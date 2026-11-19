@@ -48,3 +48,12 @@ test('lange Schlusswörter bis 22 Zeichen und Bindestriche im letzten Wort', () 
   assert.equal(joinLastWords('mit dem elektrischen Ford E-Transit.'), 'mit dem elektrischen Ford&nbsp;E-&#8288;Transit.');
   assert.equal(joinLastWords('ein Pre-Check und Follow-up'), 'ein Pre-Check und&nbsp;Follow-&#8288;up');
 });
+test('Fließtext: lange Schlusswörter bleiben mit dem Vorgänger zusammen, kurze Listenpunkte nicht (Audit 2, N7)', () => {
+  const prose = 'Je mehr Drohnen, desto komplexere Motive sind möglich: 300+ Pixel eignen sich für emotionale 3D-Visualisierungen.';
+  assert.equal(joinLastWords(prose), prose.replace(' 3D-Visualisierungen.', '&nbsp;3D-&#8288;Visualisierungen.'));
+  // zwei Wörter in einer Paketkarte: zusammen 30 Zeichen, die Karte darf weiter umbrechen
+  assert.equal(joinLastWords('Professionele videodocumentatie'), 'Professionele videodocumentatie');
+  // auch im Fließtext bleibt ein Paar über 32 Zeichen trennbar
+  const long = 'Dafür braucht es eine eigene, frühzeitig beantragte Aufstiegsgenehmigung Sicherheitsprotokolle.';
+  assert.equal(joinLastWords(long), long);
+});

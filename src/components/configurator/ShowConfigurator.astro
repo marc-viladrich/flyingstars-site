@@ -77,14 +77,17 @@ const startPrice = showArtPrice(startArt, first.base);
 const at = (n: number) => ((n - DRONES_MIN) / (DRONES_MAX - DRONES_MIN)) * 100;
 const ticks = [DRONES_MIN, 300, 500, DRONES_MAX];
 ---
-<section class:list={['cfg is-individual', { 'has-head': hasHead, 'cfg-end-tight': end === 'tight' }]} id={id} aria-labelledby="cfg-h">
+<section class:list={['cfg is-individual', { 'has-head': hasHead, 'cfg-end-tight': end === 'tight' }]} id={id} aria-labelledby="cfg-h" data-head-group={hasHead ? 'tool' : undefined}>
     {/* Die Catch-all-Route importiert das Preis-Template auf jeder Seite; die Stile kommen deshalb nur mit dem gerenderten
          Konfigurator. In der Section statt davor, damit die Section als erstes Kind der Seite den gemeinsamen Seitenanfang
          bekommt (.page-top, --hero-top). */}
     <style is:inline set:html={configuratorStyles}></style>
-    {hasHead && <div class="cfg-head"><slot name="head" /></div>}
-    {hasHead && Astro.slots.has('facts') && <div class="cfg-facts"><slot name="facts" /></div>}
-    {hasHead && Astro.slots.has('intro') && <div class="cfg-intro"><slot name="intro" /></div>}
+    {/* Kopfvertrag (layout-audit.mjs, head-gap): Kopfteile tragen data-head-part; ein anderer Block der Section, dessen
+         nächster darüber endender Nachbar ein Kopfteil ist (die Zeile davor), beginnt im Abstand der Rolle aus
+         data-head-group (--head-gap-tool) */}
+    {hasHead && <div class="cfg-head" data-head-part><slot name="head" /></div>}
+    {hasHead && Astro.slots.has('facts') && <div class="cfg-facts" data-head-part><slot name="facts" /></div>}
+    {hasHead && Astro.slots.has('intro') && <div class="cfg-intro" data-head-part><slot name="intro" /></div>}
     <div class="cfg-stage" role="group" aria-label={t('showconfigurator.showPreview')} aria-describedby="cfg-scene" data-bleed>
       <svg class="cfg-poster" viewBox="0 0 160 90" preserveAspectRatio="xMidYMid meet" aria-hidden="true">{poster.map((p) => <circle cx={p.x.toFixed(2)} cy={p.y.toFixed(2)} r={p.s.toFixed(2)} fill-opacity={p.o.toFixed(2)} />)}</svg>
       <canvas id="cfg-field" aria-hidden="true"></canvas>

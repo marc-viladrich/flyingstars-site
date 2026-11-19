@@ -32,7 +32,9 @@ const { class: cls } = Astro.props;
       nav.hidden = start && end; // alles passt hinein: keine Pfeile
     };
     track.addEventListener('scroll', edge, { passive: true });
+    // Kein synchrones edge() beim Start: Astro bettet dieses Modul inline ein, und WebKit führt Inline-Module aus, bevor das
+    // Stylesheet greift. Eine Messung hier erzwingt Layout mit Browser-Standardstilen, danach blendet jedes Element von
+    // Schwarz/Link-Blau auf seine Farbe über. Der ResizeObserver meldet die Anfangsgröße ohnehin vor dem ersten Bild.
     new ResizeObserver(edge).observe(track);
-    edge();
   });
 </script>

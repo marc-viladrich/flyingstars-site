@@ -22,3 +22,17 @@ const { headline, text, image, cta, secondary, kicker } = Astro.props;
   </div>
   {image && <ImageFrame class="page-hero-media" image={image} loading="eager" sizes="(min-width: 64rem) 50vw, 100vw" />}
 </section>
+
+<style>
+  /* Seitenkopf der Unterseiten (aus global.css hierher, Audit 2, C2). Den oberen Innenabstand der ersten Section setzt
+     weiter .page-top (global.css, gemeinsamer Seitenanfang --hero-top). */
+  .page-hero { padding: clamp(var(--space-9), 6vw, var(--space-20)) var(--gutter) clamp(var(--space-12), 7vw, var(--space-24)); display: grid; gap: clamp(var(--space-7), 5vw, var(--space-18)); align-items: center; }
+  .page-hero.has-media { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  /* erste Zeile auf --hero-top, auch neben einem höheren Bild (Runde 18) */
+  .page-hero-copy { display: grid; gap: var(--space-5-5); justify-items: start; align-self: start; }
+  .page-hero h1 { font-size: var(--text-page); line-height: 1; letter-spacing: -0.035em; max-width: 16ch; }
+  .page-hero .lead { max-width: 52ch; }
+  /* Kicker in der h1: Abstand aus der Kopfrolle */
+  .page-hero h1 > .kicker { margin: 0 0 var(--head-gap-kicker); }
+  @media (--nav-collapsed) { .page-hero.has-media { grid-template-columns: 1fr; } }
+</style>

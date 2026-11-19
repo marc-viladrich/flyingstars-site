@@ -35,6 +35,10 @@ jobs:
           SITE_URL: ${{ vars.SITE_URL || 'https://example.invalid' }}
           MEDIA_HOST: ${{ vars.MEDIA_HOST || 'media.example.invalid' }}
           PUBLIC_FORM_ENDPOINT: ${{ vars.PUBLIC_FORM_ENDPOINT }}
+      - name: Artefakt-Guards am Produktionsoutput (Bildmaße, Konfigurator-CSS)
+        run: node --test src/scripts/performance-rendering.test.mjs
+        env:
+          FLYINGSTARS_AUDIT_DIST: dist
       # Vor dem Consent-Testbuild sichern: alle Browser prüfen denselben Produktionsoutput.
       - uses: actions/upload-artifact@v4
         with:

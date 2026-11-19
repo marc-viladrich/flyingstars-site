@@ -11,6 +11,10 @@
 //   head-gap  Section-Kopf weicht von den Abstandsrollen --head-gap-kicker/-text/-cta/-content ab (global.css, Runde 6)
 //   hero-top  erste Zeile (Kicker oder h1) einer Seite mit .page-top nicht auf --hero-top (Marc, 02.11.2026: „Die Hero
 //             section sollte überall auf der gleichen Höhe anfangen“). Ausnahme: Seiten, deren Kopf mit einem Bild beginnt (.page-404)
+//   rail      Zeitstrahl (.ruler Netzplan, .lf-steps Ablauf, .ms Meilensteine): jeder Punkt liegt mit seinem Mittelpunkt auf
+//             der Linie, die Linie reicht vom ersten bis zum letzten Punkt und nicht darüber hinaus (Marc, 18.11.2026, iPhone:
+//             erster und letzter Punkt saßen auf der Zahl statt auf der Linie, die Linie endete vor dem letzten Eintrag)
+//   deco      kleines Schmuckelement (Punkt, Icon, aria-hidden, ≤ 90 px) liegt auf fremdem sichtbarem Text
 // Aufruf: node scripts/layout-audit.mjs [basis-url] [--start=/en/] [--widths=390,1440,1920] [--only=orphan,contain] [--browser=webkit]
 // Ohne Basis-URL: http://127.0.0.1:4391. Die Seiten kommen aus den Links der Startseite und des Footers (Crawl, max. 200; --start begrenzt auf diesen Pfadpräfix).
 import { chromium, webkit } from 'playwright';
@@ -175,16 +179,77 @@ for (const width of widths) {
           }
           if (next) check(role, head.matches('[data-section-head="contents"]') ? kids.at(-1) : head, next, head);
         }
-        // Seitenkopf im Konfigurator (Preisseite, Variante has-head): unterstes Kopfteil (Überschrift, Einleitung, Eckdaten)
-        // → oberstes Werkzeug darunter, Rolle --head-gap-tool
-        for (const cfg of document.querySelectorAll('main .cfg.has-head')) {
-          const tool = [...cfg.querySelectorAll(':scope > :is(.cfg-panel, .cfg-stage)')].filter(shown).sort((x, y) => box(x).top - box(y).top)[0];
-          const parts = tool ? [...cfg.querySelectorAll(':scope > :is(.cfg-head, .cfg-intro, .cfg-facts)')].filter((e) => shown(e) && box(e).bottom <= box(tool).top + 1) : [];
-          if (parts.length) check('tool', parts.sort((x, y) => box(y).bottom - box(x).bottom)[0], tool, cfg);
+        // Kopfgruppen (data-head-group, Preisseite: Konfigurator mit Seitenkopf): Kopfteile tragen data-head-part. Ein
+        // anderer sichtbarer Block der Gruppe, dessen nächster darüber liegender Nachbar (größte Unterkante aller Blöcke, die
+        // oberhalb beginnen, über alle Spalten: die Zeile davor) ein Kopfteil ist, beginnt im Abstand der Rolle darunter.
+        // Liegt ein anderer Block dazwischen (Handy: Bedienung unter der Vorschau), gilt die Rolle nicht. Überlappt das
+        // Kopfteil den Block, ist das ein Befund (negativer Abstand) und wird nicht vorher aussortiert.
+        for (const group of document.querySelectorAll('main [data-head-group]')) {
+          const role = group.dataset.headGroup, T = tok(role);
+          const kids = [...group.children].filter((e) => shown(e) && !e.matches('style, script'));
+          for (const block of kids.filter((e) => !e.matches('[data-head-part]'))) {
+            const nearest = kids.filter((e) => e !== block && box(e).top < box(block).top - 1).sort((x, y) => box(y).bottom - box(x).bottom)[0];
+            if (!nearest?.matches('[data-head-part]')) continue;
+            const gap = box(block).top - box(nearest).bottom;
+            if (Math.abs(gap - T) > 2) r.push({ k: 'head-gap', what: `${name(group)} ${role}: ${Math.round(gap)} px statt ${Math.round(T)}${gap < -1 ? ' (überlappt)' : ''}` });
+          }
+        }
+      }
+      // rail: Punkte und Linie eines Zeitstrahls. Linienabschnitte sind Pseudo-Elemente (Liste oder Eintrag, ::before/::after)
+      // oder echte Elemente (.ms-line); gemessen wird im Seitenkoordinatensystem über die aufgelösten Maße der Pseudo-Elemente.
+      // gezeichnet: wie shown(), aber Schmuck ist absichtlich aria-hidden und zählt trotzdem
+      const drawn = (el) => { const st = getComputedStyle(el), b = el.getBoundingClientRect(); return st.display !== 'none' && st.visibility !== 'hidden' && Number(st.opacity) > 0 && b.width > 0 && b.height > 0 && !el.closest('[hidden],[inert],dialog:not([open])'); };
+      if (checks.includes('rail')) {
+        const pseudoBox = (host, pseudo) => {
+          const s = getComputedStyle(host, pseudo); if (s.display === 'none' || s.content === 'none' || s.content === 'normal' || s.position !== 'absolute') return null;
+          const hb = host.getBoundingClientRect(), hs = getComputedStyle(host);
+          const x = hb.left + (parseFloat(hs.borderLeftWidth) || 0) + parseFloat(s.left), y = hb.top + (parseFloat(hs.borderTopWidth) || 0) + parseFloat(s.top);
+          const w = parseFloat(s.width), h = parseFloat(s.height);
+          return w > 0 && h > 0 && Number.isFinite(x + y) ? { x1: x, x2: x + w, y1: y, y2: y + h } : null;
+        };
+        const kinds = [['.ruler', '.dot'], ['.lf-steps', '.lf-dot'], ['.ms', '.ms-dot']];
+        for (const [listSel, dotSel] of kinds) for (const list of document.querySelectorAll(`main ${listSel}`)) {
+          if (!drawn(list)) continue;
+          const dots = [...list.querySelectorAll(dotSel)].filter(drawn).map((d) => { const b = d.getBoundingClientRect(); return { x: (b.left + b.right) / 2, y: (b.top + b.bottom) / 2 }; });
+          const segs = [pseudoBox(list, '::before'), pseudoBox(list, '::after'), ...[...list.children].flatMap((li) => [pseudoBox(li, '::before'), pseudoBox(li, '::after')]),
+            ...[...list.querySelectorAll('.ms-line')].filter(drawn).map((l) => { const b = l.getBoundingClientRect(); return { x1: b.left, x2: b.right, y1: b.top, y2: b.bottom }; })]
+            .filter((g) => g && Math.min(g.x2 - g.x1, g.y2 - g.y1) <= 4); // nur Linien, keine Flächen (Abzweig-Bögen sind gestrichelte Rahmen)
+          if (dots.length < 2 || !segs.length) continue;
+          const vertical = Math.abs(dots.at(-1).y - dots[0].y) > Math.abs(dots.at(-1).x - dots[0].x);
+          const lab = `${name(list)}`;
+          dots.forEach((d, i) => { if (!segs.some((g) => d.x >= g.x1 - 1.5 && d.x <= g.x2 + 1.5 && d.y >= g.y1 - 1.5 && d.y <= g.y2 + 1.5)) r.push({ k: 'rail', what: `${lab}: Punkt ${i + 1}/${dots.length} nicht auf der Linie` }); });
+          const lo = Math.min(...segs.map((g) => vertical ? g.y1 : g.x1)), hi = Math.max(...segs.map((g) => vertical ? g.y2 : g.x2));
+          const a = vertical ? dots[0].y : dots[0].x, z = vertical ? dots.at(-1).y : dots.at(-1).x;
+          if (lo > a + 1.5) r.push({ k: 'rail', what: `${lab}: Linie beginnt ${Math.round(lo - a)} px nach dem ersten Punkt` });
+          if (hi < z - 1.5) r.push({ k: 'rail', what: `${lab}: Linie endet ${Math.round(z - hi)} px vor dem letzten Punkt` });
+          if (hi > z + 16) r.push({ k: 'rail', what: `${lab}: Linie läuft ${Math.round(hi - z)} px über den letzten Punkt hinaus` });
+        }
+      }
+      // deco: kleine Schmuckelemente auf fremdem Text. Text zählt nur, wo er sichtbar ist (Deckkraft der Vorfahren, Ausschnitt
+      // durch overflow-Vorfahren, geschlossene <details>); große Flächen (Bühnen, Hintergründe) sind kein Schmuck in diesem Sinn.
+      if (checks.includes('deco')) {
+        const clipBox = (el, b) => { let l = b.left, t = b.top, rr = b.right, bb = b.bottom;
+          for (let p = el.parentElement; p && p !== document.body; p = p.parentElement) { const cs = getComputedStyle(p); if (cs.overflow !== 'visible' || cs.clipPath !== 'none' || (p.tagName === 'DETAILS' && !p.open)) { const pb = p.getBoundingClientRect(); l = Math.max(l, pb.left); t = Math.max(t, pb.top); rr = Math.min(rr, pb.right); bb = Math.min(bb, pb.bottom); } }
+          return rr - l > 1 && bb - t > 1 ? { left: l, top: t, right: rr, bottom: bb } : null; };
+        const visible = (el) => { if (!drawn(el)) return false; let o = 1; for (let p = el; p && p !== document.body; p = p.parentElement) { o *= Number(getComputedStyle(p).opacity); if (o < 0.05) return false; } return true; };
+        const texts = [];
+        for (const el of document.querySelectorAll('main *')) {
+          if (el.closest('[aria-hidden="true"], .sr-only, svg, canvas') || !shown(el) || !visible(el)) continue;
+          for (const n of el.childNodes) if (n.nodeType === 3 && n.data.trim()) { const rg = document.createRange(); rg.selectNodeContents(n); for (const b0 of rg.getClientRects()) { const b = b0.width > 2 && b0.height > 2 && clipBox(el, b0); if (b) texts.push({ el, b }); } }
+        }
+        const seenDeco = new Set();
+        for (const d of document.querySelectorAll('main :is([aria-hidden="true"], .dot, .ms-dot, .lf-dot)')) {
+          if (!visible(d) || d.querySelector('p, h1, h2, h3, h4')) continue;
+          const db = d.getBoundingClientRect(); if (db.width > 90 || db.height > 90 || db.width < 3) continue;
+          for (const t of texts) {
+            if (d.contains(t.el) || t.el.contains(d)) continue;
+            const ix = Math.min(db.right, t.b.right) - Math.max(db.left, t.b.left), iy = Math.min(db.bottom, t.b.bottom) - Math.max(db.top, t.b.top);
+            if (ix > 3 && iy > 3 && ix * iy > 0.15 * db.width * db.height && !seenDeco.has(d)) { seenDeco.add(d); r.push({ k: 'deco', what: `${name(d)} liegt auf „${t.el.textContent.trim().slice(0, 30)}“` }); }
+          }
         }
       }
       return r;
-    }, { checks: ['orphan', 'contain', 'empty-h', 'overflow', 'cta', 'hero-top', 'head-gap'].filter(want) });
+    }, { checks: ['orphan', 'contain', 'empty-h', 'overflow', 'cta', 'hero-top', 'head-gap', 'rail', 'deco'].filter(want) });
     for (const f of out) findings.push({ width, path, ...f });
   }
 }

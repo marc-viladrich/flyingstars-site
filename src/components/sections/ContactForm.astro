@@ -1,5 +1,6 @@
 ---
 import {INQUIRY_LIMITS} from '../../content/inquiry.mjs';
+import InquiryFormStyles from '../InquiryFormStyles.astro';
 import {formOccasions} from '../../content/occasions.mjs';
 import {PACKAGE_NAMES,packageLabel} from '../../content/package-identity.mjs';
 import {CONTACT} from '../people';
@@ -24,6 +25,7 @@ const packs: [string,string,string][] = [...PACKAGE_NAMES.map(name=>[name,name,p
 // „Wie habt ihr von uns erfahren?“ steht nicht mehr im Formular (Runde 5: Moritz' Texte sehen es nicht vor), sondern nur auf der Danke-Seite.
 ---
 <section aria-labelledby="anfrage-h" class="section alt" id="anfrage">
+  <InquiryFormStyles />
   <div class="inquiry">
     <SectionHead variant="embedded" class="intro" kicker={kicker} headline={headline} text={text} textClass="lead" id="anfrage-h" level={H}>
       <Faces people={people} />

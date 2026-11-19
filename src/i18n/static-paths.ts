@@ -7,6 +7,7 @@ type Kind = 'page' | 'pricing' | 'blog' | 'post' | 'case' | '404';
  * Statische Pfade einer Routenart; `param` ist der Name des Restparameters der Routendatei. Jede Art hat eine eigene Datei unter src/pages/, damit Astro je Art ein eigenes
  * CSS-Bündel baut: die Preisseite lädt so keine Section-Stile der Inhaltsseiten, Inhaltsseiten keine Preis-, Blog- oder
  * Fallstudienstile. Die Routenliste selbst bleibt eine (publicRouteEntries); sie prüft auch doppelte Pfade über alle Arten.
+ * Die Inhaltsprüfung davor läuft je Inhaltsstand nur einmal (checkContentCoverage, content-snapshot.mjs).
  */
 export async function staticPathsFor(kind: Kind, param: string) {
   await checkContentCoverage();

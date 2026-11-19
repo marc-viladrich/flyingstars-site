@@ -74,3 +74,15 @@ test('Kopf → Werkzeug ist die Rolle --head-gap-tool, gesetzt in der Kopf-Varia
   assert.doesNotMatch(page, /\.cfg|has-head|:global/, 'PricingPage steuert keine Konfigurator-Interna');
   assert.doesNotMatch(page, /margin(?:-top)?:\s*calc\(-1/, 'keine negative Randkorrektur');
 });
+
+// Audit 2, T1: Die Browserprüfung kennt keine Konfigurator-Klassen, sondern nur den Vertrag am Markup. Die Kopfgruppe nennt
+// ihre Rolle (data-head-group), jedes Kopfteil trägt data-head-part; alles andere in der Gruppe ist ein Block darunter.
+test('Kopfgruppe des Konfigurators ist am Markup ausgezeichnet, die Prüfung hat keine eigene Selektorliste', () => {
+  const cfg = read('src/components/configurator/ShowConfigurator.astro');
+  assert.match(cfg, /<section\b[^>]*data-head-group=\{hasHead \? 'tool' : undefined\}/);
+  for (const part of ['cfg-head', 'cfg-facts', 'cfg-intro']) assert.match(cfg, new RegExp(`<div class="${part}" data-head-part>`), part);
+  const audit = read('scripts/layout-audit.mjs');
+  assert.match(audit, /\[data-head-group\]/);
+  assert.doesNotMatch(audit, /\.cfg(?:-head|-intro|-facts|-panel|-stage)\b/, 'keine Konfigurator-Selektoren in der Kopfprüfung');
+  assert.doesNotMatch(audit, /bottom <= box\(tool\)\.top/, 'überlappende Kopfteile werden gemessen, nicht aussortiert');
+});

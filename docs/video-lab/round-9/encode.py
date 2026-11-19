@@ -1,4 +1,10 @@
-"""Round 9: rebuild the hero loop with a fly-through bridge made from moving frames."""
+"""Round 9: rebuild the hero loop with a fly-through bridge made from moving frames.
+
+Geltende Erzeugung (Stand 18.11.2026, Audit 2 N5): Quelle, Encodes und Katalog liegen im Archiv
+(archive/video-lab/files/, archive/video-lab/catalog.json), nicht mehr unter public/ oder src/data/. Ein neuer Encode
+veröffentlicht nichts; die Freigabe einzelner Dateien beschreibt archive/video-lab/README.md (Datei nach
+public/media/video-lab/, Katalogeintrag nach src/data/hero-video.json, Länge und MIME in public/_headers).
+"""
 from pathlib import Path
 import hashlib, json, subprocess, sys, tempfile, time
 from PIL import Image
@@ -6,11 +12,11 @@ from transition import render_bridge
 
 ROUND = Path(__file__).resolve().parent
 root = ROUND.parents[2]
-sys.path.insert(0, str(ROUND.parent / 'round-8'))
-from header_policy import write_headers  # noqa: E402
 
-source = root / 'public/media/video-lab/original-v1.mp4'
-out = root / 'public/media/video-lab'
+ARCHIVE = root / 'archive/video-lab'
+CATALOG = ARCHIVE / 'catalog.json'
+source = ARCHIVE / 'files/original-v1.mp4'
+out = ARCHIVE / 'files'
 work = Path(tempfile.mkdtemp(prefix='fs-loop15-'))
 base, master = work / 'approved-edit.mkv', work / 'master-loop.mkv'
 EDIT, SUFFIX, DURATION, FRAMES = 'flythrough-loop-15_00-v9', '-v9', 15.0, 375
@@ -72,7 +78,7 @@ for width in [1918, 1600, 1440, 1280, 960]:
     plans.append((f'loop16-av1-{width}', f'15,00s · AV1 · {width} px', width, 'av1', 40 if width == 1918 else 38, 'loop-desktop'))
 plans += [('loop16-mobile-h264-640', '15,00s · Mobil H.264 · 640 px', 640, 'h264', 26, 'loop-mobile'),
           ('loop16-mobile-av1-640', '15,00s · Mobil AV1 · 640 px', 640, 'av1', 36, 'loop-mobile')]
-catalog = json.loads((root / 'src/data/video-lab.json').read_text())
+catalog = json.loads(CATALOG.read_text())
 # Keep the round-8 bridge reviewable next to the new one.
 previous = next(v for v in catalog if v['id'] == 'loop16-h264-1440')
 previous = {**previous, 'id': 'loop16v8-h264-1440', 'label': '15,68s · H.264 · 1440 px · Runde 8 (radialer Zoom)', 'group': 'loop-history'}
@@ -98,9 +104,9 @@ for key, label, width, codec, crf, group in plans:
                  'offset': 0, 'group': group, 'referenceId': 'loop16-reference', 'edit': EDIT, 'sha256': hashlib.sha256(target.read_bytes()).hexdigest()})
     record.append({'id': key, 'command': cmd, 'seconds': round(time.monotonic() - started, 2), 'probe': probe})
     print(key, size, flush=True)
-(root / 'src/data/video-lab.json').write_text(json.dumps(catalog + rows + [previous], ensure_ascii=False, indent=2) + '\n')
+CATALOG.write_text(json.dumps(catalog + rows + [previous], ensure_ascii=False, indent=2) + '\n')
 (ROUND / 'encodes.json').write_text(json.dumps(record, ensure_ascii=False, indent=2) + '\n')
-write_headers(root, rows + [previous])
+# public/_headers nennt nur freigegebene Dateien; die Freigabe ist ein eigener Schritt (archive/video-lab/README.md)
 
 # 5. Proofs: no frozen ending, native footage untouched, real repeated cycles.
 proof = []

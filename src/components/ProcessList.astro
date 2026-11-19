@@ -27,6 +27,42 @@ const cls = { steps: 'steps', milestones: 'ms', flow: 'lf-steps', metro: 'ruler'
 
 <style is:global>
 
+  /* Ablauf in Zahlen (Variante metro, MetroLine.astro): Punkte und Linie teilen EINE Schiene. --dot-x/--rail-y sind der
+     Punktmittelpunkt im Eintrag, --dot die Punktgröße; Punkt und Linie richten sich nach dem Mittelpunkt, deshalb bleibt
+     ein größerer Punkt (Umsteigestation) auf der Linie, egal ob waagerecht oder senkrecht */
+  .ruler { --dot: 1rem; --rail: 0.125rem; --dot-x: 0.5rem; --rail-y: 0.5rem; --ruler-gap: 0rem; --ruler-pad: 0rem;
+    list-style: none; margin: 0; padding: 0 0 0 var(--ruler-pad); display: grid; grid-template-columns: repeat(var(--n, 4), minmax(0, 1fr)); gap: var(--ruler-gap); position: relative; }
+  .ruler::before, .ruler::after { content: ""; position: absolute; z-index: 0; left: 0; right: 0; top: calc(var(--rail-y) - var(--rail) / 2); height: var(--rail); border-radius: var(--radius-2); }
+  .ruler::before { background: var(--line-strong); }
+  .ruler::after { background: var(--grad); transform-origin: left; transform: scaleX(1); transition: transform var(--dur-ruler) var(--ease-ruler); }
+  .reveal .ruler:not(.is-in)::after { transform: scaleX(0); }
+  /* Einträge bilden durch den Reveal (transform) eigene Ebenen: Linie Ebene 0, Einträge Ebene 1 (Marc 31.10.: Punkte hinter der Linie) */
+  .ruler li { position: relative; z-index: 1; display: grid; gap: var(--space-2-5); align-content: start; padding: var(--space-9-5) clamp(var(--space-3-5), 2vw, var(--space-8)) 0 0; }
+  .ruler .dot { position: absolute; z-index: 1; left: calc(var(--dot-x) - var(--dot) / 2); top: calc(var(--rail-y) - var(--dot) / 2); width: var(--dot); height: var(--dot); border-radius: var(--radius-round); background: var(--ground); border: 2px solid var(--line-strong); transition: background var(--dur-fade), border-color var(--dur-fade), box-shadow var(--dur-fade); transition-delay: calc(var(--i, 0) * var(--dur-stagger-ruler) + var(--dur-standard)); }
+  .ruler.is-in .dot, html:not(.reveal) .ruler .dot { background: var(--c); border-color: var(--c); box-shadow: 0 0 0.875rem var(--c), 0 0 2px var(--white) inset; }
+  .ruler .v { font: 600 clamp(2.25rem, 3.5vw, 3.625rem)/0.95 var(--display); letter-spacing: -0.045em; color: var(--head); white-space: nowrap; }
+  .ruler .l { color: var(--accent); }
+  .ruler p { color: var(--muted); font-size: var(--text-control); max-width: 30ch; }
+  .ruler [data-reveal] { transition-delay: calc(var(--i, 0) * var(--dur-stagger-ruler)); }
+  @media (--timeline-stacked) {
+    /* senkrecht: Schiene links in der Einrückung, Punkt auf Höhe der Zahl. Die Linie läuft als Abschnitt von Punkt zu
+       Punkt (Mittelpunkt bis Mittelpunkt), damit sie genau am letzten Punkt endet */
+    .ruler { --ruler-gap: var(--space-7); --ruler-pad: var(--space-8-5); --dot-x: calc(0.5rem - var(--ruler-pad)); --rail-y: 0.875rem; grid-template-columns: 1fr; }
+    .ruler::before, .ruler::after { display: none; }
+    .ruler li { padding: 0; }
+    .ruler li:not(:last-child)::before { content: ""; position: absolute; left: calc(var(--dot-x) - var(--rail) / 2); width: var(--rail); top: var(--rail-y); bottom: calc(-1 * (var(--ruler-gap) + var(--rail-y))); border-radius: var(--radius-2); background: linear-gradient(var(--c, var(--accent)), var(--c2, var(--accent))); }
+    /* Tablet (ab 36 rem Breite): Zahl und Schild links, Text rechts daneben, statt einer schmalen Spalte mit leerer
+       rechter Hälfte */
+    .ruler { container-type: inline-size; }
+    @container (min-width: 36rem) {
+      .ruler li { grid-template-columns: minmax(0, 16rem) minmax(0, 1fr); grid-template-areas: 'v p' 'l p'; grid-template-rows: auto 1fr; align-items: start; column-gap: var(--space-8); }
+      .ruler li > .v { grid-area: v; }
+      .ruler li > .l { grid-area: l; }
+      .ruler li > p { grid-area: p; max-width: 48ch; }
+    }
+  }
+  @media (prefers-reduced-motion: reduce) { .ruler::after, .ruler .dot { transition: none; } }
+
   .ms { list-style: none; margin: 0; padding: 0; max-width: 64rem; }
   .ms-item { display: grid; grid-template-columns: 7.5rem 1rem minmax(0, 1fr); grid-template-areas: 'when rail body'; column-gap: clamp(var(--space-5), 2.6vw, var(--space-10)); }
   .ms-when { grid-area: when; font: 600 clamp(1.875rem, 3vw, 2.75rem)/0.9 var(--display); letter-spacing: -0.04em; color: var(--c); text-align: right; padding-top: var(--space-0-25); transition: color var(--dur-fade), opacity var(--dur-fade); }
@@ -68,15 +104,20 @@ const cls = { steps: 'steps', milestones: 'ms', flow: 'lf-steps', metro: 'ruler'
   .lf-grid { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: var(--head-gap-content) clamp(var(--space-8), 6vw, var(--space-28)); align-items: start; }
   .lf-head { position: sticky; top: 6.875rem; }
   .lf-head .sec-head { margin-bottom: 0; }
-  .lf-steps { list-style: none; margin: 0; padding: 0 0 0 var(--space-11); position: relative; display: grid; gap: clamp(var(--space-3-5), 2vw, var(--space-5-5)); }
-  .lf-steps::before, .lf-steps::after { content: ""; position: absolute; left: 0.6875rem; top: 0.75rem; bottom: 0.75rem; width: 2px; border-radius: var(--radius-2); }
-  .lf-steps::before { background: var(--line-strong); }
-  .lf-steps::after { background: linear-gradient(180deg, var(--logo-amber), var(--logo-orchid) 50%, var(--cyan)); transform-origin: top; transition: transform var(--dur-twinkle) var(--ease-ruler); }
-  .reveal .lf-steps:not(.is-in)::after { transform: scaleY(0); }
-  .lf-steps li { position: relative; }
-  .lf-dot { position: absolute; z-index: 1; left: -2.75rem; top: 1.375rem; width: 1.5rem; height: 1.5rem; display: grid; place-items: center; border-radius: var(--radius-round); background: var(--surface); border: 2px solid var(--line-strong); }
+  /* Schiene wie beim Netzplan (.ruler): --lf-x/--lf-y sind der Punktmittelpunkt im Eintrag, --lf-dot die Punktgröße. Die
+     Linie läuft als Abschnitt von Punkt zu Punkt und endet am letzten Punkt (vorher lief sie bis zum Ende des letzten
+     Eintrags weiter); beim Erscheinen zieht sie Abschnitt für Abschnitt nach unten. */
+  .lf-steps { --lf-gap: clamp(var(--space-3-5), 2vw, var(--space-5-5)); --lf-x: -2rem; --lf-rail: 0.125rem; list-style: none; margin: 0; padding: 0 0 0 var(--space-11); position: relative; display: grid; gap: var(--lf-gap); }
+  .lf-steps li { --lf-dot: 1.5rem; --lf-y: 2.125rem; --lf-next-y: 2.125rem; position: relative; }
+  .lf-steps li.gate { --lf-dot: 2rem; --lf-y: 2.625rem; }
+  .lf-steps li:has(+ .gate) { --lf-next-y: 2.625rem; }
+  .lf-steps li:not(:last-child)::before, .lf-steps li:not(:last-child)::after { content: ""; position: absolute; left: calc(var(--lf-x) - var(--lf-rail) / 2); width: var(--lf-rail); top: var(--lf-y); bottom: calc(-1 * (var(--lf-gap) + var(--lf-next-y))); border-radius: var(--radius-2); }
+  .lf-steps li:not(:last-child)::before { background: var(--line-strong); }
+  .lf-steps li:not(:last-child)::after { --lf-step: calc(var(--dur-twinkle) / max(1, var(--n, 4) - 1)); background: linear-gradient(var(--c, var(--accent)), var(--c2, var(--accent))); transform-origin: top; transition: transform var(--lf-step) var(--ease-linear) calc(var(--i, 0) * var(--lf-step)); }
+  .reveal .lf-steps:not(.is-in) li::after { transform: scaleY(0); }
+  .lf-dot { position: absolute; z-index: 1; left: calc(var(--lf-x) - var(--lf-dot) / 2); top: calc(var(--lf-y) - var(--lf-dot) / 2); width: var(--lf-dot); height: var(--lf-dot); display: grid; place-items: center; border-radius: var(--radius-round); background: var(--surface); border: 2px solid var(--line-strong); }
   .lf-steps li:not(.gate) .lf-dot::after { content: ""; width: 0.5rem; height: 0.5rem; border-radius: var(--radius-round); background: var(--accent); box-shadow: 0 0 0.625rem var(--accent); }
-  .gate .lf-dot { width: 2rem; height: 2rem; left: -3rem; top: 1.625rem; border: 0; background: var(--grad-soft); }
+  .gate .lf-dot { border: 0; background: var(--grad-soft); }
   .gate .lf-dot .ico { width: 1rem; height: 1rem; color: var(--ground); stroke: var(--ground); }
   .lf-body { display: grid; gap: var(--space-2); justify-items: start; padding: var(--space-5) 0 var(--space-5-5); border-bottom: 1px solid var(--line); }
   .gate .lf-body { position: relative; padding: clamp(var(--space-5-5), 2.6vw, var(--space-8)); border: 0; border-radius: var(--radius); background: var(--ground); margin: var(--space-1-5) 0; }
@@ -90,7 +131,7 @@ const cls = { steps: 'steps', milestones: 'ms', flow: 'lf-steps', metro: 'ruler'
     .lf-grid { grid-template-columns: 1fr; }
     .lf-head { position: static; }
   }
-  @media (prefers-reduced-motion: reduce) { .lf-steps::after { transition: none; } }
+  @media (prefers-reduced-motion: reduce) { .lf-steps li::after { transition: none; } }
 
 </style>
 <script>

@@ -9,6 +9,9 @@ Der URL-Pfad bleibt aus Cache-Gründen bestehen. `src/scripts/payload-guards.tes
 genau diese Dateien enthält und jede Archivdatei zu ihrem Katalogeintrag passt.
 
 Eine neue Freigabe: Datei aus `files/` nach `public/media/video-lab/` verschieben, ihren Katalogeintrag unverändert in
-`hero-video.json` übernehmen, Länge und MIME in `public/_headers` eintragen. Die Erzeugung und Prüfung jeder Runde steht
-in `docs/video-lab/` (die dortigen `encode.py` schreiben noch an den alten Ort `src/data/video-lab.json`; vor einer neuen
-Runde auf `archive/video-lab/catalog.json` umstellen).
+`hero-video.json` übernehmen, Länge und MIME in `public/_headers` eintragen.
+
+Ein neuer Encode läuft mit `docs/video-lab/round-9/encode.py`: Quelle `files/original-v1.mp4`, Ausgabe nach `files/`,
+Katalog `catalog.json`, alles hier im Archiv; er veröffentlicht nichts und schreibt `public/_headers` nicht. Die Skripte
+der Runden 2–8 sind als historisch markiert (alte Pfade `src/data/video-lab.json` und `public/media/video-lab/`) und
+dokumentieren nur, wie die damaligen Fassungen entstanden.

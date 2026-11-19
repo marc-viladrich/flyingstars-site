@@ -2,16 +2,19 @@
 // Danke-Seite (Runde 4, Moritz 18.11.2026; Aufbau Runde 6 wie die Anfrage, Marc: „this is the last step“): links Kopf,
 // Text und darunter Chopper, der sich als Drohnenformation freut; rechts die freiwillige Frage nach der Quelle in der
 // Formular-Box der Anfrage (.inquiry/.ask aus ContactForm), mit Schrittanzeige als letztem Schritt.
-// Erreichbar nur nach bestätigtem Versand (Antwortvertrag in functions/api/contact.ts). Die Antwort geht als zweite
-// kleine Meldung über denselben Weg (kind=quelle) und trägt den Zufallswert der Anfrage aus sessionStorage. Erfolg
-// zeigt nur ein bestätigtes `sent`: mit JavaScript per Skript, ohne JavaScript per Weiterleitung auf das Sprungziel
-// SOURCE_DONE_ID (CSS :target). Fehler beantwortet der Endpoint ohne JavaScript mit einer eigenen lesbaren Seite.
+// Die Seite ist frei aufrufbar (Lesezeichen, neuer Tab, alte Fehler-URL). Ohne bestätigten Versand zeigt sie deshalb den
+// neutralen Text und keine Schrittanzeige; den Eingang („Wir haben eure Anfrage erhalten“, YAML `text`) bestätigt sie
+// nur, wenn das Anfrageformular nach einem bestätigten `sent` den Bezug in sessionStorage abgelegt hat. Das entscheidet
+// ein kleines Inline-Skript vor dem ersten Bild, damit nichts springt. Die Antwort geht als zweite kleine Meldung über
+// denselben Weg (kind=quelle) mit dem Zufallswert der Anfrage. Ihren Dank zeigt nur ein bestätigtes `sent`: mit
+// JavaScript hier, ohne JavaScript als Seite des Endpoints (functions/api/contact.ts), nie über ein Sprungziel.
 import type { Section } from '../../content.config';
 import SectionHead from '../SectionHead.astro';
+import InquiryFormStyles from '../InquiryFormStyles.astro';
 import Chopper from '../Chopper.astro';
 import { site } from '../../site.config';
 import { forPath } from '../../i18n/server';
-import { SOURCE_OTHER, SOURCE_TEXT_MAX, SOURCE_DONE_ID } from '../../content/inquiry-source.mjs';
+import { SOURCE_OTHER, SOURCE_TEXT_MAX, SOURCE_DONE_ID, INQUIRY_REF_KEY } from '../../content/inquiry-source.mjs';
 type Props = Extract<Section, { type: 'thanks' }> & { index: number };
 const { kicker, headline, text, question, options, otherLabel, sendLabel, doneText, cta, index, id = 'danke' } = Astro.props;
 const { t, locale, localHref } = forPath(Astro.url.pathname);
@@ -19,8 +22,12 @@ const H = index === 0 ? 'h1' : 'h2';
 const headingId = `${id}-h`;
 ---
 <section class="section alt thanks" id={id} aria-labelledby={headingId}>
+  <InquiryFormStyles />
+  <script is:inline define:vars={{ key: INQUIRY_REF_KEY }}>try{if(sessionStorage.getItem(key))document.currentScript.closest('.thanks').dataset.sent=''}catch(e){}</script>
   <div class="inquiry">
-    <SectionHead variant="embedded" class="intro" kicker={kicker} headline={headline} text={text} textClass="lead" id={headingId} level={H}>
+    <SectionHead variant="embedded" class="intro" kicker={kicker} headline={headline} id={headingId} level={H}>
+      {/* Beide Fassungen liegen übereinander (gleiche Höhe), sichtbar ist nur die zum Zustand passende */}
+      <p class="lead thanks-lead"><span class="is-neutral">{t('thanks.leadNeutral')}</span>{text && <span class="is-sent">{text}</span>}</p>
       <Chopper mood="happy" class="thanks-chopper" />
     </SectionHead>
     <form class="ask is-2" action={site.formEndpoint} method="post" data-source-form aria-labelledby="thanks-q">
@@ -36,6 +43,8 @@ const headingId = `${id}-h`;
           </div>
           <span class="err" id="quelle-err" data-err-for="quelle" role="alert"></span>
         </div>
+        {/* Nur bei „Andere“ sichtbar (CSS über :has, auch ohne JavaScript) und nur dann gesendet (Skript: disabled; ohne
+             JavaScript verwirft der Endpoint einen Rest aus einer vorherigen Wahl) */}
         <div class="field" data-source-other>
           <label class="lbl" for="f-quelle-text">{otherLabel} <em>{t('contactform.optional')}</em></label>
           <input id="f-quelle-text" name="quelle-text" type="text" maxlength={SOURCE_TEXT_MAX} autocomplete="off" />
@@ -58,16 +67,16 @@ const headingId = `${id}-h`;
     const read = (key: string) => { try { return sessionStorage.getItem(key); } catch { return null; } };
     const status = form.querySelector<HTMLElement>('[data-source-status]')!;
     const done = form.querySelector<HTMLElement>('.thanks-done')!;
-    const other = form.querySelector<HTMLElement>('[data-source-other]')!;
+    const otherText = form.querySelector<HTMLInputElement>('[name=quelle-text]')!;
     const button = form.querySelector<HTMLButtonElement>('button[type=submit]')!;
     form.querySelector<HTMLInputElement>('[data-source-ref]')!.value = read(INQUIRY_REF_KEY) ?? '';
     form.noValidate = true;
-    other.hidden = true;
     clearErrorsOnInput(form);
-    form.addEventListener('change', () => {
-      const pick = form.querySelector<HTMLInputElement>('[name=quelle]:checked');
-      other.hidden = !pick?.hasAttribute('data-other');
-    });
+    // Ein deaktiviertes Feld gehört nicht zu FormData: der Freitext geht nur mit „Andere“ mit und bleibt beim
+    // Zurückwechseln erhalten
+    const syncOther = () => { otherText.disabled = !form.querySelector('[name=quelle][data-other]:checked'); };
+    syncOther();
+    form.addEventListener('change', syncOther);
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
       // Ohne Auswahl gibt es nichts zu senden: Meldung an der Gruppe, Fokus auf die erste Antwort
@@ -96,16 +105,22 @@ const headingId = `${id}-h`;
 </script>
 
 <style>
-  /* Raster, Kopf und Formular-Box kommen aus der Anfrage (.inquiry, .ask in global.css); hier nur die Danke-Teile */
+  /* Raster, Kopf und Formular-Box kommen aus der Anfrage (.inquiry, .ask in InquiryFormStyles.astro); hier nur die Danke-Teile */
   .thanks :global(.thanks-chopper) { max-width: 24rem; margin-top: calc(-1 * var(--space-4)); }
   .thanks-q { padding: 0; margin: 0 0 var(--space-4); font: 500 var(--text-lead)/1.4 var(--display); color: var(--text); text-wrap: balance; }
-  .thanks .field[hidden] { display: none; }
+  /* Neutral oder bestätigt (data-sent): beide Fassungen in derselben Rasterzelle, die andere unsichtbar */
+  .thanks-lead { display: grid; }
+  .thanks-lead > span { grid-area: 1 / 1; }
+  .thanks[data-sent] .thanks-lead:has(.is-sent) .is-neutral, .thanks:not([data-sent]) .is-sent { visibility: hidden; }
+  .thanks:not([data-sent]) .ask-steps { display: none; }
+  .thanks .step:not(:has([data-other]:checked)) [data-source-other] { display: none; }
+  .thanks [data-source-other] { animation: opt-in var(--dur-enter) var(--ease-enter); }
   .thanks .form-status:empty { display: none; }
   .thanks .form-status { margin: 0; font-size: var(--text-lead); color: var(--text); }
-  /* Erfolgszustand: per Skript (.is-done) oder ohne JavaScript als Sprungziel der Weiterleitung */
+  /* Erfolgszustand nur per Skript nach bestätigtem `sent` */
   .thanks-done { display: none; }
-  .ask:is(.is-done, :has(.thanks-done:target)) .thanks-done { display: block; animation: opt-in var(--dur-enter) var(--ease-enter); }
-  :global(html.motion-paused) .ask:is(.is-done, :has(.thanks-done:target)) .thanks-done { animation: none; }
-  .ask:is(.is-done, :has(.thanks-done:target)) :is(.step, [data-source-status]) { display: none; }
+  .ask.is-done .thanks-done { display: block; animation: opt-in var(--dur-enter) var(--ease-enter); }
+  :global(html.motion-paused) .ask.is-done .thanks-done, :global(html.motion-paused) .thanks [data-source-other] { animation: none; }
+  .ask.is-done :is(.step, [data-source-status]) { display: none; }
   @media (--grid-stacked) { .thanks :global(.thanks-chopper) { margin-inline: auto; } }
 </style>

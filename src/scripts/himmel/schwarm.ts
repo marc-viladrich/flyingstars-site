@@ -200,11 +200,14 @@ function measure(slot: Slot): void {
 const FOLGE = { gapVw: 0.05, gapMin: 64, gapMax: 112, edge: 24, minWidth: 340 } as const;
 function folgeBox(host: HTMLElement, wide: boolean): Box {
   const hostBox = page(host), cs = getComputedStyle(host), right = hostBox.x + hostBox.w - num(cs.paddingRight);
-  if (!wide) {
-    const h = num(getComputedStyle(host, '::after').height); if (h < 80) return NONE;
+  // Die Fläche unter dem Text reserviert himmel.css (--folge-below, bis 1311 px); solange es sie gibt, spielt die Folge dort.
+  // Vorher galt sie nur unter 900 px, und zwischen 900 und 1300 px blieb die Section ohne Show (rechts zu wenig Platz).
+  const h = num(getComputedStyle(host, '::after').height);
+  if (h >= 80) {
     const left = hostBox.x + num(cs.paddingLeft);
     return { x: left, y: hostBox.y + hostBox.h - num(cs.paddingBottom) - h, w: right - left, h };
   }
+  if (!wide) return NONE;
   let used = 0, top = Infinity, bottom = -Infinity;
   for (const el of host.querySelectorAll<HTMLElement>(`${SOLID}, .kicker`)) { const b = page(el); if (!b.w || !b.h) continue; used = Math.max(used, b.x + b.w); top = Math.min(top, b.y); bottom = Math.max(bottom, b.y + b.h); }
   if (!Number.isFinite(top)) return NONE;
@@ -213,9 +216,9 @@ function folgeBox(host: HTMLElement, wide: boolean): Box {
   // höchstens 720 × 500 px. Abstand zum Text 64–112 px; free() prüft weiter, dass nichts berührt wird.
   const gap = clamp(innerWidth * FOLGE.gapVw, FOLGE.gapMin, FOLGE.gapMax), left = used + gap, w = right - left;
   if (w < FOLGE.minWidth) return NONE;
-  const y0 = hostBox.y + FOLGE.edge, y1 = hostBox.y + hostBox.h - FOLGE.edge, h = Math.min(y1 - y0, Math.max(bottom - top + 80, w * 1.1));
-  const mid = Math.min(y1 - h / 2, Math.max(y0 + h / 2, (top + bottom) / 2));
-  const box = { x: left, y: mid - h / 2, w, h };
+  const y0 = hostBox.y + FOLGE.edge, y1 = hostBox.y + hostBox.h - FOLGE.edge, hb = Math.min(y1 - y0, Math.max(bottom - top + 80, w * 1.1));
+  const mid = Math.min(y1 - hb / 2, Math.max(y0 + hb / 2, (top + bottom) / 2));
+  const box = { x: left, y: mid - hb / 2, w, h: hb };
   return free(host, box, null) ? box : NONE;
 }
 

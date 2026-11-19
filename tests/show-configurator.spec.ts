@@ -437,3 +437,32 @@ test('Runde 5/6: Katalogmotive zeichnen bis 200 Drohnen dichter, darüber bleibt
   }
 });
 
+
+// Linkabgleich (19.11.2026): Art und Drohnenzahl werden erst nach allen Link-Werten abgeglichen. Nennt der Link die Art,
+// gilt deren Mindestzahl; sonst folgt die Art der Drohnenzahl. Die Pills „Art der Show“ zeigen den Zustand, die Bühne
+// zeigt ein Motiv, die Seite wirft keinen Fehler.
+for (const [query, want] of [
+  ['?anlass=kultur&drohnen=190', { art: '2d', drones: '190', pkg: 'Individuelles Paket', occasion: 'kultur' }],
+  ['?art=story&drohnen=190', { art: 'story', drones: '300', pkg: 'Individuelles Paket' }],
+  ['?paket=ODYSSEY&drohnen=190', { art: '2d', drones: '190', pkg: 'Individuelles Paket' }],
+  ['?drohnen=400', { art: '3d', drones: '400', pkg: 'Individuelles Paket' }],
+] as const) {
+  test(`Linkabgleich ${query}`, async ({ page }) => {
+    const errors: string[] = [];
+    page.on('pageerror', (e) => errors.push(String(e)));
+    await page.goto(`${CFG}${query}#konfigurator`);
+    for (const id of ['2d', '3d', 'story']) {
+      if (id === want.art) await expect(page.locator(`#cfg-arts input[value="${id}"]`)).toBeChecked();
+      else await expect(page.locator(`#cfg-arts input[value="${id}"]`)).not.toBeChecked();
+    }
+    await expect(page.locator('.cfg-check-list[data-art="' + want.art + '"]')).toBeVisible();
+    await expect(page.locator('#cfg-drones')).toHaveValue(want.drones);
+    await expect(droneCount(page)).toHaveText(want.drones);
+    await expect(page.locator('#cfg-pkg')).toHaveText(want.pkg);
+    expect(new URL(page.url()).searchParams.get('paket')).toBeNull();
+    if ('occasion' in want) await expect(page.locator(`input[name=occasion][value="${want.occasion}"]`)).toBeChecked();
+    await expect(field(page)).toHaveAttribute('data-points', want.drones);
+    await expect(scene(page)).not.toHaveText('');
+    expect(errors).toEqual([]);
+  });
+}

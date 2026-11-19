@@ -12,6 +12,10 @@ const NESTED = /<(?:p|li|ul|ol|div|dl|table|section|h[1-6]|br|script|style|templ
 /** Wörter, die zusammen höchstens so lang sind, werden verbunden (Zeichen ohne Tags); das letzte Wort höchstens MAX_LAST. */
 const MAX_PAIR = 28;
 const MAX_LAST = 22; // „Sicherheitsprotokoll.“ (21) passt mit seinem Vorgänger noch in jede Spalte, seit Absätze pretty statt balance umbrechen
+/** Fließtext (ab PROSE_WORDS Wörtern) steht in Textspalten, nicht in schmalen Karten oder Listenpunkten: dort darf das Paar
+ *  länger sein, damit ein langes Schlusswort nicht allein bleibt („emotionale 3D-Visualisierungen.“, 30 Zeichen; Audit 2, N7). */
+const MAX_PAIR_PROSE = 32;
+const PROSE_WORDS = 8;
 
 /** Verbindet im inneren HTML eines Blocks die letzten zwei Wörter. Tags bleiben unangetastet. */
 export function joinLastWords(inner: string): string {
@@ -37,7 +41,9 @@ export function joinLastWords(inner: string): string {
       prevLen++;
     }
   }
-  if (target < 0 || wordLen > MAX_LAST || wordLen + prevLen > MAX_PAIR || prevLen === 0) return inner;
+  const words = parts.filter((p) => !p.startsWith('<')).join(' ').split(/\s+/).filter(Boolean).length;
+  const maxPair = words >= PROSE_WORDS ? MAX_PAIR_PROSE : MAX_PAIR;
+  if (target < 0 || wordLen > MAX_LAST || wordLen + prevLen > maxPair || prevLen === 0) return inner;
   // nur ein einzelnes normales Leerzeichen ersetzen, Zeilenumbrüche im Quelltext ebenso
   const part = parts[targetPart];
   let start = target;

@@ -60,15 +60,41 @@ test('Ohne JavaScript erscheinen Fehler als lesbare Seite mit Statuscode statt a
   assert.equal((await post(request({}, { accept: 'text/html' }))).headers.get('content-security-policy')?.startsWith("default-src 'none'"), true);
 });
 
-test('Erfolg ohne JavaScript: Anfrage auf die Danke-Seite, Herkunftsantwort auf deren Erfolgszustand', async t => {
+test('Erfolg ohne JavaScript: Anfrage auf die Danke-Seite, Herkunftsantwort als eigene Bestätigungsseite', async t => {
   t.mock.method(globalThis, 'fetch', async () => new Response('{}', { status: 201 }));
   const inquiry = await post(request({ locale: 'en' }, { accept: 'text/html' }));
   assert.equal(inquiry.status, 303);
   assert.equal(inquiry.headers.get('location'), 'https://site.example.test/en/danke/');
   const answer = (values, headers = {}) => new Request('https://site.example.test/api/contact', { method: 'POST', body: new URLSearchParams({ kind: 'quelle', locale: 'de', ref: '', ...values }), headers: { accept: 'text/html', ...headers } });
   const sent = await post(answer({ quelle: 'linkedin' }));
-  assert.equal(sent.status, 303);
-  assert.equal(sent.headers.get('location'), 'https://site.example.test/danke/#danke-antwort');
+  // Kein frei aufrufbares Sprungziel: die Bestätigung kommt nur aus der Versandantwort selbst.
+  assert.equal(sent.status, 200);
+  assert.equal(sent.headers.get('location'), null);
+  const html = await sent.text();
+  assert.match(html, /<h1>Eure Antwort ist angekommen\.<\/h1>/);
+  assert.match(html, /Danke, das hilft uns sehr!/);
+  assert.match(html, /href="\/"/);
+  assert.doesNotMatch(html, /Zurück zum Formular|nicht gesendet/);
+  const nl = await post(answer({ quelle: 'ki', locale: 'nl' }));
+  assert.match(await nl.text(), /<html lang="nl">[\s\S]*href="\/nl\/"/);
+});
+
+test('Herkunftsfrage: Freitext gehört nur zu „Andere“, ein Rest aus einer vorherigen Wahl wird verworfen', async t => {
+  const calls = [];
+  t.mock.method(globalThis, 'fetch', async (url, init) => { calls.push(JSON.parse(init.body)); return new Response('{}', { status: 201 }); });
+  const answer = (values) => new Request('https://site.example.test/api/contact', { method: 'POST', body: new URLSearchParams({ kind: 'quelle', locale: 'de', ref: '', ...values }), headers: { accept: 'application/json' } });
+  // Wechsel von „Andere“ mit Text zu LinkedIn (ohne JavaScript bleibt der Text im Formular): gültig, ohne Freitext
+  assert.deepEqual(await (await post(answer({ quelle: 'linkedin', 'quelle-text': 'Messe in Köln' }))).json(), { ok: true, state: 'sent' });
+  assert.match(calls.at(-1).textContent, /quelle: linkedin\n/);
+  assert.doesNotMatch(calls.at(-1).textContent, /freitext|Messe/);
+  // Ein ungültiger Rest blockiert die feste Auswahl ebenfalls nicht
+  assert.equal((await post(answer({ quelle: 'instagram', 'quelle-text': 'x'.repeat(500) }))).status, 200);
+  // Bei „Andere“ geht der Text mit und bleibt geprüft
+  assert.equal((await post(answer({ quelle: 'andere', 'quelle-text': 'Messe in Köln' }))).status, 200);
+  assert.match(calls.at(-1).textContent, /freitext: Messe in Köln/);
+  assert.equal((await post(answer({ quelle: 'andere', 'quelle-text': 'x'.repeat(500) }))).status, 400);
+  assert.equal((await post(answer({ quelle: 'andere', 'quelle-text': 'a\u0007b' }))).status, 400);
+  assert.equal(calls.length, 3);
 });
 
 test('Herkunftsfrage: Auswahl ist Pflicht, Erfolg nur nach bestätigtem Versand', async t => {

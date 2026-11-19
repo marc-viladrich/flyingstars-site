@@ -61,6 +61,46 @@ import { whenNear } from './when-near.mjs';
     menu.querySelectorAll("a").forEach((link) => link.addEventListener("click", () => menu.close()));
     menu.addEventListener("close", () => { document.body.style.overflow = ""; opener.setAttribute("aria-expanded", "false"); menu.querySelectorAll("details[open]").forEach((d) => { d.open = false; }); opener.focus(); });
   }
+  // Untermenüs der Kopfzeile (Anlässe, Über uns) öffnen mit Maus beim Zeigen, per Tastatur mit dem Fokus (global.css).
+  // Touch (iPad quer, Leiste sichtbar): der erste Tipp öffnet, der zweite folgt dem Link, ein Tipp daneben oder Esc schließt.
+  // Erkannt am vorausgehenden Touch-pointerdown; der click selbst meldet in WebKit pointerType „mouse“.
+  const drops = document.querySelectorAll(".nav .nav-drop");
+  if (drops.length) {
+    let touchAt = -Infinity;
+    const touched = (e) => { if (e.pointerType === "mouse") touchAt = -Infinity; else touchAt = performance.now(); };
+    addEventListener("pointerdown", touched, { capture: true, passive: true });
+    addEventListener("touchstart", () => { touchAt = performance.now(); }, { capture: true, passive: true });
+    drops.forEach((drop) => {
+      const trigger = drop.querySelector(":scope > a");
+      trigger.addEventListener("click", (e) => {
+        const touch = e.detail > 0 && performance.now() - touchAt < 1000;
+        if (!touch || drop.classList.contains("is-open")) return;
+        e.preventDefault();
+        drops.forEach((other) => other.classList.remove("is-open"));
+        drop.classList.remove("is-dismissed"); drop.classList.add("is-open");
+      });
+      // Esc schließt auch eine per Zeigen oder Fokus offene Liste, bis Zeiger oder Fokus sie verlassen
+      drop.addEventListener("pointerleave", () => drop.classList.remove("is-dismissed"));
+      drop.addEventListener("focusin", (e) => { if (e.target !== trigger) drop.classList.remove("is-dismissed"); });
+      drop.addEventListener("focusout", (e) => { if (!drop.contains(e.relatedTarget)) drop.classList.remove("is-dismissed"); });
+      drop.__trigger = trigger;
+    });
+    document.addEventListener("pointerdown", (e) => drops.forEach((drop) => { if (!drop.contains(e.target)) drop.classList.remove("is-open"); }));
+    document.addEventListener("keydown", (e) => {
+      if (e.key !== "Escape") return;
+      drops.forEach((drop) => {
+        if (!drop.classList.contains("is-open") && !drop.matches(":hover, :focus-within")) return;
+        drop.classList.remove("is-open"); drop.classList.add("is-dismissed");
+        if (drop.contains(document.activeElement)) drop.__trigger.focus();
+      });
+    });
+    // Zurück aus dem Verlauf (bfcache): kein offen gebliebenes Untermenü
+    addEventListener("pageshow", () => drops.forEach((drop) => drop.classList.remove("is-open", "is-dismissed")));
+  }
+  // Team auf dem Handy als wischbare Reihe (global.css, --compact): dann per Tastatur erreichbar, sonst kein leerer Tab-Halt
+  const crewRow = matchMedia("(max-width: 40em)");
+  const syncCrew = () => document.querySelectorAll("[data-crew]").forEach((row) => crewRow.matches ? row.setAttribute("tabindex", "0") : row.removeAttribute("tabindex"));
+  syncCrew(); crewRow.addEventListener("change", syncCrew);
   // Klebende Tabellenköpfe ([data-sticky-strip]: Reiter der Vergleiche, Kopf der Aufgaben-Tabelle) decken in der Farbe ihrer
   // Section. Gemessen beim ersten Scrollen, dann sind alle Stylesheets angewandt (WebKit meldete beim Laden noch transparent).
   addEventListener("scroll", () => document.querySelectorAll("[data-sticky-strip]").forEach((head) => {

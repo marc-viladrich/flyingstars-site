@@ -4,9 +4,17 @@ import { routes } from './routes';
 
 // Automatisierte Barrierefreiheitsprüfung (axe-core, WCAG 2.2 A/AA). Deckt nur einen Teil ab;
 // Tastatur, Screenreader und Reflow bleiben manuelle Prüfung (accessibility-inspect).
+// Kontrast wird am Endzustand gemessen: Eintritts- und Pulsanimationen (z. B. Sicherheits-Zeichnung) blenden Text
+// über Deckkraft ein, axe würde sonst Zwischenbilder messen und je nach Zeitpunkt anders urteilen. Reduzierte Bewegung
+// zeigt auf jeder Seite sofort den Endzustand derselben Farben.
+test.use({ reducedMotion: 'reduce' });
 for (const route of routes) {
   test(`axe: ${route}`, async ({ page }) => {
     await page.goto(route);
+    // Kein Skript darf Layout erzwingen, bevor das Stylesheet greift: WebKit stylt die Seite dann mit Browser-Standardfarben
+    // und blendet anschließend jedes Element von Schwarz/Link-Blau auf seine Farbe über (19.11.2026: SliderNav-Startmessung).
+    const unstyledStart = await page.evaluate(() => document.getAnimations().filter((a) => a instanceof CSSTransition && /^(color|padding|font-size)/.test(a.transitionProperty)).length);
+    expect(unstyledStart, 'Farb-/Abstands-Übergänge direkt nach dem Laden').toBe(0);
     // WebKit applies the dropdown's delayed visibility transition at initial paint.
     // Scan the settled closed state, not translucent text during that transition.
     await expect(page.locator('#lang-header')).toBeHidden();

@@ -152,8 +152,10 @@ const ld = groups?.length ? JSON.stringify({ '@context': 'https://schema.org', '
   .faq-grouped .faq { border-top: 0; }
   @media (--nav-collapsed) {
     .faq-grouped .faq-group { grid-template-columns: 1fr; gap: var(--space-1-5); }
-    .faq-grouped .faq-group-h { top: 3.625rem; z-index: 2; padding: var(--space-3-5) 0 var(--space-3); background: color-mix(in srgb, var(--ground) 92%, transparent); backdrop-filter: blur(0.625rem); -webkit-backdrop-filter: blur(0.625rem); font-size: 1.5rem; }
+    .faq-grouped .faq-group-h { top: var(--nav-h); z-index: 2; padding: var(--space-3-5) 0 var(--space-3); background: color-mix(in srgb, var(--ground) 92%, transparent); backdrop-filter: blur(0.625rem); -webkit-backdrop-filter: blur(0.625rem); font-size: 1.5rem; }
     .faq-grouped .faq-group-h::before { display: inline; margin: 0 var(--space-2-5) 0 0; }
+    /* Kopfzeile ausgewichen (nav-away, global.css): Kategorie rückt nach oben wie die Paket-Reiter */
+    :root.nav-away .faq-grouped .faq-group-h { top: 0; }
   }
 
   .faq-cta { margin-top: clamp(var(--space-10), 5vw, var(--space-18)); width: 100%; }

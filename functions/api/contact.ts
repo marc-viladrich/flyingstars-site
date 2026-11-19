@@ -3,7 +3,7 @@ import {INQUIRY_PACKAGES,INQUIRY_LIMITS} from '../../src/content/inquiry.mjs';
 import {FORM_OCCASION_IDS} from '../../src/content/occasions.mjs';
 import { createTranslator } from '../../src/i18n/ui.mjs';
 import { LOCALES, localizedHref, localeFromPath } from '../../src/i18n/routing.mjs';
-import { SOURCE_IDS, SOURCE_OTHER, SOURCE_TEXT_MAX, INQUIRY_REF, SOURCE_DONE_ID } from '../../src/content/inquiry-source.mjs';
+import { SOURCE_IDS, SOURCE_OTHER, SOURCE_TEXT_MAX, INQUIRY_REF } from '../../src/content/inquiry-source.mjs';
 import { contact } from '../../src/content/contact.mjs';
 
 // Cloudflare Pages Function. Nur Web-Standard-APIs für einen späteren EU-Umzug.
@@ -12,8 +12,10 @@ import { contact } from '../../src/content/contact.mjs';
 //
 // Antwortvertrag (docs/DESIGN.md, „Versandzustände“): Mit `Accept: application/json` antwortet der Endpoint immer
 // JSON ({ok:true,state:'sent'|'not-configured'} oder {ok:false,detail}). Ohne JavaScript leitet nur ein bestätigter
-// Versand auf die Danke-Seite weiter. Fehler und fehlende Versandkonfiguration antworten mit einer lesbaren Seite am
-// Formularziel, damit die Zurück-Taste die Eingaben behält und nie „erhalten“ erscheint, wenn nichts angekommen ist.
+// Versand der Anfrage auf die Danke-Seite weiter (POST/Redirect/GET, kein Doppelversand beim Neuladen); die statische
+// Seite selbst behauptet keinen Eingang, weil sie auch direkt aufrufbar ist. Eine bestätigte Herkunftsantwort
+// beantwortet der Endpoint ohne JavaScript selbst mit einer Bestätigungsseite. Fehler und fehlende Versandkonfiguration
+// antworten mit einer lesbaren Seite am Formularziel, damit die Zurück-Taste die Eingaben behält.
 interface Env {
   BREVO_API_KEY?: string;
   CONTACT_TO?: string;
@@ -159,10 +161,13 @@ async function source(reply: Reply, env: Env, form: FormData): Promise<Response>
   const fail = (status: number, key: string) => problem(reply, status, reply.t(key));
   const get = (key: string) => String(form.get(key) ?? '').trim();
   if ([...form.keys()].some((key) => !['kind', 'locale', 'ref', 'quelle', 'quelle-text', 'website'].includes(key))) return fail(400, 'contactAPI.invalidForm');
-  const value = get('quelle'), text = get('quelle-text'), ref = get('ref');
+  const value = get('quelle'), ref = get('ref');
   // Ohne Auswahl gibt es nichts zu senden: dieselbe Meldung wie im Formular selbst.
   if (!SOURCE_IDS.includes(value)) return fail(400, 'thanks.pleaseChooseAnAnswer');
-  if (text.length > SOURCE_TEXT_MAX || CONTROL.test(text) || (text && value !== SOURCE_OTHER)) return fail(400, 'contactAPI.additional');
+  // Freitext gehört nur zu „Andere“. Ein Rest aus einer vorherigen Wahl (ohne JavaScript bleibt das Feld im Formular)
+  // wird verworfen, nicht abgelehnt: die Auswahl allein ist eine gültige Antwort.
+  const text = value === SOURCE_OTHER ? get('quelle-text') : '';
+  if (text.length > SOURCE_TEXT_MAX || CONTROL.test(text)) return fail(400, 'contactAPI.additional');
   if (ref && !INQUIRY_REF.test(ref)) return fail(400, 'contactAPI.additional');
   if (!configured(env)) return notConfigured(reply);
   const site = siteName(env);
@@ -187,22 +192,24 @@ const configured = (env: Env) => Boolean(env.BREVO_API_KEY && env.CONTACT_TO && 
 const siteName = (env: Env) => (env.SITE_NAME ?? 'Website').replace(/[\u0000-\u001f\u007f]/g, '').slice(0, 120);
 const wantsJson = (request: Request) => (request.headers.get('accept') ?? '').includes('application/json');
 
-/** Bestätigter Versand (oder Honeypot): JSON-Erfolg bzw. Weiterleitung auf die Danke-Seite. */
+/** Bestätigter Versand (oder Honeypot): JSON-Erfolg, ohne JavaScript Weiterleitung auf die Danke-Seite (Anfrage) bzw.
+ * eine Bestätigungsseite (Herkunftsantwort; ein erneutes Senden beim Neuladen schickt nur dieselbe Auswahl). */
 function confirmed(reply: Reply, requestId?: string): Response {
   if (wantsJson(reply.request)) return json({ ok: true, state: 'sent', ...(requestId ? { requestId } : {}) });
-  // Die Antwort auf die Herkunftsfrage landet am Erfolgszustand derselben Danke-Seite (per :target, ohne JavaScript).
-  const url = new URL(reply.request.url); url.search = '';
-  url.pathname = localizedHref('/danke/', reply.locale); url.hash = reply.kind === 'source' ? SOURCE_DONE_ID : '';
+  const { t, locale } = reply;
+  if (reply.kind === 'source') return page(reply, 200, t('thanks.answerReceived'), t('thanks.answerThanks'), [link(localizedHref('/', locale), t('contactAPI.toHome'))]);
+  const url = new URL(reply.request.url); url.search = ''; url.hash = '';
+  url.pathname = localizedHref('/danke/', locale);
   return new Response(null, { status: 303, headers: { location: url.toString(), 'cache-control': 'no-store', 'referrer-policy': 'no-referrer' } });
 }
 /** Versand nicht eingerichtet: JSON-Zustand für das Skript, ohne JavaScript eine ehrliche Seite statt „Danke“. */
 function notConfigured(reply: Reply): Response {
   if (wantsJson(reply.request)) return json({ ok: true, state: 'not-configured' });
   const message = reply.kind === 'source' ? reply.t('thanks.answerNotConfigured') : reply.t('contact.formDeliveryHasNotBeenSetUpYetNothingWas', { email: contact.email });
-  return page(reply, 503, message);
+  return notSent(reply, 503, message);
 }
 function problem(reply: Reply, status: number, detail: string): Response {
-  return wantsJson(reply.request) ? json({ ok: false, detail }, status) : page(reply, status, detail);
+  return wantsJson(reply.request) ? json({ ok: false, detail }, status) : notSent(reply, status, detail);
 }
 function json(body: object, status = 200): Response {
   return new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store', 'x-content-type-options': 'nosniff', 'referrer-policy': 'no-referrer', ...(status === 405 ? { allow: 'POST' } : {}) } });
@@ -218,14 +225,21 @@ function formHref(reply: Reply): string {
   } catch { /* Kein verwertbarer Referrer */ }
   return localizedHref('/kontakt/', reply.locale) + '#anfrage';
 }
-/** Lesbare Antwort ohne JavaScript. Systemschrift und -farben, kein Skript, keine externen Ressourcen. */
-function page(reply: Reply, status: number, message: string): Response {
-  const { t, locale } = reply;
+const link = (href: string, label: string) => `<a href="${escape(href)}">${escape(label)}</a>`;
+/** Nichts wurde gesendet: Meldung, Weg zurück zum Formular (Eingaben bleiben) und die direkten Kontaktwege. */
+function notSent(reply: Reply, status: number, message: string): Response {
+  const { t } = reply;
   const headline = reply.kind === 'source' ? t('thanks.answerNotSent') : t('contact.yourEnquiryCouldNotBeSent');
-  const body = `<!doctype html><html lang="${locale}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex"><title>${escape(headline)}</title>`
+  return page(reply, status, headline, message, [
+    `${escape(t('contactAPI.keepEntries'))} ${link(formHref(reply), t('contactAPI.backToForm'))}`,
+    `${escape(t('contactAPI.otherWays'))} <a href="mailto:${escape(contact.email)}">${escape(contact.email)}</a> · ${link(contact.phone.href, contact.phone.label)}`,
+  ]);
+}
+/** Lesbare Antwort ohne JavaScript. Systemschrift und -farben, kein Skript, keine externen Ressourcen. `lines` sind
+ * bereits maskierte HTML-Absätze. */
+function page(reply: Reply, status: number, headline: string, message: string, lines: string[]): Response {
+  const body = `<!doctype html><html lang="${reply.locale}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex"><title>${escape(headline)}</title>`
     + '<style>:root{color-scheme:light dark;font:1.0625rem/1.6 system-ui,sans-serif}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:1.5rem;box-sizing:border-box}main{max-width:36rem}h1{font-size:1.75rem;line-height:1.2;margin:0 0 1rem;text-wrap:balance}p{margin:0 0 1rem}a{color:inherit;text-underline-offset:.2em}</style></head>'
-    + `<body><main><h1>${escape(headline)}</h1><p data-status="${status}">${escape(message)}</p>`
-    + `<p>${escape(t('contactAPI.keepEntries'))} <a href="${escape(formHref(reply))}">${escape(t('contactAPI.backToForm'))}</a></p>`
-    + `<p>${escape(t('contactAPI.otherWays'))} <a href="mailto:${escape(contact.email)}">${escape(contact.email)}</a> · <a href="${escape(contact.phone.href)}">${escape(contact.phone.label)}</a></p></main></body></html>`;
+    + `<body><main><h1>${escape(headline)}</h1><p data-status="${status}">${escape(message)}</p>${lines.map((line) => `<p>${line}</p>`).join('')}</main></body></html>`;
   return new Response(body, { status, headers: { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store', 'x-content-type-options': 'nosniff', 'referrer-policy': 'no-referrer', 'content-security-policy': "default-src 'none'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'" } });
 }

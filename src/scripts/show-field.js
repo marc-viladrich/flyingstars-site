@@ -370,6 +370,7 @@ export function createField(canvas, { onBeat, onTick, cloudTime = 1, cloudSpread
   /** Shows a scene at a size factor (1 = fills the stage), starting at beat at; instant: already formed (first view
    * of the page). Paused or reduced motion shows the motif of that beat at rest. */
   function show(next, droneCountOf, sizeFactor = 1, { instant = false, at = 0, cloud: viaCloud = false } = {}) {
+    if (!next?.beats?.length) return; // eine Szene ohne Bilder ändert nichts: das bisherige Bild bleibt stehen
     let required = Math.max(active, leaveEnd);
     for (const b of next.beats) required = Math.max(required, b.pts.length);
     ensureCapacity(required);

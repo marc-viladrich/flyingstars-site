@@ -324,7 +324,7 @@ const itemOf = Object.fromEntries(items.map((item, i) => [item.zone, { ...item, 
   .st-hot[aria-expanded="true"] .st-num { background: var(--zc); color: var(--ground); }
   .st-hot:focus-visible { outline: none; }
   .st-hot:focus-visible .st-num { outline: 2px solid var(--zc); outline-offset: 0.1875rem; }
-  .is-live .st-map:not(.is-ready) :is(.st-hot, .st-lbl) { opacity: 0; pointer-events: none; }
+  .is-live .st-map:not(.is-ready) :is(.st-hot, .st-lbl) { opacity: 0; visibility: hidden; pointer-events: none; }
   /* Nach dem Eintritt pulsen die Nummern einmal sanft: hier kann man tippen */
   .is-ready .st-num { animation: st-pulse var(--dur-record) var(--ease-out) calc(var(--n) * var(--dur-stagger-reveal)) 1 backwards; }
   @keyframes st-pulse {

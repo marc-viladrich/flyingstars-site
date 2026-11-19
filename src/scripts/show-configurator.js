@@ -688,8 +688,14 @@ if (form) {
   // ?art=2d|3d|story (Runde 5); eine andere Art als die des Pakets ist schon eine Änderung
   const linkedArt = SHOW_ARTS.find((a) => a === params.get("art"));
   if (linkedArt && linkedArt !== art) { leavePreset(); art = linkedArt; }
-  if (drones < artMin(art)) { if (preset) leavePreset(); drones = artMin(art); }
   if (params.get("drohnen")) { const n = snapDrones(Number(params.get("drohnen")) || drones); if (n !== drones) leavePreset(); drones = n; }
+  // Art und Drohnenzahl erst nach allen Link-Werten abgleichen: nennt der Link die Art, gilt ihre Mindestzahl; sonst
+  // passt sich die Art der verlinkten Drohnenzahl an (z. B. ?drohnen=190 ohne Art → 2D statt 3D unter 200 Drohnen)
+  if (drones < artMin(art)) {
+    if (preset) leavePreset();
+    if (linkedArt) drones = artMin(art);
+    else art = [...SHOW_ARTS].reverse().find((a) => artMin(a) <= drones) ?? SHOW_ARTS[0];
+  }
   const linkedMotif = occasion.motifs.findIndex((m) => m.id === params.get("motiv"));
   if (linkedMotif >= 0) first = false; // a linked motif plays from its first act
   // a link to a motif that needs more drones opens it with enough drones (dreizehnte Fassung)
