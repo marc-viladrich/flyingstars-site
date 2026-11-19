@@ -26,14 +26,3 @@ const afterFirstView = () => {
 };
 addEventListener('scroll', start, { once: true, passive: true });
 if (document.readyState === 'complete') afterFirstView(); else addEventListener('load', afterFirstView, { once: true });
-
-// Punktwolke im Footer (footer-wolke.ts): Modul lädt erst, wenn der Footer näher als 600 px ist
-const sky = document.querySelector<HTMLCanvasElement>('canvas.footer-sky');
-if (sky && 'IntersectionObserver' in window) {
-  const near = new IntersectionObserver(([e]) => {
-    if (!e?.isIntersecting) return;
-    near.disconnect();
-    import('./footer-wolke').then(({ startFooterWolke }) => startFooterWolke(sky)).catch((err) => console.warn('Footer-Wolke nicht verfügbar:', err));
-  }, { rootMargin: '600px 0px' });
-  near.observe(sky.parentElement ?? sky);
-}

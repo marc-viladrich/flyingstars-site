@@ -1,7 +1,8 @@
 ---
 // Bildleiter (Werbung #marketing, Über uns #nachhaltigkeit, Indoor #referenzen). Runde 7 (Marc, 19.11.2026): „Drei Bilder
 // in so einer von links nach rechts angeordneten Leiter, plus die Background-Dot-Shape, und mehr brauchen wir nicht.“
-// Genau drei gleich große Bilder in derselben Form steigen von links unten nach rechts oben, mit gleichmäßigem Versatz;
+// Drei gleich große Bilder in derselben Form steigen von links unten nach rechts oben, mit gleichmäßigem Versatz (Werbung:
+// sechs Bilder als zwei solche Leitern übereinander, je Spalte eine Säule aus zwei Bildern);
 // der Text steht links daneben, kein Bild unter der Textspalte. Breit: Raster aus fünf gleichen Spalten, Text über zwei,
 // Leiter über drei (jedes Bild eine Spalte). Schmal (bis --grid-stacked): Text oben, die Leiter darunter flacher über die
 // ganze Breite. Hinter der Leiter liegt die Leuchtpunkt-Unterlage (DotField).
@@ -19,25 +20,28 @@ interface Props { set: keyof typeof GALLERY_LAYOUTS; class?: string; after?: 'te
 const { set, class: cls, after = 'content' } = Astro.props;
 const layout = GALLERY_LAYOUTS[set];
 if (!layout) throw new Error(`Unbekannte Galerie „${set}“`);
-if (layout.items.length !== 3) throw new Error(`Galerie „${set}“: die Leiter hat genau drei Bilder`);
+// drei Bilder = eine Leiter; sechs = zwei Leitern übereinander (Werbung, Marc Runde 7: „immer zwei Zeilen als Leiter“)
+if (layout.items.length !== 3 && layout.items.length !== 6) throw new Error(`Galerie „${set}“: eine Leiter hat drei Bilder, zwei Leitern haben sechs (sind ${layout.items.length})`);
 const hasHead = Astro.slots.has('head');
 // Versatz je Stufe als Anteil der Bildhöhe; margin-top in % bezieht sich im Raster auf die Spaltenbreite, daher / ratio
 const r = ratio(layout.ar), STEP = 0.42, STEP_M = 0.26;
 const pct = (n: number) => `${+(n * 100).toFixed(3)}%`;
+// items zeilenweise: 0–2 obere Leiter, 3–5 untere. Je Spalte stehen die Bilder in einer Säule untereinander; die Säule
+// sitzt um ihre Stufe tiefer (links zwei Stufen, rechts keine), so steigen beide Zeilen gleich und nichts überlappt.
 const photos = await Promise.all(layout.items.map(async (item, i) => {
   const p = await manifestPhoto(item.slug, Astro.url.pathname);
-  const rise = 2 - i; // links unten (zwei Stufen tiefer) → rechts oben
-  return { ...p, style: `--ar:${layout.ar};--pos:${item.pos ?? '50% 50%'};--i:${i};--rise:${pct(rise * STEP / r)};--rise-m:${pct(rise * STEP_M / r)}` };
+  return { ...p, col: i % 3, style: `--ar:${layout.ar};--pos:${item.pos ?? '50% 50%'};--i:${(i % 3) + Math.floor(i / 3)}` };
 }));
+const columns = [0, 1, 2].map((c) => ({ rise: `--rise:${pct((2 - c) * STEP / r)};--rise-m:${pct((2 - c) * STEP_M / r)}`, items: photos.filter((p) => p.col === c) }));
 const f = layout.field;
 ---
 <div class:list={['gal-wrap', cls]}>
-  <div class:list={['gal', `gal-${set}`, { 'has-head': hasHead, 'after-text': after === 'text' && !hasHead }]}>
+  <div class:list={['gal', `gal-${set}`, { 'has-head': hasHead, 'after-text': after === 'text' && !hasHead, 'two-rows': layout.items.length === 6 }]}>
     {hasHead && <div class="g-head"><slot name="head" /></div>}
     <div class="g-copy"><slot /></div>
     <div class="g-ladder df-host">
       <DotField inset={f.inset} insetM={f.m} focus={f.focus ?? '50% 50%'} />
-      {photos.map(({ style, slug: _slug, ...p }) => <GalleryTile {...p} style={style} />)}
+      {columns.map((c) => <div class="g-lcol" style={c.rise}>{c.items.map(({ style, slug: _slug, col: _col, ...p }) => <GalleryTile {...p} style={style} />)}</div>)}
     </div>
   </div>
 </div>
@@ -52,7 +56,9 @@ const f = layout.field;
   .gal .g-copy > :last-child { margin-bottom: 0; }
 
   .gal .g-ladder { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: var(--g-gap); align-items: start; }
-  .gal .g-tile { grid-row: 1; margin: var(--rise) 0 0; position: relative; display: block; border-radius: var(--g-r); color: var(--text); text-decoration: none; aspect-ratio: var(--ar);
+  /* Säule je Spalte, um ihre Stufe versetzt; margin-top in % bezieht sich auf die Spaltenbreite */
+  .gal .g-lcol { display: flex; flex-direction: column; gap: var(--g-gap); margin-top: var(--rise); min-width: 0; }
+  .gal .g-tile { margin: 0; position: relative; display: block; border-radius: var(--g-r); color: var(--text); text-decoration: none; aspect-ratio: var(--ar);
     transition: transform var(--g-dur) var(--g-ease); }
   /* Schatten als eigene Ebene: nur ihre Deckkraft wird animiert */
   .gal .g-tile::after { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; box-shadow: 0 1.25rem 2.5rem -1rem var(--shadow-strong); opacity: 0; transition: opacity var(--g-dur) var(--g-ease); pointer-events: none; }
@@ -94,7 +100,7 @@ const f = layout.field;
   @media (--grid-stacked) {
     .gal .g-head { margin-bottom: var(--head-gap-text); }
     .gal .g-ladder { margin-top: clamp(var(--space-8), 6vw, var(--space-11)); }
-    .gal .g-tile { margin: var(--rise-m) 0 0; }
+    .gal .g-lcol { margin-top: var(--rise-m); }
   }
 
   @media (prefers-reduced-motion: reduce) {

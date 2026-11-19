@@ -14,19 +14,24 @@
 // Nicht verwendet (Sichtung 18.11.2026): nfl-loop-1 und ford-loop-1 (zu dunkel), rewe-fc-1 (neblig, Logo kaum zu
 // erkennen, Bildrechte offen), publikum-1 (angeschnitten, unbelegt), nfl-2 (Hufeisen fast nur Schwarz),
 // bokkenrijders-loop-1 (Marc, Runde 5: kein Video in dieser Section). Runde 7 aus der Galerie genommen, weil nur noch drei
-// Plätze bleiben: prada-1, spotify-1, siemens-1, bokkenrijders-1/-2, nfl-1 (Werbung), herz-1, extraschicht-1,
+// Plätze bleiben: spotify-1, siemens-1, bokkenrijders-2 (Werbung, dort seit Runde 7b sechs Plätze), herz-1, extraschicht-1,
 // abendhimmel-1, sea-you-1 (Über uns), siemens-indoor-1/-3/-4/-7/-8 (Indoor). Sie bleiben im Manifest.
 
 /** @typedef {{ slug: string, pos?: string }} Photo */
 /** @typedef {{ inset: string, m?: string, focus?: string }} Field */
-/** @typedef {{ ar: string, items: [Photo, Photo, Photo], field: Field }} Layout */
+/** @typedef {{ ar: string, items: Photo[], field: Field }} Layout */ // 3 Bilder (eine Leiter) oder 6 (zwei Leitern)
 
 /** @type {Record<string, Layout>} */
 export const GALLERY_LAYOUTS = {
-  // Werbung #marketing: Logo-Shows großer Marken, von der Stadt über die Bühne ins Stadion.
+  // Werbung #marketing: Logo-Shows großer Marken als zwei Leitern übereinander (Marc, Runde 7: „Bei Marken haben wir genug
+  // Bilder“). Obere Zeile Prada, VW, Puma; untere Ford, Bokkenrijders, NFL. Spotify und Siemens-Zug bleiben draußen: ihre
+  // Formation ist breiter als ein quadratischer Ausschnitt.
   logos: {
     ar: '1 / 1',
-    items: [{ slug: 'ford-1', pos: '47% 50%' }, { slug: 'vw-1', pos: '80% 50%' }, { slug: 'puma-1', pos: '40% 50%' }],
+    items: [
+      { slug: 'prada-1', pos: '50% 50%' }, { slug: 'vw-1', pos: '80% 50%' }, { slug: 'puma-1', pos: '40% 50%' },
+      { slug: 'ford-1', pos: '47% 50%' }, { slug: 'bokkenrijders-1', pos: '32% 50%' }, { slug: 'nfl-1', pos: '50% 50%' },
+    ],
     field: { inset: '-10% 30% 26% 0%', m: '-12% 28% 30% -4%', focus: '60% 62%' },
   },
   // Über uns #nachhaltigkeit: Feste für alle, Zeichen für Demokratie, Publikum unter dem Himmel.

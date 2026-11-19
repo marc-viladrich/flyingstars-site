@@ -28,7 +28,7 @@ Eine Bühne spielt nur, wenn ihre ID im DOM steht und neben dem Section-Kopf Pla
 | alle | Formular `#inquiry-form` | „EURE SHOW“ | Anlass → Motiv, Ort → Schrift, Datum → Schrift und „NOCH n TAGE“, Paket → Drohnenzahl, `flyingstars:lead-confirmed` → „DANKE <Vorname>“, dann Stern |
 | Hochzeit | `#choreografie` | Doppelherz | keine |
 | Indoor | `#unterschied` | Indoor-Reihe (eigene Bühne, siehe unten); die Diskokugel des Schwarms findet dort keinen Platz mehr | keine |
-| Marken & Werbung | `#marketing`, `#agenturen` | Sportwagen, Handschlag | keine |
+| Marken & Werbung | `#agenturen` | Handschlag (`#marketing` ohne Schwarm, dort stehen die Logo-Shows als Bildleiter, Marc Runde 7) | keine |
 
 Ohne Bild: `#darum`, `#sicherheit`, `#nachhaltigkeit`, `#ablauf`, `#faq`. Die Show endet am Formular.
 Unter 900 px spielen nur `#warum-drohnen`, `#preise` und Formular.
@@ -276,12 +276,6 @@ effect“, Punkte zu klein (sollen wie beim Lichtpunkt-Hover auf Bildern sein), 
   Seite und Alt-Flächen, darum ist die Kante über jeder letzten Section eindeutig. Er steht in der Liste in `himmel.css` und läuft
   mit demselben `::before` (gleiche `--ueb-h`/`--ueb-maske`, also auch jede spätere Reglereinstellung) nach oben aus; ein unteres
   Band hat er nicht. Als positionierte Fläche deckt er das untere Band der letzten Section. Die Linie über dem Footer ist entfernt.
-- **Punktwolke im Footer** (`himmel/footer-wolke.ts`, Canvas `.footer-sky` hinter dem Inhalt): geparkte Drohnen im Logoverlauf,
-  ein lockeres Raster (26 px, verwackelt) rechts unten, das zur Mitte und an Inhalten weich ausläuft. Punkte entstehen nur mit
-  mindestens 32 px Abstand zu jeder Textzeile, jedem Bild und Icon (gemessen an den Zeilen, nicht an den Blöcken), darum passt
-  sich die Wolke jeder Breite an und berührt nie Inhalt. Jede Drohne schwebt auf einer eigenen Bahn von wenigen Pixeln (9–16 s)
-  und atmet leicht in der Helligkeit; 30 Bilder/s, nur solange der Footer sichtbar ist. Das Modul lädt erst, wenn der Footer
-  näher als 600 px ist. Pause, reduzierte Bewegung, verborgener Tab: Standbild.
 - **Keine Trennlinien an Farbwechseln:** Borders von `.section.alt`, `.c-setlist`, `.team-sec` und über dem Footer entfernt
   (`global.css`). Der Lichtschein der Team-Section setzt erst unter der Kante ein
   (sonst eigene gerade Kante).

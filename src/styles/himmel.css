@@ -79,7 +79,7 @@ main:has(+ .footer) > div:last-of-type > section:last-of-type {
 .reveal .team-sec { --ueb-inhaltsversatz: var(--reveal-member-offset); }
 /* Footer (Runde 7, Marc 19.11.2026: „keine Divider-Line, sondern unsere Dot-Divider“): eigene, dunklere Fläche (--night)
    mit demselben Übergang nach oben. Dunkler als die Seite und als die Alt-Flächen, darum ist die Kante über jeder letzten
-   Section eindeutig, und die Punktwolke steht auf Nachthimmel. Der Footer ist positioniert und malt seine Fläche, deckt also
+   Section eindeutig. Der Footer ist positioniert und malt seine Fläche, deckt also
    das untere Band einer Fläche darüber. Ein unteres Band hat er nicht (es läge unter dem Seitenende), darum fehlt er in der
    ::after-Liste oben. */
 
@@ -91,6 +91,3 @@ main:has(+ .footer) > div:last-of-type > section:last-of-type {
 html.reveal:not(.motion-paused) :is(h1, h2, h3) .grad:not(.st-an) { font-weight: 300; letter-spacing: var(--st-ls0); }
 html.reveal :is(h1, h2, h3) .grad.st-an { --st-dur: 1.1s; transition: font-weight var(--st-dur) var(--ease-ambient), letter-spacing var(--st-dur) var(--ease-ambient); }
 html.motion-paused :is(h1, h2, h3) .grad { transition: none; }
-
-/* ---------- Punktwolke im Footer (footer-wolke.ts) ---------- */
-.footer-sky { position: absolute; inset: 0; z-index: -1; width: 100%; height: 100%; pointer-events: none; }

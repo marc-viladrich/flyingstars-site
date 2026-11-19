@@ -755,8 +755,9 @@ function plan(): SlotDef[] {
   // Hochzeit: nur das Herz; bei #referenzen stünde ein Bild direkt über Fotos, die selbst Formationen zeigen
   if (/hochzeit|wedding|bruiloft/.test(p)) return [{ sel: '#choreografie', place: 'head', deskOnly: true, spec: { motif: 'doppelherz' } }, FORM];
   if (/indoor/.test(p)) return [{ sel: '#unterschied', place: 'head', deskOnly: true, max: 260, spec: { motif: 'diskokugel' } }, FORM];
+  // Werbung: #marketing ohne Schwarm, dort tragen die Logo-Shows der Bildleiter (Marc, Runde 7: „nur die Bilder nehmen,
+  // unsere Drone-Animation nehmen wir raus“)
   if (/werbung|brand|reclame/.test(p)) return [
-    { sel: '#marketing', place: 'head', deskOnly: true, spec: { motif: 'sportwagen' } },
     { sel: '#agenturen', place: 'head', deskOnly: true, spec: { motif: 'handschlag' } },
     FORM,
   ];
