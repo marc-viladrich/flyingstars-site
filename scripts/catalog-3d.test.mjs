@@ -29,17 +29,17 @@ test('genau n Drohnen in jeder Fassung, endlich, Farben gültig, Reserve dunkel'
 });
 
 test('keine zwei Drohnen aufeinander, keine verstreuten Punkte', () => {
-  for (const key of KEYS) for (const n of [200, 300, LIT_MAX]) {
-    const { pts } = CATALOG_3D[key](n), nn = nearest(pts), sorted = [...nn].sort((a, b) => a - b), med = sorted[n >> 1];
-    assert.ok(sorted[0] >= 0.4 * med, `${key} ${n}: knappster Abstand ${sorted[0].toFixed(4)} bei Median ${med.toFixed(4)}`);
-    assert.ok(sorted[n - 1] <= 4 * med, `${key} ${n}: eine Drohne steht allein (${sorted[n - 1].toFixed(3)})`);
+  for (const key of KEYS) for (const n of [200, 300, LIT_MAX]) for (const stufe of ['3D', '3D+']) {
+    const { pts } = CATALOG_3D[key](n, stufe), nn = nearest(pts), sorted = [...nn].sort((a, b) => a - b), med = sorted[n >> 1];
+    assert.ok(sorted[0] >= 0.4 * med, `${key} ${stufe} ${n}: knappster Abstand ${sorted[0].toFixed(4)} bei Median ${med.toFixed(4)}`);
+    assert.ok(sorted[n - 1] <= 4 * med, `${key} ${stufe} ${n}: eine Drohne steht allein (${sorted[n - 1].toFixed(3)})`);
   }
 });
 
 test('Eigenbewegung in Drohnengrenzen (Geschwindigkeit, Beschleunigung) und ohne Sprung bei t = 0', () => {
   const dt = 1 / 30;
-  for (const key of KEYS) {
-    const { pts, live } = CATALOG_3D[key](300);
+  for (const key of KEYS) for (const stufe of ['3D', '3D+']) {
+    const { pts, live } = CATALOG_3D[key](300, stufe);
     let vmax = 0, amax = 0;
     pts.forEach((p, j) => {
       let prev = null, pv = null;
@@ -49,8 +49,8 @@ test('Eigenbewegung in Drohnengrenzen (Geschwindigkeit, Beschleunigung) und ohne
         prev = o;
       }
     });
-    assert.ok(vmax < LIMITS.speed * 0.8, `${key}: ${vmax.toFixed(2)} Einheiten/s`);
-    assert.ok(amax < LIMITS.accel, `${key}: Beschleunigung ${amax.toFixed(2)}`);
+    assert.ok(vmax < LIMITS.speed * 0.8, `${key} ${stufe}: ${vmax.toFixed(2)} Einheiten/s`);
+    assert.ok(amax < LIMITS.accel, `${key} ${stufe}: Beschleunigung ${amax.toFixed(2)}`);
   }
 });
 
@@ -63,4 +63,28 @@ test('Aufbau je Motiv und Drohnenzahl schnell genug für den Anlasswechsel (< 12
       assert.ok(best < 12, `${key} ${n}: ${best.toFixed(1)} ms`);
     }
   }
+});
+
+// Runde 9 (Marc: „der Unterschied zwischen 3D und 3D plus ist noch nicht krass genug“): jede 3D-Fassung ist eingestuft
+// (stufen.js), die Stufe folgt aus der Formklasse, und es gibt keine Einstufung ohne Fassung.
+test('jede 3D-Fassung hat eine Formklasse und daraus eine Stufe (3D einfach, 3D+ komplex)', async () => {
+  const { KLASSE_KATALOG, STUFE_DER_KLASSE, stufeKatalog } = await import('../src/scripts/scenes/catalog-3d/stufen.js');
+  for (const key of KEYS) {
+    assert.ok(KLASSE_KATALOG[key], `${key}: keine Formklasse in stufen.js`);
+    assert.ok(['3D', '3D+'].includes(stufeKatalog(key)), `${key}: Klasse ${KLASSE_KATALOG[key][0]} hat keine Stufe`);
+  }
+  for (const key of Object.keys(KLASSE_KATALOG)) assert.ok(CATALOG_3D[key], `${key}: eingestuft, aber ohne 3D-Fassung`);
+  for (const [cls, st] of Object.entries(STUFE_DER_KLASSE)) assert.ok(['3D', '3D+'].includes(st), `${cls}: ${st}`);
+});
+
+// Runde 9 (Marc: „3D+ offensichtlich komplexer und refinter und more polished“): jedes einfache Motiv (Stufe 3D) läuft
+// auch in 3D+ und baut dort eine andere, aufwendigere Fassung (mehr Linien = andere Punktlage), nicht dieselbe.
+test('einfache Motive: die Fassung 3D+ unterscheidet sich von der Fassung 3D', async () => {
+  const { stufeKatalog } = await import('../src/scripts/scenes/catalog-3d/stufen.js');
+  const simple = KEYS.filter((k) => stufeKatalog(k) === '3D'), gleich = [];
+  for (const key of simple) {
+    const a = CATALOG_3D[key](400, '3D').pts, b = CATALOG_3D[key](400, '3D+').pts;
+    if (a.every((p, j) => Math.hypot(p[0] - b[j][0], p[1] - b[j][1], p[2] - b[j][2]) < 1e-9)) gleich.push(key);
+  }
+  assert.deepEqual(gleich, [], `ohne eigene 3D+-Fassung: ${gleich.join(', ')}`);
 });

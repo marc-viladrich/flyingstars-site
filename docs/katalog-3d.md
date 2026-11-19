@@ -2,7 +2,7 @@
 
 Runde 6, 18.11.2026. Marcs Auftrag: Jedes FlyingStars-Motiv soll eine echte 3D-Fassung bekommen, die zur selben Familie gehört wie die 2D-Formation, aber ein anderes Ding ist: keine zweite Ebene hinter der ersten, sondern ein Körper, so wie bei Kolibri, Fernsehturm, Masken und Buch.
 
-Code: `src/scripts/scenes/catalog-3d/` (Baukasten `kit.js`, Motive in `figuren.js`, `dinge.js`, `symbole.js`, `technik.js`, `hochzeit.js`, Register `index.js`). Der Haken sitzt in `catalogScene()` in `src/scripts/scenes/catalog.js`: Hat ein Motiv einen Eintrag im Register, spielt in den Show-Arten 3D (HORIZON) und Storytelling (ODYSSEY) die 3D-Fassung, in 2D (SPARK) unverändert die Katalogformation. `show-configurator.js` musste dafür nicht geändert werden: Die Show-Art wählt schon heute über `ART_TIER` die Fassung (2D → SPARK, 3D → HORIZON, Storytelling → ODYSSEY).
+Code: `src/scripts/scenes/catalog-3d/` (Baukasten `kit.js`, Motive in `figuren.js`, `dinge.js`, `symbole.js`, `technik.js`, `hochzeit.js`, `einfach.js`, Register `index.js`, Einstufung 3D/3D+ in `stufen.js`). Der Haken sitzt in `catalogScene()` in `src/scripts/scenes/catalog.js`: Hat ein Motiv einen Eintrag im Register, spielt in den Show-Arten 3D (HORIZON) und Storytelling (ODYSSEY) die 3D-Fassung, in 2D (SPARK) unverändert die Katalogformation. `show-configurator.js` musste dafür nicht geändert werden: Die Show-Art wählt schon heute über `ART_TIER` die Fassung (2D → SPARK, 3D → HORIZON, Storytelling → ODYSSEY).
 
 ## Was die vorhandenen 3D-Fassungen gut macht
 
@@ -102,8 +102,63 @@ Marc: „Der Schneemann und Lebkuchenmann sind crrrazy gut … warum nicht auch 
 
 **Verworfen in dieser Runde:** Zahnräder mit Zahnkontur vorn und hinten (liest sich als zweite Ebene) und mit Kanten an jedem Zahnkopf (unscharfe Zähne); Glasbögen über dem Drehzahlmesser (wirkten wie ein Fadenkreuz); Roboter mit sechs Meridianen (Vogelkäfig); Autoreifen als Doppelringe (im Schwenk eine „8“); Querschnitt-Reifen an dünnen Röhren (Heckausleger, Eheringe: helle Klumpen); Funken über den Gläsern als Einzeldrohnen (Wächter: allein stehende Drohne).
 
+## Runde 9 (20.11.2026): Einstufung 3D / 3D+, Galaxie, Lücken
+
+Marc: „der Unterschied zwischen 3D und 3D plus ist noch nicht krass genug … bei 3D … wirklich einfache Elemente, und dann die komplexen 3D-Elemente eher bei 3D Plus“; „die Galaxie … sieht noch ziemlich janky aus“; „Sportwagen und Helikopter, aber vom Flugzeug nicht … diese ganzen Inconsistencies“.
+
+**Regel (stufen.js).** Die Stufe folgt allein aus der Formklasse, die jedes Motiv im Register angeben muss (Wächter in `scripts/catalog-3d.test.mjs`):
+
+- **3D, einfach:** Zeichen, Körper, Gegenstand, Technik. Ein Gegenstand aus wenigen Grundkörpern (Kugel, Rotationskörper, Ring, Scheibe) oder ein Zeichen; Bewegung ist Drehung, Licht oder EIN einfacher Teil.
+- **3D+, komplex:** Figur, Tier, Pflanze, Fahrzeug, Szene, Effekt. Glieder oder Flügel, Räder und Rotoren, viele Blätter, mehrere Dinge in einer Szene, volumetrische Effekte, erzählte Abläufe.
+
+Angewendet wird die Stufe im Konfigurator (`src/content/show-configurator.js`): Motive der Stufe 3D+ spielen nur in Storytelling (ODYSSEY). `stufen.js` enthält auch einen Vorschlag für die eigenen Motive (`STUFE_EIGEN`) und die Katalog-Formationen, die schon räumlich sind (`STUFE_FORMATION`, alle 3D).
+
+**Zwei Fassungen je einfachem Motiv.** Marc: „dass 3D+ offensichtlich komplexer und refinter und more polished wirkt“. Einfache Motive laufen in 3D und in 3D+; jede Fassung ist deshalb `(n, stufe)` und baut je Stufe etwas anderes (`isPlus(stufe, n)` in `kit.js`, 3D+ ab 300 Drohnen voll):
+
+- **3D:** Grundkörper mit wenigen Profillinien, Einzellinien statt Röhren, keine Zierteile, keine Eigenbewegung außer dem, was das Ding ausmacht (Nadel, Zahnräder), ruhiger Schwenk.
+- **3D+:** Röhren mit Kamm, Zusatzteile (Spray, Klöppel, Noten, Schirmchen, Schaumkrone, Kette, Girlanden, Höhenlinien, Gehäusetiefe, drittes Zahnrad, polarer Ring der Galaxie …), feinere Silhouette und eine Story-Bewegung (laden, anstoßen, schlagen, aufblitzen).
+- Komplexe Motive (Stufe 3D+) haben nur eine Fassung; sie ignorieren die Stufe.
+- Wächter: jedes einfache Motiv baut in 3D+ eine andere Punktlage als in 3D; Abstände und Drohnengrenzen gelten für beide Stufen.
+- **Offen im Konfigurator:** `scenes/catalog.js` reicht die Stufe noch nicht durch. Nötig sind drei Zeilen: in `bodyScene` `const stufe = tier === 'ODYSSEY' ? '3D+' : '3D'`, `body3d(key, k, stufe)` mit Cache-Schlüssel `${key}|${k}|${stufe}` und `CATALOG_3D[key](k, stufe)`. Bis dahin zeigen 3D und 3D+ beide die schlichte Fassung.
+
+Paarbogen (3D 0° | 3D +30° | 3D+ 0° | 3D+ +30° | 3D+ Bewegung): `node scripts/catalog-3d-sheet.mjs aus.json 200 400 --paare stufe:3D`.
+
+**Galaxie neu.** Vorher liefen die Arme bei Radius fast null zu einem Knäuel zusammen, der Kern war ein Ellipsoid mit Querlinie (las sich als „e“), Staubarme liefen dicht neben den Hauptarmen (Doppellinien), und das Licht flackerte (`wander`). Jetzt: zwei logarithmische Spiralen mit festem Steigungswinkel ab Radius 0,15, ein kleiner Kugelumriss als Kern, starre langsame Drehung, Licht innen heller und ein einzelner Schimmer nach außen. Verworfen: Nebenarme genau zwischen den Hauptarmen (außen trotzdem zu nah), Sternhaufen auf den Armen (wirken wie Knoten).
+
+**Neu (9):** Flugzeug, Lastwagen, Feuerwehrauto (3D+, Fahrzeuge; Kastenkörper und Radpaare aus `technik.js`), Batterie, Doppelherz, Unendlich-Zeichen, Peace-Zeichen, Anker, Hochzeitstorte (3D, `einfach.js`). Die einfachen füllen den 3D-Modus, der durch die Umstufung kleiner wird: je Anlass bleiben dort 7 bis 13 Motive.
+
+**Noch ohne 3D-Fassung (29):** Jubiläum: Fahnen, 30 Jahre, Golfer, Golfplatz, Golfcaddy, Planierraupe, Bagger, Schraubenschlüssel, Handschlag. Festival: Palmeninsel, Strandliege, Kind mit Ballons, Autoscooter, Traktor, Berglandschaft, Elefant, Hasen, Kuh und UFO, Robbe, Förderturm. Hochzeit: Tor, Herz mit Initialen, Amor, Schleifenornament, Zwei Blüten, Blume, Blume am Stiel. Kultur: Superheldin, Fledermäuse. Im 3D-Modus sollen sie ausgeblendet werden statt als 2D-Formation zu laufen (Konfigurator).
+
+Kontaktbogen nach Stufe: `node scripts/catalog-3d-sheet.mjs aus.json 200 400 stufe:3D` bzw. `stufe:3D+`; mit `--paare` beide Fassungen nebeneinander (die Spaltennamen stehen im JSON als `cols`; `catalog-3d-sheet.py` zeigt sie, sobald es `cols` liest).
+
+## Sportfiguren (sport.js)
+
+Runde 9 (19./20.11.2026). Marc: „so nice wie du den Schneemann und das Lebkuchenmännchen gemacht hast, es ist crazy, wie schlecht im Vergleich dann dieser Fußballer ist.“ Fußball und Kopfsprung sind eigene Motive (Anlass Jubiläum, `scenes/jubilaeum.js`), keine Katalogmotive. Ihre Körper stehen in `catalog-3d/sport.js`; `index.js` reicht sie als `SPORT_3D` weiter, nicht in `CATALOG_3D` (`catalogScene()` kennt nur Katalogschlüssel). Stufe nach `stufen.js`: beide 3D+ (Figur mit Gliedern), also im Konfigurator in 2D und 3D+, nicht in 3D.
+
+**Was vorher falsch war (gemeinsame Ursache: Strichfigur statt Körper).** Kopf als Ring, Rumpf als ein Strich, Arme als Einzellinien, alles bei z = 0: im Schwenk eine schmaler werdende Pappkarte. Der Ball war eine flache Scheibe, startete ohne Schwung und flog beim Schuss durch das Bein. Der Springer war dieselbe Strichfigur aus Kapseln.
+
+**Körper (`spieler(n, { outline, kind })`).** Figurrahmen: Blick nach +x, y oben, z seitlich. Kopf, Trikot, Hose und Schuhe sind Ellipsoide, Hals, Arme und Beine Röhren (Oberschenkel kräftig, Wade). Schulterbreite von Gelenk zu Gelenk gut zweimal die Kopfbreite (Marc: „wirkt noch dürr, fast wie ein Skelett“). Trikot mit Schulter- und Saumreifen: Breitenkreise zeigen die wahre Breite aus jedem Blickwinkel; Profil und Meridian allein ließen den Rumpf im Dreiviertelblick schmal wirken. Hosensaum und Stutzen sind Querschnitt-Reifen. Stufen nach Drohnenzahl: unter 300 Doppelkontur mit Reifen, ab 300 Kammlinien an Beinen und die Brustbreite, ab 400 Kammlinien an den Armen (vorher rissen die Linien bei 250 Drohnen auf). `outline: true` ist nur die Doppelkontur, so wie FlyingStars dicke Glieder zeichnen (2D-Fassung). `kind: 'springer'` färbt nur eine Badehose.
+
+**Gelenke.** 13 Gelenke mit Vorwärtskinematik um die Gelenkpunkte der Bauhaltung (`SEG`, `place()`), innerstes Gelenk zuerst wie `rig()` in `show-motion.js`, nur in 3D (Beugen um z, Abspreizen der Arme um x). Haltungen sind Winkelobjekte (`POSES`: anlauf, schuss, stand, jubel).
+
+**Schuss (Referenz Eisenhüttenstadt, `anker-runde-2`).**
+- Die Figur steht in der Anlaufstellung, das Schussbein hinten, die Spitze am Boden. Das ist das Ausholen; es gibt keine Bewegung nach hinten (Finten-Wächter).
+- Nach 1 s Ruhe schwingt das Bein in einem Zug bis fast in die Waagerechte. Die Schwunggeschwindigkeit (`SWING`) steigt, sinkt beim Treffen auf 45 % (der Fuß gibt den Schwung ab) und klingt dann aus; sie wird nie negativ. Oberkörper zurück, Gegenarm hinaus, jedes Gelenk ein einziger Weg.
+- Der Ball liegt dort, wo die Schuhspitze am tiefsten durchschwingt. Der Abflug wird beim Aufbau gesucht: so spät wie möglich, ohne dass eine Schuh- oder Schienbeindrohne in den Ball eindringt (Abstand zum Ballrand ≥ 0,025).
+- Flug (`drag()`): Die Geschwindigkeit steigt in 0,43 s weich an und klingt dann ab wie durch Luftwiderstand, waagerecht langsamer als senkrecht. So wird die Bahn zum Bogen, der Ball steigt und bremst bis zum Stand. Drall: eine Dreivierteldrehung, die mit dem Flug ausläuft.
+- Ausnahme Drohnengrenze (Marc, 20.11.: „so lassen“): Ein Schuss ist ein Impuls; der Ball darf in der halben Sekunde nach dem Abflug bis 1,7 × `LIMITS.accel` beschleunigen (gemessen 4,0–5,0 Anzeigeeinheiten), danach unter der Grenze.
+- Ball (`ball(k, R)`): Kugelumriss, großes Fünfeck, je Ecke ein Linienzug Naht → Kante des Nachbarflecks. Der Umriss ist bewusst nicht `solid`: Die Fünfeckkanten sind Sehnen und lägen sonst im Inneren der Kugel, das Muster verschwände.
+
+**Fassungen.** `schuss2d` (2D): Doppelkontur im Durchschwung, flach, der Ball steigt und bremst. `schuss` (Bild „Der Spieler schießt“, `kickHorizon`; derzeit nicht gespielt, da Stufe 3D+). `kickStory` (3D+): derselbe Schuss mit stehendem Blick, der Ball fliegt flach unter der Latte ins Tor (`target`, `lift`), Lichtspur entlang der echten Ballbahn, danach Jubel. Der Spieler bekommt dort 46 % der Drohnen, höchstens 320.
+
+**Springer (`springer(n)`).** Derselbe Körper mit Badehose, die Arme gestreckt über dem Kopf, die Beine geschlossen, um die Längsachse zum Publikum gedreht (Brust und Schultern sichtbar). Der Kopf trägt mehr Drohnen (`headWeight`), damit er zwischen den Armen lesbar bleibt. Er nimmt die Gelenkwinkel der alten Strichfigur entgegen (`torso`, `arms`, `thigh`, `shin`, `foot`), daher bleiben Bahn und Takt in `jubilaeum.js`. Zwei Takt-Änderungen, beide Wächter-Befunde: Sprung 3,5 statt 3,2 s (am Scheitel überschritten die Hände die Beschleunigungsgrenze, das war schon bei der Strichfigur so), Scheitel des Absprungs 0,16 höher (der Körper steht mit erhobenen Armen höher, sonst sänke sein Schwerpunkt am Ende des Absprungs zurück).
+
+**Wächter.** `scripts/fussball-3d.test.mjs`: genau n Drohnen in jedem Bild von 150 bis 1000, keine zwei aufeinander, keine allein stehende Drohne, Ballmuster vorhanden, Fuß dringt nicht in den Ball ein, Ball fliegt erst los, wenn der Fuß da ist, Drohnengrenzen in Anzeigeeinheiten (wie `fit()` in `show-field.js`; beim Springer nur leuchtende Drohnen, der Rückweg hinter dem Wasser läuft dunkel), Kopf des Springers mit genug Drohnen und unter den Händen, Aufbau < 30 ms. Dazu `show-finte` (Jubiläum: 0 Treffer) und `show-counts`.
+
+**Verworfen.** Ball, der beim Erreichen des Fußes erst langsam anläuft (der Fuß lief durch ihn hindurch); Abflug genau bei höchster Fußgeschwindigkeit (der Ball hätte das Dreifache der Grenze gebraucht); Drall mit 1,2 Umdrehungen (der größte Teil der Abflugbeschleunigung kam aus dem Drall); Hals in der Doppelkontur (schnitt den Kopfring auf); Hände des Springers ganz zusammen im Profil (der Kopf verschwand zwischen den Oberarmen).
+
 ## Verworfen und offen
 
 - Verworfen während der Arbeit: Glocke als Einzelglocke (der Katalog zeigt zwei Glocken, Familie nicht erkennbar), Konfetti als lose Punktwolke (verstreute Punkte, Wächter), Funkeln auf der Diskokugel (Wächter `show-clouds`: ruhende Funkelwolke), Taube mit Ringkörper und Segelflügeln (las sich nicht als Taube).
-- Noch ohne 3D-Fassung (bleiben in 3D/Storytelling ihre 2D-Formation): weitere Fahrzeuge (Traktor, Lastwagen, Bagger, Feuerwehr, Planierraupe, Autoscooter, Golfcaddy, Flugzeug) – Bauweise wie Sportwagen (`box()` und `wheel()` in `technik.js`); Hochzeitsmotive Doppelherz, Herz mit Initialen, Hochzeitstorte, Tor; Landschaften (Berge, Golfplatz, Palmeninsel, Strandliege) – brauchen eine eigene Bauweise als Bühne in der Tiefe; Schriftzüge und Zahlen (30 Jahre, Initialen) – Tiefenstaffelung je Zeichen; weitere Figuren (Elefant, Hasen, Robbe, Amor, Superheldin, Kind, Golfer, Kuh und UFO, Fledermäuse) mit derselben Methode wie Hund und Taube.
+- Noch ohne 3D-Fassung: die aktuelle Liste (29 Motive, Stand Runde 9) steht im Abschnitt „Runde 9“. Fahrzeuge bauen wie Sportwagen, Lastwagen und Feuerwehr (`box()`, `wheel()`, `axle()` in `technik.js`); Figuren und Tiere wie Hund und Taube; Landschaften (Berge, Golfplatz, Palmeninsel, Strandliege) brauchen eine eigene Bauweise als Bühne in der Tiefe; Schriftzüge und Zahlen (30 Jahre, Initialen) Tiefenstaffelung je Zeichen.
 - `flat` in `content/show-configurator.js`: Katalogmotive laufen ab HORIZON weiterhin hinter den eigenen 3D-Motiven. Motive mit 3D-Fassung könnten nach vorn rücken; das ist eine Inhaltsentscheidung und gehört nicht zu dieser Runde.

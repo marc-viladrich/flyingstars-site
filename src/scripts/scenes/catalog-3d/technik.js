@@ -5,7 +5,7 @@
 // Bei wenigen Drohnen bleibt das Wesentliche (eine Kontur, Achsen, Naben); die zweite Seite, Kanten und Zierlinien
 // kommen dazu, wenn die Drohnen dafür reichen (ab etwa 330, voll ab 400).
 import { GOLD, WARM, ORANGE, RED, VIOLET, CYAN, BLUE, DIAMOND, mix, yaw, roll, pitch, glint, breathe, chase, wander } from '../../show-motion.js';
-import { ellipsoid, revolve, tube, curves, spot, assemble, colour, ease, turn, rankBy, TAU } from './kit.js';
+import { ellipsoid, revolve, tube, curves, spot, assemble, colour, ease, turn, rankBy, isPlus, TAU } from './kit.js';
 
 /** Kreis um c mit Radius r in der Ebene mit den Achsen u, v (Standard: Bildebene). */
 const circle = (c, r, k = 40, u = [1, 0, 0], v = [0, 1, 0]) => ({ pts: Array.from({ length: k }, (_, i) => { const a = (i / k) * TAU; return [0, 1, 2].map((d) => (c[d] || 0) + (u[d] * Math.cos(a) + v[d] * Math.sin(a)) * r); }), closed: true });
@@ -108,11 +108,13 @@ function gearOutline({ c, pitch, teeth }, phase, k = 6) {
   }
   return pts;
 }
-export function zahnraeder(n) {
-  const rich = n >= 330, thick = rich ? 0.08 : 0;
+// Runde 9: 3D zeigt zwei flache Räder mit Nabenring, die sich drehen; 3D+ das dritte Rad, Stärke (glatte Rückseite),
+// Speichenkranz und herausstehende Achsen, dazu Glanz, der um die Zähne läuft.
+export function zahnraeder(n, stufe) {
+  const rich = isPlus(stufe, n), thick = rich ? 0.08 : 0;
   const parts = [];
   GEARS.forEach((g, gi) => {
-    if (gi === 2 && n < 260) return;
+    if (gi === 2 && !rich) return;
     // Phasen so, dass Zahn in Lücke greift (am Berührpunkt der Teilkreise)
     const dir = gi === 0 ? 0 : Math.atan2(GEARS[gi - 1].c[1] - g.c[1], GEARS[gi - 1].c[0] - g.c[0]);
     const phase = gi === 0 ? 0.15 : dir + Math.PI / g.teeth - 0.35 * (TAU / g.teeth);
@@ -139,6 +141,7 @@ export function zahnraeder(n) {
   return { pts, live: (b, j, t, o) => {
     const tag = shape.tags[j], gi = +tag.slice(-1), g = GEARS[gi];
     roll(o, -GEAR_W * g.w * t, g.c[0], g.c[1]);
+    if (!rich) { turn(o, t, -0.36, 0.32, 14, -0.1, 0); return; }
     o[3] = tag.startsWith('hub') ? breathe(t, 3, gi * 0.6) : glint(Math.atan2(b[1] - g.c[1], b[0] - g.c[0]), t, 4.5, 0.3, -Math.PI, Math.PI);
     turn(o, t, -0.36, 0.42, 14, -0.1, 0);
   } };
@@ -150,8 +153,10 @@ export function zahnraeder(n) {
 // Die Nadel dreht hoch in den roten Bereich und wieder zurück.
 const DIAL = { r: 0.96, a0: (225 * Math.PI) / 180, a1: (-45 * Math.PI) / 180 };
 const NEEDLE_REST = (158 * Math.PI) / 180, NEEDLE_PEAK = (12 * Math.PI) / 180;
-export function drehzahl(n) {
-  const rich = n >= 330;
+// Runde 9: 3D zeigt Ring, Skala und Nadel (die Nadel dreht hoch); 3D+ das Gehäuse in der Tiefe, mehr Striche, den roten
+// Bogen, die Digitalanzeige und Licht, das der Nadel folgt.
+export function drehzahl(n, stufe) {
+  const rich = isPlus(stufe, n);
   const R = DIAL.r, depth = rich ? 0.16 : 0;
   const rim = curves('rim', [circle([0, 0, 0.05], R, 64), ...(rich ? [circle([0, 0, -depth], R * 0.97, 56), ...Array.from({ length: 8 }, (_, k) => { const a = (k / 8) * TAU + 0.2; return [[Math.cos(a) * R, Math.sin(a) * R, 0.05], [Math.cos(a) * R * 0.97, Math.sin(a) * R * 0.97, -depth]]; })] : [])], { w: 1 });
   const ticks = [], red = [];
@@ -166,13 +171,14 @@ export function drehzahl(n) {
   const cap = ellipsoid('cap', [0, 0, 0.1], [0.075, 0.075, 0.05], { lat: [] });
   const readout = curves('readout', [outline([[-0.26, -0.42], [0.26, -0.42], [0.26, -0.6], [-0.26, -0.6]], 0.01)], { w: 0.9 });
   const digits = curves('digit', [-0.15, 0, 0.15].map((x) => [[x - 0.04, -0.51, 0.015], [x + 0.04, -0.51, 0.015]]), { w: 1 });
-  const shape = assemble([rim, scale, zone, needle, cap, readout, digits], n);
+  const shape = assemble(rich ? [rim, scale, zone, needle, cap, readout, digits] : [rim, scale, zone, needle, cap], n);
   const pts = colour(shape, { rim: mix(WARM, CYAN, 0.2), tick: WARM, redline: RED, needle: mix(RED, ORANGE, 0.35), cap: GOLD, readout: mix(CYAN, WARM, 0.35), digit: CYAN }, WARM);
   const ang = pts.map((p) => Math.atan2(p[1], p[0]));
   const needleAt = (t) => NEEDLE_REST + (NEEDLE_PEAK - NEEDLE_REST) * ease(t, 6.5);
   return { pts, live: (b, j, t, o) => {
     const tag = shape.tags[j], a = needleAt(t);
     if (tag === 'needle') roll(o, a);
+    if (!rich) { turn(o, t, 0.36, 0.32, 14); pitch(o, 0.1); return; }
     if (tag === 'redline') o[3] = 0.85 + 0.55 * Math.max(0, Math.cos(a - ang[j]) ** 8);
     else if (tag === 'tick') o[3] = 0.8 + 0.5 * Math.max(0, Math.cos(a - ang[j]) ** 12);
     else if (tag === 'digit') o[3] = 0.7 + 0.5 * ease(t, 6.5);
@@ -255,5 +261,113 @@ export function hubschrauber(n) {
     roll(o, 0.04 * Math.sin((t * TAU) / 8), -0.4, 0); // Nase nickt leicht
     turn(o, t, -0.4, 0.36, 14, -0.25, 0);
     pitch(o, 0.14);
+  } };
+}
+
+// ---------------------------------------------------------------- Flugzeug ----------
+// Runde 9 (Marc: „wir haben 3D-Versionen vom Sportwagen und Helikopter, aber vom Flugzeug nicht“): Verkehrsflugzeug wie im
+// Katalog, die Nase rechts unten, das Leitwerk links oben. Im eigenen Rahmen gebaut (Rumpf entlang x, Nase +x): Rumpf als
+// Röhre mit Querschnitt-Reifen, gepfeilte Tragflächen und Höhenleitwerk waagerecht in der Tiefe (im 2D-Bild schmale
+// Streifen, im Schwenk Flächen), Seitenleitwerk senkrecht, zwei Triebwerke unter den Flächen, Fensterreihe, Cockpit.
+// Positionslichter rot links, grün rechts, ein Blitzlicht am Leitwerk. Das Flugzeug neigt sich sanft in die Kurve.
+const PLANE = { roll: -0.2, c: [0.0, 0.02] };
+const FUSE = (s) => (s < 0.08 ? 0.03 + 0.08 * Math.sqrt(s / 0.08) : s > 0.9 ? 0.11 - 0.07 * ((s - 0.9) / 0.1) ** 0.6 : 0.11);
+export function flugzeug(n) {
+  const rich = n >= 330;
+  const local = [];
+  // Rumpf: hinten (Heck, x = -1) nach vorn (Nase, x = 1); Heck leicht nach oben gezogen
+  local.push(tube('plane', [[-1.0, 0.07, 0], [-0.7, 0.02, 0], [0.9, 0, 0], [1.0, -0.01, 0]], (s) => FUSE(1 - s), { depth: 1, hoops: rich ? 3 : 1, crest: rich, caps: [true, true] }));
+  // Tragflächen (tief angesetzt) und Höhenleitwerk: gepfeilte Trapeze in der waagerechten Ebene
+  const wing = (s, root, tip, span, y) => curves('wing', [{ pts: [[root[0], y, s * 0.1], [root[1], y, s * 0.1], [tip[1], y + 0.03, s * span], [tip[0], y + 0.03, s * span]], closed: true }], { w: 1 });
+  for (const s of [1, -1]) {
+    local.push(wing(s, [-0.2, 0.26], [-0.56, -0.4], 0.92, -0.06));
+    local.push(wing(s, [-0.98, -0.74], [-1.06, -0.96], 0.36, 0.06));
+    // Triebwerk: kurze Röhre unter der Fläche
+    local.push(tube('engine', [[-0.06, -0.15, s * 0.36], [0.2, -0.15, s * 0.36]], 0.055, { depth: 1, hoops: 0, crest: false, caps: [false, true] }));
+  }
+  local.push(curves('fin', [{ pts: [[-0.74, 0.1, 0], [-0.98, 0.48, 0], [-1.08, 0.48, 0], [-1.0, 0.1, 0]], closed: true }], { w: 1 }));
+  // Fensterreihe und Cockpit auf der Publikumsseite (z > 0) des Rumpfs
+  const side = (x) => [x, 0.035, Math.sqrt(Math.max(0, FUSE((1 - x) / 2) ** 2 - 0.035 ** 2)) + 0.012];
+  local.push(curves('window', [Array.from({ length: 16 }, (_, i) => side(-0.6 + (1.3 * i) / 15))], { w: rich ? 0.9 : 0.6 }));
+  local.push(curves('cockpit', [[side(0.82), [0.9, 0.05, 0.06], [0.93, 0.03, 0.0]]], { w: 1.2 }));
+  const lights = [spot('red', [-0.56, -0.03, 0.93], 3, 0.02), spot('green', [-0.56, -0.03, -0.93], 3, 0.02), spot('strobe', [-1.04, 0.5, 0], 1, 0.01)];
+  const shape = assemble([...local, ...lights], n);
+  const lp = shape.pts.map((p) => [...p]);
+  const place = (o) => { roll(o, PLANE.roll); o[0] += PLANE.c[0]; o[1] += PLANE.c[1]; };
+  const world = lp.map((p) => { const o = [...p]; place(o); return o; });
+  const pts = colour({ pts: world, tags: shape.tags }, { wing: mix(WARM, CYAN, 0.3), fin: mix(WARM, CYAN, 0.3), engine: mix(WARM, BLUE, 0.4), window: GOLD, cockpit: CYAN, red: RED, green: [90, 222, 120], strobe: WARM }, (p) => mix(WARM, DIAMOND, 0.4));
+  return { pts, live: (b, j, t, o) => {
+    const tag = shape.tags[j], p = lp[j];
+    o[0] = p[0]; o[1] = p[1]; o[2] = p[2];
+    // neigt sich sanft in die Kurve: Drehung um die Längsachse (x), dazu ein leichtes Nicken
+    const bank = 0.16 * Math.sin((t * TAU) / 9);
+    const y = o[1], z = o[2]; o[1] = y * Math.cos(bank) - z * Math.sin(bank); o[2] = y * Math.sin(bank) + z * Math.cos(bank);
+    place(o);
+    o[1] += 0.03 * Math.sin((t * TAU) / 6);
+    o[3] = tag === 'red' || tag === 'green' ? 0.9 + 0.3 * Math.sin((t * TAU) / 2) : tag === 'strobe' ? ((t % 1.6) < 0.15 ? 1.6 : 0.35) : tag === 'window' ? chase(p[0], t, 0.25, 0.35, 0.8, 1.25) : 1;
+    turn(o, t, 0.5, 0.36, 14);
+    pitch(o, 0.34); // etwas von oben: die Tragflächen zeigen ihre Form
+  } };
+}
+
+/** Radhaus: Halbkreis über dem Rad (cx, cy) mit Radius r, als Teil einer Seitenkontur von rechts nach links. */
+const arch = (cx, cy, r, k = 9) => Array.from({ length: k }, (_, i) => { const a = (i / (k - 1)) * Math.PI; return [cx + Math.cos(a) * r, cy + Math.sin(a) * r]; });
+/** Radpaar (vorn und hinten in der Tiefe) mit Speichen, die sich drehen. */
+const axle = (tag, x, y, r, z, spokes) => [1, -1].map((s) => curves(tag, [circle([x, y, s * z], r, 32), ...Array.from({ length: spokes }, (_, k) => { const a = (k / spokes) * TAU + 0.3; return [[x + Math.cos(a) * r * 0.25, y + Math.sin(a) * r * 0.25, s * z], [x + Math.cos(a) * r * 0.85, y + Math.sin(a) * r * 0.85, s * z]]; })]));
+
+// ---------------------------------------------------------------- Lastwagen ----------
+// Seitenansicht wie im Katalog, das Führerhaus rechts: Laderaum als Quader, Führerhaus mit schräger Scheibe als
+// Kastenkörper, beide mit Seitenkontur auf beiden Seiten und Querkanten, drei Achsen, Scheinwerfer, Rücklichter.
+// Die Räder rollen, der Wagen federt.
+const LKW = { half: 0.32, axles: [-0.66, 0.1, 0.62], wy: -0.33, wr: 0.14 };
+export function lkw(n) {
+  const rich = n >= 330, H = LKW.half;
+  const cargo = box('cargo', [[-0.96, -0.22], [0.28, -0.22], [0.28, 0.48], [-0.96, 0.48]], H, [0, 1, 2, 3]);
+  const cab = box('cab', [[0.32, -0.3], [0.96, -0.3], [0.96, 0.04], [0.86, 0.32, 0.92], [0.32, 0.36, 0.92]], H * 0.96, rich ? [1, 2, 3, 4] : [2, 3]);
+  const win = [[0.56, 0.06, 0.95], [0.82, 0.06, 0.95], [0.82, 0.27, 0.92], [0.56, 0.3, 0.92]];
+  const windows = curves('window', [outline(win, H * 0.96), ...(rich ? [outline(win, -H * 0.96)] : [])], { w: 0.9 });
+  const chassis = curves('chassis', [[[-0.9, -0.3, 0], [0.32, -0.3, 0]]], { w: 0.8 });
+  const wheels = LKW.axles.flatMap((x, k) => axle(`wheel${k}`, x, LKW.wy, LKW.wr, H + 0.02, rich ? 4 : 3).slice(0, rich || n >= 260 ? 2 : 1));
+  const lights = [1, -1].flatMap((s) => [spot('head', [0.97, -0.14, s * 0.22], 3, 0.025, [1, 0, 0]), spot('tail', [-0.97, -0.12, s * 0.26], 3, 0.025, [-1, 0, 0])]);
+  const shape = assemble([cargo, cab, windows, chassis, ...wheels, ...lights], n);
+  const pts = colour(shape, { cab: mix(WARM, CYAN, 0.2), window: CYAN, chassis: mix(WARM, BLUE, 0.3), head: GOLD, tail: RED, wheel0: WARM, wheel1: WARM, wheel2: WARM }, (p) => mix(BLUE, VIOLET, 0.25 + 0.3 * (p[1] + 0.2)));
+  return { pts, live: (b, j, t, o) => {
+    const tag = shape.tags[j];
+    if (tag.startsWith('wheel')) roll(o, -t * 2.2, LKW.axles[+tag.slice(5)], LKW.wy); // rollt nach rechts
+    else o[1] += 0.008 * Math.sin((t * TAU) / 1.5);
+    o[3] = tag === 'head' ? 1.3 : tag === 'cargo' ? glint(b[0], t, 5, 0.25, -1, 0.4) : 1;
+    turn(o, t, 0.42, 0.3, 14, 0, 0);
+    pitch(o, 0.16);
+  } };
+}
+
+// ---------------------------------------------------------------- Feuerwehrauto ----------
+// Seitenansicht wie im Katalog, das Führerhaus rechts: Aufbau mit Radhäusern und Führerhaus als Kastenkörper, auf dem
+// Dach die Drehleiter (zwei Holme mit Sprossen in der Tiefe), Blaulicht auf dem Führerhaus. Die Leiter richtet sich ein
+// Stück auf und senkt sich wieder, das Blaulicht blinkt, die Räder rollen.
+const FW = { half: 0.33, axles: [-0.6, 0.64], wy: 0.0, wr: 0.17, hinge: [-0.74, 0.66] };
+export function feuerwehr(n) {
+  const rich = n >= 330, H = FW.half;
+  const bodyPoly = [[0.6, 0.02], ...arch(FW.axles[0], FW.wy, FW.wr + 0.04), [-0.96, 0.02], [-0.96, 0.48], [0.6, 0.48]];
+  const body = box('truck', bodyPoly, H, rich ? [bodyPoly.length - 3, bodyPoly.length - 2, bodyPoly.length - 1, 0] : [bodyPoly.length - 2, bodyPoly.length - 1]);
+  const cab = box('cab', [[0.6, 0.02], [0.6, 0.55, 0.95], [0.88, 0.53, 0.9], [0.98, 0.34], [0.98, 0.02]], H, rich ? [1, 2, 3, 4] : [2, 3]);
+  const win = [[0.66, 0.3, 0.95], [0.86, 0.3, 0.92], [0.92, 0.46, 0.9], [0.66, 0.48, 0.95]];
+  const windows = curves('window', [outline(win, H), ...(rich ? [outline(win, -H)] : [])], { w: 0.9 });
+  // Drehleiter: zwei Holme in der Tiefe, Sprossen dazwischen
+  const L0 = FW.hinge[0], L1 = 0.46, LY = 0.66, LZ = 0.11;
+  const ladder = curves('ladder', [[[L0, LY, LZ], [L1, LY, LZ]], [[L0, LY, -LZ], [L1, LY, -LZ]], ...Array.from({ length: rich ? 6 : 4 }, (_, k) => { const x = L0 + 0.1 + ((L1 - L0 - 0.2) * k) / ((rich ? 6 : 4) - 1); return [[x, LY, LZ], [x, LY, -LZ]]; }), [[L0, 0.48, 0], [L0, LY, 0]]], { w: 0.9 });
+  const stripe = curves('stripe', [[[-0.94, 0.22, H + 0.01], [0.58, 0.22, H + 0.01]]], { w: 1 });
+  const wheels = FW.axles.flatMap((x, k) => axle(`wheel${k}`, x, FW.wy, FW.wr, H + 0.02, rich ? 5 : 3).slice(0, rich || n >= 260 ? 2 : 1));
+  const beacon = spot('beacon', [0.74, 0.62, 0], rich ? 4 : 3, 0.035, [0, 1, 0]);
+  const head = [1, -1].map((s) => spot('head', [0.99, 0.12, s * 0.22], 3, 0.025, [1, 0, 0]));
+  const shape = assemble([body, cab, windows, ladder, stripe, ...wheels, beacon, ...head], n);
+  const pts = colour(shape, { cab: RED, window: CYAN, ladder: mix(WARM, GOLD, 0.35), stripe: WARM, beacon: BLUE, head: GOLD, wheel0: WARM, wheel1: WARM }, RED);
+  return { pts, live: (b, j, t, o) => {
+    const tag = shape.tags[j];
+    if (tag === 'ladder') roll(o, 0.14 + 0.16 * ease(t, 7) ** 2, FW.hinge[0], FW.hinge[1]); // schräg aufgestellt, richtet sich weiter auf
+    else if (tag.startsWith('wheel')) roll(o, -t * 2, FW.axles[+tag.slice(5)], FW.wy);
+    o[3] = tag === 'beacon' ? ((t % 0.9) < 0.3 ? 1.6 : 0.35) : tag === 'head' ? 1.3 : tag === 'truck' ? glint(b[0], t, 5, 0.25, -1, 0.7) : 1;
+    turn(o, t, 0.42, 0.3, 14, 0, 0);
+    pitch(o, 0.16);
   } };
 }

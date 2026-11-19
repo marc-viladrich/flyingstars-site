@@ -2,10 +2,11 @@ import { t as message } from '../../i18n/ui.mjs';
 // jubilaeum motifs of the eleventh version (see src/content/show-configurator.js for the build names).
 // Fußball and Kopfsprung, after FlyingStars' sports pictures in Eisenhüttenstadt (round 2: a stick figure with a ball
 // that drifts up, a diver over rows of water with a light running through them), as own figures: the footballer is a
-// rig whose leg really swings (smooth, slow, within the drone limits), the diver a rigid body that turns along its arc.
+// body with joints from catalog-3d/sport.js (Runde 9), the diver a rigid body that turns along its arc.
 import { sampleOutline, circle } from "../show-geometry.js";
 import { textFormationAsync } from "../text-formation.js";
-import { TAU, WARM, GOLD, CYAN, BLUE, mix, paint, smooth, hash, roll, sway, breathe, glint, sparkle, chase, burstLight, rig, share, part, act, drift } from "../show-motion.js";
+import { schuss, schuss2d, springer, pose as fussPose, fussball3d, GROUND as FOOT_GROUND, VIEW } from "./catalog-3d/sport.js";
+import { TAU, WARM, GOLD, CYAN, BLUE, mix, paint, smooth, hash, sway, glint, sparkle, chase, burstLight, share, part, act, drift } from "../show-motion.js";
 
 const line = (...pts) => ({ pts, closed: false });
 const sample = (paths, k) => (k > 0 ? sampleOutline(paths, k).map(([x, y]) => [x, y, 0]) : []);
@@ -18,15 +19,7 @@ function keys(K, t) {
   for (let i = 1; i < K.length; i++) if (t < K[i][0]) return K[i - 1][1] + (K[i][1] - K[i - 1][1]) * ease((t - K[i - 1][0]) / (K[i][0] - K[i - 1][0]));
   return K[K.length - 1][1];
 }
-const rot = ([x, y], a, [cx, cy] = [0, 0]) => [cx + (x - cx) * Math.cos(a) - (y - cy) * Math.sin(a), cy + (x - cx) * Math.sin(a) + (y - cy) * Math.cos(a)];
-/** A rig frozen at time t: its points in that pose. */
-const bake = (r, t) => r.pts.map((p, j) => { const o = [p[0], p[1], p[2], 1]; r.live(p, j, t, o); return [o[0], o[1], o[2]]; });
 const bez = (P0, P1, P2, s) => P0.map((v, i) => (1 - s) ** 2 * v + 2 * (1 - s) * s * P1[i] + s * s * P2[i]);
-/** A limb as a slim closed outline: the double contour real shows use for thick lines. */
-function capsule(a, b, w) {
-  const dx = b[0] - a[0], dy = b[1] - a[1], l = Math.hypot(dx, dy), nx = (-dy / l) * w, ny = (dx / l) * w;
-  return { pts: [[a[0] + nx, a[1] + ny], [b[0] + nx, b[1] + ny], [b[0] + dx / l * w, b[1] + dy / l * w], [b[0] - nx, b[1] - ny], [a[0] - nx, a[1] - ny], [a[0] - dx / l * w, a[1] - dy / l * w]] };
-}
 /** The number of the jubilee in FlyingStars' own lettering, centred on (cx, cy); unused drones underline it. */
 async function number(value, k, halfWidth, cx, cy, z = 0) {
   const r = await textFormationAsync(value, k); // vorberechnet sofort, sonst im Worker (Runde 6)
@@ -39,133 +32,64 @@ async function number(value, k, halfWidth, cx, cy, z = 0) {
 const NUMBER = "25";
 
 // ---------- Fußball ----------
-// The footballer faces right, hip at the origin, drawn in reference pose (kicking leg hanging straight down). The rig
-// turns the limbs; angles are offsets from this pose, positive = counter-clockwise = forward for the kicking leg.
-const HIP = [0, 0], NECK = [-0.02, 0.5], SH = [-0.02, 0.43], HEAD = [-0.035, 0.64], HEAD_R = 0.12;
-const KNEE = [0.02, -0.42], ANKLE = [0.02, -0.84], TOE = [0.17, -0.86], GROUND = -0.87;
-const SHIN = 6; // limb index of the shin (for the light at the moment of the kick)
-function footballer(n, a, thick = false) {
-  const limb = (p, q) => (thick ? capsule(p, q, 0.04) : line(p, q));
-  return rig([
-    { name: "torso", paths: [limb(HIP, NECK)], pivot: HIP, angle: a.lean },
-    { name: "head", paths: [circle(HEAD[0], HEAD[1], HEAD_R, 40)], pivot: HIP, parent: "torso" },
-    { name: "armB", paths: [line(SH, [-0.21, 0.27], [-0.4, 0.32])], pivot: SH, parent: "torso", angle: a.armB },
-    { name: "armF", paths: [line(SH, [0.16, 0.27], [0.34, 0.31])], pivot: SH, parent: "torso", angle: a.armF },
-    { name: "stand", paths: [limb(HIP, [-0.08, -0.42]), limb([-0.08, -0.42], [-0.1, -0.84]), line([-0.1, -0.85], [0.04, -0.87])], pivot: HIP },
-    { name: "thigh", paths: [limb(HIP, KNEE)], pivot: HIP, angle: a.thigh },
-    { name: "shin", paths: [limb(KNEE, ANKLE), line(ANKLE, TOE)], pivot: KNEE, parent: "thigh", angle: a.shin },
-  ], n, sample);
-}
-const toeAt = (thigh, shin) => rot(rot(TOE, shin, KNEE), thigh, HIP);
-/** A football: rim, a pentagon in the middle, seams to five patches cut by the rim (plain spokes read as a wheel); turning the pattern shows the spin. */
-function football(k, R) {
-  const [rim, inner] = share(k, [1.3, 1]), full = k >= 34; // from 34 drones the outer patches cut by the rim show too
-  const at = (a, r) => [Math.cos(a) * r * R, Math.sin(a) * r * R], corner = Array.from({ length: 5 }, (_, i) => Math.PI / 2 + (i * TAU) / 5);
-  const seams = [{ pts: corner.map((a) => at(a, 0.42)) }, ...corner.flatMap((a) => (full ? [line(at(a, 0.42), at(a, 0.66)), line(at(a - 0.42, 0.97), at(a, 0.66), at(a + 0.42, 0.97))] : [line(at(a, 0.42), at(a, 0.68))]))];
-  return [...sample([circle(0, 0, R, 48)], rim), ...sample(seams, inner)];
-}
-const still = (v) => () => v;
-
-// One kick of the HORIZON loop (s): swing through, follow through, back to rest. The swing takes 1.5 s, slow enough
-// that the foot stays within the drones' acceleration; the ball leaves when the foot reaches it.
-// Vierzehnte Fassung (Marc, 30.10.2026: „Finten … überall raus“): kein Ausholen mehr. Vorher zog das Bein erst nach
-// hinten (Oberschenkel −0,3, Unterschenkel −0,9) und schwang dann nach vorn. Jetzt geht der Fuß aus dem Stand nur nach
-// vorn; das Knie beugt sich im Schwung und streckt sich zum Ball.
-const KICK = {
-  thigh: [[0.1, 0.12], [1.2, 0.12], [2.7, 1.0], [3.1, 1.0], [4.6, 0.12]],
-  shin: [[0.1, -0.05], [1.2, -0.05], [1.9, -0.32], [2.5, -0.08], [4.6, -0.05]],
-  hit: 2.1, // the foot reaches the ball
-};
-const kickAngles = (clock) => {
-  const th = (t) => keys(KICK.thigh, clock(t));
-  return { thigh: th, shin: (t) => keys(KICK.shin, clock(t)), lean: (t) => 0.04 + 0.12 * (th(t) - 0.12), armB: (t) => 0.1 - 0.22 * (th(t) - 0.12), armF: (t) => -0.1 + 0.18 * (th(t) - 0.12) };
-};
-/** The ball's arc after the kick: up and forward, over the top, and down again further ahead (s ∈ [0, 1]).
- * Vierzehnte Fassung: Der Ball fliegt nur noch nach vorn. Vorher kehrte er in einer Schleife vor den Fuß zurück (für
- * den nächsten Schuss), das las sich als Hin und Her. */
-const lob = (s, H, D) => [D * (1 - Math.cos(Math.PI * s)) * 0.5, H * Math.sin(Math.PI * s)];
-
+// Runde 9 (Marc, 19.11.2026: „crazy, wie schlecht im Vergleich dann dieser Fußballer ist“): Spieler und Ball sind
+// Körper nach der Methode der Katalogfiguren (catalog-3d/sport.js, docs/katalog-3d.md). Die alte Strichfigur (rig aus
+// Einzellinien, flacher Ball, der durch das Bein flog) ist ersetzt. SPARK: Doppelkontur im Durchschwung, der Ball steigt
+// und bremst (Referenz Eisenhüttenstadt); HORIZON: der ganze Schuss aus der Anlaufstellung; ODYSSEY: Schuss ins Tor.
 function kick2d(n, caption) {
-  const [f, b] = share(n, [2.3, 1]), TH = 1.38, SN = -0.06, R = 0.19;
-  const body = bake(footballer(f, { lean: still(0.18), thigh: still(TH), shin: still(SN), armB: still(0.3), armF: still(-0.45) }), 0);
-  const toe = toeAt(TH, SN), C = [toe[0] + 0.08, toe[1] + R + 0.13];
-  const pts = [...paint(body, WARM), ...paint(shift(football(b, R), C[0], C[1]), GOLD)];
-  // the figure stands; only the pattern inside the ball turns, and the ball floats a hair above the foot
-  return { beats: [{ pts, caption, live: (bs, j, t, o) => {
-    if (j < f) return;
-    roll(o, -t * 0.8, C[0], C[1]); o[1] += 0.018 * Math.sin(t * 1.7); o[3] = breathe(t, 3);
-  } }] };
+  return { beats: [{ ...schuss2d(n), caption }] };
 }
 
 function kickHorizon(n, caption) {
-  const [f, b] = share(n, [2.6, 1]), R = 0.17, P = 6.0, TL = 2.0, TF = 3.7, H = 1.1, D = 0.6;
-  const clock = (t) => (t <= 0 ? 0 : t % P), r = footballer(f, kickAngles(clock), true);
-  const B0 = [0.5, GROUND + R + 0.01], ballPts = football(b, R);
-  const flight = (t) => ease((clock(t) - TL) / TF);
-  const fit = [...r.pts, ...Array.from({ length: 21 }, (_, i) => { const [x, y] = lob(i / 20, H, D); return [B0[0] + x, B0[1] + y + R, 0]; }), [B0[0] + D + R, B0[1], 0]];
-  // vierzehnte Fassung: ein ganzer Schuss bis zur Landung des Balls (5,7 s), danach kommt die Bewegung zur Ruhe;
-  // Spieler und Ball als eigene Teile (der Ball fliegt als ein Stück)
-  return { beats: [{ ...act([part("player", paint(r.pts, WARM)), part("ball", paint(shift(ballPts, B0[0], B0[1]), GOLD))]), fitPts: fit, caption, hold: 5.8, live: (bs, j, t, o) => {
-    if (j < f) {
-      r.live(bs, j, t, o);
-      if (r.owner[j] === SHIN) o[3] = 1 + 0.7 * Math.exp(-(((clock(t) - KICK.hit) / 0.18) ** 2)); // the foot lights up as it meets the ball
-      return;
-    }
-    // the ball: spin and flight from one smooth parameter, so it leaves the foot and lands again without a jolt
-    const s = flight(t), [dx, dy] = lob(s, H, D);
-    roll(o, -TAU * s, B0[0], B0[1]); o[0] += dx; o[1] += dy; o[3] = 1 + 0.35 * Math.sin(Math.PI * s);
-  } }] };
+  return { beats: [{ ...schuss(n), caption }] };
 }
 
 async function kickStory(n) {
   // Ein Spieler mit Ball (aus der lebendigen Wolke) → Schuss, der Ball fliegt mit Lichtspur ins Tor → Tor! → der Ball
-  // wird zur Zahl. Dreizehnte Fassung: kein Bild mehr, in dem die Drohnen als Funkenwolke stehen; das Tor steht von
-  // Anfang an als Linie (gedimmt), statt als gelockerte Vorform.
-  // The trail is light on drones that stand along the ball's arc; the goal is a frame with a net drawn in depth.
-  const [PN, BN, TN, NN, FN] = share(n, [128, 36, 46, 50, 40]), PX = -1.25, R = 0.16;
-  const at = (pts) => shift(pts, PX);
-  const restAngles = { lean: still(0.04), thigh: still(0.12), shin: still(-0.05), armB: still(0.1), armF: still(-0.1) };
-  const rest = at(bake(footballer(PN, restAngles, true), 0));
-  const cheer = at(bake(footballer(PN, { lean: still(-0.05), thigh: still(0.05), shin: still(-0.02), armB: still(-1.15), armF: still(1.2) }, true), 0));
-  const kicker = footballer(PN, kickAngles((t) => Math.max(0, t)), true);
-  const kickLive = (j, t, o) => { o[0] -= PX; kicker.live(null, j, t, o); o[0] += PX; if (kicker.owner[j] === SHIN) o[3] = 1 + 0.7 * Math.exp(-(((t - KICK.hit) / 0.18) ** 2)); };
+  // wird zur Zahl. Das Tor steht von Anfang an als Linie (gedimmt). Der Spieler trägt den größten Teil der Drohnen (als
+  // Körper braucht er sie), höchstens 320; die übrigen teilen sich Ball, Spur, Netz und Rahmen.
+  const PN = Math.min(320, Math.round(n * 0.46)), [BN, TN, NN, FN] = share(n - PN, [36, 40, 50, 40]), PX = -1.25, R = 0.13;
+  const GX0 = 0.0, GX1 = 1.55, GT = -0.12, BK = -0.5, BT = -0.32, BX0 = 0.15, BX1 = 1.4, GROUND = FOOT_GROUND;
+  const G1 = [0.85, -0.55, -0.38], K = [-0.35, 0.95, -0.1];
+  // der Schuss: dieselbe Figur wie in HORIZON, der Blick steht (die Geschichte schwenkt als Ganzes), der Ball fliegt ins Tor
+  const kick = schuss(PN + BN, { ballDrones: BN, R, view: { ...VIEW, amp: 0 }, target: [G1[0] - PX, G1[1], G1[2]], lift: 0.28, flight: { rise: 0.24, x: 0.75, y: 0.75 } });
+  const at = (pts) => shift(pts, PX), rest = at(kick.pts), restPlayer = rest.slice(0, PN), restBall = rest.slice(PN);
+  const cheer = at(fussPose(PN, 'jubel'));
+  const kickLive = (j, t, o) => { kick.live(null, j, t, o); o[0] += PX; };
   // the goal, its mouth towards the audience; the net goes back in depth
-  const GX0 = 0.0, GX1 = 1.55, GT = -0.12, BK = -0.5, BT = -0.32, BX0 = 0.15, BX1 = 1.4;
   const frame = sample([line([GX0, GROUND], [GX0, GT], [GX1, GT], [GX1, GROUND])], FN);
   const netLines = [line([BX0, GROUND, BK], [BX0, BT, BK], [BX1, BT, BK], [BX1, GROUND, BK]), line([GX0, GT, 0], [BX0, BT, BK]), line([GX1, GT, 0], [BX1, BT, BK]),
     ...[0.25, 0.5, 0.75].flatMap((u) => { const x = BX0 + (BX1 - BX0) * u; return [line([x, BT, BK], [x, GROUND, BK]), line([GX0 + (GX1 - GX0) * u, GT, 0], [x, BT, BK])]; }), line([BX0, (BT + GROUND) / 2, BK], [BX1, (BT + GROUND) / 2, BK])];
   // the net in 3D: sample the lines in x-y, then give every point the depth of its line at that place
   const net = sample3(netLines, NN);
-  const B0 = [PX + 0.5, GROUND + R + 0.01, 0], G1 = [0.85, -0.5, -0.38], K = [-0.35, 0.95, -0.1];
-  const ball = (c) => shift(football(BN, R), ...c);
-  const sOf = (k) => 0.06 + 0.88 * (k + 0.5) / TN;
-  const trail = Array.from({ length: TN }, (_, k) => { const [x, y, z] = bez(B0, K, G1, sOf(k)); return [x, y + (k % 2 ? 0.025 : -0.025), z - 0.12]; });
-  const TL = 2.0, TF = 2.3, s = (t) => ease((t - TL) / TF);
+  // die Lichtspur steht entlang der wirklichen Ballbahn und leuchtet hinter dem Ball auf
+  const uOf = (k) => 0.06 + 0.88 * (k + 0.5) / TN, bahn = (u) => { const c = kick.ballSeen(kick.kickAt + kick.timeFor(u)); return [c[0] + PX, c[1], c[2]]; };
+  const trail = Array.from({ length: TN }, (_, k) => { const [x, y, z] = bahn(uOf(k)); return [x, y + (k % 2 ? 0.025 : -0.025), z - 0.12]; });
   const RAYS = 9, burst = Array.from({ length: TN }, (_, k) => { const a = ((k % RAYS) / RAYS) * TAU + 0.2, u = Math.floor(k / RAYS) / Math.max(1, Math.ceil(TN / RAYS) - 1); return [0.78 + Math.cos(a) * (0.2 + 0.4 * u), 0.45 + Math.sin(a) * (0.2 + 0.4 * u), (hash(k) - 0.5) * 0.2]; });
   const stars = Array.from({ length: TN }, (_, k) => [-1.5 + 3.2 * hash(k * 2.3 + 1), -0.2 + 1.1 * hash(k * 4.1 + 2), (hash(k * 7.7) - 0.5) * 0.6]);
   const num = await number(NUMBER, BN + TN, 0.48, 0.78, 0.45, 0.1);
   const twinkle = (j, t, o) => { o[3] = sparkle(j, t, 0.5, 1.2); drift(o, j, t, 0.03); }; // vierzehnte Fassung: die Sterne treiben sanft
   const goal = (netPts = net, framePts = frame) => [part("net", paint(netPts, mix(WARM, CYAN, 0.25))), part("frame", paint(framePts, WARM))];
+  const inGoal = shift(fussball3d(BN, R * 0.8).pts, ...G1).map((p) => [p[0], p[1], p[2]]);
   const T0 = PN, T1 = PN + BN, T2 = T1 + TN; // index ranges: player | ball | trail | net | frame
+  const landed = kick.kickAt + kick.timeFor(0.97);
   return { beats: [
-    act([part("player", paint(rest, WARM)), part("ball", paint(ball(B0), GOLD)), part("trail", paint(stars, GOLD)), ...goal()], { caption: message('jubilaeum.aPlayerAndHisGoal'), hold: 1.8, cloud: true, live: (b, j, t, o) => {
+    act([part("player", restPlayer), part("ball", restBall), part("trail", paint(stars, GOLD)), ...goal()], { caption: message('jubilaeum.aPlayerAndHisGoal'), hold: 1.8, cloud: true, live: (b, j, t, o) => {
       if (j >= T1 && j < T2) twinkle(j, t, o); else if (j >= T2) o[3] = 0.45;
-      else if (j >= T0) roll(o, -t * 0.5, B0[0], B0[1]);
       sway(o, t, 0.15);
     } }),
-    act([part("player", paint(at(kicker.pts), WARM)), part("ball", paint(ball(B0), GOLD)), part("trail", paint(trail, GOLD)), ...goal()], { caption: message('jubilaeum.heShoots'), hold: 4.4, live: (b, j, t, o) => {
-      if (j < T0) kickLive(j, t, o);
-      else if (j < T1) { const q = s(t), c = bez(B0, K, G1, q), sc = 1 - 0.25 * q; roll(o, -0.8 * TAU * q, B0[0], B0[1]); o[0] = c[0] + (o[0] - B0[0]) * sc; o[1] = c[1] + (o[1] - B0[1]) * sc; o[2] = c[2]; }
-      else if (j < T2) { const d = s(t) - sOf(j - T1); o[3] = d < 0 ? 0.06 : 0.35 + 1.2 * Math.exp(-d / 0.12); } // the light trail follows the ball
-      else if (j < T2 + NN && s(t) > 0.97) o[3] = 1 + 0.6 * Math.exp(-(t - TL - TF) / 0.4); // the net catches the ball
+    act([part("player", restPlayer), part("ball", restBall), part("trail", paint(trail, GOLD)), ...goal()], { caption: message('jubilaeum.heShoots'), hold: Math.max(4.4, landed + 0.6), live: (b, j, t, o) => {
+      if (j < T1) kickLive(j, t, o);
+      else if (j < T2) { const d = kick.progress(t) - uOf(j - T1); o[3] = d < 0 ? 0.06 : 0.35 + 1.2 * Math.exp(-d / 0.12); } // the light trail follows the ball
+      else if (j < T2 + NN && t > landed) o[3] = 1 + 0.6 * Math.exp(-(t - landed) / 0.4); // the net catches the ball
     } }),
-    act([part("player", paint(cheer, WARM)), part("ball", paint(shift(football(BN, R * 0.75), ...G1), GOLD)), part("trail", paint(burst, GOLD)), ...goal()], { caption: message('jubilaeum.goal'), hold: 2.6, live: (b, j, t, o) => {
+    act([part("player", cheer), part("ball", paint(inGoal, GOLD)), part("trail", paint(burst, GOLD)), ...goal()], { caption: message('jubilaeum.goal'), hold: 2.6, live: (b, j, t, o) => {
       if (j >= T1 && j < T2) o[3] = burstLight(Math.hypot(b[0] - 0.78, b[1] - 0.45) / 0.6, t, 2.6)[0];
       else if (j >= T2 && j < T2 + NN) o[3] = chase(Math.hypot(b[0] - G1[0], b[1] - G1[1]), -t, 0.5, 0.6, 0.8, 1.7); // the net glows outward from the ball
       else if (j >= T0 && j < T1) o[3] = sparkle(j, t, 1, 1.5);
       sway(o, t, 0.15);
     } }),
-    act([part("player", paint(cheer, WARM)), part("number", paint(num, GOLD)), ...goal()], { caption: message('jubilaeum.andTheBallBecomesYourNumber'), live: (b, j, t, o) => {
+    act([part("player", cheer), part("number", paint(num, GOLD)), ...goal()], { caption: message('jubilaeum.andTheBallBecomesYourNumber'), live: (b, j, t, o) => {
       if (j >= PN && j < T2) o[3] = glint(b[0], t, 3.2, 0.45, -0.1, 1.7);
       sway(o, t, 0.2);
     } }),
@@ -187,35 +111,13 @@ function sample3(paths, k) {
 }
 
 // ---------- Kopfsprung ----------
-// The diver is a figure in the footballer's style, drawn stretched out along +x (hands ahead, feet at −x, belly side
-// −y), hip at the origin, scaled by S. Angles bend the joints: torso and arms towards the belly (negative), thigh
-// positive brings the knees forward, shin negative folds the lower leg back, foot FLAT stands the foot on the board.
+// Runde 9b (Marc: „gleiche Klasse, gleiche Bauweise“): der Springer ist ein Körper aus catalog-3d/sport.js (springer),
+// kein Strichfiguren-Rig mehr. Er nimmt dieselben Gelenkwinkel wie die alte Figur: torso und arms negativ = zum Bauch,
+// thigh positiv = Knie nach vorn, shin negativ = Unterschenkel zurück, foot FLAT = Fuß steht flach auf dem Brett. Bahn,
+// Takt und Wasser bleiben, wie sie waren.
 const FLAT = Math.PI / 2, STRAIGHT = { torso: 0, arms: 0, thigh: 0, shin: 0, foot: 0 };
-function diverRig(n, angles, { S = 1, thick = false } = {}) {
-  const P = (x, y) => [x * S, y * S], hip = P(0, 0), sh = P(0.56, 0), knee = P(-0.44, 0), ankle = P(-0.86, 0), hand = P(1.22, 0);
-  const limb = (p, q, w) => (thick ? capsule(p, q, w * S) : line(p, q));
-  const a = (k) => (t) => angles(t)[k];
-  return rig([
-    { name: "torso", paths: [limb(hip, sh, 0.05)], pivot: hip, angle: a("torso") },
-    { name: "head", paths: [circle(0.71 * S, -0.18 * S, 0.14 * S, 40)], pivot: hip, parent: "torso" },
-    // both arms stretched over the head, the hands together: the tip that cuts the water
-    { name: "arms", paths: [line(P(0.56, 0.045), hand), line(P(0.56, -0.045), hand)], pivot: sh, parent: "torso", angle: a("arms") },
-    { name: "thigh", paths: [limb(hip, knee, 0.045)], pivot: hip, angle: a("thigh") },
-    { name: "shin", paths: [limb(knee, ankle, 0.035)], pivot: knee, parent: "thigh", angle: a("shin") },
-    { name: "foot", paths: [line(ankle, P(-0.99, -0.025))], pivot: ankle, parent: "shin", angle: a("foot") },
-  ], n, sample);
-}
-const HAND_TIP = 1.22, ANKLE_X = -0.86, KNEE_X = -0.44;
-/** Drone j of the diver rig at time t, hip at c, body turned to angle a (0 = hands to the right). */
-function diverAt(r, j, t, c, a) {
-  const p = r.pts[j], o = [p[0], p[1], 0, 1];
-  r.live(p, j, t, o);
-  const [x, y] = rot(o, a);
-  return [c[0] + x, c[1] + y, c[2] ?? 0];
-}
-/** Where the ankle sits relative to the hip for given leg angles (to keep the feet on the board). */
-const ankleOf = (g, S, a) => rot(rot(rot([ANKLE_X * S, 0], g.shin, [KNEE_X * S, 0]), g.thigh), a);
-const pose = (p, c, a) => { const [x, y] = rot(p, a); return [c[0] + x, c[1] + y, c[2] ?? 0]; };
+/** Farben des Körpers (Badehose), auch wenn die Punkte eines Bildes neu gestellt sind. */
+const skin = (sp) => (p, i) => sp.pts[i].slice(3);
 // the water seen from slightly above: a point at depth d (further back = larger d) lies a little higher on the stage
 const TIP = 0.32;
 const surf = (x, d, wy) => [x, wy + d * Math.sin(TIP), -d * Math.cos(TIP)];
@@ -229,29 +131,30 @@ const underwater = (y, wy) => 1 - 0.97 * smooth((wy - y) / 0.12);
 
 
 function diveHorizon(n, caption) {
-  const [dv, w] = share(n, [1, 1]), WY = -0.55, P = 7.4, S = 1.15, ROWS = [-0.45, -0.15, 0.15, 0.45];
+  const [dv, w] = share(n, [1.5, 1]), WY = -0.55, P = 7.7, S = 1.15, ROWS = [-0.45, -0.15, 0.15, 0.45];
   const water = waterRows(w, ROWS, -1.4, 1.4, WY);
   // the arc of the dive (path of the hip): from the take-off on the left over a flat top into the water; the body
   // follows the arc, the hips piked at first and stretching out before the hands meet the water
-  const A = [-1.25, 1.2, 0], K = [0.1, 1.95, 0], E = [0.45, WY - 1.3 * S, 0], T0 = 0.4, TD = 3.2;
+  // Runde 9b: 3,5 s statt 3,2 s, sonst überschritten die Hände am Scheitel die Beschleunigungsgrenze (Wächter)
+  const A = [-1.25, 1.2, 0], K = [0.1, 1.95, 0], E = [0.45, WY - 1.3 * S, 0], T0 = 0.4, TD = 3.5;
   const dir = (s) => { const d = [0, 1].map((i) => 2 * (1 - s) * (K[i] - A[i]) + 2 * s * (E[i] - K[i])); return Math.atan2(d[1], d[0]); };
   const at = (t) => { // where the diver is in the loop: dive, glide back unseen behind the water, fade in again
     const c = t <= 0 ? 0 : t % P;
     if (c < T0 + TD) { const s = ease((c - T0) / TD); return { c: bez(A, K, E, s), a: dir(s), pike: 0.3 * (1 - ease(s / 0.7)), lit: 1 }; }
     const v = ease((c - T0 - TD - 0.6) / 3.2), p = A.map((q, i) => E[i] + (q - E[i]) * v);
     p[2] = -1.4 * Math.sin(Math.PI * v);
-    return { c: p, a: dir(1) + (dir(0) - dir(1)) * v, pike: 0.3 * v, lit: smooth((c - 6.7) / 0.6) };
+    return { c: p, a: dir(1) + (dir(0) - dir(1)) * v, pike: 0.3 * v, lit: smooth((c - 7.0) / 0.6) };
   };
-  let now = NaN, cur = at(0);
-  const r = diverRig(dv, (t) => { if (t !== now) { now = t; cur = at(t); } return { ...STRAIGHT, thigh: cur.pike }; }, { S, thick: true });
+  let now = NaN, cur = at(0), g = { ...STRAIGHT, thigh: cur.pike };
+  const sp = springer(dv, { S });
   // when and where the hands meet the water
   let tE = T0 + TD, xE = 0;
-  for (let c = T0; c < T0 + TD; c += 0.01) { const q = at(c), hand = pose([HAND_TIP * S, 0], q.c, q.a); if (hand[1] < WY) { tE = c; xE = hand[0]; break; } }
-  const start = r.pts.map((q, j) => diverAt(r, j, 0, A, dir(0))), top = r.pts.map((q, j) => diverAt(r, j, T0 + TD * 0.4, at(T0 + TD * 0.4).c, at(T0 + TD * 0.4).a));
+  for (let c = T0; c < T0 + TD; c += 0.01) { const q = at(c), hand = sp.hand({ ...STRAIGHT, thigh: q.pike }, q.c, q.a); if (hand[1] < WY) { tE = c; xE = hand[0]; break; } }
+  const q0 = at(0), q1 = at(T0 + TD * 0.4), start = sp.pts.map((q, j) => sp.at(j, { ...STRAIGHT, thigh: q0.pike }, A, dir(0))), top = sp.pts.map((q, j) => sp.at(j, { ...STRAIGHT, thigh: q1.pike }, q1.c, q1.a));
   // vierzehnte Fassung: ein ganzer Sprung, bis die Ringe verebbt sind (vorher endete das Bild nach 3 s mitten im Flug)
-  return { beats: [{ ...act([part("diver", paint(start, WARM)), part("water", paint(water, (p) => mix(CYAN, BLUE, (p[1] - WY + 0.15) / 0.3)))]), fitPts: [...start, ...top, ...water], caption, hold: 6.4, live: (b, j, t, o) => {
-    if (t !== now) { now = t; cur = at(t); }
-    if (j < dv) { const p = diverAt(r, j, t, cur.c, cur.a); o[0] = p[0]; o[1] = p[1]; o[2] = p[2]; o[3] = cur.lit * underwater(p[1], WY); return; }
+  return { beats: [{ ...act([part("diver", paint(start, skin(sp))), part("water", paint(water, (p) => mix(CYAN, BLUE, (p[1] - WY + 0.15) / 0.3)))]), fitPts: [...start, ...top, ...water], caption, hold: 6.7, live: (b, j, t, o) => {
+    if (t !== now) { now = t; cur = at(t); g = { ...STRAIGHT, thigh: cur.pike }; }
+    if (j < dv) { const p = sp.at(j, g, cur.c, cur.a); o[0] = p[0]; o[1] = p[1]; o[2] = p[2]; o[3] = cur.lit * underwater(p[1], WY); return; }
     // the water: a slow swell, and after the dive rings that spread over the surface and settle again
     const k = j - dv, d = -b[2] / Math.cos(TIP), c = t <= 0 ? 0 : t % P, since = c - tE, rr = Math.hypot(b[0] - xE, d);
     const env = smooth(since / 0.4) * (1 - smooth((since - 2.6) / 1.4));
@@ -263,32 +166,33 @@ function diveHorizon(n, caption) {
 
 async function diveStory(n) {
   // Sprungbrett → Absprung (Hocke, das Brett federt) → Kopfsprung ins Wasser, Spritzer aus Licht → Ringe auf dem
-  // Wasser → die Ringe richten sich auf und werden zur Medaille mit eurer Zahl. The diver keeps its drones (a rig)
+  // Wasser → die Ringe richten sich auf und werden zur Medaille mit eurer Zahl. The diver keeps its drones (a body)
   // until it is under water; its drones then join the rings.
-  const [DV, BD, W] = share(n, [100, 50, 150]), WY = -0.6, BY = 0.3, TIPX = -0.7, POST = -1.7, S = 1.05;
+  const [DV, BD, W] = share(n, [150, 45, 105]), WY = -0.6, BY = 0.3, TIPX = -0.7, POST = -1.7, S = 1.05;
   // a springboard: the plank, its post down to the pool edge and a brace; the plank's far end rests on the post
   const plank = [line([POST - 0.25, BY], [TIPX, BY]), line([POST - 0.25, BY - 0.045], [TIPX, BY - 0.045]), line([POST, BY - 0.045], [POST, WY + 0.02]), line([POST, BY - 0.42], [POST + 0.3, BY - 0.045])];
   const board = (() => { const [a, b] = share(BD, [1, 1]); return [...sample(plank, a).map(([x, y]) => [x, y, 0.08]), ...sample(plank, b).map(([x, y]) => [x, y, -0.08])]; })();
   const water = waterRows(W, [-0.4, -0.13, 0.13, 0.4], -0.8, 1.45, WY);
-  const UP = Math.PI / 2, FEET = [TIPX - 0.12, BY + 0.02], AH = [-0.3, 1.5, 0], APEX_A = 0.25;
-  const UNDER = [0.5, WY - 1.4 * S, 0], UNDER_A = -1.45, K = [0.6, 1.65, 0];
+  // Runde 9b: Scheitel 0,16 höher als bei der Strichfigur; der Körper steht mit erhobenen Armen höher, sonst sänke sein
+  // Schwerpunkt am Ende des Absprungs wieder ab (Finten-Wächter, Teil diver)
+  const UP = Math.PI / 2, FEET = [TIPX - 0.12, BY + 0.02], AH = [-0.3, 1.66, 0], APEX_A = 0.25;
+  const UNDER = [0.5, WY - 1.4 * S, 0], UNDER_A = -1.45, K = [0.6, 1.81, 0];
   // the take-off: crouch on the board (it bends), stretch, and leap to the top of the arc, the hips piked
   const crouch = (t) => keys([[0.2, 0], [1.4, 1], [2.6, 0]], t), leap = (t) => ease((t - 2.0) / 2.2);
   const takeoff = (t) => { const k = crouch(t), u = leap(t); return { torso: -0.55 * k, arms: -0.7 * k, thigh: 0.7 * k + 0.35 * u, shin: -1.3 * k, foot: (FLAT + 0.7 * k) * (1 - u) }; };
   const dip = (t) => 0.1 * crouch(t) * (1 - leap(t));
   const bend = (x) => Math.max(0, (x - POST) / (TIPX - POST)) ** 2;
-  const standing = { ...STRAIGHT, foot: FLAT }, stand = diverRig(DV, () => standing, { S, thick: true });
-  const jumper = diverRig(DV, takeoff, { S, thick: true });
-  const hipOnBoard = (g, a, d) => { const k = ankleOf(g, S, a); return [FEET[0] - k[0], FEET[1] - d - k[1], 0]; };
+  const standing = { ...STRAIGHT, foot: FLAT }, sp = springer(DV, { S });
+  const hipOnBoard = (g, a, d) => { const k = sp.sole(g, [0, 0, 0], a); return [FEET[0] - k[0], FEET[1] - d - k[1], 0]; };
   const leapAt = (t) => { const g = takeoff(t), u = leap(t), a = UP + (APEX_A - UP) * u, h = hipOnBoard(g, UP, dip(t)); return { c: h.map((v, i) => v + (AH[i] - v) * u), a }; };
   // the dive: from the top down into the water, the body stretches and turns head first; the hands meet the water at tE
   const fall = (t) => ease(t / 2.8), fallAt = (t) => ({ c: bez(AH, K, UNDER, fall(t)), a: APEX_A + (UNDER_A - APEX_A) * fall(t) });
-  const diving = diverRig(DV, (t) => ({ ...STRAIGHT, thigh: 0.35 * (1 - ease(t / 1.3)) }), { S, thick: true });
+  const diving = (t) => ({ ...STRAIGHT, thigh: 0.35 * (1 - ease(t / 1.3)) });
   let tE = 2.8, xE = 0.3;
-  for (let c = 0; c < 2.8; c += 0.01) { const { c: q, a } = fallAt(c), hand = pose([HAND_TIP * S, 0], q, a); if (hand[1] < WY) { tE = c; xE = hand[0]; break; } }
+  for (let c = 0; c < 2.8; c += 0.01) { const { c: q, a } = fallAt(c), hand = sp.hand(diving(c), q, a); if (hand[1] < WY) { tE = c; xE = hand[0]; break; } }
   const E = surf(xE, 0, WY);
-  const standPts = stand.pts.map((q, j) => diverAt(stand, j, 0, hipOnBoard(standing, UP, 0), UP));
-  const underPts = diving.pts.map((q, j) => diverAt(diving, j, 9, UNDER, UNDER_A));
+  const onBoard = hipOnBoard(standing, UP, 0), standPts = sp.pts.map((q, j) => sp.at(j, standing, onBoard, UP));
+  const underPts = sp.pts.map((q, j) => sp.at(j, diving(9), UNDER, UNDER_A));
   // three rings on the water around the entry point, and the medal they become
   const RR = [0.32, 0.62, 0.92], ringCounts = share(n, RR);
   const rings = RR.flatMap((r, q) => Array.from({ length: ringCounts[q] }, (_, i) => { const a = (i / ringCounts[q]) * TAU + q * 0.3; return [...surf(xE + Math.cos(a) * r, Math.sin(a) * r * 0.9, WY), q]; }));
@@ -299,18 +203,18 @@ async function diveStory(n) {
   const [ra, rb] = share(RIB, [1, 1]), ribbon = [...paint(sample([strap(MC[0] - 0.46, MC[0] - 0.09)], ra), BLUE), ...paint(sample([strap(MC[0] + 0.46, MC[0] + 0.09)], rb), CYAN)];
   const swell = (b, t, o) => { const d = -b[2] / Math.cos(TIP); o[1] += 0.016 * Math.sin(b[0] * 2.4 - t * 1.3 + d * 4); o[3] = 0.85 + 0.12 * Math.sin(b[0] * 3 - t * 0.9 + d * 5); };
   const set = (o, p) => { o[0] = p[0]; o[1] = p[1]; o[2] = p[2]; };
-  const bodyCol = WARM, boardCol = mix(GOLD, WARM, 0.45), waterCol = (p) => mix(CYAN, BLUE, (p[1] - WY + 0.15) / 0.3);
+  const bodyCol = skin(sp), boardCol = mix(GOLD, WARM, 0.45), waterCol = (p) => mix(CYAN, BLUE, (p[1] - WY + 0.15) / 0.3);
   const D0 = DV, D1 = DV + BD; // index ranges: diver | board | water
   const scene = (diverPts, opts = {}) => [part("diver", paint(diverPts, bodyCol), { rigid: true, ...opts }), part("board", paint(board, boardCol)), part("water", paint(water, waterCol))];
   return { beats: [
     act(scene(standPts), { caption: message('jubilaeum.aDivingBoard'), hold: 1.4, live: (b, j, t, o) => { if (j >= D1) swell(b, t, o); } }),
     act(scene(standPts), { caption: message('jubilaeum.takeOff'), hold: 4.4, live: (b, j, t, o) => {
-      if (j < D0) { const { c, a } = leapAt(Math.max(0, t)); set(o, diverAt(jumper, j, Math.max(0, t), c, a)); }
+      if (j < D0) { const tt = Math.max(0, t), { c, a } = leapAt(tt); set(o, sp.at(j, takeoff(tt), c, a)); }
       else if (j < D1) o[1] -= dip(Math.max(0, t)) * bend(b[0]);
       else swell(b, t, o);
     } }),
     act(scene(underPts, { offstage: true }), { caption: message('jubilaeum.headFirstDiveTheWaterSplashes'), hold: 3.6, live: (b, j, t, o) => {
-      if (j < D0) { const tt = Math.max(0, t), { c, a } = fallAt(tt), p = diverAt(diving, j, tt, c, a); set(o, p); o[3] = underwater(p[1], WY); }
+      if (j < D0) { const tt = Math.max(0, t), { c, a } = fallAt(tt), p = sp.at(j, diving(tt), c, a); set(o, p); o[3] = underwater(p[1], WY); }
       else if (j >= D1) {
         swell(b, t, o);
         // the splash: drones near the entry lift a little and flash, then a ring of light runs outward

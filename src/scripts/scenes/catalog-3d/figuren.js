@@ -2,7 +2,7 @@
 // Röhren, nach den Maßen der Katalogformation gesetzt, damit die Figur bei 0° wie ihr 2D-Bild steht. Je Figur bewegt
 // sich EIN Teil (Arm, Schwanz, Hut, Flügel), dazu schwenkt der ganze Körper langsam und zeigt seine Tiefe.
 import { GOLD, WARM, ORANGE, RED, PINK, CYAN, VIOLET, GREEN, BLUE, DIAMOND, mix, yaw, roll, pitch, glint, breathe, wander, chase } from '../../show-motion.js';
-import { ellipsoid, tube, curves, spot, assemble, colour, ease, turn, rankBy, turnAbout, TAU } from './kit.js';
+import { ellipsoid, tube, curves, spot, assemble, colour, ease, turn, rankBy, turnAbout, isPlus, TAU } from './kit.js';
 
 /** Merkmale je nach Drohnenzahl: kleine Lichtringe aus k Drohnen. */
 const dots = (n, few, many) => (n >= 400 ? many : few);
@@ -197,15 +197,19 @@ export function marienkaefer(n) {
 // ---------------------------------------------------------------- Lachendes Gesicht ----------
 // Ein Kopf als Kugel mit ruhigem Umriss; lachende Augen und der offene Mund liegen
 // auf der Vorderfläche und wandern beim Drehen mit ihr. Der Kopf nickt und dreht sich lachend hin und her.
-export function smiley(n) {
+// Runde 9: 3D zeigt Kopf, Augen und Mund im ruhigen Schwenk; 3D+ dazu die Zunge, Wangen und das Nicken beim Lachen.
+export function smiley(n, stufe) {
+  const P = isPlus(stufe, n);
   const R = 0.95, head = ellipsoid('face', [0, 0], [R, R, R * 0.9], { lat: [], mer: [] });
   const on = (x, y) => head.front(x, y, 0.01);
   const eye = (cx) => curves('feature', [Array.from({ length: 14 }, (_, i) => { const a = Math.PI * (i / 13); return on(cx + Math.cos(a) * 0.17, 0.26 + Math.sin(a) * 0.15); })], { w: 1.3 });
   const mouth = curves('feature', [{ pts: [...Array.from({ length: 22 }, (_, i) => { const u = i / 21, x = -0.55 + 1.1 * u; return on(x, -0.12 - 0.04 * Math.sin(Math.PI * u)); }), ...Array.from({ length: 22 }, (_, i) => { const u = 1 - i / 21, x = -0.55 + 1.1 * u; return on(x, -0.14 - 0.5 * Math.sin(Math.PI * u) ** 0.9); })], closed: true }], { w: 1.3 });
   const tongue = curves('tongue', [Array.from({ length: 12 }, (_, i) => { const u = i / 11, x = -0.2 + 0.4 * u; return on(x, -0.52 + 0.1 * Math.sin(Math.PI * u)); })], { w: 1.1 });
-  const shape = assemble([head, eye(-0.33), eye(0.33), mouth, tongue], n);
-  const pts = colour(shape, { feature: WARM, tongue: PINK }, (p) => mix(GOLD, WARM, 0.15 + 0.2 * p[1]));
+  const cheeks = [-1, 1].map((s) => spot('cheek', on(s * 0.62, -0.08), 6, 0.08));
+  const shape = assemble(P ? [head, eye(-0.33), eye(0.33), mouth, tongue, ...cheeks] : [head, eye(-0.33), eye(0.33), mouth], n);
+  const pts = colour(shape, { feature: WARM, tongue: PINK, cheek: mix(PINK, ORANGE, 0.3) }, (p) => mix(GOLD, WARM, 0.15 + 0.2 * p[1]));
   return { pts, live: (b, j, t, o) => {
+    if (!P) { turn(o, t, 0, 0.36, 12); return; }
     pitch(o, 0.1 * Math.sin((t * TAU) / 1.6) ** 2); // lacht: nickt im Takt
     turn(o, t, 0, 0.45, 9);
     if (shape.tags[j] === 'feature') o[3] = 1.15;

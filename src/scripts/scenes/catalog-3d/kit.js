@@ -222,3 +222,9 @@ export const turn = (o, t, base, amp, period = 12, cx = 0, cz = 0) => yaw(o, bas
 /** Weicher Hin- und Rückweg 0 → 1 → 0 über eine Periode, Start und Ende ohne Geschwindigkeit. */
 export const ease = (t, period) => 0.5 - 0.5 * Math.cos((t * TAU) / period);
 export { mix, TAU };
+/**
+ * Runde 9 (Marc: „3D+ offensichtlich komplexer und refinter und more polished“): Stufe einer Fassung. Einfache Motive
+ * bauen für '3D' eine schlichte Fassung (Grundkörper, wenig Detail, ruhige Bewegung) und für '3D+' eine aufwendigere
+ * (mehr Teile, feinere Silhouette, Story-Bewegung). Ohne Angabe gilt '3D'. Ab 300 Drohnen trägt 3D+ alle Details.
+ */
+export const isPlus = (stufe, n, min = 300) => stufe === '3D+' && n >= min;
