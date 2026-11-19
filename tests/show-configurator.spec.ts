@@ -236,13 +236,16 @@ test('Logo, Text-Durchlauf, Anlasswechsel und Rücksprung bleiben fliegbar (Gren
 
 const transitionX = (page: Page) => page.evaluate(() => (window as unknown as { __transitionX: number | null }).__transitionX);
 
-test('Runde 22: nicht gewählte Anlässe gedämpft, aber über 4,5:1, beim Zeigen voll', async ({ page }) => {
+test('Runde 22: nicht gewählte Anlässe gedämpft, aber über 4,5:1, beim Zeigen voll', async ({ page, hasTouch }) => {
   await page.goto(`${CFG}?anlass=launch#konfigurator`);
   const span = (id: string) => page.locator(`#cfg-occasion label[data-occasion="${id}"] span`);
   const ratio = (fg: string, bg = [15, 13, 12]) => { const c = fg.match(/[\d.]+/g)!.map(Number); const a = c[3] ?? 1; const mix = c.slice(0, 3).map((v, i) => v * a + bg[i] * (1 - a)); const L = (x: number[]) => { const [r, g, b] = x.map((v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }); return 0.2126 * r + 0.7152 * g + 0.0722 * b; }; return (L(mix) + 0.05) / (L(bg) + 0.05); };
   const dim = ratio(await span('hochzeit').evaluate((e) => getComputedStyle(e).color));
   expect(dim).toBeGreaterThanOrEqual(4.5);
   expect(dim).toBeLessThan(6);
+  // Der Kontrast gilt überall; „beim Zeigen voll“ ist ein Maus-Zustand (:hover). Touch-Profile (Pixel 7, iPhone 13) haben
+  // keinen Zeiger, der stehen bleibt, dort endet der Test nach der Kontrastprüfung.
+  test.skip(hasTouch, 'Zeigen (Hover) gibt es nur mit Maus; auf Touch-Geräten gilt nur die Kontrastprüfung oben');
   await page.locator('#cfg-occasion label[data-occasion="hochzeit"]').hover();
   await expect.poll(async () => ratio(await span('hochzeit').evaluate((e) => getComputedStyle(e).color))).toBeGreaterThan(15);
 });
