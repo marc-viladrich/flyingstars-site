@@ -48,8 +48,8 @@
    Flächen unsichtbar. Oben reicht die Fläche nach oben, unten (gespiegelt, versetzt) nach unten; liegt darunter eine andere
    Farbfläche, deckt deren Fläche das untere Band, und ihr oberes übernimmt. An solchen Kanten keine Trennlinie (Marc, 18.11.).
    Jede neue Fläche mit eigener Hintergrundfarbe gehört in diese Liste; tools/himmel/uebergaenge-pruefen.mjs wacht darüber. */
-:root { --ueb-h: 11rem; --ueb-maske: url(/media/uebergang.svg); }
-@media (--mobile) { :root { --ueb-h: 4.875rem; --ueb-maske: url(/media/uebergang-schmal.svg); } }
+:root { --ueb-h: 4.75rem; --ueb-maske: url(/media/uebergang.svg); }
+@media (--mobile) { :root { --ueb-h: 2.125rem; --ueb-maske: url(/media/uebergang-schmal.svg); } }
 :is(.section.alt, .c-setlist, .team-sec, .footer) { position: relative; }
 :is(.section.alt, .c-setlist, .team-sec, .footer)::before, :is(.section.alt, .c-setlist, .team-sec)::after {
   content: ''; position: absolute; left: 0; right: 0; height: var(--ueb-h); pointer-events: none; background-color: inherit;

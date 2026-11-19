@@ -1,12 +1,14 @@
 // Gemeinsamer Kern für Website-Masken und Dashboard. Kantenhöhe und Punktgrößen in Kachelpixeln.
 export const DEFAULTS = Object.freeze({
-  punktradiusKantePx: 4.8,
-  groessenvarianzProzent: 60,
+  punktradiusKantePx: 3.8,
+  groessenvarianzProzent: 32,
   mindestabstandFaktor: 1.1,
-  kantenwelleBreitPx: 56,
-  wellenunruheProzent: 60,
+  kantenwelleBreitPx: 3,
+  wellenunruheProzent: 100,
   chaosProzent: 0,
-  bandhoeheBreitPx: 120,
+  deckkraftVerlaufProzent: 100,
+  deckkraftAnsatzProzent: 100,
+  bandhoeheBreitPx: 76,
   animation: 'keine',
   animationsstaerkePx: 4,
 });
@@ -216,6 +218,26 @@ export function maskSvg(tile) {
 }
 
 
+// y = 0 liegt in der Nachbarfläche, y = 1 an der eigenen Fläche.
+export function opacityStops(percent, base = 100) {
+  return Array.from({ length: 9 }, (_, index) => {
+    const offset = index / 8;
+    const smooth = offset ** 2;
+    return { offset, opacity: base / 100 * (1 - percent / 100 * (1 - smooth)) };
+  });
+}
+
+export function withOpacityGradient(svg, percent = 0, base = 100) {
+  if (!percent && base === 100) return svg;
+  const start = svg.indexOf('>') + 1;
+  const stops = opacityStops(percent, base).map(({ offset, opacity }) =>
+    `<stop offset="${offset}" stop-color="#fff" stop-opacity="${opacity}"/>`).join('');
+  const geometry = svg.slice(start, -6);
+  const defs = `<defs><linearGradient id="fade" x1="0" y1="0" x2="0" y2="1">${stops}</linearGradient>`
+    + `<mask id="deckkraft" x="0" y="0" width="100%" height="100%" maskUnits="userSpaceOnUse" style="mask-type:alpha">${geometry}</mask></defs>`;
+  return `${svg.slice(0, start)}${defs}<rect width="100%" height="100%" fill="url(#fade)" mask="url(#deckkraft)"/></svg>`;
+}
+
 // Aufruf: node tools/himmel/uebergang.mjs [seed=11 | werte.json]
 if (typeof process !== 'undefined' && process.argv?.[1]) {
   const { URL: NodeURL, pathToFileURL } = await import('node:url');
@@ -228,7 +250,7 @@ if (typeof process !== 'undefined' && process.argv?.[1]) {
     for (const [variant, size] of Object.entries(tileSizes(settings))) {
       const tile = generateTile(settings, size, seed);
       const file = files[variant];
-      writeFileSync(new NodeURL(`../../public/media/${file}`, import.meta.url), maskSvg(tile));
+      writeFileSync(new NodeURL(`../../public/media/${file}`, import.meta.url), withOpacityGradient(maskSvg(tile), settings.deckkraftVerlaufProzent, settings.deckkraftAnsatzProzent));
       console.log(`${file}: ${tile.points.length} Punkte, ${tile.width} × ${tile.height} Kachelpixel`);
     }
   }

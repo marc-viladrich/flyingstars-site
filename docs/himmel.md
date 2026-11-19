@@ -264,14 +264,14 @@ effect“, Punkte zu klein (sollen wie beim Lichtpunkt-Hover auf Bildern sein), 
   Farbe der Fläche selbst (`background-color: inherit`); der Übergang braucht die Farbe des Nachbarn nicht und ist zwischen
   gleichfarbigen Flächen unsichtbar. Liegt unter einer Farbfläche eine andere Farbfläche, deckt diese das untere Band ab und ihr
   oberes übernimmt. Zwischen zwei `.section.alt` bleibt die Haarlinie (gleiche Farbe, kein Übergang).
-- **Muster** (`tools/himmel/uebergang.mjs` → `public/media/uebergang.svg` 960 × 72 px, `uebergang-schmal.svg` 480 × 32 px fürs
-  Handy): An der Kante überlappen sich große Punkte (Deckung gut 90 %), die Fläche endet in einer Kontur aus Punkten statt einer
-  Linie; nach oben lichter und kleiner. Radius 1,4–4,6 px wie beim Lichtpunkt-Hover (`effects/dotimage.js`, Raster 8 px, 1,3–4 px).
-  Reichweite und Dichte schwanken entlang der Breite (weiche periodische Verläufe), die Punkte liegen als Blue Noise; nahtlos in der
-  Breite (Punkte am Kachelrand werden gegenüber wiederholt; die alte Maske schnitt sie ab, sichtbare Naht). Statisch: keine
-  Laufzeitkosten außer der Maske.
-- **Höhe:** `clamp(2rem, 50 % von --section, 4.5rem)`, auf dem Handy 2 rem mit der schmalen Kachel (gleiche Punktgröße, kürzere
-  Reichweite; abgeschnitten entstünde wieder eine gerade Kante).
+- **Muster (Runde 8):** `node tools/himmel/uebergang.mjs` erzeugt die breite Maske mit 960 × 79 und die schmale mit
+  480 × 35 Kachelpixeln. Die finalen Werte sind Radius 3,8, Größenvarianz 32 %, Abstand 1,1, Kantenwelle 3 und 1,
+  Wellenunruhe 100 %, Punktraster mit Chaos 0 % und Seed 11. Die periodische Kante ist auch in ihrer Steigung nahtlos.
+- **Deckkraft:** Der quadratische Verlauf mit neun Stützstellen maskiert die gesamte fertige Punktfläche im SVG.
+  Bei 100 % Verlauf und 100 % Ansatz reicht er von transparent an der Spitze bis voll deckend am Ansatz. Beide Werte
+  kommen aus demselben Generator wie die Dashboard-Kurve. Die Maske bleibt statisch.
+- **Höhe:** Das CSS zeigt 4,75 rem breit und 2,125 rem schmal. Die intrinsische SVG-Höhe enthält zusätzlich die Welle.
+  Beide Masken werden proportional auf die jeweilige Anzeigehöhe skaliert, auch in der Dashboard-Vorschau.
 - **Footer** (Runde 7, 19.11.2026; Marc: „keine Divider-Line, sondern unsere Dot-Divider“): eigene Fläche `--night`, dunkler als
   Seite und Alt-Flächen, darum ist die Kante über jeder letzten Section eindeutig. Er steht in der Liste in `himmel.css` und läuft
   mit demselben `::before` (gleiche `--ueb-h`/`--ueb-maske`, also auch jede spätere Reglereinstellung) nach oben aus; ein unteres
