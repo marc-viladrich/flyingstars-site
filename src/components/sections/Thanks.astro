@@ -1,8 +1,9 @@
 ---
-// Danke-Seite (Runde 4, Moritz 18.11.2026): seit Runde 7 eine zentrierte Spalte (Marc, 19.11.2026: „1 column, center
-// aligned everything … etwas enger, weil aktuell ist die Formular-Box zu eng“): Kicker, Überschrift, Dank, Chopper als
-// Drohnenformation, darunter die freiwillige Frage nach der Quelle in der Formular-Box der Anfrage (.ask aus
-// InquiryFormStyles), so breit wie die Spalte, mit Schrittanzeige als letztem Schritt.
+// Danke-Seite (Runde 4, Moritz 18.11.2026): zwei Spalten wie die Anfrage, alles linksbündig. Links Kicker, Überschrift,
+// Dank und Chopper als Drohnenformation, rechts die freiwillige Frage nach der Quelle in der Formular-Box der Anfrage (.ask
+// aus InquiryFormStyles) mit Schrittanzeige als letztem Schritt. Runde 8 (Marc, 19.11.2026: „2 column layout and left
+// aligned … nicht so breit across the full content width … die 2 columns in der Mitte“): beide Spalten als Block mit
+// begrenzter Breite in der Mitte der Inhaltsbreite; die Box behält die Breite der Ein-Spalten-Fassung.
 // Die Seite zeigt immer dasselbe (Marc, 19.11.2026): Dank (YAML `text`) und die Herkunftsfrage im Formularstil mit
 // Absenden, auch direkt aufgerufen (Lesezeichen, neuer Tab, Neuladen). Die Antwort geht als zweite kleine Meldung über
 // /api/contact (kind=quelle), mit dem Bezug der Anfrage aus sessionStorage, wenn es ihn gibt, sonst ohne. Ihren Dank
@@ -103,21 +104,20 @@ const headingId = `${id}-h`;
 </script>
 
 <style>
-  /* Formular-Box kommt aus der Anfrage (.ask in InquiryFormStyles.astro). Statt des Zweispalters der Anfrage (.inquiry) eine
-     zentrierte Spalte, schmaler als die Inhaltsbreite; alles mittig (Marc, 19.11.2026) */
-  .thanks .inquiry { grid-template-columns: minmax(0, 1fr); justify-items: center; row-gap: var(--space-4); max-width: 44rem; margin-inline: auto; text-align: center; }
-  .thanks :global(.intro) { justify-items: center; }
-  .thanks :global(.intro :is(h1, h2)), .thanks :global(.intro .lead) { margin-inline: auto; }
-  /* Chopper groß (Marc: „ein ganzes Stück größer“). Der Rückwärtssalto nutzt die volle Höhe der 4:3-Bühne (gemessen), darum
-     überlappt die Bühne weder Text noch Box; der Raum über und unter dem ruhenden Hund ist der Platz für den Salto */
-  .thanks :global(.thanks-chopper) { width: 100%; max-width: 34rem; margin-inline: auto; }
-  .thanks .ask { width: 100%; justify-self: stretch; }
-  .thanks .ask .ask-steps { text-align: left; }
-  .thanks .chips { justify-content: center; }
-  .thanks .ask .actions { justify-self: center; justify-content: center; }
-  .thanks .ask [data-source-other] { justify-items: center; }
-  .thanks .ask [data-source-other] input { width: min(100%, 24rem); }
-  .thanks-q { width: 100%; padding: 0; margin: 0 0 var(--space-4); font: 500 var(--text-lead)/1.4 var(--display); color: var(--text); text-wrap: balance; }
+  /* Raster und Formular-Box kommen aus der Anfrage (.inquiry, .ask in InquiryFormStyles.astro); hier nur die Danke-Teile.
+     Zwei Spalten als mittiger Block: höchstens 80rem breit (auf großen Bildschirmen sichtbar schmaler als die Inhaltsbreite),
+     rechts bis 42rem für die Box, damit die Antworten nicht gequetscht stehen; links mindestens 25rem für Überschrift und
+     Chopper. Zwei Spalten erst ab --grid-expanded: darunter bliebe der Box zu wenig Breite (Marc: „Formular-Box zu eng“),
+     dort steht alles untereinander (die Anfrage selbst stapelt erst unter --nav-collapsed). */
+  @media (--grid-expanded) {
+    .thanks .inquiry { grid-template-columns: minmax(25rem, 1fr) minmax(0, 42rem); max-width: 80rem; margin-inline: auto; }
+  }
+  @media (--grid-stacked) { .thanks .inquiry { grid-template-columns: minmax(0, 1fr); } }
+  /* Chopper groß (Marc: „ein ganzes Stück größer“), so breit wie die linke Spalte. Der Rückwärtssalto nutzt die volle Höhe
+     der 4:3-Bühne (gemessen), darum überlappt die Bühne den Text nicht */
+  .thanks :global(.thanks-chopper) { width: 100%; max-width: 36rem; }
+  @media (--grid-stacked) { .thanks :global(.thanks-chopper) { max-width: 30rem; } }
+  .thanks-q { padding: 0; margin: 0 0 var(--space-4); font: 500 var(--text-lead)/1.4 var(--display); color: var(--text); text-wrap: balance; }
   .thanks .step:not(:has([data-other]:checked)) [data-source-other] { display: none; }
   .thanks [data-source-other] { animation: opt-in var(--dur-enter) var(--ease-enter); }
   .thanks .form-status:empty { display: none; }
