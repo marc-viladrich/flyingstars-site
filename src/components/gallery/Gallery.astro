@@ -94,6 +94,13 @@ const f = layout.field;
     .gal .g-copy { grid-column: 1 / span 2; max-width: 42rem; padding-right: var(--g-gap); }
     .gal .g-ladder { grid-column: 3 / span 3; margin-top: var(--g-lift); }
     .gal.has-head .g-copy, .gal.has-head .g-ladder { grid-row: 2; }
+    /* Zwei Leitern (Werbung, Marc Runde 8: „alle gerne noch ein Stück weiter hoch“): die Doppelleiter steigt neben den Kopf
+       und beginnt oben bündig mit ihm. Der Kopf überspannt Text und linke Säule; die linke Säule steht zwei Stufen tiefer
+       und damit unter ihm, die mittlere und rechte daneben (gemessen 1101–2560 px, DE/EN/NL: mindestens 35 px Luft unter
+       und 43 px neben der Überschrift). Die Restfläche nimmt die 1fr-Zeile auf, nicht die Kopfzeile. */
+    .gal.has-head.two-rows { grid-template-rows: auto 1fr; }
+    .gal.has-head.two-rows .g-head { grid-column: 1 / span 3; }
+    .gal.has-head.two-rows .g-ladder { grid-row: 1 / span 2; margin-top: 0; }
   }
 
   /* Schmal: Text oben, die Leiter darunter über die ganze Breite, flacher (kleinerer Versatz) */

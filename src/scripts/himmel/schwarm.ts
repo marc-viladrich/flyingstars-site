@@ -564,7 +564,11 @@ class Himmel {
       this.b[i] = bright;
     }
     this.draw(sc, flying ? u : 1);
-    if (!seen) return;
+    // Außer Sicht ruht der Schwarm, aber nie mitten im Flug: Das Formular wird schon gut eine Bildschirmhöhe vorher
+    // angesteuert, also oft außerhalb des Bildes. Vorher stoppte die Schleife hier nach dem ersten Flug-Frame, gedimmte
+    // Drohnen hingen in der Luft und sprangen erst beim nächsten Scroll-Ereignis weiter (Marc, Runde 8: „bleiben hängen“,
+    // „Framerate-Drop bei der Transition“; Messung tools/himmel/flug-probe.mjs)
+    if (!seen && !flying) return;
     // in Bewegung, solange der Zeiger nahe ist oder eine Drohne noch zurückschwingt
     if (P && P.x > slot.box.x - 120 && P.x < slot.box.x + slot.box.w + 120 && P.y > slot.box.y - 120 && P.y < slot.box.y + slot.box.h + 120) busy = true;
     if (stir > 0.05) busy = true;

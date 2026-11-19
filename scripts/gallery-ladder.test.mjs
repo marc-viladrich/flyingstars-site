@@ -32,3 +32,9 @@ test('Werbung #marketing ohne Schwarm-Formation (Marc, Runde 7: nur die Bilder)'
   const src = readFileSync(new URL('../src/scripts/himmel/schwarm.ts', import.meta.url), 'utf8');
   assert.doesNotMatch(src, /sel: '#marketing'/);
 });
+
+test('Zwei Leitern steigen neben den Kopf (Marc, Runde 8: „alle gerne noch ein Stück weiter hoch“)', () => {
+  const src = readFileSync(new URL('../src/components/gallery/Gallery.astro', import.meta.url), 'utf8');
+  assert.match(src, /\.gal\.has-head\.two-rows \.g-ladder \{ grid-row: 1 \/ span 2; margin-top: 0; \}/);
+  assert.match(src, /\.gal\.has-head\.two-rows \{ grid-template-rows: auto 1fr; \}/);
+});
