@@ -16,24 +16,43 @@ import catalog from '../../content/catalog-motifs.json' with { type: 'json' };
 import { TAU, mix, frac, hash, yaw, roll, pitch, sway, breathe, glint, sparkle, chase, trace, wander, lightRank, part, act } from '../show-motion.js';
 
 import { catalogAction } from './catalog-actions.js';
-import { analyse, resample, placeDerived, derive } from './catalog-resample.js';
+import { analyse, resample, placeDerived, derive, prepareLines, lineSample, attach } from './catalog-resample.js';
 import { CATALOG_3D, LIT_MAX } from './catalog-3d/index.js';
 
 const cache = new Map();
 /** Formation einer Variante, einmal geladen (fetch auf public/, in Node-Tests aus scripts/show-node-env.mjs). */
-function load(id) {
-  if (!cache.has(id)) cache.set(id, fetch(`/media/katalog/${id}.json`).then((r) => { if (!r.ok) throw new Error(`Katalog ${id}: HTTP ${r.status}`); return r.json(); }).catch((e) => { cache.delete(id); throw e; }));
-  return cache.get(id);
+function load(id, dir = '') {
+  const url = `/media/katalog/${dir}${id}.json`;
+  if (!cache.has(url)) cache.set(url, fetch(url).then((r) => { if (!r.ok) throw new Error(`Katalog ${dir}${id}: HTTP ${r.status}`); return r.json(); }).catch((e) => { cache.delete(url); throw e; }));
+  return cache.get(url);
 }
 export const CATALOG = catalog.motifs;
-/** Neue Drohnen einer Variante für n Drohnen, einmal je Variante und Zahl berechnet (scenes/catalog-resample.js). */
+/** Neue Drohnen einer räumlichen Variante für n Drohnen, einmal je Variante und Zahl berechnet (scenes/catalog-resample.js). */
 const dense = new Map(), analysed = new Map();
-function densify(id, pts, n, flat) {
+function densify(id, pts, n) {
   const key = `${id}|${n}`;
-  if (!analysed.has(id)) analysed.set(id, analyse(pts, { flat })); // Linien und Flächen: einmal je Variante
-  if (!dense.has(key)) { if (dense.size > 300) dense.clear(); dense.set(key, resample(pts, n, { flat, analysis: analysed.get(id) })); }
+  if (!analysed.has(id)) analysed.set(id, analyse(pts, { flat: false })); // Linien: einmal je Variante
+  if (!dense.has(key)) { if (dense.size > 300) dense.clear(); dense.set(key, resample(pts, n, { flat: false, analysis: analysed.get(id) })); }
   return dense.get(key);
 }
+/**
+ * Flache Variante auf n Drohnen (Runde 7): gleichmäßig auf ihren sauberen Linien (public/media/katalog/linien/, aus
+ * scripts/catalog-2d-lines.mjs), Farbe und Elternpunkt vom nächsten Katalogpunkt. Einmal je Variante und Zahl.
+ */
+const flatCache = new Map(), prepared = new Map();
+async function flatForm(id, source, n) {
+  const key = `${id}|${n}`;
+  if (!flatCache.has(key)) {
+    if (!prepared.has(id)) prepared.set(id, load(id, 'linien/').then(prepareLines));
+    const L = await prepared.get(id);
+    if (flatCache.size > 300) flatCache.clear();
+    flatCache.set(key, attach(lineSample(L, n).pts, source));
+  }
+  return flatCache.get(key);
+}
+const LINE_SOURCE = { stern: 0 };
+/** Aktionen, die nur Lagen lesen (keine Katalogindizes): sie laufen direkt auf den abgetasteten Drohnen. */
+const BY_PLACE = new Set(['smiley', 'handschlag']);
 /** Profile, deren Motive in SPARK nur Licht bewegen, auch wenn sie räumlich sind (siehe glow, shimmer). */
 const LIGHT_ONLY = new Set(['glow', 'shimmer', 'twinkle', 'breathe', 'run', 'confetti', 'rainbow', 'charge']);
 const lang = () => { const l = typeof document === 'undefined' ? 'de' : document.documentElement?.lang; return ['de', 'en', 'nl'].includes(l) ? l : 'de'; };
@@ -169,26 +188,56 @@ export async function catalogScene(key, tier, n, caption) {
   if (!m) throw new Error(`Katalogmotiv ${key} fehlt`);
   if (tier !== 'SPARK' && CATALOG_3D[key]) return bodyScene(key, tier, n, m.name[lang()] ?? m.name.de);
   const deep = m.dimension === '3D', name = m.name[lang()] ?? m.name.de;
-  const v = variantFor(key, n);
+  // Runde 7: einzelne flache Motive zeichnen ihre Linien immer aus der klarsten Variante (Stern: die größere Variante hat
+  // doppelte Binnenlinien), die Drohnenzahl bestimmt nur die Liniendichte
+  const v = LINE_SOURCE[key] != null && !deep && n >= m.variants[LINE_SOURCE[key]].points ? m.variants[LINE_SOURCE[key]] : variantFor(key, n);
   if (!v) throw new Error(`Katalogmotiv ${key}: keine Variante für ${n} Drohnen`);
   const f = await load(v.id), source = prepare(f, !deep);
-  const action = catalogAction(key, f, source), base = action?.pts ?? source;
-  // Runde 5 (Marc, 18.11.2026: „mehr Drohnen bringen mehr Schärfe“): die Katalogvariante auf n Drohnen abtasten, entlang
-  // der Linien (Außenkontur zuerst, dann Binnenlinien, dann Füllung), statt die übrigen Drohnen dunkel warten zu lassen.
-  // Die Katalogpunkte behalten Platz und Index; neue Drohnen folgen ihren Eltern (scenes/catalog-resample.js).
-  const derived = densify(v.id, source, n, !deep), front = derived.length ? [...base, ...placeDerived(base, derived)] : base;
-  const fitBase = action ? [...base, ...source, ...base.map((p, j) => { const o = [...p.slice(0, 3), 1]; action.live(p, j, action.duration, o); return o.slice(0, 3); })] : base;
-  const fit = derived.length && !action ? front : fitBase;
-  // flache Formationen bewegen sich in jedem Paket wie in SPARK (kein Schwenk, der die fehlende Tiefe zeigen würde)
-  const live = derive(action?.live ?? profile(m.motion, f, base, { body: deep && (tier !== 'SPARK' || !LIGHT_ONLY.has(m.motion)) }), base, derived);
+  let front, fit, live, drawLive, hold, parents;
+  if (deep) {
+    // räumliche Formationen: Katalogpunkte behalten Platz und Index, neue Drohnen zeichnen die Linien nach (derive())
+    const derived = densify(v.id, source, n), order = lightRank(source);
+    front = derived.length ? [...source, ...placeDerived(source, derived)] : source;
+    fit = front;
+    live = derive(profile(m.motion, f, source, { body: tier !== 'SPARK' || !LIGHT_ONLY.has(m.motion) }), source, derived);
+    drawLive = derive((b, j, t, o) => { o[3] *= trace(order[j], t, 2.2); }, source, derived);
+  } else {
+    // Runde 7 (Marc, 19.11.2026): flache Motive gleichmäßig auf sauberen Linien, Liniendichte aus der Drohnenzahl. Jede
+    // Drohne bewegt sich wie ihr nächster Katalogpunkt: Profile rechnen mit der eigenen Lage und der Gruppe des Elternpunkts
+    // (Räder, Nadel, Flügel drehen exakt), Aktionen mit Katalogindizes verschieben die Drohne wie ihren Elternpunkt.
+    const { pts: sampled, parent } = await flatForm(v.id, source, n);
+    const byPlace = BY_PLACE.has(key) ? catalogAction(key, f, sampled) : null;
+    const action = byPlace ?? catalogAction(key, f, source);
+    let base;
+    if (byPlace) { base = byPlace.pts ?? sampled; live = byPlace.live; }
+    else if (action) {
+      const start = action.pts ?? source, tmp = [0, 0, 0, 1];
+      base = sampled.map((p, j) => { const q = start[parent[j]], r = source[parent[j]]; return [p[0] + q[0] - r[0], p[1] + q[1] - r[1], p[2] + (q[2] || 0) - (r[2] || 0), p[3], p[4], p[5]]; });
+      live = (b, j, t, o) => {
+        const a = parent[j], q = start[a];
+        tmp[0] = q[0]; tmp[1] = q[1]; tmp[2] = q[2] || 0; tmp[3] = 1;
+        action.live(q, a, t, tmp);
+        o[0] += tmp[0] - q[0]; o[1] += tmp[1] - q[1]; o[2] += tmp[2] - (q[2] || 0); o[3] *= tmp[3];
+      };
+    } else {
+      base = sampled;
+      const own = profile(m.motion, f, source, { body: false });
+      live = (b, j, t, o) => own(b, parent[j], t, o);
+    }
+    front = base;
+    fit = action ? [...base, ...base.map((p, j) => { const o = [...p.slice(0, 3), 1]; live(p, j, action.duration, o); return o.slice(0, 3); })] : base;
+    const order = lightRank(base);
+    drawLive = (b, j, t, o) => { if (action) live(b, j, 0, o); o[3] *= trace(order[j], t, 2.2); };
+    hold = action?.duration;
+    parents = parent;
+  }
   const rest = reserve(n - front.length, front), k = front.length;
   const run = (b, j, t, o) => { if (j >= k) { o[3] = 0; return; } live(b, j, t, o); };
-  if (tier !== 'ODYSSEY') return { beats: [{ pts: [...front, ...rest], fitPts: fit, caption, live: run, shimmer: false, ...(action ? { hold: action.duration } : {}) }] };
-  const order = lightRank(base);
-  const draw = derive((b, j, t, o) => { if (action) action.live(b, j, 0, o); o[3] *= trace(order[j], t, 2.2); }, base, derived);
+  const extra = { ...(hold ? { hold } : {}), ...(parents ? { parents } : {}) };
+  if (tier !== 'ODYSSEY') return { beats: [{ pts: [...front, ...rest], fitPts: fit, caption, live: run, shimmer: false, ...extra }] };
   return { beats: [
-    act([part('form', front), part('reserve', rest, { offstage: true })], { caption: say('lightDraws', name), hold: 1.6, live: (b, j, t, o) => { if (j >= k) { o[3] = 0; return; } draw(b, j, t, o); } }),
-    act([part('form', front), part('reserve', rest, { offstage: true })], { caption: say('comesAlive', name), clock: action ? undefined : 'continue', fitPts: fit, ...(action ? { hold: action.duration } : {}), live: run }),
+    act([part('form', front), part('reserve', rest, { offstage: true })], { caption: say('lightDraws', name), hold: 1.6, live: (b, j, t, o) => { if (j >= k) { o[3] = 0; return; } drawLive(b, j, t, o); } }),
+    act([part('form', front), part('reserve', rest, { offstage: true })], { caption: say('comesAlive', name), clock: hold ? undefined : 'continue', fitPts: fit, ...extra, live: run }),
   ] };
 }
 

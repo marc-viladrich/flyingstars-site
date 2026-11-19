@@ -115,6 +115,14 @@ export const ART_TIER: Record<ShowArt, ShowPackage> = { '2d': 'SPARK', '3d': 'HO
 export const artOfPackage = (name: ShowPackage): ShowArt => SHOW_ARTS.find((a) => ART_TIER[a] === name) ?? '2d';
 /** Kleinste Drohnenzahl einer Show-Art: 2D 100, 3D 200, Storytelling 300 (wie die Pakete, die sie einführen). */
 export const artMin = (art: ShowArt): number => SHOW_PACKAGES[ART_TIER[art]].base;
+/**
+ * Runde 7 (Marc, 19.11.2026: „sobald man ein gewisses Threshold erreicht, sagen wir ab 400 Drohnen, ist es automatisch
+ * immer 3D“): flache Bilder zeigen ab einer gewissen Dichte mehr Drohnen nicht mehr, die Linien sind dann schon dicht
+ * (scenes/catalog-resample.js, DENSE_SPACING). 2D reicht darum höchstens bis unter TWO_D_LIMIT.
+ */
+export const TWO_D_LIMIT = 400;
+/** Show-Art bei dieser Drohnenzahl: 2D wird ab TWO_D_LIMIT zu 3D, alle anderen bleiben. */
+export const artForDrones = (art: ShowArt, drones: number): ShowArt => (art === '2d' && drones >= TWO_D_LIMIT ? '3d' : art);
 /** Preis einer individuellen Show dieser Art mit dieser Drohnenzahl (netto, zzgl. Anfahrt, ohne Upgrades). */
 export function showArtPrice(art: ShowArt, drones: number): number {
   const n = Math.max(snapDrones(drones), artMin(art));

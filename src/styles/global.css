@@ -574,7 +574,7 @@ td.us { color: var(--text); background: var(--fill-soft); }
 .hy { -webkit-hyphens: auto; hyphens: auto; }
 
 /* footer */
-.footer { border-top: 1px solid var(--line); padding: var(--footer-top) var(--gutter) calc(var(--space-7) + env(safe-area-inset-bottom, 0rem)); display: grid; gap: var(--space-10); }
+.footer { background: var(--night); isolation: isolate; padding: var(--footer-top) var(--gutter) calc(var(--space-7) + env(safe-area-inset-bottom, 0rem)); display: grid; gap: var(--space-10); }
 /* Benannte Flächen: Anlässe steht als eigener Block auf dem Desktop unter den Seiten, auf Tabletbreite unter „Folgen“
    (Audit 4, E2). Zeilenabstände über die Blöcke selbst, damit Desktop und Handy unverändert bleiben */
 .footer .cols { display: grid; grid-template-columns: 1.3fr 1fr 1fr 1fr; grid-template-areas: 'brand contact pages social' 'brand contact occ social'; grid-template-rows: auto 1fr; gap: 0 var(--space-8); }

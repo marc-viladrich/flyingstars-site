@@ -35,7 +35,8 @@ const extent = (lists) => { let m = 0; for (const l of lists) for (const p of l)
 
 const rows = [];
 for (const key of keys) {
-  const flat = (await catalogScene(key, 'SPARK', +n2, key)).beats[0];
+  // 2D-Spalte: wenn die 2D-Abtastung gerade nicht baut (fremde Arbeit im Checkout), bleibt sie leer, die 3D-Spalten nicht
+  const flat = await catalogScene(key, 'SPARK', +n2, key).then((s) => s.beats[0]).catch((e) => { console.warn(`${key}: 2D nicht verfügbar (${e.code ?? e.message})`); return { pts: [] }; });
   const body = (await catalogScene(key, 'HORIZON', +n3, key)).beats;
   const beat = body[body.length - 1], is3d = Boolean(beat.catalog3d);
   const f2 = frame(flat, 0, 0), s2 = 1 / extent([f2]);

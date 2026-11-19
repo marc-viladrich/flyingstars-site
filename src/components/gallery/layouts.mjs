@@ -1,60 +1,45 @@
-// Kuratierte Anordnung der Bildgalerien (Gallery.astro). Material, Maße, Alt-Texte und Belege (Kunde, Ort, Drohnenzahl)
-// stehen in public/media/galerie/manifest.json; hier steht nur, welches Bild wo sitzt und wie es zugeschnitten wird.
+// Kuratierte Bildleitern (Gallery.astro). Material, Maße, Alt-Texte und Belege (Kunde, Ort, Drohnenzahl) stehen in
+// public/media/galerie/manifest.json; hier steht nur, welche drei Bilder in welcher Reihenfolge stehen und wie sie
+// zugeschnitten werden.
 //
-// Raster (Runde 5/6, nach Marcs Referenzen „NOIR“ und der gestreuten Schwarz-Galerie): gleich breite, kleine Spalten,
-// unten bündig, oben treppenartig versetzt, der Text frei links oben über `text` Spalten, die Bilder direkt daneben.
-// at = erste Spur einer Spalte auf dem Halbspalten-Raster (Spalte n liegt regulär auf 2n − 1; eine gerade Zahl setzt sie
-// genau zwischen zwei Spalten, Marc Runde 6). fields = Leuchtpunkt-Unterlagen (DotField) als inset relativ zur Galerie,
-// m = Lage auf dem Handy; ihr Schwerpunkt liegt in der freien Treppenfläche, damit sie dort als Fläche hinter den Bildern
-// hervorschaut und nicht als Punktlinie in den Fugen. ar = Seitenverhältnis der Kachel, pos = object-position (Fokus aufs Motiv); jeder Zuschnitt ist
-// an den echten Bildern geprüft, Logo und Formation liegen vollständig im Rahmen.
+// Runde 7 (Marc, 19.11.2026): „Das Bilder-Grid sollte sich steadily als zusammenhängende Leiter von links nach rechts
+// aufbauen … Drei Bilder in so einer von links nach rechts angeordneten Leiter, plus die Background-Dot-Shape, und mehr
+// brauchen wir nicht.“ Deshalb je Galerie genau drei Bilder in derselben Form (ar), von links unten nach rechts oben,
+// das stärkste Motiv oben rechts. Kein Bild unter der Textspalte, keine Spalten mit mehreren Bildern.
+// items[0] steht links unten, items[2] rechts oben. pos = object-position (Fokus aufs Motiv), an den echten Bildern
+// geprüft: Logo und Formation liegen vollständig im quadratischen Ausschnitt. field = Leuchtpunkt-Unterlage (DotField)
+// als inset relativ zur Leiter, m = Lage bis --grid-stacked, focus = dichteste Stelle; sie liegt in der freien Fläche
+// über der Treppe, damit sie dort als Fläche hinter den Bildern hervorschaut.
 //
 // Nicht verwendet (Sichtung 18.11.2026): nfl-loop-1 und ford-loop-1 (zu dunkel), rewe-fc-1 (neblig, Logo kaum zu
 // erkennen, Bildrechte offen), publikum-1 (angeschnitten, unbelegt), nfl-2 (Hufeisen fast nur Schwarz),
-// bokkenrijders-loop-1 (Marc, Runde 5: kein Video in dieser Section; dasselbe Motiv steht als bokkenrijders-1 drin).
+// bokkenrijders-loop-1 (Marc, Runde 5: kein Video in dieser Section). Runde 7 aus der Galerie genommen, weil nur noch drei
+// Plätze bleiben: prada-1, spotify-1, siemens-1, bokkenrijders-1/-2, nfl-1 (Werbung), herz-1, extraschicht-1,
+// abendhimmel-1, sea-you-1 (Über uns), siemens-indoor-1/-3/-4/-7/-8 (Indoor). Sie bleiben im Manifest.
 
-/** @typedef {{ slug: string, ar: string, pos?: string }} Photo */
-/** @typedef {{ at?: number, items: Photo[] }} Column */
-/** @typedef {{ inset: string, m?: string }} Field */
-/** @typedef {{ cols: number, text: number, top?: number, columns: Column[], fields: Field[] }} Layout */
+/** @typedef {{ slug: string, pos?: string }} Photo */
+/** @typedef {{ inset: string, m?: string, focus?: string }} Field */
+/** @typedef {{ ar: string, items: [Photo, Photo, Photo], field: Field }} Layout */
 
 /** @type {Record<string, Layout>} */
 export const GALLERY_LAYOUTS = {
-  // Werbung #marketing: Logo-Shows großer Marken. Kopf über vier Spalten, Text über zwei; die rechte Spalte steigt neben
-  // der Überschrift bis ganz nach oben (dort flog vorher das Auto des Schwarms, schwarm.ts lässt es aus, sobald die
-  // Fläche belegt ist). Unter dem Text eine Spalte genau zwischen den beiden Textspalten.
+  // Werbung #marketing: Logo-Shows großer Marken, von der Stadt über die Bühne ins Stadion.
   logos: {
-    cols: 5, text: 2, top: 1,
-    columns: [
-      { at: 2, items: [{ slug: 'ford-1', ar: '16 / 9', pos: '50% 45%' }] },
-      { at: 5, items: [{ slug: 'prada-1', ar: '4 / 3', pos: '45% 60%' }, { slug: 'spotify-1', ar: '800 / 433' }, { slug: 'siemens-1', ar: '800 / 343' }] },
-      { at: 7, items: [{ slug: 'bokkenrijders-1', ar: '4 / 3', pos: '45% 40%' }, { slug: 'vw-1', ar: '4 / 5', pos: '60% 40%' }] },
-      { at: 9, items: [{ slug: 'puma-1', ar: '4 / 5', pos: '44% 30%' }, { slug: 'nfl-1', ar: '1 / 1' }, { slug: 'bokkenrijders-2', ar: '1 / 1', pos: '41% 50%' }] },
-    ],
-    fields: [{ inset: '20% 19% 48% 40%', m: '-5% -3% 72% 30%' }],
+    ar: '1 / 1',
+    items: [{ slug: 'ford-1', pos: '47% 50%' }, { slug: 'vw-1', pos: '80% 50%' }, { slug: 'puma-1', pos: '40% 50%' }],
+    field: { inset: '-10% 30% 26% 0%', m: '-12% 28% 30% -4%', focus: '60% 62%' },
   },
-  // Über uns #nachhaltigkeit: Feste für alle.
+  // Über uns #nachhaltigkeit: Feste für alle, Zeichen für Demokratie, Publikum unter dem Himmel.
   willkommen: {
-    cols: 5, text: 2,
-    columns: [
-      { at: 2, items: [{ slug: 'frieden-1', ar: '4 / 3', pos: '47% 30%' }] },
-      { at: 5, items: [{ slug: 'hochzeit-1', ar: '16 / 9', pos: '50% 35%' }, { slug: 'herz-1', ar: '1 / 1', pos: '48% 15%' }] },
-      { at: 7, items: [{ slug: 'extraschicht-1', ar: '4 / 3', pos: '50% 55%' }, { slug: 'abendhimmel-1', ar: '1 / 1', pos: '55% 50%' }] },
-      { at: 9, items: [{ slug: 'sea-you-1', ar: '4 / 5', pos: '50% 30%' }, { slug: 'boellerciao-1', ar: '1 / 1', pos: '50% 40%' }] },
-    ],
-    fields: [{ inset: '-14% 20% 58% 40%', m: '-5% -3% 72% 30%' }],
+    ar: '1 / 1',
+    items: [{ slug: 'hochzeit-1', pos: '50% 50%' }, { slug: 'frieden-1', pos: '41% 50%' }, { slug: 'boellerciao-1', pos: '50% 50%' }],
+    field: { inset: '-10% 30% 26% 0%', m: '-12% 28% 30% -4%', focus: '60% 62%' },
   },
-  // Indoor #referenzen: Standbilder aus dem Siemens-Video der Hannover Messe 2025 (echte FlyingStars-Show). Marc, Runde 6:
-  // mehr Bilder, näher am Text, die Unterlage groß und dezent quer hinter den Bildern.
+  // Indoor #referenzen: Standbilder aus dem Siemens-Video der Hannover Messe 2025 (echte FlyingStars-Show).
   indoor: {
-    cols: 5, text: 2,
-    columns: [
-      { at: 2, items: [{ slug: 'siemens-indoor-8', ar: '16 / 9', pos: '50% 40%' }] },
-      { at: 5, items: [{ slug: 'siemens-indoor-4', ar: '4 / 3', pos: '40% 45%' }, { slug: 'siemens-indoor-1', ar: '4 / 3', pos: '50% 60%' }] },
-      { at: 7, items: [{ slug: 'siemens-indoor-5', ar: '4 / 5', pos: '50% 40%' }, { slug: 'siemens-indoor-7', ar: '1 / 1', pos: '50% 40%' }] },
-      { at: 9, items: [{ slug: 'siemens-indoor-2', ar: '4 / 5', pos: '50% 35%' }, { slug: 'siemens-indoor-6', ar: '1 / 1', pos: '70% 40%' }, { slug: 'siemens-indoor-3', ar: '16 / 10', pos: '50% 40%' }] },
-    ],
-    fields: [{ inset: '-6% 18% 38% 38%', m: '-5% -3% 72% 30%' }],
+    ar: '1 / 1',
+    items: [{ slug: 'siemens-indoor-6', pos: '49% 50%' }, { slug: 'siemens-indoor-5', pos: '49% 50%' }, { slug: 'siemens-indoor-2', pos: '50% 50%' }],
+    field: { inset: '-10% 30% 26% 0%', m: '-12% 28% 30% -4%', focus: '60% 62%' },
   },
 };
 

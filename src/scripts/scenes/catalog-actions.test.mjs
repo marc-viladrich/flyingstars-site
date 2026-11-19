@@ -28,22 +28,26 @@ for(const key of ['smiley','handschlag','konfetti','anstossen']) {
 test('wink closes only right eye into a line and returns to the identical open pose',async()=>{
  const b=(await catalogScene('smiley','SPARK',105,'')).beats[0]; const closed=pose(b,1.5),end=pose(b,3);
  const moved=closed.flatMap((p,j)=>Math.abs(p[1]-b.pts[j][1])>1e-8?[j]:[]);
- assert.ok(moved.length>5);for(const j of moved){assert.ok(b.pts[j][0]>.12);assert.ok(closed[j][1]>=.169&&closed[j][1]<=.206,'Lid als flacher Bogen');}
+ // Runde 7: die Drohnen stehen gleichmäßig auf sauberen Linien; bei Katalogstärke trägt das Auge 9 Drohnen, das Lid 5
+ assert.ok(moved.length>=4);for(const j of moved){assert.ok(b.pts[j][0]>.12);assert.ok(closed[j][1]>=.169&&closed[j][1]<=.206,'Lid als flacher Bogen');}
  // the lid is not denser than the open eye: only every second eye drone forms it, the others are dark meanwhile
  const lid=moved.map(j=>closed[j][0]).sort((a,c)=>a-c), gaps=lid.slice(1).map((x,i)=>x-lid[i]);
  assert.ok(Math.min(...gaps)>.02,`Abstand im Lid ${Math.min(...gaps)}`);
- const dark=closed.flatMap((p,j)=>p[3]<.05?[j]:[]);
+ const dark=closed.flatMap((p,j)=>p[3]<.05&&!b.pts[j].slice(3).every(c=>c===60)?[j]:[]); // ohne die graue Reserve (Runde 7)
  assert.ok(dark.length>=moved.length-1&&dark.every(j=>b.pts[j][0]>.12&&!moved.includes(j)));
- assert.deepEqual(end,b.pts.map(p=>[...p.slice(0,3),1]));
+ assert.deepEqual(end,b.pts.map(p=>[...p.slice(0,3),p.slice(3).every(c=>c===60)?0:1]));
 });
 test('glasses clink: both stay lit, swing apart and back to touching rims, never merge into one glass',async()=>{
  for(const v of CATALOG.anstossen.variants) {
   const f=JSON.parse(await readFile(new URL(`../../../public/media/katalog/${v.id}.json`,import.meta.url)));
-  const {left,right,sparks}=glassGroups(f);
+  let {left,right,sparks}=glassGroups(f);
   assert.equal(left.size+right.size+sparks.size,f.points.length);
   if(v.points===88) {assert.ok(left.has(79)&&left.has(9));assert.ok(right.has(32));}
   if(v.points===108) {assert.ok(left.has(54));assert.ok(right.has(67));}
   const b=(await catalogScene('anstossen','SPARK',v.points,'')).beats[0];
+  // Runde 7: die Drohnen sind neu abgetastet; jede gehört über ihren Elternpunkt (b.parents) zum Glas oder zu den Funken
+  const lift=(idx)=>new Set(b.pts.flatMap((_,j)=>j<b.parents.length&&idx.has(b.parents[j])?[j]:[]));
+  ({left,right,sparks}={left:lift(left),right:lift(right),sparks:lift(sparks)});
   const cx=(o,idx)=>[...idx].reduce((s,j)=>s+o[j][0],0)/idx.size, gap=(o)=>cx(o,right)-cx(o,left), rest=gap(pose(b,0));
   // Runde 5: vorher schob sich das rechte Glas auf das linke (Abstand → 0), das linke erlosch
   for(let t=0;t<5;t+=.05){const o=pose(b,t); assert.ok(gap(o)>rest*.97,`${v.id} t=${t.toFixed(2)}: Gläser rücken ineinander`); for(const j of [...left,...right]) assert.ok(o[j][3]>.99,'Glas bleibt hell');}

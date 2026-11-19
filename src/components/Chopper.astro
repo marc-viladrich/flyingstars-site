@@ -5,14 +5,15 @@
 // chopper-moods.js. Rahmen und Fläche gibt die einbettende Seite vor; die Komponente hat keinen eigenen Karton.
 import { forPath } from '../i18n/server';
 const { t } = forPath(Astro.url.pathname);
-interface Props { mood: 'happy' | 'play'; label?: string; class?: string }
-const { mood, label, class: cls } = Astro.props;
+// scale: Anteil der kürzeren Bühnenseite, den die Formation einnimmt (Standard je Stimmung; Danke-Seite größer, Runde 7)
+interface Props { mood: 'happy' | 'play'; label?: string; class?: string; scale?: number }
+const { mood, label, class: cls, scale } = Astro.props;
 const fallback = { happy: t('chopper.happyLabel'), play: t('chopper.playLabel') }[mood];
 // Ohne JavaScript bleibt das Canvas leer: dann steht dasselbe Standbild wie bei reduzierter Bewegung, aus dem Renderer
 // aufgenommen (public/media/chopper/, transparent). Mit JavaScript lädt der Browser den noscript-Inhalt nicht.
 const still = { happy: { src: '/media/chopper/happy.webp', width: 720, height: 540 }, play: { src: '/media/chopper/play.webp', width: 1200, height: 675 } }[mood];
 ---
-<canvas class:list={['chopper-mood', `is-${mood}`, cls]} data-chopper-mood={mood} role="img" aria-label={label ?? fallback}></canvas>
+<canvas class:list={['chopper-mood', `is-${mood}`, cls]} data-chopper-mood={mood} data-chopper-scale={scale} role="img" aria-label={label ?? fallback}></canvas>
 <noscript><img class:list={['chopper-mood', 'is-still', `is-${mood}`, cls]} src={still.src} width={still.width} height={still.height} alt={label ?? fallback} decoding="async" /></noscript>
 
 <script>
@@ -27,7 +28,7 @@ const still = { happy: { src: '/media/chopper/happy.webp', width: 720, height: 5
         void (async () => {
           const [{ Swarm }, { chopperMood, MOOD_COUNT, PLAY_SCALE }] = await Promise.all([import('../scripts/effects/swarm.js'), import('../scripts/effects/chopper-moods.js')]);
           const play = mood === 'play';
-          const sw = new Swarm(cv, { count: MOOD_COUNT[mood], scale: play ? PLAY_SCALE : 0.46, dot: play ? 1.7 : 1.9 });
+          const sw = new Swarm(cv, { count: MOOD_COUNT[mood], scale: Number(cv.dataset.chopperScale) || (play ? PLAY_SCALE : 0.46), dot: play ? 1.7 : 1.9 });
           const { colors, behaviour } = await chopperMood(mood);
           sw.follow(behaviour, { dur: 2200, colors });
           // Standbild (reduzierte Bewegung): der Schwarm zeichnet nur einen Frame; liegt dessen Zeitstempel vor dem

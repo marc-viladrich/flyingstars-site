@@ -21,8 +21,9 @@ const img = lead.image ? await optimizedImage(lead.image.src, 960, 720) : undefi
 <section class:list={['section', 'lb', { alt: surface === 'alt' }]} id={id} aria-labelledby={`${id}-h`}>
   <SectionHead kicker={kicker} headline={headline} text={text} id={`${id}-h`} level={H} />
   <div class="lb-grid" data-n={items.length}>
-    <article class:list={['lb-lead', { 'has-img': img }]} data-dot-host={img ? '' : undefined}>
-      {img && <div class="lb-img" data-curtain data-dot-img><img src={img.src} width={img.width} height={img.height} alt={lead.image!.alt} loading="lazy" decoding="async" /></div>}
+    {/* Kein Lichtpunkt-Hover auf der Bildkachel (Marc, Runde 7): die Punktmaske zeigt den Effekt schon ohne Hover */}
+    <article class:list={['lb-lead', { 'has-img': img }]}>
+      {img && <div class="lb-img" data-curtain><img src={img.src} width={img.width} height={img.height} alt={lead.image!.alt} loading="lazy" decoding="async" /></div>}
       <div class="lb-lead-copy">
         {lead.icon && <Icon name={lead.icon} size={40} class="g lb-lead-ico" />}
         {img && lead.label && <span class="mono lb-k">{lead.label}</span>}

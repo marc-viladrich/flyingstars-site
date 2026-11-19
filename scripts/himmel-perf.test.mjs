@@ -66,7 +66,8 @@ test('Runde 6: Punktübergänge an jeder Farbfläche, ohne Trennlinien, Masken v
   // Browserprüfung über alle Seiten: npm run check:uebergaenge (in npm run perf:start für sechs Seiten)
   // .c-setlist gehört seit Audit 4 (C2) der Fallstudien-Datei case.css, .team-sec der Komponente Team.astro
   const css = read('src/styles/himmel.css'), global = [read('src/styles/global.css'), read('src/styles/case.css'), read('src/components/sections/Team.astro')].join('\n');
-  const list = css.match(/:is\(\.section\.alt, \.c-setlist, \.team-sec\)::before, :is\(\.section\.alt, \.c-setlist, \.team-sec\)::after \{[^}]*\}/)?.[0] ?? '';
+  // Der Footer (Runde 7) läuft nur nach oben aus: in der ::before-Liste, nicht in der ::after-Liste (sein unteres Band läge unter dem Seitenende)
+  const list = css.match(/:is\(\.section\.alt, \.c-setlist, \.team-sec, \.footer\)::before, :is\(\.section\.alt, \.c-setlist, \.team-sec\)::after \{[^}]*\}/)?.[0] ?? '';
   assert.match(list, /background-color: inherit/, 'Punkte tragen die Farbe der eigenen Fläche');
   assert.match(list, /mask: var\(--ueb-maske\)/);
   for (const sel of ['.section.alt', '.c-setlist', '.team-sec']) {
@@ -74,6 +75,9 @@ test('Runde 6: Punktübergänge an jeder Farbfläche, ohne Trennlinien, Masken v
     assert.ok(rule, `${sel} fehlt in global.css/case.css/Team.astro`);
     assert.doesNotMatch(rule, /border-(top|bottom)/, `${sel}: Trennlinie an einer Farbkante bricht den Punktübergang`);
   }
+  const footer = global.split('\n').map((l) => l.trim()).find((l) => l.startsWith('.footer {')) ?? '';
+  assert.doesNotMatch(footer, /border-top/, '.footer: Punktübergang statt Linie (Runde 7)');
+  assert.match(footer, /background: var\(--night\)/, '.footer: eigene Fläche, sonst ist der Übergang unsichtbar');
   for (const f of ['public/media/uebergang.svg', 'public/media/uebergang-schmal.svg']) assert.ok(statSync(new URL(`../${f}`, import.meta.url)).size > 1000, f);
 });
 

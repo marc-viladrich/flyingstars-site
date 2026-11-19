@@ -1,9 +1,13 @@
 ---
-// Luftige Bildgalerie (Werbung #marketing, Über uns #nachhaltigkeit, Indoor #referenzen).
-// Gleich breite, kleine Spalten, unten bündig, oben treppenartig versetzt; der Text steht frei links oben, die Bilder
-// direkt daneben. Runde 6: Spalten sitzen auf einem Halbspalten-Raster (at), einzelne also genau zwischen zwei Spalten;
-// hinter den Bildern liegt die Leuchtpunkt-Unterlage (DotField). Mobil zwei (ab 44em drei) versetzte Spalten als
-// Mauerwerk, die Plätze werden beim Build gerechnet (feines Zeilenraster, Spaltenbreite / 24).
+// Bildleiter (Werbung #marketing, Über uns #nachhaltigkeit, Indoor #referenzen). Runde 7 (Marc, 19.11.2026): „Drei Bilder
+// in so einer von links nach rechts angeordneten Leiter, plus die Background-Dot-Shape, und mehr brauchen wir nicht.“
+// Genau drei gleich große Bilder in derselben Form steigen von links unten nach rechts oben, mit gleichmäßigem Versatz;
+// der Text steht links daneben, kein Bild unter der Textspalte. Breit: Raster aus fünf gleichen Spalten, Text über zwei,
+// Leiter über drei (jedes Bild eine Spalte). Schmal (bis --grid-stacked): Text oben, die Leiter darunter flacher über die
+// ganze Breite. Hinter der Leiter liegt die Leuchtpunkt-Unterlage (DotField).
+// Abstände: Mit Kopf im Raster (slot „head“) steht der Text im Abstand Überschrift → Text (--head-gap-text) unter dem Kopf,
+// die Leiter im Abstand Überschrift → Inhalt (--head-gap-content). after="text" sagt dasselbe für einen Kopf, der direkt
+// über der Galerie steht (Sustainability): er setzt den Textabstand, die Leiter holt die Differenz selbst nach.
 // Anordnung und Zuschnitte: ./layouts.mjs, Material und Belege: public/media/galerie/manifest.json.
 // Hover (nur Maus): Kachel hebt sich, Foto hellt auf, Zeile Kunde · Ort · Drohnen blendet ein, weich in beide
 // Richtungen; nur transform, opacity und filter. Erscheinen mit dem Vorhang-Reveal der Seite.
@@ -11,63 +15,44 @@ import GalleryTile from './GalleryTile.astro';
 import DotField from '../DotField.astro';
 import { GALLERY_LAYOUTS } from './layouts.mjs';
 import { manifestPhoto, ratio } from './manifest-photo';
-interface Props { set: keyof typeof GALLERY_LAYOUTS; class?: string }
-const { set, class: cls } = Astro.props;
+interface Props { set: keyof typeof GALLERY_LAYOUTS; class?: string; after?: 'text' | 'content' }
+const { set, class: cls, after = 'content' } = Astro.props;
 const layout = GALLERY_LAYOUTS[set];
 if (!layout) throw new Error(`Unbekannte Galerie „${set}“`);
+if (layout.items.length !== 3) throw new Error(`Galerie „${set}“: die Leiter hat genau drei Bilder`);
 const hasHead = Astro.slots.has('head');
-const photo = async (t: { slug: string; ar: string; pos?: string }) => ({ ...(await manifestPhoto(t.slug, Astro.url.pathname)), ar: t.ar, pos: t.pos ?? '50% 50%', r: ratio(t.ar) });
-// Halbspalten-Raster: 2 × cols Spuren; at = erste Spur einer Spalte (1, 3, 5 … auf dem Raster, 2, 4 … dazwischen)
-const tracks = layout.cols * 2, textTracks = layout.text * 2, headTracks = (layout.cols - (layout.top ?? 0)) * 2;
-const columns = await Promise.all(layout.columns.map(async (col, c) => {
-  const at = col.at ?? 2 * c + 1;
-  if (at < textTracks && at + 1 > textTracks) throw new Error(`Galerie „${set}“: Spalte ${c + 1} läge halb unter dem Text`);
-  const items = await Promise.all(col.items.map(async (item) => ({ ...(await photo(item)), c })));
-  return { at, items, rise: at > textTracks, top: hasHead && at > headTracks };
+// Versatz je Stufe als Anteil der Bildhöhe; margin-top in % bezieht sich im Raster auf die Spaltenbreite, daher / ratio
+const r = ratio(layout.ar), STEP = 0.42, STEP_M = 0.26;
+const pct = (n: number) => `${+(n * 100).toFixed(3)}%`;
+const photos = await Promise.all(layout.items.map(async (item, i) => {
+  const p = await manifestPhoto(item.slug, Astro.url.pathname);
+  const rise = 2 - i; // links unten (zwei Stufen tiefer) → rechts oben
+  return { ...p, style: `--ar:${layout.ar};--pos:${item.pos ?? '50% 50%'};--i:${i};--rise:${pct(rise * STEP / r)};--rise-m:${pct(rise * STEP_M / r)}` };
 }));
-type Photo = (typeof columns)[number]['items'][number];
-
-// Mobil: Mauerwerk in feinen Zeilen (24 je Spaltenbreite), drei Zeilen Fuge, die zweite (und dritte) Spalte beginnt
-// tiefer. Reihenfolge: rechte Galeriespalte zuerst (dort stehen die stärksten Motive), jeweils in die kürzere Spalte.
-const UNITS = 24, GAP = 3;
-function masonry(n: number, offsets: number[]) {
-  const top = offsets.slice(0, n), place = new Map<string, string>();
-  const photos = [...columns].reverse().flatMap((col) => col.items);
-  for (const p of photos) {
-    const c = top.indexOf(Math.min(...top)), span = Math.round(UNITS / p.r);
-    place.set(p.slug, `--m${n}c:${c + 1};--m${n}r:${top[c] + 1};--m${n}s:${span}`);
-    top[c] += span + GAP;
-  }
-  return place;
-}
-const m2 = masonry(2, [0, 10]), m3 = masonry(3, [6, 0, 12]);
-const style = (p: Photo) => `--ar:${p.ar};--pos:${p.pos};--i:${p.c};${m2.get(p.slug)};${m3.get(p.slug)}`;
+const f = layout.field;
 ---
 <div class:list={['gal-wrap', cls]}>
-  <div class:list={['gal', 'df-host', `gal-${set}`, { 'has-head': hasHead }]} style={`--tracks:${tracks};--text:${textTracks};--head:${headTracks}`}>
-    {/* Kopf im Raster: überspannt alle Spalten außer den obersten (top), die neben ihm aufsteigen */}
+  <div class:list={['gal', `gal-${set}`, { 'has-head': hasHead, 'after-text': after === 'text' && !hasHead }]}>
     {hasHead && <div class="g-head"><slot name="head" /></div>}
     <div class="g-copy"><slot /></div>
-    <div class="g-cols">
-      {/* breit liegt die Unterlage auf der Galerie (g-cols ist dort display: contents), schmal auf dem Mauerwerk */}
-      {layout.fields.map((f) => <DotField inset={f.inset} insetM={f.m} focus="50% 50%" />)}
-      {columns.map((col) => <div class:list={['g-col', { 'g-rise': col.rise, 'g-top': col.top }]} style={`--at:${col.at}`}>
-        {col.items.map((p) => <GalleryTile {...p} style={style(p)} />)}
-      </div>)}
+    <div class="g-ladder df-host">
+      <DotField inset={f.inset} insetM={f.m} focus={f.focus ?? '50% 50%'} />
+      {photos.map(({ style, slug: _slug, ...p }) => <GalleryTile {...p} style={style} />)}
     </div>
   </div>
 </div>
 
 <style is:global>
   /* global, weil die Kacheln eine eigene Komponente sind; alles hängt an .gal */
-  .gal-wrap { container-type: inline-size; }
-  /* Fugen zwischen Runde 4 (0,5–1rem) und Runde 5 (1,25–2,75rem), näher an Runde 4 (Marc, Runde 6) */
-  .gal { --g-gap: clamp(0.875rem, 1.4vw, 1.5rem); --g-r: var(--radius-14); --g-ease: var(--ease-lift); --g-dur: var(--dur-reveal); }
-  /* Kopf → Collage: die gemeinsame Rolle --head-gap-content (global.css), im Raster abzüglich der Fuge */
+  .gal { --g-gap: clamp(0.875rem, 1.4vw, 1.5rem); --g-r: var(--radius-14); --g-ease: var(--ease-lift); --g-dur: var(--dur-reveal); --g-lift: 0rem; }
+  /* Kopf → Text ist --head-gap-text; die Leiter ist Inhalt und steht im Abstand --head-gap-content unter dem Kopf */
   .gal .g-head .section-head { margin-bottom: 0; }
+  /* der erste Absatz (auch im Fließtextblock .prose) beginnt genau am Abstand Kopf → Text, im Raster kollabiert nichts */
+  .gal .g-copy > :first-child, .gal .g-copy > :first-child > :first-child { margin-top: 0; }
   .gal .g-copy > :last-child { margin-bottom: 0; }
 
-  .gal .g-tile { position: relative; display: block; margin: 0; border-radius: var(--g-r); color: var(--text); text-decoration: none; aspect-ratio: var(--ar);
+  .gal .g-ladder { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: var(--g-gap); align-items: start; }
+  .gal .g-tile { grid-row: 1; margin: var(--rise) 0 0; position: relative; display: block; border-radius: var(--g-r); color: var(--text); text-decoration: none; aspect-ratio: var(--ar);
     transition: transform var(--g-dur) var(--g-ease); }
   /* Schatten als eigene Ebene: nur ihre Deckkraft wird animiert */
   .gal .g-tile::after { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; box-shadow: 0 1.25rem 2.5rem -1rem var(--shadow-strong); opacity: 0; transition: opacity var(--g-dur) var(--g-ease); pointer-events: none; }
@@ -78,7 +63,7 @@ const style = (p: Photo) => `--ar:${p.ar};--pos:${p.pos};--i:${p.c};${m2.get(p.s
   /* Vorhang wie global ([data-curtain] > img), hier sitzt das Foto in <picture> */
   .reveal .gal .g-media[data-curtain]:not(.is-in) img { transform: scale(1.28); }
 
-  /* Zeile Kunde · Ort · Drohnen, wie die Zähler auf den Referenzkarten */
+  /* Zeile Kunde · Ort · Drohnen, wie die Zähler auf den Referenzkarten; nur beim Zeigen, immer nur an einem Bild */
   .gal .g-cap { position: absolute; z-index: 2; left: 0.5rem; bottom: 0.5rem; max-width: calc(100% - 1rem); padding: var(--space-1-5) var(--space-2-25);
     border-radius: var(--radius-4); background: var(--overlay-media); -webkit-backdrop-filter: blur(0.5rem); backdrop-filter: blur(0.5rem);
     line-height: 1.35; opacity: 0; transform: translateY(0.375rem); pointer-events: none;
@@ -90,37 +75,26 @@ const style = (p: Photo) => `--ar:${p.ar};--pos:${p.pos};--i:${p.c};${m2.get(p.s
     .gal .g-tile:hover .g-cap { opacity: 1; transform: none; transition-delay: var(--dur-stagger-reveal); }
   }
   .gal .g-tile:focus-visible .g-cap { opacity: 1; transform: none; }
-  @media (hover: none), (pointer: coarse) { .gal .g-cap { display: none; } }
+  /* Lange Ortsnamen („Mönchengladbach“) dürfen umbrechen statt über die Kachel und die Seite hinauszuragen; bei schmalen
+     Kacheln (Leiter quer über die Breite) bleibt die Zeile ganz weg, sie hätte dort keinen Platz */
+  .gal .g-cap { overflow-wrap: anywhere; }
+  @media (hover: none), (pointer: coarse), (--mobile) { .gal .g-cap { display: none; } }
 
-  /* Breit: Halbspalten-Raster (2 Spuren je Spalte), Text links oben, darunter kurze Spalten, daneben steigen sie an.
-     Spalten unter dem Text beginnen direkt unter ihm, die aufsteigenden enden unten bündig. */
+  /* Breit: fünf gleiche Spalten, Text über zwei, Leiter über drei; die Leiter beginnt oben bündig mit dem Text */
   @media (--grid-expanded) {
-    .gal { display: grid; grid-template-columns: repeat(var(--tracks), minmax(0, 1fr)); grid-template-rows: auto 1fr; column-gap: var(--g-gap); row-gap: var(--g-gap); }
-    .gal .g-cols { display: contents; }
-    .gal .g-copy { grid-column: 1 / span var(--text); grid-row: 1; max-width: 42rem; padding-right: var(--g-gap); }
-    .gal .g-col { grid-column: var(--at) / span 2; grid-row: 2; align-self: start; display: flex; flex-direction: column; gap: var(--g-gap); }
-    .gal .g-col.g-rise { grid-row: 1 / 3; align-self: end; }
-    /* mit Kopf: Zeile 1 Kopf, 2 Text, 3 kurze Spalten; die oberste Spalte reicht bis neben den Kopf */
-    .gal.has-head { grid-template-rows: auto auto 1fr; }
-    .gal.has-head .g-head { grid-column: 1 / span var(--head); grid-row: 1; padding-bottom: calc(var(--head-gap-content) - var(--g-gap)); }
-    .gal.has-head .g-copy { grid-row: 2; }
-    .gal.has-head .g-col { grid-row: 3; }
-    .gal.has-head .g-col.g-rise { grid-row: 2 / 4; }
-    .gal.has-head .g-col.g-top { grid-row: 1 / 4; }
+    .gal { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); column-gap: var(--g-gap); align-items: start; }
+    .gal.has-head, .gal.after-text { --g-lift: calc(var(--head-gap-content) - var(--head-gap-text)); }
+    .gal .g-head { grid-column: 1 / -1; grid-row: 1; margin-bottom: var(--head-gap-text); }
+    .gal .g-copy { grid-column: 1 / span 2; max-width: 42rem; padding-right: var(--g-gap); }
+    .gal .g-ladder { grid-column: 3 / span 3; margin-top: var(--g-lift); }
+    .gal.has-head .g-copy, .gal.has-head .g-ladder { grid-row: 2; }
   }
 
-  /* Schmal: Mauerwerk aus zwei (ab 44em drei) Spalten; Platz und Höhe jeder Kachel kommen aus dem Build */
+  /* Schmal: Text oben, die Leiter darunter über die ganze Breite, flacher (kleinerer Versatz) */
   @media (--grid-stacked) {
-    .gal .g-head { margin-bottom: var(--head-gap-content); }
-    .gal .g-copy { margin-bottom: clamp(var(--space-6), 6vw, var(--space-9)); }
-    .gal .g-cols { --n: 2; --mg: clamp(0.875rem, 3.5vw, 1.25rem); position: relative; isolation: isolate; display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); column-gap: var(--mg); row-gap: 0;
-      grid-auto-rows: calc((100cqi - (var(--n) - 1) * var(--mg)) / var(--n) / 24); }
-    .gal .g-col { display: contents; }
-    .gal .g-tile { aspect-ratio: auto; grid-column: var(--m2c); grid-row: var(--m2r) / span var(--m2s); }
-  }
-  @media (min-width: 44em) and (--grid-stacked) {
-    .gal .g-cols { --n: 3; }
-    .gal .g-tile { grid-column: var(--m3c); grid-row: var(--m3r) / span var(--m3s); }
+    .gal .g-head { margin-bottom: var(--head-gap-text); }
+    .gal .g-ladder { margin-top: clamp(var(--space-8), 6vw, var(--space-11)); }
+    .gal .g-tile { margin: var(--rise-m) 0 0; }
   }
 
   @media (prefers-reduced-motion: reduce) {

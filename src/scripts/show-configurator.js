@@ -41,7 +41,7 @@ import { t as message } from '../i18n/ui.mjs';
 // - der gleitende Rahmen an den Paketknöpfen ist reines CSS (ShowConfigurator.astro): er folgt dem Radio, also auch dem
 //   Regler, der unten in update() das Paket umstellt
 import { getConfiguratorContent, unlockAt, bySeason } from "../content/show-configurator.js";
-import { SHOW_PACKAGES, DRONES_MIN, DRONES_MAX, DRONE_STEP, PACKAGE_NAMES, SHOW_ARTS, ART_TIER, artMin, artOfPackage, showArtPrice, snapDrones } from "../content/show-packages";
+import { SHOW_PACKAGES, DRONES_MIN, DRONES_MAX, DRONE_STEP, PACKAGE_NAMES, SHOW_ARTS, ART_TIER, artMin, artOfPackage, showArtPrice, snapDrones, TWO_D_LIMIT, artForDrones } from "../content/show-packages";
 import { SHOW_EXTRAS } from "../content/show-extras.mjs";
 import { money } from "../lib/price.mjs";
 // Preisseite nach Moritz (17.11.2026): keine Paketwahl mehr. Zwei Zustände:
@@ -593,6 +593,10 @@ if (form) {
     if (!logoMode && n < artMin(art)) { n = artMin(art); floorNote(); }
     if (snapDrones(n) !== drones) leavePreset(); // eine andere Drohnenzahl ist eine Änderung am Paket
     drones = snapDrones(n);
+    // Runde 7: ab 400 Drohnen ist 2D automatisch 3D (Anzeige, Preis und Motivfassung folgen der Art); wer wieder unter 400
+    // geht, ist wieder bei 2D, solange die Art nicht selbst gewählt wurde
+    if (!logoMode && artForDrones(art, drones) !== art) { art = artForDrones(art, drones); auto3d = true; drawArt(); floorNote('preise.art2dMax', TWO_D_LIMIT); }
+    else if (!logoMode && auto3d && drones < TWO_D_LIMIT) { art = "2d"; auto3d = false; drawArt(); }
     if (logoMode) {
       logoWanted = drones;
       if (previousAnchor !== logoAnchor()) logoVer++;
@@ -613,10 +617,10 @@ if (form) {
   function drawArt() {
     for (const r of artRadios) if (r.checked !== (r.value === art)) r.checked = r.value === art;
   }
-  let floorTimer = 0;
-  /** Kurzer Hinweis, warum der Regler nicht tiefer geht (z. B. „3D-Show ab 200 Drohnen“). */
-  function floorNote() {
-    floorEl.textContent = message('preise.artFloor', { art: message(`preise.artName.${art}`), n: artMin(art) });
+  let floorTimer = 0, auto3d = false; // auto3d: 3D kam von selbst (2D ab TWO_D_LIMIT), nicht aus der Auswahl
+  /** Kurzer Hinweis, warum der Regler nicht tiefer geht (z. B. „3D-Show ab 200 Drohnen“) oder die Art wechselte. */
+  function floorNote(key = 'preise.artFloor', n = artMin(art)) {
+    floorEl.textContent = message(key, { art: message(`preise.artName.${art}`), n });
     floorEl.parentElement.classList.add("is-note");
     clearTimeout(floorTimer);
     floorTimer = setTimeout(() => floorEl.parentElement.classList.remove("is-note"), 2600);
@@ -638,8 +642,10 @@ if (form) {
     if (!SHOW_ARTS.includes(next) || next === art) return;
     const before = { pkg: pkgName(), drones };
     leavePreset();
-    art = next;
+    art = next; auto3d = false;
     if (drones < artMin(art)) { drones = artMin(art); floorNote(); }
+    // 2D reicht bis unter TWO_D_LIMIT (Runde 7): wer bei mehr Drohnen 2D wählt, bekommt die größte 2D-Zahl
+    if (art === "2d" && drones >= TWO_D_LIMIT) { drones = TWO_D_LIMIT - DRONE_STEP; floorNote('preise.art2dMax', TWO_D_LIMIT); }
     const up = SHOW_ARTS.indexOf(art) > SHOW_ARTS.indexOf(artOfPackage(before.pkg)); // nur aufwärts ist es Neues
     const now = up ? freshMotifs(occasion.motifs, before, { pkg: pkgName(), drones }) : [];
     if (now.length && !logoMode) showToast(unlockNote(now));
@@ -696,6 +702,7 @@ if (form) {
     if (linkedArt) drones = artMin(art);
     else art = [...SHOW_ARTS].reverse().find((a) => artMin(a) <= drones) ?? SHOW_ARTS[0];
   }
+  if (artForDrones(art, drones) !== art) { if (preset) leavePreset(); art = artForDrones(art, drones); auto3d = !linkedArt; }
   const linkedMotif = occasion.motifs.findIndex((m) => m.id === params.get("motiv"));
   if (linkedMotif >= 0) first = false; // a linked motif plays from its first act
   // a link to a motif that needs more drones opens it with enough drones (dreizehnte Fassung)

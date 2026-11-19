@@ -37,3 +37,14 @@ test('Raster deckt den ganzen Rahmen ab (kein dunkler Rand, kein Schnappen beim 
     assert.ok(cols * step >= W && rows * step >= H);
   }
 });
+
+// Runde 7 (Marc, 19.11.2026: „wenn wir diesen Effekt schon ohne Hover haben, macht es keinen Sinn, auch noch den
+// Hover-Effekt zu nehmen“): Bilder hinter der festen Punktmaske (ecke-punkte.svg) bekommen keinen Lichtpunkt-Hover.
+test('Bildkachel mit fester Punktmaske hat keinen Lichtpunkt-Hover', async () => {
+  const { readFileSync, readdirSync } = await import('node:fs');
+  const root = new URL('../../components/', import.meta.url);
+  const walk = (dir) => readdirSync(dir, { withFileTypes: true }).flatMap((e) => e.isDirectory() ? walk(new URL(`${e.name}/`, dir)) : e.name.endsWith('.astro') ? [new URL(e.name, dir)] : []);
+  const masked = walk(root).filter((f) => readFileSync(f, 'utf8').includes('ecke-punkte.svg'));
+  assert.ok(masked.length > 0, 'keine Komponente mit Punktmaske gefunden');
+  for (const f of masked) assert.doesNotMatch(readFileSync(f, 'utf8'), /data-dot-(img|host)/, f.pathname);
+});

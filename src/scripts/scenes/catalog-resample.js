@@ -1,37 +1,128 @@
-// Katalogmotive auf die gewählte Drohnenzahl abtasten (Runde 5, Marc 18.11.2026: „Es macht visually keinen Unterschied
-// bei den ganzen FlyingStars-eigenen Motiven … welche Anzahl an Drohnen wir haben … mehr Drohnen bringen mehr Schärfe“).
-// Vorher zeigte jedes Katalogmotiv die Punkte seiner Katalogvariante; alle weiteren Drohnen warteten dunkel.
+// Katalogmotive auf die gewählte Drohnenzahl abtasten.
 //
-// Der Katalog liefert nur Punkte, keine Linien. Die Linien werden zurückgewonnen: Nachbarpunkte im Abstand einer
-// gezeichneten Linie werden verbunden (Relative-Neighbourhood-Graph, also nur „direkte“ Nachbarn, keine Abkürzungen über
-// Ecken; weite Sprünge wie Auge → Umriss bleiben unverbunden). Zusätzliche Drohnen kommen in dieser Reihenfolge dazu:
-//   1. Außenkontur: Kanten am Außenrand werden zuerst und am dichtesten nachgezeichnet,
-//   2. Binnenlinien: Kanten innen etwas weniger dicht (Gewicht INNER),
-//   3. Füllung (nur flache Motive): ab dreifacher Liniendichte füllt ein gleichmäßiges Dreiecksraster die Innenfläche,
-//      mit Abstand zu allen Linien und gedimmt, damit Umriss und Binnenzeichnung lesbar bleiben.
-// Jede neue Drohne steht auf einer Linie zwischen zwei Katalogpunkten oder im Raster, nie auf einem belegten Punkt und
-// nie zufällig verstreut. Die Katalogpunkte selbst behalten Platz und Index (Bewegungsgruppen, Aktionen und Masken in
-// catalog-actions.js beziehen sich darauf); die neuen Drohnen folgen ihren Eltern-Punkten (derive()).
-// Rechenzeit: ein Motiv mit 300 Punkten auf 1000 Drohnen < 5 ms (scripts/catalog-resample.test.mjs misst es).
+// 2D-Motive (Runde 7, Marc 19.11.2026: „alle deine ‚Auffüllungen‘ der 2D FlyingStars shapes sehen komplett scheiße aus …
+// nimm die gleiche Logik wie bei den Logos, wo wir diese Liniendichte als Variable haben“): Aus den Katalogpunkten werden
+// einmal je Variante saubere Linien gewonnen (scripts/catalog-2d-lines.mjs → public/media/katalog/linien/<id>.json:
+// Mittellinien, Konturen von Flächen, Kreise, Geraden, Bögen). Zur Laufzeit tastet lineSample() sie gleichmäßig ab:
+// Knoten (Enden, Kreuzungen, Ecken) bekommen genau eine Drohne, dazwischen gleiche Abstände. Die Liniendichte folgt der
+// Drohnenzahl: wenige Drohnen = sparsam, mehr Drohnen = dichter, bis DENSE_SPACING (dann ist eine Linie so dicht, dass
+// weitere Drohnen nichts mehr zeigen; sie bleiben dunkel in Reserve, ab 400 Drohnen spielt die Show-Art 3D). Keine Füllung,
+// keine Punkte neben der Linie, an Kreuzungen hält jede Drohne Abstand (CLEAR). Die Katalogpunkte sind Vorlage: Farbe und
+// Bewegungsgruppe erbt jede Drohne vom nächsten Katalogpunkt (attach()).
+//
+// 3D-Motive aus dem Katalog (Kugel, Atom …, Show-Art 2D): unten analyse()/resample(), Linien in 3D nachgezeichnet.
 
-// Runde 6 (Marc, 18.11.2026: „Only up until 200 drones I really like what you're doing, but beyond that it keeps getting
-// worse“): verdichtet wird nur bis 200 Drohnen. Darüber behält das Motiv seine 200er-Gestalt; die weiteren Drohnen bleiben
-// dunkel in Reserve (scenes/catalog.js).
+/** Dichtester Linienabstand in Motivgrößen (größere Ausdehnung), etwa 48 Drohnen über die Breite des Motivs. */
+export const DENSE_SPACING = 0.021;
+/** Kein Drohnenpaar steht enger als CLEAR · Linienabstand (an Kreuzungen und spitzen Winkeln). */
+export const CLEAR = 0.55;
+
+/** Linien einer Variante für die Abtastung vorbereiten (einmal je Variante): Längen, Ausdehnung. */
+export function prepareLines(lines) {
+  const seg = (p) => { const c = [0]; for (let i = 1; i < p.length; i++) c.push(c[i - 1] + Math.hypot(p[i][0] - p[i - 1][0], p[i][1] - p[i - 1][1])); return c; };
+  const curves = lines.curves.map((c) => ({ a: c.a, b: c.b, p: c.p, c: seg(c.p), len: seg(c.p).at(-1), ci: c.ci }));
+  const loops = lines.loops.map((l) => {
+    if (l.circle) return { circle: l.circle, len: 2 * Math.PI * l.circle[2], ci: l.ci };
+    // Start am obersten Punkt (symmetrische Formen bleiben symmetrisch abgetastet)
+    let top = 0; l.p.forEach((q, i) => { if (q[1] > l.p[top][1]) top = i; });
+    const p = [...l.p.slice(top), ...l.p.slice(0, top), l.p[top]];
+    return { p, c: seg(p), len: seg(p).at(-1), ci: l.ci };
+  });
+  let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+  const see = (q) => { x0 = Math.min(x0, q[0]); x1 = Math.max(x1, q[0]); y0 = Math.min(y0, q[1]); y1 = Math.max(y1, q[1]); };
+  lines.nodes.forEach(see); lines.dots.forEach(see); lines.curves.forEach((c) => c.p.forEach(see));
+  lines.loops.forEach((l) => (l.circle ? [[l.circle[0] - l.circle[2], l.circle[1] - l.circle[2]], [l.circle[0] + l.circle[2], l.circle[1] + l.circle[2]]].forEach(see) : l.p.forEach(see)));
+  const used = new Set(curves.flatMap((c) => [c.a, c.b]));
+  return { keep: Boolean(lines.keep), s0: lines.s0, nodes: lines.nodes.filter((_, i) => used.has(i)), nodeIds: [...used].sort((a, b) => a - b), all: lines.nodes, curves, loops, dots: lines.dots, size: Math.max(x1 - x0, y1 - y0) || 1 };
+}
+
+const count = (L, s) => L.nodes.length + L.dots.length + L.curves.reduce((k, c) => k + Math.max(0, Math.round(c.len / s) - 1), 0) + L.loops.reduce((k, l) => k + Math.max(3, Math.round(l.len / s)), 0);
+/** k gleich lange Stücke einer Polylinie (Bogenlänge c), Punkte i = from … to, mit Farbindex ci. */
+function along(p, c, len, k, from, to, ci, out) {
+  let j = 1;
+  for (let i = from; i <= to; i++) {
+    const d = (len * i) / k;
+    while (j < c.length - 1 && c[j] < d) j++;
+    const u = (d - c[j - 1]) / ((c[j] - c[j - 1]) || 1);
+    out.push([p[j - 1][0] + (p[j][0] - p[j - 1][0]) * u, p[j - 1][1] + (p[j][1] - p[j - 1][1]) * u, ci]);
+  }
+}
+
+/**
+ * Höchstens n Drohnen gleichmäßig auf den Linien (prepareLines()). Rückgabe { pts: [[x, y, ci?]], spacing }; ci = Index
+ * des Katalogpunkts, dessen Farbe die Linie trägt (nur bei von Hand idealisierten Formen).
+ * Der Abstand ist der kleinste, bei dem die Zahl noch passt, aber nie enger als DENSE_SPACING · Motivgröße.
+ */
+export function lineSample(L, n) {
+  // Katalogpunkte ohne Verdichtung (keep): alle Punkte, wie FlyingStars sie gesetzt haben
+  if (L.keep) return { pts: L.dots.slice(0, n), spacing: DENSE_SPACING * L.size };
+  const sMin = DENSE_SPACING * L.size;
+  let s = sMin;
+  if (count(L, sMin) > n) {
+    let lo = sMin, hi = L.size * 4;
+    for (let it = 0; it < 26; it++) { const mid = (lo + hi) / 2; if (count(L, mid) > n) lo = mid; else hi = mid; }
+    s = hi;
+  }
+  // Knoten tragen die Farbe einer ihrer Linien (falls die Linien eine feste Farbe haben, sonst die des Katalogs)
+  const nodeCi = new Map(); for (const c of L.curves) if (c.ci != null) { nodeCi.set(c.a, c.ci); nodeCi.set(c.b, c.ci); }
+  const raw = [...L.dots, ...L.nodeIds.map((i) => [...L.all[i], nodeCi.get(i)])];
+  for (const c of L.curves) { const k = Math.max(1, Math.round(c.len / s)); along(c.p, c.c, c.len, k, 1, k - 1, c.ci, raw); }
+  for (const l of L.loops) {
+    const k = Math.max(3, Math.round(l.len / s));
+    if (!l.circle) { along(l.p, l.c, l.len, k, 0, k - 1, l.ci, raw); continue; }
+    const [cx, cy, r] = l.circle;
+    for (let i = 0; i < k; i++) { const a = Math.PI / 2 + (2 * Math.PI * i) / k; raw.push([cx + r * Math.cos(a), cy + r * Math.sin(a), l.ci]); }
+  }
+  // Abstand halten: wer einer schon gesetzten Drohne zu nahe kommt, fällt weg (Kreuzungen, spitze Winkel, Ränder)
+  const gap = CLEAR * s, gap2 = gap * gap, grid = new Map(), pts = [], key = (gx, gy) => (gx + 4096) * 8192 + gy + 4096;
+  for (const q of raw) {
+    const gx = Math.floor(q[0] / gap), gy = Math.floor(q[1] / gap);
+    let ok = true;
+    for (let dx = -1; dx <= 1 && ok; dx++) for (let dy = -1; dy <= 1 && ok; dy++) {
+      const cell = grid.get(key(gx + dx, gy + dy));
+      if (cell) for (const o of cell) if ((o[0] - q[0]) ** 2 + (o[1] - q[1]) ** 2 < gap2) { ok = false; break; }
+    }
+    if (!ok) continue;
+    const k = key(gx, gy), cell = grid.get(k); if (cell) cell.push(q); else grid.set(k, [q]);
+    pts.push(q);
+    if (pts.length >= n) break;
+  }
+  return { pts, spacing: s };
+}
+
+/**
+ * Farbe, Tiefe und Elternpunkt je Drohne aus den Katalogpunkten (src: [[x, y, z, r, g, b]]). Farbe: Mischung der zwei
+ * nächsten Katalogpunkte (Verläufe bleiben weich), bei deutlich verschiedenen Farben die des nächsten (harte Kanten).
+ * Rückgabe { pts: [[x, y, z, r, g, b]], parent: Int32Array }.
+ */
+export function attach(sampled, src) {
+  const parent = new Int32Array(sampled.length), pts = [];
+  sampled.forEach(([x, y, ci], j) => {
+    let a = -1, b = -1, da = Infinity, db = Infinity;
+    for (let i = 0; i < src.length; i++) {
+      const d = (src[i][0] - x) ** 2 + (src[i][1] - y) ** 2;
+      if (d < da) { b = a; db = da; a = i; da = d; } else if (d < db) { b = i; db = d; }
+    }
+    da = Math.sqrt(da); db = Math.sqrt(db);
+    const A = ci != null ? src[ci] : src[a], B = ci != null ? A : b >= 0 ? src[b] : A;
+    const far = Math.hypot(A[3] - B[3], A[4] - B[4], A[5] - B[5]) > 110, w = far ? 0 : da / (da + db || 1);
+    parent[j] = a;
+    pts.push([x, y, A[2] || 0, Math.round(A[3] + (B[3] - A[3]) * w), Math.round(A[4] + (B[4] - A[4]) * w), Math.round(A[5] + (B[5] - A[5]) * w)]);
+  });
+  return { pts, parent };
+}
+
+// ——— 3D-Motive aus dem Katalog (räumliche Formationen in der Show-Art 2D) ———
+// Linien werden zurückgewonnen (Relative-Neighbourhood-Graph) und nachgezeichnet, verdichtet bis DENSE_MAX Drohnen
+// (Runde 6); die Katalogpunkte behalten Platz und Index, neue Drohnen folgen ihren Eltern (derive()).
 export const DENSE_MAX = 200;
-const INNER = 0.72; // Binnenlinien relativ zur Außenkontur
-const LINE_CAP = 3; // flache Motive mit großer Innenfläche: ab dreifacher Liniendichte kommt die Füllung dazu
-const FILL_LIGHT = 0.5; // Helligkeit der Füllung
-const FILL_SHARE = 0.16; // gefüllt wird nur eine Innenfläche ab diesem Anteil der Silhouette
 const REACH = 2.1; // längste Kante in mittleren Punktabständen (weiter auseinander: eigene Punkte, z. B. Augen)
 const SPAN = 1.7; // längste Kante im Verhältnis zum eigenen nächsten Nachbarn
 const FEATURE = 4; // so kleine Punktgruppen sind Einzelheiten, keine Linien
 const DOT = 0.32; // Radius des Lichtrings um einen Einzelpunkt, in mittleren Punktabständen
 
-/**
- * Analyse einer Katalogvariante, unabhängig von der Drohnenzahl (einmal je Variante): mittlerer Punktabstand, Linien
- * (Kanten mit Gewicht außen/innen), bei flachen Motiven das Raster mit Außenraum und großen Innenflächen.
- */
-export function analyse(pts, { flat = true } = {}) {
+/** Analyse einer räumlichen Katalogvariante, unabhängig von der Drohnenzahl (einmal je Variante): Punktabstand, Linien. */
+export function analyse(pts, { flat = false } = {}) {
   const m = pts.length, D = flat ? 2 : 3;
   const dist = new Float64Array(m * m);
   for (let i = 0; i < m; i++) for (let j = i + 1; j < m; j++) {
@@ -73,37 +164,18 @@ export function analyse(pts, { flat = true } = {}) {
     const near = []; for (let j = 0; j < m; j++) if (j !== i && dist[i * m + j] < 2 * DOT * s0) near.push(j);
     edges.push({ a: i, b: i, ring: DOT * s0, near, len: 2 * Math.PI * DOT * s0, w: 1 });
   }
-  // Außen und innen, Innenfläche (nur flach): Punkte als Scheiben in ein Raster, von außen fluten
-  let grid = null;
-  if (flat && edges.length) {
-    grid = raster(pts, s0);
-    const outer = new Uint8Array(m);
-    for (let i = 0; i < m; i++) outer[i] = grid.touchesOutside(pts[i][0], pts[i][1]) ? 1 : 0;
-    for (const e of edges) e.w = e.ring || !(outer[e.a] && outer[e.b]) ? INNER : 1;
-    if (!grid.interior.count) grid = null;
-  }
-  return { m, s0, edges, grid };
+  return { m, s0, edges };
 }
 
 /**
- * Neue Drohnen für eine Formation mit `pts.length` Katalogpunkten, damit sie `n` Drohnen hat.
- * pts: [[x, y, z, r, g, b], …]; flat: Motiv liegt in der Bildebene (Füllung möglich); analysis: analyse(pts) aus dem
- * Zwischenspeicher. Rückgabe: Liste { a, b, u, off: [dx, dy, dz], rgb: [r, g, b], light } mit
- * Lage = lerp(pts[a], pts[b], u) + off, genau n − pts.length Einträge (ohne Linien: keine, die Drohnen bleiben Reserve).
- * Ohne große Innenfläche gibt es keine Grenze für die Liniendichte: eine echte Show mit mehr Drohnen fliegt dasselbe Bild
- * größer; auf der Bühne steht es gleich groß, mit kleineren Lichtern und dichteren Linien.
+ * Neue Drohnen für eine Formation mit `pts.length` Katalogpunkten, damit sie `n` Drohnen hat (höchstens DENSE_MAX).
+ * Rückgabe: Liste { a, b, u, off: [dx, dy, dz], rgb: [r, g, b], light } mit Lage = lerp(pts[a], pts[b], u) + off.
  */
-export function resample(pts, n, { flat = true, analysis = analyse(pts, { flat }) } = {}) {
-  const { m, s0, edges, grid } = analysis, budget = Math.min(n, DENSE_MAX) - m;
+export function resample(pts, n, { flat = false, analysis = analyse(pts, { flat }) } = {}) {
+  const { m, edges } = analysis, budget = Math.min(n, DENSE_MAX) - m;
   if (budget <= 0 || m < 2 || !edges.length) return [];
   const out = [];
-  let fill = [], lineBudget = budget;
-  if (grid) {
-    const cap = s0 / LINE_CAP;
-    lineBudget = Math.min(budget, lineCount(edges, cap));
-    if (budget > lineBudget) fill = fillPoints(grid, pts, budget - lineBudget, cap * 1.15, s0 * 1.1);
-    lineBudget = budget - fill.length; // was das Raster nicht aufnimmt, geht zurück auf die Linien (über die Grenze)
-  }
+  const lineBudget = budget;
   const placed = []; // Ringpunkte, damit benachbarte Ringe einander ausweichen
   for (const [e, k] of allocate(edges, lineBudget)) {
     const A = pts[e.a], B = pts[e.b];
@@ -128,7 +200,7 @@ export function resample(pts, n, { flat = true, analysis = analyse(pts, { flat }
       out.push({ a: e.a, b: e.b, u, off: [0, 0, 0], rgb: [Math.round(A[3] + (B[3] - A[3]) * u), Math.round(A[4] + (B[4] - A[4]) * u), Math.round(A[5] + (B[5] - A[5]) * u)], light: 1 });
     }
   }
-  return out.concat(fill);
+  return out;
 }
 
 /** Zahl der Linienpunkte bei Abstand s (je Kante gleichmäßig, Endpunkte sind die Katalogpunkte). */
@@ -145,86 +217,6 @@ function allocate(edges, budget) {
   const order = want.map((q, i) => [q - Math.floor(q), i]).sort((x, y) => y[0] - x[0] || x[1] - y[1]);
   for (let r = 0; left > 0; r = (r + 1) % order.length) { k[order[r][1]]++; left--; }
   return edges.map((e, i) => [e, k[i]]).filter(([, c]) => c > 0);
-}
-
-/** Raster der Zeichnung: Linienzellen (Scheiben um jeden Punkt), Außenraum per Flutung, Innenfläche = der Rest. */
-function raster(pts, s0) {
-  let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
-  for (const p of pts) { x0 = Math.min(x0, p[0]); x1 = Math.max(x1, p[0]); y0 = Math.min(y0, p[1]); y1 = Math.max(y1, p[1]); }
-  const pad = 2 * s0;
-  x0 -= pad; y0 -= pad; x1 += pad; y1 += pad;
-  const cell = Math.max(s0 / 2.5, (x1 - x0) / 240, (y1 - y0) / 240);
-  const W = Math.ceil((x1 - x0) / cell) + 1, H = Math.ceil((y1 - y0) / cell) + 1;
-  const LINE = 1, OUT = 2, state = new Uint8Array(W * H);
-  const R = 1.3 * s0, rc = Math.ceil(R / cell);
-  const cx = (x) => Math.round((x - x0) / cell), cy = (y) => Math.round((y - y0) / cell);
-  for (const p of pts) {
-    const px = cx(p[0]), py = cy(p[1]);
-    for (let dy = -rc; dy <= rc; dy++) for (let dx = -rc; dx <= rc; dx++) {
-      const x = px + dx, y = py + dy;
-      if (x < 0 || y < 0 || x >= W || y >= H || (dx * dx + dy * dy) * cell * cell > R * R) continue;
-      state[y * W + x] = LINE;
-    }
-  }
-  // Außenraum von allen Randzellen aus fluten (4er-Nachbarschaft)
-  const stack = [];
-  const push = (x, y) => { const i = y * W + x; if (!state[i]) { state[i] = OUT; stack.push(i); } };
-  for (let x = 0; x < W; x++) { push(x, 0); push(x, H - 1); }
-  for (let y = 0; y < H; y++) { push(0, y); push(W - 1, y); }
-  while (stack.length) {
-    const i = stack.pop(), x = i % W, y = (i - x) / W;
-    if (x > 0) push(x - 1, y); if (x < W - 1) push(x + 1, y); if (y > 0) push(x, y - 1); if (y < H - 1) push(x, y + 1);
-  }
-  // Innenflächen als zusammenhängende Stücke; gefüllt werden nur große (≥ FILL_SHARE der Silhouette, z. B. der Körper des
-  // Hundes). Kleine Stücke zwischen Binnenlinien (Gesicht, Knöpfe) blieben als graue Flecken stehen und bleiben leer.
-  let silhouette = 0;
-  for (let i = 0; i < state.length; i++) if (state[i] !== OUT) silhouette++;
-  const SMALL = 3; let count = 0;
-  for (let i0 = 0; i0 < state.length; i0++) {
-    if (state[i0]) continue;
-    const piece = [i0]; state[i0] = SMALL;
-    for (let q = 0; q < piece.length; q++) {
-      const i = piece[q], x = i % W, y = (i - x) / W;
-      if (x > 0 && !state[i - 1]) { state[i - 1] = SMALL; piece.push(i - 1); }
-      if (x < W - 1 && !state[i + 1]) { state[i + 1] = SMALL; piece.push(i + 1); }
-      if (y > 0 && !state[i - W]) { state[i - W] = SMALL; piece.push(i - W); }
-      if (y < H - 1 && !state[i + W]) { state[i + W] = SMALL; piece.push(i + W); }
-    }
-    if (piece.length >= FILL_SHARE * silhouette) { for (const i of piece) state[i] = 4; count += piece.length; }
-  }
-  const at = (x, y) => { const gx = cx(x), gy = cy(y); return gx < 0 || gy < 0 || gx >= W || gy >= H ? OUT : state[gy * W + gx]; };
-  return {
-    interior: { count },
-    /** Liegt Außenraum gleich hinter der Scheibe dieses Punkts? Dann gehört er zur Außenkontur. */
-    touchesOutside(x, y) {
-      const r = R + cell * 1.5;
-      for (let k = 0; k < 16; k++) { const a = (k / 16) * Math.PI * 2; if (at(x + Math.cos(a) * r, y + Math.sin(a) * r) === OUT) return true; }
-      return false;
-    },
-    isInterior: (x, y) => at(x, y) === 4,
-    box: [x0, y0, x1, y1],
-  };
-}
-
-/** Füllung: Dreiecksraster in der Innenfläche, so dicht wie nötig, höchstens `budget` Punkte, nie dichter als `minGap`. */
-function fillPoints(grid, pts, budget, minGap, maxGap) {
-  const [x0, y0, x1, y1] = grid.box;
-  const lattice = (r, list = null) => {
-    let c = 0; const h = r * Math.sqrt(3) / 2;
-    for (let row = 0, y = y0; y <= y1; row++, y += h) for (let x = x0 + (row % 2 ? r / 2 : 0); x <= x1; x += r) if (grid.isInterior(x, y)) { c++; list?.push([x, y]); }
-    return c;
-  };
-  let lo = minGap, hi = Math.max(x1 - x0, y1 - y0);
-  if (lattice(maxGap) > budget) return []; // zu wenige Drohnen für eine geschlossene Fläche: lieber dichtere Linien
-  if (lattice(lo) <= budget) hi = lo; // selbst dicht passt alles: dichtestes Raster nehmen
-  else for (let it = 0; it < 18; it++) { const mid = (lo + hi) / 2; if (lattice(mid) > budget) lo = mid; else hi = mid; }
-  const cells = []; lattice(hi, cells);
-  return cells.map(([x, y]) => {
-    let a = 0, best = Infinity;
-    for (let i = 0; i < pts.length; i++) { const d = (pts[i][0] - x) ** 2 + (pts[i][1] - y) ** 2; if (d < best) { best = d; a = i; } }
-    const p = pts[a];
-    return { a, b: a, u: 0, off: [x - p[0], y - p[1], 0], rgb: [p[3], p[4], p[5]], light: FILL_LIGHT };
-  });
 }
 
 /** Lage der neuen Drohnen aus den (schon vorbereiteten) Elternpunkten. */

@@ -2,7 +2,7 @@
 
 Runde 6, 18.11.2026. Marcs Auftrag: Jedes FlyingStars-Motiv soll eine echte 3D-Fassung bekommen, die zur selben Familie gehört wie die 2D-Formation, aber ein anderes Ding ist: keine zweite Ebene hinter der ersten, sondern ein Körper, so wie bei Kolibri, Fernsehturm, Masken und Buch.
 
-Code: `src/scripts/scenes/catalog-3d/` (Baukasten `kit.js`, Motive in `figuren.js`, `dinge.js`, `symbole.js`, Register `index.js`). Der Haken sitzt in `catalogScene()` in `src/scripts/scenes/catalog.js`: Hat ein Motiv einen Eintrag im Register, spielt in den Show-Arten 3D (HORIZON) und Storytelling (ODYSSEY) die 3D-Fassung, in 2D (SPARK) unverändert die Katalogformation. `show-configurator.js` musste dafür nicht geändert werden: Die Show-Art wählt schon heute über `ART_TIER` die Fassung (2D → SPARK, 3D → HORIZON, Storytelling → ODYSSEY).
+Code: `src/scripts/scenes/catalog-3d/` (Baukasten `kit.js`, Motive in `figuren.js`, `dinge.js`, `symbole.js`, `technik.js`, `hochzeit.js`, Register `index.js`). Der Haken sitzt in `catalogScene()` in `src/scripts/scenes/catalog.js`: Hat ein Motiv einen Eintrag im Register, spielt in den Show-Arten 3D (HORIZON) und Storytelling (ODYSSEY) die 3D-Fassung, in 2D (SPARK) unverändert die Katalogformation. `show-configurator.js` musste dafür nicht geändert werden: Die Show-Art wählt schon heute über `ART_TIER` die Fassung (2D → SPARK, 3D → HORIZON, Storytelling → ODYSSEY).
 
 ## Was die vorhandenen 3D-Fassungen gut macht
 
@@ -39,6 +39,8 @@ Aufruf Kontaktbogen:
 node scripts/catalog-3d-sheet.mjs /tmp/bogen.json 200 300 lebkuchen schneemann
 python3 scripts/catalog-3d-sheet.py /tmp/bogen.json /tmp/bogen.png   # braucht numpy + Pillow
 ```
+
+Baut die 2D-Abtastung gerade nicht (fremde Arbeit im Checkout), bleibt die 2D-Spalte leer, die 3D-Spalten entstehen trotzdem.
 
 ## Show-Arten
 
@@ -81,8 +83,27 @@ Aufbau je Motiv und Drohnenzahl 2–6 ms (Median, Node, Rechner unter Last), ein
 
 Damit haben 32 der 77 Auftritte flacher Katalogmotive in den Anlass-Folgen eine 3D-Fassung (die mehrfach gezeigten Stern, Galaxie, Taube, Konfetti, Diskokugel, Ballons alle).
 
+## Runde 7 (19.11.2026): Technik, Fahrzeuge, Schmetterling, Hochzeit
+
+Marc: „Der Schneemann und Lebkuchenmann sind crrrazy gut … warum nicht auch beim kleinen Roboter, dem Zahnrad, Drehzahlmesser, Sportwagen, Hubschrauber“, und der Schmetterling soll „nicer und ein bisschen realer“ aussehen. Acht neue Fassungen, damit 32 im Register:
+
+| Formklasse | Motiv | Was die 3D-Fassung ausmacht | Bewegung |
+|---|---|---|---|
+| Figur | Kleiner Roboter | Kuppelkopf, breiter Kinnkasten mit Gitter, runder Bauch (Rotationskörper, Reifen als Querschnitt), Greifarme mit Zangen, Laufrollen als Zylinder | Arme schwingen abwechselnd, Zangen schnappen, Augen zwinkern |
+| Gegenstand | Zahnräder | drei ineinandergreifende Räder (Zähnezahl im Verhältnis der Radien), Zahnkontur vorn, glatter Kreis hinten, Speichen, Achse steht heraus | drehen sich passend gegeneinander |
+| Gegenstand | Drehzahlmesser | Gehäuse als kurzer Zylinder, Skala über 270° mit rotem Bereich, Nadel vor dem Zifferblatt, Digitalanzeige | Nadel dreht hoch in den roten Bereich, die Striche unter ihr leuchten |
+| Fahrzeug | Sportwagen | Kastenkörper: Seitenkontur beidseitig, Dach schmaler als der Unterbau, Querkanten, Seitenfenster, vier Räder mit Speichen, Scheinwerfer, Rücklichter, Fahrtwind | Räder drehen, Wagen federt |
+| Fahrzeug | Hubschrauber | Rumpf-Ellipsoid mit Querschnitt-Reifen, Kanzel beidseitig, Heckausleger, Leitwerk, Kufen mit Bügeln in der Tiefe | Hauptrotor waagerecht (im Schwenk sieht man seine Fläche), Heckrotor, Positionslicht, schwebt |
+| Tier | Schmetterling (neu statt Katalog-3D) | von oben, Flügel leicht aufgestellt: spitzer Vorderflügel mit Querbinde und hellen Spitzenpunkten, Hinterflügel mit gewelltem Saum, Schwänzchen, Augenfleck und Saumlinie, Adern; Körper gegliedert, Fühler mit Kolben | Flügelschlag um die Körperachse |
+| Gegenstand | Anstoßende Gläser | zwei Weingläser als Rotationskörper (runder Kelch), Wein als Oberfläche, Perlen | neigen sich zum Anstoßen, Licht blitzt an der Berührstelle |
+| Zeichen | Verschlungene Eheringe | zwei Tori (Innen-, Außenkante, Kamm), gegeneinander gekippt und wirklich verschlungen, Stein oben | Glanz läuft um die Ringe, der rechte wiegt sich |
+
+**Stufen nach Drohnenzahl.** Diese Motive brauchen schon in 2D 100–150 Drohnen. Bis etwa 330 bleibt das Wesentliche (eine Kontur, Achsen, Naben, Rumpf, Rotor); ab 330–350 kommen die Tiefenteile dazu (zweite Wagenseite und Querkanten, Gehäuserückseite, Zahnrad-Rückseite und Speichen, Kufenpaar, Adern und Saum). Ab 400 ist der Unterschied zu 2D klar sichtbar (Kontaktbögen bei 300, 400, 500).
+
+**Verworfen in dieser Runde:** Zahnräder mit Zahnkontur vorn und hinten (liest sich als zweite Ebene) und mit Kanten an jedem Zahnkopf (unscharfe Zähne); Glasbögen über dem Drehzahlmesser (wirkten wie ein Fadenkreuz); Roboter mit sechs Meridianen (Vogelkäfig); Autoreifen als Doppelringe (im Schwenk eine „8“); Querschnitt-Reifen an dünnen Röhren (Heckausleger, Eheringe: helle Klumpen); Funken über den Gläsern als Einzeldrohnen (Wächter: allein stehende Drohne).
+
 ## Verworfen und offen
 
 - Verworfen während der Arbeit: Glocke als Einzelglocke (der Katalog zeigt zwei Glocken, Familie nicht erkennbar), Konfetti als lose Punktwolke (verstreute Punkte, Wächter), Funkeln auf der Diskokugel (Wächter `show-clouds`: ruhende Funkelwolke), Taube mit Ringkörper und Segelflügeln (las sich nicht als Taube).
-- Noch ohne 3D-Fassung (bleiben in 3D/Storytelling ihre 2D-Formation): Fahrzeuge (Sportwagen, Traktor, Lastwagen, Bagger, Feuerwehr, Planierraupe, Autoscooter, Golfcaddy, Hubschrauber, Flugzeug) – vorgesehen als Kastenkörper mit Rädern als Ringen, die Rad-Gruppen aus `catalog-actions.js` wären zu übernehmen; Landschaften (Berge, Golfplatz, Palmeninsel, Strandliege) – brauchen eine eigene Bauweise als Bühne in der Tiefe; Schriftzüge und Zahlen (30 Jahre, Initialen) – Tiefenstaffelung je Zeichen; weitere Figuren (Elefant, Hasen, Robbe, Amor, Superheldin, Kind, Golfer, Kuh und UFO, Fledermäuse) mit derselben Methode wie Hund und Taube.
+- Noch ohne 3D-Fassung (bleiben in 3D/Storytelling ihre 2D-Formation): weitere Fahrzeuge (Traktor, Lastwagen, Bagger, Feuerwehr, Planierraupe, Autoscooter, Golfcaddy, Flugzeug) – Bauweise wie Sportwagen (`box()` und `wheel()` in `technik.js`); Hochzeitsmotive Doppelherz, Herz mit Initialen, Hochzeitstorte, Tor; Landschaften (Berge, Golfplatz, Palmeninsel, Strandliege) – brauchen eine eigene Bauweise als Bühne in der Tiefe; Schriftzüge und Zahlen (30 Jahre, Initialen) – Tiefenstaffelung je Zeichen; weitere Figuren (Elefant, Hasen, Robbe, Amor, Superheldin, Kind, Golfer, Kuh und UFO, Fledermäuse) mit derselben Methode wie Hund und Taube.
 - `flat` in `content/show-configurator.js`: Katalogmotive laufen ab HORIZON weiterhin hinter den eigenen 3D-Motiven. Motive mit 3D-Fassung könnten nach vorn rücken; das ist eine Inhaltsentscheidung und gehört nicht zu dieser Runde.

@@ -42,6 +42,25 @@ export const layoutCases = [
     ]);
   }],
 
+  ['Kopf über Fließtext: immer Abstand Überschrift → Text, auch wenn der Kopf „content“ meldet', async (page) => {
+    // Runde 7 (Marc, Hochzeit „Kinder und Hunde willkommen“): Kopf mit Inhaltsabstand über der Einleitung
+    const html = (role, gap) => `
+      <style>:root { --head-gap-text: 16px; --head-gap-content: 56px; } body { margin: 0; } p, h2 { margin: 0; }
+        [data-section-head] { margin-bottom: ${gap}px; } .card { border: 1px solid; }</style>
+      <main><section id="s"><div class="section-head" data-section-head="default" data-head-next="${role}"><h2>Kinder und Hunde</h2></div>
+        <div class="copy"><p>Im Gegensatz zum Feuerwerk gibt es keinen Knall.</p></div></section>
+        <section id="k"><div class="section-head" data-section-head="default" data-head-next="content" style="margin-bottom: 56px"><h2>Anlässe</h2></div>
+        <div class="grid"><article class="card"><p>Karte mit Text</p></article></div></section></main>`;
+    const inspect = () => page.evaluate(inspectLayout, { checks: ['head-gap'] });
+    await page.setContent(html('content', 56));
+    assert.deepEqual(await inspect(), [
+      { k: 'head-gap', what: '#s div.section-head meldet „content“, darunter steht Fließtext (#s p)' },
+      { k: 'head-gap', what: '#s div.section-head text: 56 px statt 16' },
+    ]);
+    await page.setContent(html('text', 16));
+    assert.deepEqual(await inspect(), [], 'Karten bleiben Inhalt, Kopf über Fließtext mit Textabstand besteht');
+  }],
+
   ['Team: zweite Karte angeschnitten, beide Enden erreichbar', async (page) => {
     await page.setViewportSize({ width: 390, height: 844 });
     const inspect = (...checks) => page.evaluate(inspectLayout, { checks });

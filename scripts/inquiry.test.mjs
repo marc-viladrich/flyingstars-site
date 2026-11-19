@@ -27,14 +27,13 @@ test('No-JS Formulardaten erreichen den unveränderten API-Sicherheitsrand und e
   // Ohne Versandkonfiguration: lesbare Seite in der Formularsprache mit Weg zurück zum Formular, keine Danke-Weiterleitung
   const response=await onRequestPost({request:new Request('https://example.test/api/contact',{method:'POST',headers:{accept:'text/html'},body:form}),env:{}});assert.equal(response.status,503);assert.equal(response.headers.get('location'),null);assert.equal(response.headers.get('cache-control'),'no-store');
   const html=await response.text();assert.ok(html.startsWith(`<!doctype html><html lang="${locale}">`));assert.ok(html.includes(`href="${locale==='de'?'':'/'+locale}/kontakt/#anfrage"`));
-  // Bestätigter Versand: 303 auf den signierten Danke-Link, der die Danke-Seite derselben Sprache ausliefert
+  // Bestätigter Versand: 303 auf die Danke-Seite derselben Sprache (sie zeigt Dank und Herkunftsfrage immer)
   const original=globalThis.fetch;globalThis.fetch=async()=>new Response('{}',{status:201});
   const config={BREVO_API_KEY:'k',CONTACT_TO:'to@example.test',CONTACT_FROM:'from@example.test'};
   try{
    const sent=await onRequestPost({request:new Request('https://example.test/api/contact',{method:'POST',headers:{accept:'text/html'},body:new URLSearchParams(form)}),env:config});
-   assert.equal(sent.status,303);const back=new URL(sent.headers.get('location'));assert.equal(back.pathname,'/api/contact');assert.equal(back.searchParams.get('sprache'),locale);assert.match(back.searchParams.get('danke'),/^\d+\.[a-f0-9]{32}$/);assert.equal(sent.headers.get('cache-control'),'no-store');
-   const seen=[];const page=await onRequestGet({request:new Request(back),env:{...config,ASSETS:{fetch:async(url)=>{seen.push(String(url));return new Response(`<section class="thanks" data-thanks>`);}}}});
-   assert.equal(page.status,200);assert.deepEqual(seen,[`https://example.test${locale==='de'?'':'/'+locale}/danke/`]);assert.equal(await page.text(),'<section class="thanks" data-thanks data-sent>');
+   assert.equal(sent.status,303);assert.equal(sent.headers.get('location'),`https://example.test${locale==='de'?'':'/'+locale}/danke/`);assert.equal(sent.headers.get('cache-control'),'no-store');
+   assert.equal((await onRequestGet()).status,405);
   }finally{globalThis.fetch=original;}
  }
 });

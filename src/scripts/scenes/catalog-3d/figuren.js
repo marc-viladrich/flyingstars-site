@@ -1,7 +1,7 @@
 // 3D-Fassungen der Katalogfiguren (Formklasse Figuren und Tiere, docs/katalog-3d.md): Körper aus Ellipsoiden und
 // Röhren, nach den Maßen der Katalogformation gesetzt, damit die Figur bei 0° wie ihr 2D-Bild steht. Je Figur bewegt
 // sich EIN Teil (Arm, Schwanz, Hut, Flügel), dazu schwenkt der ganze Körper langsam und zeigt seine Tiefe.
-import { GOLD, WARM, ORANGE, RED, PINK, CYAN, VIOLET, GREEN, DIAMOND, mix, yaw, roll, pitch, glint, breathe, wander, chase } from '../../show-motion.js';
+import { GOLD, WARM, ORANGE, RED, PINK, CYAN, VIOLET, GREEN, BLUE, DIAMOND, mix, yaw, roll, pitch, glint, breathe, wander, chase } from '../../show-motion.js';
 import { ellipsoid, tube, curves, spot, assemble, colour, ease, turn, rankBy, turnAbout, TAU } from './kit.js';
 
 /** Merkmale je nach Drohnenzahl: kleine Lichtringe aus k Drohnen. */
@@ -260,5 +260,69 @@ export function lotusblume(n) {
     if (tag !== 'pad') { yaw(o, t * 0.25); o[3] = chase(b[1], t, 0.3, 0.6, 0.85, 1.3); }
     pitch(o, 0.2);
     yaw(o, 0.25 * Math.sin((t * TAU) / 14));
+  } };
+}
+
+// ---------------------------------------------------------------- Schmetterling ----------
+// Runde 7 (Marc: „könnte nicer aussehen und ein bisschen realer“): von oben, die Flügel ausgebreitet und leicht zum
+// Publikum aufgestellt. Vorderflügel mit gerundeter Spitze und Adern, Hinterflügel mit gewelltem Rand, Schwänzchen und
+// Augenfleck, Farben aus der Katalogformation (Blau-Violett, Magenta, Gelb). Körper aus Brust, Kopf und gegliedertem
+// Hinterleib, Fühler mit Kolben. Die Flügel schlagen langsam um die Körperachse; im Schwenk sieht man ihre Fläche
+// kürzer und länger werden. Wenige Drohnen: Umrisse, Körper, Fühler; ab 350 Adern, Saum und Flecken.
+const FORE = [[0.04, 0.08], [0.2, 0.3], [0.38, 0.5], [0.56, 0.66], [0.74, 0.78], [0.88, 0.84], [0.95, 0.8], [0.93, 0.66], [0.86, 0.5], [0.8, 0.36], [0.72, 0.22], [0.62, 0.12], [0.44, 0.06], [0.24, 0.02], [0.1, 0.02]];
+const HIND = (rich) => {
+  const base = [[0.1, -0.02], [0.32, -0.02], [0.52, -0.08], [0.66, -0.2], [0.7, -0.36], [0.64, -0.52], [0.5, -0.64], [0.36, -0.7], [0.28, -0.88], [0.22, -0.9], [0.2, -0.72], [0.1, -0.56], [0.04, -0.36], [0.03, -0.14]];
+  if (!rich) return base;
+  // gewellter Saum zwischen Außenrand und Schwänzchen
+  const out = [];
+  base.forEach((p, i) => { out.push(p); const q = base[i + 1]; if (q && i >= 2 && i <= 6) { const m = [(p[0] + q[0]) / 2, (p[1] + q[1]) / 2], l = Math.hypot(m[0] - 0.05, m[1] + 0.1); out.push([m[0] + 0.035 * (m[0] - 0.05) / l, m[1] + 0.035 * (m[1] + 0.1) / l]); } });
+  return out;
+};
+const FLY = { rest: 0.32, amp: 0.62, period: 2.6 };
+/** Flügelpunkt (u außen, v längs des Körpers) für die Seite s, um ang aus der Ebene zum Publikum gedreht. */
+const wingPt = (s, [u, v], ang, lift = 0) => [s * u * Math.cos(ang), v, u * Math.sin(ang) + lift];
+export function schmetterling(n) {
+  const rich = n >= 350;
+  const parts = [];
+  for (const s of [-1, 1]) {
+    const side = s > 0 ? 'R' : 'L', a = FLY.rest;
+    const W = (l, w = 1) => ({ pts: l.map((p) => wingPt(s, p, a)), closed: true, w });
+    parts.push(curves(`fore${side}`, [W(FORE)], { w: 1.05 }));
+    parts.push(curves(`hind${side}`, [W(HIND(rich))], { w: 1 }));
+    // Querbinde über den Vorderflügel (wie der gelbe Tropfen im Katalog, hier als Binde eines Admirals), helle Punkte an
+    // der Spitze, Augenfleck im Hinterflügel
+    const band = (() => { const P0 = [0.46, 0.5], P1 = [0.77, 0.35], d = [P1[0] - P0[0], P1[1] - P0[1]], l = Math.hypot(...d), nn = [-d[1] / l, d[0] / l], k = 10;
+      const side = (w) => Array.from({ length: k }, (_, i) => { const u = i / (k - 1), bow = 0.02 * Math.sin(Math.PI * u), ww = w * (0.75 + 0.25 * Math.sin(Math.PI * u)); return [P0[0] + d[0] * u + nn[0] * (ww + bow), P0[1] + d[1] * u + nn[1] * (ww + bow)]; });
+      return [...side(0.045), ...side(-0.045).reverse()]; })();
+    parts.push(curves(`mark${side}`, [{ pts: band.map((p) => wingPt(s, p, a, 0.005)), closed: true }], { w: 1.25 }));
+    const nrm = [-s * Math.sin(a), 0, Math.cos(a)];
+    parts.push(spot(`eye${side}`, wingPt(s, [0.42, -0.42], a, 0.008), rich ? 7 : 4, rich ? 0.065 : 0.05, nrm));
+    if (n >= 300) for (const q of [[0.83, 0.73], [0.88, 0.66], [0.78, 0.66]]) parts.push(spot(`apex${side}`, wingPt(s, q, a, 0.006), 1, 0.01, nrm));
+    if (rich) {
+      const veins = [[[0.08, 0.06], [0.3, 0.3], [0.44, 0.46]], [[0.1, 0.04], [0.4, 0.2], [0.6, 0.28]], [[0.12, 0.03], [0.4, 0.08], [0.62, 0.14]]];
+      parts.push(curves(`vein${side}`, veins.map((l) => l.map((p) => wingPt(s, p, a, 0.004))), { w: 0.55 }));
+      parts.push(curves(`hvein${side}`, [[[0.1, -0.06], [0.3, -0.2], [0.44, -0.3]], [[0.08, -0.1], [0.18, -0.36], [0.24, -0.62]]].map((l) => l.map((p) => wingPt(s, p, a, 0.004))), { w: 0.55 }));
+      parts.push(curves(`edge${side}`, [[[0.48, -0.13], [0.58, -0.23], [0.61, -0.36], [0.56, -0.5], [0.45, -0.59], [0.34, -0.63]].map((p) => wingPt(s, p, a, 0.005))], { w: 0.9 }));
+    }
+  }
+  const thorax = ellipsoid('body', [0, 0.1, 0.02], [0.07, 0.13, 0.07], { lat: rich ? [0] : [] });
+  const head = ellipsoid('body', [0, 0.29, 0.03], [0.055, 0.05, 0.05], { lat: [] });
+  const abdomen = tube('body', [[0, -0.02, 0.02], [0, -0.6, 0.0]], (u) => 0.055 * (1 - 0.6 * u * u), { depth: 1, hoops: rich ? 3 : 1, crest: false, caps: [false, true] });
+  const antennae = [-1, 1].map((s) => curves('antenna', [[[s * 0.025, 0.33, 0.05], [s * 0.09, 0.5, 0.1], [s * 0.17, 0.66, 0.14], [s * 0.24, 0.76, 0.15]]], { w: 1 }));
+  const clubs = [-1, 1].map((s) => spot('club', [s * 0.26, 0.79, 0.15], 3, 0.022));
+  parts.push(thorax, head, abdomen, ...antennae, ...clubs);
+  const shape = assemble(parts, n);
+  const foreC = (p) => mix(mix(BLUE, VIOLET, 0.35), VIOLET, Math.min(1, Math.abs(p[0]) / 0.9)), hindC = (p) => mix(VIOLET, PINK, 0.25 + 0.4 * Math.min(1, -p[1] / 0.8));
+  const map = { body: mix(WARM, GOLD, 0.25), antenna: WARM, club: GOLD };
+  for (const sd of ['L', 'R']) Object.assign(map, { [`fore${sd}`]: foreC, [`hind${sd}`]: hindC, [`mark${sd}`]: mix(GOLD, ORANGE, 0.25), [`eye${sd}`]: GOLD, [`apex${sd}`]: WARM, [`edge${sd}`]: mix(GOLD, PINK, 0.35), [`vein${sd}`]: mix(VIOLET, WARM, 0.45), [`hvein${sd}`]: mix(PINK, WARM, 0.4) });
+  const pts = colour(shape, map, WARM);
+  // jede Flügeldrohne kennt ihre Lage im Flügel (u, v) und ihren Abstand von der Körperfläche (Flecken, Adern)
+  const local = shape.pts.map((p, j) => { const tag = shape.tags[j], side = tag.endsWith('R') ? 1 : tag.endsWith('L') ? -1 : 0; if (!side || tag === 'body') return null; const ca = Math.cos(FLY.rest), sa = Math.sin(FLY.rest); const u = Math.abs(p[0]) / ca, lift = p[2] - u * sa; return [side, u, p[1], lift]; });
+  return { pts, live: (b, j, t, o) => {
+    const L = local[j];
+    if (L) { const [s, u, v, lift] = L, ang = FLY.rest + FLY.amp * ease(t, FLY.period), q = wingPt(s, [u, v], ang, 0); o[0] = q[0] - s * lift * Math.sin(ang); o[1] = q[1]; o[2] = q[2] + lift * Math.cos(ang); o[3] = /^(mark|eye|apex)/.test(shape.tags[j]) ? breathe(t, FLY.period, 0) + 0.1 : 0.85 + 0.3 * Math.min(1, u); }
+    o[1] += 0.04 * ease(t + FLY.period / 2, FLY.period); // jeder Flügelschlag trägt ihn ein Stück
+    pitch(o, -0.42);
+    turn(o, t, 0.3, 0.38, 13);
   } };
 }

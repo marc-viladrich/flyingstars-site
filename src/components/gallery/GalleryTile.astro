@@ -1,11 +1,12 @@
 ---
-// Eine Kachel der Galerie (Gallery.astro): Link zur Referenzseite oder figure. Stile stehen in Gallery.astro (global
-// unter .gal), damit beide Layouts (Treppe breit, Mauerwerk schmal) sie steuern.
+// Eine Kachel der Bildleiter (Gallery.astro): Link zur Referenzseite oder figure. Stile stehen in Gallery.astro (global
+// unter .gal), damit breit und schmal dieselben Regeln gelten.
 interface Props { href?: string; alt: string; caption: string; src: string; width: number; height: number; avif: string; webp: string; style: string }
 const { href, alt, caption, src, width, height, avif, webp, style } = Astro.props;
 const Tag = href ? 'a' : 'figure';
 const Cap = href ? 'span' : 'figcaption';
-const sizes = '(min-width: 68.8125em) min(17vw, 21rem), (min-width: 44em) 30vw, 45vw';
+// Leiter: breit eine von fünf Spalten, schmal ein Drittel der Breite
+const sizes = '(min-width: 68.8125em) min(19vw, 23rem), 31vw';
 ---
 <Tag class="g-tile" href={href} style={style}>
   <div class="g-media" data-curtain>

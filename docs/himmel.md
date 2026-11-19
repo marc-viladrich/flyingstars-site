@@ -11,7 +11,8 @@ Git-Historie, Commit `b31d7c9`). Verbindliche Regeln: `docs/DESIGN.md` → „Hi
   stattdessen auf; Marc, 18.11.: „zu cheap-looking“. Runde 6 (Marc: „a bit too strong“): Wirkradius 44–84 px nach Bühnengröße,
   der schnelle Stoß sättigt weich bei gut einem Viertel des Radius (Schriftzug rund 13 px), zurück kritisch gedämpft ohne Nachschwingen.
 - **Punktübergänge** an jeder Grenze zweier Sections mit unterschiedlicher Hintergrundfarbe, auf allen Seiten (siehe unten).
-- **Lichtlauf der H1**, einmal beim Laden, nur über Helligkeit.
+- **Schriftstärke der Verlaufsworte:** der markierte Begriff jeder Überschrift wird beim Hineinscrollen einmal von 300 zur
+  Stärke der Überschrift dicker (seit Runde 7, 19.11.2026; ersetzt den Lichtlauf der H1). Regeln: `docs/DESIGN.md` → Himmel.
 
 ## Bühnenplan
 
@@ -146,7 +147,7 @@ wie auf der Startseite sehr gut passen.“ Dieselbe Technik, `createFolge(canvas
 
 ## Technik
 
-- `src/scripts/himmel/index.ts` startet `lichtlauf.ts` und lädt `schwarm.ts` (Bühnenplan in `plan()`) erst nach dem ersten Bild
+- `src/scripts/himmel/index.ts` startet `staerke.ts` (Schriftstärke der Verlaufsworte) und lädt `schwarm.ts` (Bühnenplan in `plan()`) erst nach dem ersten Bild
   nach (siehe Performance); `src/styles/himmel.css`.
 - Zwei feste Canvas in Seitenkoordinaten (`position: absolute`, Lage per `transform`), die mit dem Inhalt scrollen: die Flugfläche
   (Seitenbreite × 1,7 Bildschirmhöhen, Pixeldichte 1) und die Bühnenfläche (nur so groß wie das stehende Bild, Pixeldichte bis
@@ -270,10 +271,19 @@ effect“, Punkte zu klein (sollen wie beim Lichtpunkt-Hover auf Bildern sein), 
   Breite (Punkte am Kachelrand werden gegenüber wiederholt; die alte Maske schnitt sie ab, sichtbare Naht). Statisch: keine
   Laufzeitkosten außer der Maske.
 - **Höhe:** `clamp(2rem, 50 % von --section, 4.5rem)`, auf dem Handy 2 rem mit der schmalen Kachel (gleiche Punktgröße, kürzere
-  Reichweite; abgeschnitten entstünde wieder eine gerade Kante). Vor dem Footer höchstens 85 % seines oberen Innenabstands
-  (`--footer-top`).
-- **Keine Trennlinien an Farbwechseln:** Borders von `.section.alt`, `.c-setlist`, `.team-sec` entfernt (`global.css`), die
-  Footer-Linie fällt weg, wenn die letzte Section eine Farbfläche ist. Der Lichtschein der Team-Section setzt erst unter der Kante ein
+  Reichweite; abgeschnitten entstünde wieder eine gerade Kante).
+- **Footer** (Runde 7, 19.11.2026; Marc: „keine Divider-Line, sondern unsere Dot-Divider“): eigene Fläche `--night`, dunkler als
+  Seite und Alt-Flächen, darum ist die Kante über jeder letzten Section eindeutig. Er steht in der Liste in `himmel.css` und läuft
+  mit demselben `::before` (gleiche `--ueb-h`/`--ueb-maske`, also auch jede spätere Reglereinstellung) nach oben aus; ein unteres
+  Band hat er nicht. Als positionierte Fläche deckt er das untere Band der letzten Section. Die Linie über dem Footer ist entfernt.
+- **Punktwolke im Footer** (`himmel/footer-wolke.ts`, Canvas `.footer-sky` hinter dem Inhalt): geparkte Drohnen im Logoverlauf,
+  ein lockeres Raster (26 px, verwackelt) rechts unten, das zur Mitte und an Inhalten weich ausläuft. Punkte entstehen nur mit
+  mindestens 32 px Abstand zu jeder Textzeile, jedem Bild und Icon (gemessen an den Zeilen, nicht an den Blöcken), darum passt
+  sich die Wolke jeder Breite an und berührt nie Inhalt. Jede Drohne schwebt auf einer eigenen Bahn von wenigen Pixeln (9–16 s)
+  und atmet leicht in der Helligkeit; 30 Bilder/s, nur solange der Footer sichtbar ist. Das Modul lädt erst, wenn der Footer
+  näher als 600 px ist. Pause, reduzierte Bewegung, verborgener Tab: Standbild.
+- **Keine Trennlinien an Farbwechseln:** Borders von `.section.alt`, `.c-setlist`, `.team-sec` und über dem Footer entfernt
+  (`global.css`). Der Lichtschein der Team-Section setzt erst unter der Kante ein
   (sonst eigene gerade Kante).
 - **Fallstrick:** `content-visibility: auto` (Preisseite) bedeutet Paint-Containment und schneidet die Bänder ab;
   Farbflächen sind dort ausgenommen (`PricingPage.astro`).

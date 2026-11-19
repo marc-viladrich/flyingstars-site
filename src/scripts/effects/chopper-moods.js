@@ -14,42 +14,76 @@ const fromN = (x, y) => [((x * RW) / 2 + RW / 2 - 3) / S, ((y * RW) / 2 + RH / 2
 const BLADE = 17;
 const TAU = Math.PI * 2;
 
-// Kinder als Konturfiguren gleichen Stils (Runde 6, Marc: „stick figures, but more human-looking“): Kopf, Haare,
-// Kleid bzw. Shirt und Shorts, Beine mit Schuhen; Arme mit Händen sind eigene Teile, damit sie werfen und jubeln.
-// Gleicher Rahmen und Maßstab wie der Hund, Füße auf derselben Grundlinie.
+// Kinder (Runde 7, Marc: „die beiden Kinder sehen absolut komplett scheiße aus“): keine Strichfiguren mehr, sondern
+// gefüllte Silhouetten im selben Stil wie Chopper (Kontur hell, Fläche locker gefüllt), mit Kinderproportionen: großer
+// Kopf (gut ein Viertel der Größe), kurze Beine, Arme mit Ellbogen. Jede Figur besteht aus Teilen mit eigener Farbe
+// (Haut, Kleidung, Haare), damit Kopf, Haare und Kleid lesbar getrennt sind; überlappende Flächen werden im Hautteil
+// ausgespart, so steht keine Drohne doppelt. Mädchen: Zöpfe, Kleid; Junge: kurze Haare mit Wirbel, T-Shirt, Shorts.
+// Die Arme sind eigene Teile und drehen um die Schulter (werfen, jubeln). Gleicher Rahmen und Maßstab wie der Hund.
 const VB = 'viewBox="0 0 400 300" width="400" height="300"';
-const svg = (inner) => `<svg xmlns="http://www.w3.org/2000/svg" ${VB}><g fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">${inner}</g></svg>`;
-const SHOULDER = { girlThrow: [211, 106], girlFree: [189, 106], boyThrow: [187, 106], boyFree: [213, 106] };
-const ARM = 58, SPREAD = 13; // Arme leicht abgespreizt, damit sie nicht auf der Rumpfkontur liegen
-const arm = ([sx, sy], dx) => svg(`<path d="M${sx} ${sy} L${sx + dx} ${sy + ARM}"/><circle cx="${sx + dx}" cy="${sy + ARM + 6}" r="5"/>`);
-const GIRL = svg(`<circle cx="200" cy="64" r="24"/>
-  <path d="M180 56 Q198 38 222 54"/><path d="M178 52 C162 58 158 78 166 96"/><circle cx="170" cy="50" r="5"/>
-  <path d="M200 88 L200 100"/>
-  <path d="M190 102 L210 102 L214 130 L234 184 L166 184 L186 130 Z"/>
-  <path d="M190 186 L188 240"/><path d="M210 186 L212 240"/><path d="M188 244 L177 245"/><path d="M212 244 L223 245"/>`);
-const BOY = svg(`<circle cx="200" cy="64" r="24"/>
-  <path d="M176 58 L180 42 L189 48 L196 36 L204 46 L212 38 L218 48 L224 56"/>
-  <path d="M200 88 L200 100"/>
-  <path d="M186 102 L214 102 L220 160 L180 160 Z"/>
-  <path d="M180 160 L220 160 L222 186 L204 186 L200 174 L196 186 L178 186 Z"/>
-  <path d="M188 188 L188 240"/><path d="M212 188 L212 240"/><path d="M188 244 L177 245"/><path d="M212 244 L223 245"/>`);
-const KID = { body: 132, arm: 24 };
+const svg = (inner) => `<svg xmlns="http://www.w3.org/2000/svg" ${VB}>${inner}</svg>`;
+const fill = (d, c = '#fff') => `<g fill="${c}">${d}</g>`;
+const limb = (d, w, c = '#fff') => `<path d="${d}" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"/>`;
+const HEAD = '<circle cx="200" cy="62" r="25"/>';
+const FACE = '<circle cx="191" cy="65" r="3.4"/><circle cx="209" cy="65" r="3.4"/>';
+const SMILE = '<path d="M192 75 Q200 81 208 75" fill="none" stroke="#000" stroke-width="3" stroke-linecap="round"/>';
+// Kinderproportionen: Kopf um 12 % größer und tiefer gesetzt, Rumpf 10 px tiefer, dadurch kürzere Beine (Füße bleiben)
+const headG = (inner) => `<g transform="translate(200 73) scale(1.12) translate(-200 -62)">${inner}</g>`;
+const torsoG = (inner) => `<g transform="translate(0 10)">${inner}</g>`;
+const GIRL_HAIR = '<path d="M174 70 C171 43 186 33 200 33 C214 33 229 43 226 70 C223 60 217 52 207 49 C200 55 188 56 181 53 C177 58 175 64 174 70 Z"/><ellipse cx="168" cy="76" rx="8.5" ry="13" transform="rotate(18 168 76)"/><ellipse cx="232" cy="76" rx="8.5" ry="13" transform="rotate(-18 232 76)"/>';
+const DRESS = '<path d="M182 99 L218 99 L224 111 L215 115 L216 126 L238 177 Q200 186 162 177 L184 126 L185 115 L176 111 Z"/>';
+const GIRL_SHOES = '<ellipse cx="182" cy="242" rx="10" ry="5.5"/><ellipse cx="218" cy="242" rx="10" ry="5.5"/>';
+const GIRL_LEGS = limb('M190 186 L186 235', 13) + limb('M210 186 L214 235', 13);
+const BOY_HAIR = '<path d="M175 67 C172 42 188 33 202 34 C218 35 229 46 225 67 C221 56 214 50 204 52 C195 49 185 52 178 59 Z"/><path d="M193 37 L197 27 L203 35 L210 29 L211 39 Z"/>';
+const SHIRT = '<path d="M183 99 L217 99 L231 108 L226 123 L217 119 L217 151 L183 151 L183 119 L174 123 L169 108 Z"/>';
+const SHORTS_TOP = '<path d="M183 150 L217 150 L220 181 L203 181 L200 167 L197 181 L180 181 Z"/>';
+const BOY_SHOES = '<ellipse cx="182" cy="242" rx="10" ry="5.5"/><ellipse cx="218" cy="242" rx="10" ry="5.5"/>';
+const BOY_LEGS = limb('M189 189 L186 235', 13) + limb('M211 189 L214 235', 13);
+// Schultern (Drehpunkt der Arme) und Hände (Wurfobjekt), je Kind die Wurfhand
+const SHOULDER = { girlThrow: [216, 116], girlFree: [184, 116], boyThrow: [184, 118], boyFree: [216, 118] };
+const HAND = { girlThrow: [242, 166], girlFree: [158, 166], boyThrow: [158, 167], boyFree: [242, 167] };
+/** Arm als Teil: aus dem Ärmel, Ellbogen leicht nach außen, Hand als Kreis. */
+const arm = (key, sleeve, elbow) => { const [hx, hy] = HAND[key]; return svg(fill(`<circle cx="${hx}" cy="${hy}" r="6.5"/>`) + limb(`M${sleeve[0]} ${sleeve[1] + 10} L${elbow[0]} ${elbow[1] + 10} L${hx} ${hy - 5}`, 9.5)); };
+const PARTS = {
+  girl: [
+    // Haut: Kopf, Hals, Beine; Haare und Kleid ausgespart, Augen als Aussparung
+    [svg(fill(torsoG('<rect x="195" y="84" width="10" height="17"/>')) + fill(headG(HEAD)) + GIRL_LEGS + fill(headG(GIRL_HAIR + FACE) + torsoG(DRESS) + GIRL_SHOES, '#000') + headG(SMILE)), 130, 'skin'],
+    [svg(fill(torsoG(DRESS) + GIRL_SHOES)), 92, 'dress'],
+    [svg(fill(headG(GIRL_HAIR))), 54, 'hairGirl'],
+  ],
+  boy: [
+    [svg(fill(torsoG('<rect x="195" y="84" width="10" height="17"/>')) + fill(headG(HEAD)) + BOY_LEGS + fill(headG(BOY_HAIR + FACE) + torsoG(SHIRT + SHORTS_TOP) + BOY_SHOES, '#000') + headG(SMILE)), 130, 'skin'],
+    [svg(fill(torsoG(SHIRT))), 74, 'shirt'],
+    [svg(fill(torsoG(SHORTS_TOP) + BOY_SHOES)), 62, 'shorts'],
+    [svg(fill(headG(BOY_HAIR))), 44, 'hairBoy'],
+  ],
+};
+const ARMS = {
+  girlThrow: arm('girlThrow', [222, 113], [235, 136]), girlFree: arm('girlFree', [178, 113], [165, 136]),
+  boyThrow: arm('boyThrow', [173, 120], [163, 140]), boyFree: arm('boyFree', [227, 120], [237, 140]),
+};
+const KID = { arm: 34 };
+const KID_BODY = { girl: PARTS.girl.reduce((s, p) => s + p[1], 0), boy: PARTS.boy.reduce((s, p) => s + p[1], 0) };
 const BALL = 13, DISC = 16;
+/** Farben der Teile: Haut warm hell, Kleidung in den Markenfarben, Haare dunkler. */
+const KID_COLOR = {
+  skin: () => [252, 226, 204], dress: (q) => gradientAt(0.02 + (q.y + 0.2) * 0.12), hairGirl: () => [255, 200, 104],
+  shirt: (q) => gradientAt(0.97 - (q.y + 0.2) * 0.1), shorts: () => [128, 140, 255], hairBoy: () => [214, 138, 82],
+};
 
 let kidCache = null;
 async function kids() {
   if (kidCache) return kidCache;
   const f = (markup, n) => formation({ kind: 'svg', markup, noCrop: true }, n);
-  const [girl, girlThrow, girlFree, boy, boyThrow, boyFree] = await Promise.all([
-    f(GIRL, KID.body), f(arm(SHOULDER.girlThrow, SPREAD), KID.arm), f(arm(SHOULDER.girlFree, -SPREAD), KID.arm),
-    f(BOY, KID.body), f(arm(SHOULDER.boyThrow, -SPREAD), KID.arm), f(arm(SHOULDER.boyFree, SPREAD), KID.arm)]);
-  kidCache = { girl, girlThrow, girlFree, boy, boyThrow, boyFree };
+  const sets = await Promise.all(['girl', 'boy'].map((k) => Promise.all(PARTS[k].map(([m, n, tag]) => f(m, n).then((pts) => pts.map((q) => ({ x: q.x, y: q.y, tag })))))));
+  const [girlThrow, girlFree, boyThrow, boyFree] = await Promise.all(['girlThrow', 'girlFree', 'boyThrow', 'boyFree'].map((k) => f(ARMS[k], KID.arm)));
+  kidCache = { girl: sets[0].flat(), boy: sets[1].flat(), girlThrow, girlFree, boyThrow, boyFree };
   return kidCache;
 }
 
 export const PLAY_SCALE = 0.56;
 const DOG = CHOPPER_COUNT;
-export const MOOD_COUNT = { happy: DOG, play: DOG + 2 * (KID.body + 2 * KID.arm) + BALL + DISC };
+export const MOOD_COUNT = { happy: DOG, play: DOG + KID_BODY.girl + KID_BODY.boy + 4 * KID.arm + BALL + DISC };
 
 const rot = (x, y, cx, cy, a) => { const c = Math.cos(a), s = Math.sin(a), dx = x - cx, dy = y - cy; return [cx + dx * c - dy * s, cy + dx * s + dy * c]; };
 const ease = (k) => k * k * (3 - 2 * k);
@@ -134,8 +168,10 @@ export async function chopperMood(mood) {
   }
 
   const k = await kids();
-  for (const q of [...k.girl, ...k.girlThrow, ...k.girlFree]) colors.set(gradientAt(0.04 + (q.y + 0.6) * 0.1), 3 * ci++);
-  for (const q of [...k.boy, ...k.boyThrow, ...k.boyFree]) colors.set(gradientAt(0.9 + (q.y + 0.6) * 0.08), 3 * ci++);
+  for (const q of k.girl) colors.set(KID_COLOR[q.tag](q), 3 * ci++);
+  for (let a = 0; a < 2 * KID.arm; a++) colors.set(KID_COLOR.skin(), 3 * ci++);
+  for (const q of k.boy) colors.set(KID_COLOR[q.tag](q), 3 * ci++);
+  for (let a = 0; a < 2 * KID.arm; a++) colors.set(KID_COLOR.skin(), 3 * ci++);
   for (let b = 0; b < BALL + DISC; b++) colors.set([255, 236, 190], 3 * ci++);
   const sA = new Float32Array(DOG), sB = new Float32Array(DOG), sC = new Float32Array(DOG), sD = new Float32Array(DOG);
   const delay = Float32Array.from({ length: DOG }, (_, d) => hash(d, 5) * 0.35);
@@ -148,14 +184,15 @@ export async function chopperMood(mood) {
   // Wurfarm: ausholen, nach vorn schwingen (Abwurf bei 0,85 s), zurück; Winkel für den Wurf nach rechts
   const throwAngle = (v) => v < 0.6 ? 0.9 * ease(v / 0.6) : v < 0.85 ? 0.9 - 3 * ease((v - 0.6) / 0.25) : v < 1.6 ? -2.1 * (1 - ease((v - 0.85) / 0.75)) : 0;
   const RELEASE = 0.85, CATCH = 2.15, DROP = 3.4, HOME = 4.6, PICK = 5.2;
-  const hand = (sh, dx, ang, ox, oy) => { const [hx, hy] = rot(...toN(sh[0] + dx, sh[1] + ARM + 6), ...toN(...sh), ang); return [ox + hx * size, oy + hy * size]; };
+  const hand = (key, ang, ox, oy) => { const [hx, hy] = rot(...toN(...HAND[key]), ...toN(...SHOULDER[key]), ang); return [ox + hx * size, oy + hy * size]; };
 
   let t0 = null;
   const behaviour = (T, tx, ty, sw) => {
     if (t0 === null && T) t0 = T;
     const t = T ? T - t0 : CATCH, u = ((t % P) + P) % P;
     const visX = sw?.w && sw?.h ? (sw.w / sw.h) / (2 * PLAY_SCALE) : 1.6;
-    const spread = Math.min(1.2, visX - 0.3), girlX = -spread, boyX = spread;
+    // Abstand zum Bühnenrand: ausgestreckter Arm samt Hand (Runde 7) bleibt auch bei 390 px im Bild
+    const spread = Math.min(1.2, visX - 0.42), girlX = -spread, boyX = spread;
     const half = u < H ? 0 : 1, v = u - half * H;               // Zeit innerhalb der Hälfte
     const face = half === 0 ? -1 : 1;                           // Chopper schaut zum werfenden Kind
     // Sprung zum Fang, Ohren schwingen mit der Sprunggeschwindigkeit
@@ -192,11 +229,11 @@ export async function chopperMood(mood) {
     const gy = kidY - 0.05 * girlCheer * Math.abs(Math.sin(10 * w * u)), by = kidY - 0.05 * boyCheer * Math.abs(Math.sin(10 * w * u));
     placeKid(k.girl, girlX, gy, [200, 150]);
     placeKid(k.girlThrow, girlX, gy, SHOULDER.girlThrow, girlThrowA);
-    placeKid(k.girlFree, girlX, gy, SHOULDER.girlFree, girlCheer * (2.4 + 0.25 * Math.sin(12 * w * u)) + 0.08 * Math.sin(2 * w * u));
+    placeKid(k.girlFree, girlX, gy, SHOULDER.girlFree, girlCheer * (2.05 + 0.2 * Math.sin(12 * w * u)) + 0.08 * Math.sin(2 * w * u));
     placeKid(k.boy, boyX, by, [200, 150]);
     placeKid(k.boyThrow, boyX, by, SHOULDER.boyThrow, boyThrowA);
-    placeKid(k.boyFree, boyX, by, SHOULDER.boyFree, -boyCheer * (2.4 + 0.25 * Math.sin(12 * w * u)) - 0.08 * Math.sin(2 * w * u));
-    const girlHand = hand(SHOULDER.girlThrow, SPREAD, girlThrowA, girlX, gy), boyHand = hand(SHOULDER.boyThrow, -SPREAD, boyThrowA, boyX, by);
+    placeKid(k.boyFree, boyX, by, SHOULDER.boyFree, -boyCheer * (2.05 + 0.2 * Math.sin(12 * w * u)) - 0.08 * Math.sin(2 * w * u));
+    const girlHand = hand('girlThrow', girlThrowA, girlX, gy), boyHand = hand('boyThrow', boyThrowA, boyX, by);
     // Wurfobjekt: Ball (Mädchen) bzw. Frisbee (Junge); das jeweils andere liegt in der Hand seines Kindes
     const flight = (from, feetX, arc) => {
       if (v < RELEASE) return from;

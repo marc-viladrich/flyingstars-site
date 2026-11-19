@@ -6,14 +6,17 @@
 // mit runden Enden, je Radius gebündelt.
 import { writeFileSync } from 'node:fs';
 const W = 480, H = 360, STEP = 10;
-const SOLID = 0.36, END = 1.02;            // Abstand zur Ecke (0 = Ecke, 1 = gegenüberliegende Kanten): Fläche bis SOLID, Punkte bis END
+// Runde 7 (Marc, 19.11.2026: „ein bisschen später erst dünner werden, sodass man mehr von dem Bild sieht“): die geschlossene
+// Fläche reicht weiter in die Karte (0,36 → 0,6), die Punkte laufen auf kürzerer Strecke und flacher aus; END bleibt fast
+// gleich, damit keine Punkte unter die Überschrift der Kachel geraten.
+const SOLID = 0.6, END = 1.06;             // Abstand zur Ecke (0 = Ecke, 1 = gegenüberliegende Kanten): Fläche bis SOLID, Punkte bis END
 const R_MAX = STEP * 0.75;                  // ab 0,71 · STEP schließen sich die Punkte zur Fläche
 const bins = new Map();
 for (let y = STEP / 2; y < H; y += STEP) {
   for (let x = STEP / 2; x < W; x += STEP) {
     const d = Math.hypot((W - x) / W, y / H);
     const t = Math.min(1, Math.max(0, (d - SOLID) / (END - SOLID)));
-    const r = R_MAX * (1 - t) ** 1.35;
+    const r = R_MAX * (1 - t) ** 1.1;
     if (r < 0.45) continue;
     const k = (Math.round(r * 4) / 4).toFixed(2);
     (bins.get(k) ?? bins.set(k, []).get(k)).push([x, y]);

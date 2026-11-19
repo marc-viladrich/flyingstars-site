@@ -4024,6 +4024,11 @@
     "en": "{art} from {n} drones",
     "nl": "{art} vanaf {n} drones"
   },
+  "preise.art2dMax": {
+    "de": "Ab {n} Drohnen wird die Show 3D",
+    "en": "From {n} drones the show becomes 3D",
+    "nl": "Vanaf {n} drones wordt de show 3D"
+  },
   "preise.summaryArt": {
     "de": "Art der Show: {art}",
     "en": "Type of show: {art}",
@@ -4448,16 +4453,6 @@
     "de": "Bitte versucht es später noch einmal.",
     "en": "Please try again later.",
     "nl": "Probeer het later nog eens."
-  },
-  "thanks.leadNeutral": {
-    "de": "Sobald ihr uns eine Anfrage geschickt habt, bestätigen wir hier ihren Eingang.",
-    "en": "As soon as you've sent us an enquiry, we'll confirm its receipt here.",
-    "nl": "Zodra jullie ons een aanvraag hebben gestuurd, bevestigen we hier de ontvangst."
-  },
-  "thanks.directInvite": {
-    "de": "Ihr plant eine Drohnenshow? Erzählt uns in zwei kurzen Schritten davon.",
-    "en": "Planning a drone show? Tell us about it in two short steps.",
-    "nl": "Plannen jullie een droneshow? Vertel ons erover in twee korte stappen."
   },
   "thanks.answerReceived": {
     "de": "Eure Antwort ist angekommen.",

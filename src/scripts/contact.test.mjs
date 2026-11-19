@@ -60,29 +60,16 @@ test('Ohne JavaScript erscheinen Fehler als lesbare Seite mit Statuscode statt a
   assert.equal((await post(request({}, { accept: 'text/html' }))).headers.get('content-security-policy')?.startsWith("default-src 'none'"), true);
 });
 
-// Statische Danke-Seite wie env.ASSETS in Cloudflare Pages; protokolliert, welche Seite angefragt wurde
-const thanksPage = '<!doctype html><html lang="en"><body><section class="section alt thanks" id="danke" aria-labelledby="danke-h" data-thanks data-astro-cid-x><p>…</p></section></body></html>';
-const assets = (seen = []) => ({ fetch: async (url) => { seen.push(String(url)); return new Response(thanksPage, { headers: { 'content-type': 'text/html' } }); } });
-
-test('Erfolg ohne JavaScript: Anfrage auf den signierten Danke-Link, Herkunftsantwort als eigene Bestätigungsseite', async t => {
+test('Erfolg ohne JavaScript: Anfrage auf die Danke-Seite der Sprache, Herkunftsantwort als eigene Bestätigungsseite', async t => {
   t.mock.method(globalThis, 'fetch', async () => new Response('{}', { status: 201 }));
-  const inquiry = await post(request({ locale: 'en' }, { accept: 'text/html' }));
-  assert.equal(inquiry.status, 303);
-  assert.equal(inquiry.headers.get('cache-control'), 'no-store');
-  // Kein frei aufrufbares Sprungziel: ein kurz gültiger, signierter Link dieses Endpoints in der Sprache der Anfrage
-  const link = new URL(inquiry.headers.get('location'));
-  assert.equal(link.origin + link.pathname, 'https://site.example.test/api/contact');
-  assert.deepEqual([...link.searchParams.keys()], ['danke', 'sprache']);
-  assert.match(link.searchParams.get('danke'), /^\d+\.[a-f0-9]{32}$/);
-  assert.equal(link.searchParams.get('sprache'), 'en');
-  const seen = [];
-  const page = await onRequestGet({ request: new Request(link), env: { ...env, ASSETS: assets(seen) } });
-  assert.equal(page.status, 200);
-  assert.deepEqual(seen, ['https://site.example.test/en/danke/']);
-  assert.equal(page.headers.get('cache-control'), 'no-store');
-  assert.equal(page.headers.get('x-robots-tag'), 'noindex');
-  assert.match(await page.text(), /<section class="section alt thanks" id="danke" aria-labelledby="danke-h" data-thanks data-sent data-astro-cid-x>/);
-  // Ohne Versandgeheimnis gibt es keinen Link: die neutrale Danke-Seite
+  // Die Danke-Seite zeigt Dank und Herkunftsfrage immer (Marc, 19.11.2026); kein signierter Link, kein Zustand „gesendet“
+  for (const [locale, path] of [['de', '/danke/'], ['en', '/en/danke/'], ['nl', '/nl/danke/']]) {
+    const inquiry = await post(request({ locale }, { accept: 'text/html' }));
+    assert.equal(inquiry.status, 303);
+    assert.equal(inquiry.headers.get('cache-control'), 'no-store');
+    assert.equal(inquiry.headers.get('location'), 'https://site.example.test' + path);
+  }
+  // Honeypot ohne Versandkonfiguration: derselbe Weg, keine Mail
   const unsigned = await onRequestPost({ request: new Request('https://site.example.test/api/contact', { method: 'POST', body: new URLSearchParams({ ...fields, website: 'bot' }), headers: { accept: 'text/html' } }), env: {} });
   assert.equal(unsigned.status, 303);
   assert.equal(unsigned.headers.get('location'), 'https://site.example.test/danke/');
@@ -198,25 +185,17 @@ test('Turnstile ist optional, prüft Hostname und erhält keine Besucher-IP', as
   assert.equal(get.headers.get('allow'), 'POST');
 });
 
-test('Signierter Danke-Link: gefälscht, fremde Sprache, abgelaufen, ohne Geheimnis oder ohne Seitenmerkmal führt auf die neutrale Seite', async t => {
-  t.mock.method(globalThis, 'fetch', async () => new Response('{}', { status: 201 }));
-  const link = new URL((await post(request({}, { accept: 'text/html' }))).headers.get('location'));
-  const get = (url, config = { ...env, ASSETS: assets() }) => onRequestGet({ request: new Request(url), env: config });
-  const neutral = 'https://site.example.test/danke/';
-  assert.equal((await get(link)).status, 200);
-  const forged = new URL(link); forged.searchParams.set('danke', link.searchParams.get('danke').replace(/.$/, (c) => (c === '0' ? '1' : '0')));
-  const otherLocale = new URL(link); otherLocale.searchParams.set('sprache', 'nl');
-  const malformed = new URL(link); malformed.searchParams.set('danke', 'abc');
-  for (const [url, location] of [[forged, neutral], [otherLocale, 'https://site.example.test/nl/danke/'], [malformed, neutral]]) {
-    const response = await get(url);
-    assert.equal(response.status, 303, String(url));
-    assert.equal(response.headers.get('location'), location);
-  }
-  assert.equal((await get(link, { ASSETS: assets() })).headers.get('location'), neutral); // anderes/fehlendes Geheimnis
-  assert.equal((await get(link, { ...env, BREVO_API_KEY: 'anderer-key', ASSETS: assets() })).headers.get('location'), neutral);
-  assert.equal((await get(link, env)).headers.get('location'), neutral); // ohne ASSETS
-  const plain = { fetch: async () => new Response('<section class="thanks">', { headers: { 'content-type': 'text/html' } }) };
-  assert.equal((await get(link, { ...env, ASSETS: plain })).headers.get('location'), neutral); // Seite ohne Merkmal
-  t.mock.method(Date, 'now', () => Number(link.searchParams.get('danke').split('.')[0]) + 10 * 60_000 + 1);
-  assert.equal((await get(link)).headers.get('location'), neutral); // nach zehn Minuten abgelaufen
+test('Herkunftsantwort ohne Bezug (direkter Aufruf der Danke-Seite) wird angenommen und als solche gekennzeichnet', async t => {
+  const calls = [];
+  t.mock.method(globalThis, 'fetch', async (url, init) => { calls.push(JSON.parse(init.body)); return new Response('{}', { status: 201 }); });
+  const answer = (values) => new Request('https://site.example.test/api/contact', { method: 'POST', body: new URLSearchParams({ kind: 'quelle', locale: 'de', ...values }), headers: { accept: 'application/json' } });
+  assert.deepEqual(await (await post(answer({ quelle: 'instagram' }))).json(), { ok: true, state: 'sent' }); // ohne Feld ref
+  assert.deepEqual(await (await post(answer({ quelle: 'linkedin', ref: '' }))).json(), { ok: true, state: 'sent' }); // leeres ref
+  assert.equal(calls.length, 2);
+  assert.equal(calls[0].subject, 'Quelle zur Anfrage über FlyingStars');
+  assert.match(calls[0].textContent, /ref: ohne Bezug/);
+  assert.equal((await post(answer({ quelle: 'ki', ref: 'kein-bezug' }))).status, 400); // ein gesetzter Bezug bleibt geprüft
+  // GET bleibt abgelehnt, auch mit einem Link aus der früheren Fassung
+  const old = await onRequestGet({ request: new Request('https://site.example.test/api/contact?danke=1.abc&sprache=en'), env });
+  assert.equal(old.status, 405);
 });

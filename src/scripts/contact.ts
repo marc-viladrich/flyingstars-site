@@ -3,7 +3,7 @@ import { logoInquiryForm } from './logo-inquiry-form';
 import {parseInquiry} from '../content/inquiry.mjs';
 import {contact as CONTACT} from '../content/contact.mjs';
 import { t } from '../i18n/ui.mjs';
-import { INQUIRY_REF_KEY, INQUIRY_SENT_KEY } from '../content/inquiry-source.mjs';
+import { INQUIRY_REF_KEY } from '../content/inquiry-source.mjs';
 import { localizedHref, localeFromPath } from '../i18n/routing.mjs';
 import { sendForm, SendError, setFieldError, clearErrorsOnInput } from './form-contract';
 let selectPackage: ((name: string) => void) | undefined;
@@ -127,9 +127,8 @@ if (form) {
         logoInquiry.clear(); form.reset(); restartTimer(); syncDate(); show(0, false);
         // Weiter zur Danke-Seite (Moritz 18.11.2026). Kurz warten, damit Bestätigung, Himmel-Gruß und eine erlaubte
         // Conversion-Meldung noch auf dieser Seite laufen.
-        // Erst hier, nach bestätigtem `sent`: das Einmal-Merkmal lässt die Danke-Seite beim nächsten Aufruf den Eingang
-        // bestätigen und nach der Quelle fragen, der Bezug ordnet die Antwort dieser Anfrage zu.
-        try { sessionStorage.setItem(INQUIRY_REF_KEY, ref); sessionStorage.setItem(INQUIRY_SENT_KEY, String(Date.now())); } catch { /* privat */ }
+        // Erst hier, nach bestätigtem `sent`: der Bezug ordnet die Herkunftsantwort der Danke-Seite dieser Anfrage zu.
+        try { sessionStorage.setItem(INQUIRY_REF_KEY, ref); } catch { /* privat */ }
         setTimeout(() => location.assign(localizedHref('/danke/', localeFromPath(location.pathname))), 2400);
       }
     } catch (error) {

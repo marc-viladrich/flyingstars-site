@@ -1,7 +1,6 @@
 # Danke-Seite nach Moritz' Webtext (18.11.2026, „Danke-Seite“), Ansprache „ihr“. Nach dem Absenden der Anfrage leitet
-# das Formular hierher weiter. Die Seite ist frei aufrufbar; Titel, Beschreibung und Kicker sind deshalb neutral.
-# `text` (Dank und Eingangsbestätigung) und die freiwillige Frage nach der Quelle erscheinen nur direkt nach einem
-# bestätigten Versand, sonst der neutrale Satz thanks.leadNeutral und der Weg zur Anfrage (Thanks.astro).
+# das Formular hierher weiter. Die Seite zeigt immer `text` (Dank und Eingangsbestätigung) und die freiwillige Frage nach
+# der Quelle mit Absenden, auch direkt aufgerufen (Marc, 19.11.2026; Thanks.astro).
 title: Eure Anfrage
 description: "Nach eurer Anfrage bei FlyingStars bestätigen wir hier den Eingang. Wir melden uns innerhalb von maximal 48 Stunden bei euch zurück."
 noindex: true

@@ -8,7 +8,8 @@
 //   overflow  Seite scrollt seitlich
 //   cta       Abschluss-Kasten (.promise, CtaBox.astro) ohne Gesichter, Überschrift oder Inhalt (Text oder Liste), mit mehr
 //             als einer Inhaltsform oder nicht genau einem Anfragelink (Marc, 02.11.2026: „empty-looking CTAs“)
-//   head-gap  Section-Kopf weicht von den Abstandsrollen --head-gap-kicker/-text/-cta/-content ab (global.css, Runde 6)
+//   head-gap  Section-Kopf weicht von den Abstandsrollen --head-gap-kicker/-text/-cta/-content ab (global.css, Runde 6);
+//             folgt dem Kopf Fließtext, gilt immer --head-gap-text (Runde 7)
 //   hero-top  erste Zeile (Kicker oder h1) einer Seite mit .page-top nicht auf --hero-top (Marc, 02.11.2026: „Die Hero
 //             section sollte überall auf der gleichen Höhe anfangen“). Ausnahme: Seiten, deren Kopf mit einem Bild beginnt (.page-404)
 //   rail      Zeitstrahl (.ruler Netzplan, .lf-steps Ablauf, .ms Meilensteine): jeder Punkt liegt mit seinem Mittelpunkt auf
@@ -157,6 +158,15 @@ export function inspectLayout({ checks }) {
     const sideBySide = (a, b) => { const x = box(a), y = box(b); return x.right <= y.left + 1 || y.right <= x.left + 1; };
     const check = (role, a, b, head) => { if (!a || !b || sideBySide(a, b)) return; const T = tok(role), gap = box(b).top - box(a).bottom;
       if (Math.abs(gap - T) > 2) r.push({ k: 'head-gap', what: `${name(head)} ${role}: ${Math.round(gap)} px statt ${Math.round(T)}${gap < -1 ? ' (überlappt)' : ''}` }); };
+    // Erster Absatz am oberen Rand eines Blocks: absteigend über das jeweils erste sichtbare Kind; Karten, Listen, Tabellen,
+    // Formulare, Abbildungen und Aufklapper sind Inhalt, kein Fließtext
+    const leadsWithText = (el) => {
+      for (let e = el; e; e = [...e.children].find(shown)) {
+        if (e.matches('article, li, ul, ol, dl, table, form, figure, details, [data-head-group], [data-section-head]')) return null;
+        if (e.matches('p')) return e.textContent.trim() && Math.abs(box(e).top - box(el).top) <= 2 ? e : null;
+      }
+      return null;
+    };
     // Kinder in Lesereihenfolge: der Textblock .head-body zählt mit seinen Kindern
     const flow = (head) => [...head.children].flatMap((c) => c.matches('.head-body') ? [...c.children] : [c]).filter(shown);
     for (const head of document.querySelectorAll('main [data-section-head]')) {
@@ -177,7 +187,12 @@ export function inspectLayout({ checks }) {
       for (let from = last; from && !next && !from.matches('section, main'); from = from.parentElement) {
         for (let n = from.nextElementSibling; n; n = n.nextElementSibling) if (shown(n)) { next = n; break; }
       }
-      if (next) check(role, head.matches('[data-section-head="contents"]') ? kids.at(-1) : head, next, head);
+      // Beginnt der folgende Block mit Fließtext (ein Absatz, nicht in Karte, Liste, Tabelle oder Formular), ist der Abstand
+      // immer Überschrift → Text, egal welche Rolle der Kopf meldet (Runde 7, Marc: „Der Abstand zwischen Heading und
+      // Bodycopy sollte einheitlich sein“; vorher meldeten Köpfe über Galerie und Bühne „content“ und bestanden mit 56 px)
+      const text = next && leadsWithText(next);
+      if (text && role !== 'text') r.push({ k: 'head-gap', what: `${name(head)} meldet „${role}“, darunter steht Fließtext (${name(text)})` });
+      if (next) check(text ? 'text' : role, head.matches('[data-section-head="contents"]') ? kids.at(-1) : head, text || next, head);
     }
     // Kopfgruppen: Ein Block mit derselben Oberkante wie ein Kopfteil gehört direkt zur Abstandsprüfung.
     // Sonst entscheidet die größte Unterkante der oberhalb beginnenden Blöcke, ob ein Kopfteil direkt vorausgeht.

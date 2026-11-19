@@ -77,7 +77,9 @@
 .c-h1 { display: grid; gap: clamp(var(--space-3-5), 2vw, var(--space-6)); margin: 0; }
 /* Titel kleiner (Marc, 01.11.2026: „etwas überbordend“): passt neben das Video in die linke Hälfte */
 .c-name { margin: 0; font: 700 min(max(7rem, 6.4vw), calc(76vw / var(--chars))) / 0.86 var(--display); letter-spacing: -0.045em; text-transform: uppercase; display: grid; }
-.c-name span:nth-child(2) { color: transparent; -webkit-text-stroke: 1.5px rgb(var(--rgb-text) / 0.9); padding-left: 0.04em; }
+/* Kindkombinator: nur die zweite Titelzeile, nie ein zweites Element in einer Zeile (Runde 7: Buchstaben-Spans des
+   früheren Lichtlaufs machten jeden zweiten Buchstaben kurz zur Kontur) */
+.c-name > span:nth-child(2) { color: transparent; -webkit-text-stroke: 1.5px rgb(var(--rgb-text) / 0.9); padding-left: 0.04em; }
 .c-tag { font: 500 clamp(1.1875rem, 1.8vw, 1.625rem)/1.25 var(--display); letter-spacing: -0.02em; max-width: 30ch; }
 
 .c-story { position: relative; display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: clamp(var(--space-7), 5vw, var(--space-20)); padding: 0 var(--gutter) var(--section); }
@@ -168,7 +170,7 @@
 }
 @media (--compact) {
   .c-top .idx { display: none; }
-  .c-name span:nth-child(2) { -webkit-text-stroke-width: 1px; }
+  .c-name > span:nth-child(2) { -webkit-text-stroke-width: 1px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .c-media figure, .c-step .section-head > h2 > :is(.k, .head-line), .c-step .section-head > p { transition: none; }

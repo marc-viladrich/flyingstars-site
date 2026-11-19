@@ -3,7 +3,7 @@ import {INQUIRY_PACKAGES,INQUIRY_LIMITS} from '../../src/content/inquiry.mjs';
 import {FORM_OCCASION_IDS} from '../../src/content/occasions.mjs';
 import { createTranslator } from '../../src/i18n/ui.mjs';
 import { LOCALES, localizedHref, localeFromPath } from '../../src/i18n/routing.mjs';
-import { SOURCE_IDS, SOURCE_OTHER, SOURCE_TEXT_MAX, INQUIRY_REF, THANKS_STATE_ATTR } from '../../src/content/inquiry-source.mjs';
+import { SOURCE_IDS, SOURCE_OTHER, SOURCE_TEXT_MAX, INQUIRY_REF } from '../../src/content/inquiry-source.mjs';
 import { contact } from '../../src/content/contact.mjs';
 
 // Cloudflare Pages Function. Nur Web-Standard-APIs für einen späteren EU-Umzug.
@@ -12,10 +12,10 @@ import { contact } from '../../src/content/contact.mjs';
 //
 // Antwortvertrag (docs/DESIGN.md, „Versandzustände“): Mit `Accept: application/json` antwortet der Endpoint immer
 // JSON ({ok:true,state:'sent'|'not-configured'} oder {ok:false,detail}). Ohne JavaScript leitet nur ein bestätigter
-// Versand der Anfrage weiter (POST/Redirect/GET, kein Doppelversand beim Neuladen): auf einen kurz gültigen, signierten
-// Link dieses Endpoints, der die Danke-Seite mit bestätigtem Eingang und Herkunftsfrage ausliefert (onRequestGet). Die
-// statische Seite selbst bleibt neutral, weil sie auch direkt aufrufbar ist. Eine bestätigte Herkunftsantwort
-// beantwortet der Endpoint ohne JavaScript selbst mit einer Bestätigungsseite. Fehler und fehlende Versandkonfiguration
+// Versand der Anfrage weiter (POST/Redirect/GET, kein Doppelversand beim Neuladen), auf die Danke-Seite der Sprache.
+// Sie zeigt Dank und Herkunftsfrage immer (Marc, 19.11.2026); der frühere signierte Link, der sie in einen Zustand
+// „gesendet“ schaltete, ist damit entfallen. Eine bestätigte Herkunftsantwort beantwortet der Endpoint ohne JavaScript
+// selbst mit einer Bestätigungsseite. Fehler und fehlende Versandkonfiguration
 // antworten mit einer lesbaren Seite am Formularziel, damit die Zurück-Taste die Eingaben behält.
 interface Env {
   BREVO_API_KEY?: string;
@@ -23,7 +23,6 @@ interface Env {
   CONTACT_FROM?: string;
   TURNSTILE_SECRET?: string; // Erst mit passendem Widget + Datenschutzinformation aktivieren.
   SITE_NAME?: string;
-  ASSETS?: { fetch: (input: URL | Request | string) => Promise<Response> }; // statische Seiten (Cloudflare Pages)
 }
 type Kind = 'inquiry' | 'source';
 type Translate = ReturnType<typeof createTranslator>;
@@ -41,10 +40,8 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
   try {
     const page = new URL(request.headers.get('referer') ?? request.url);
     if (page.origin === new URL(request.url).origin) {
-      // Die Danke-Seite nach einem Versand ohne JavaScript ist der signierte Link dieses Endpoints (onRequestGet)
-      const signed = page.pathname === THANKS_LINK_PATH;
-      reply.locale = signed ? LOCALES.find((value) => value === page.searchParams.get('sprache')) ?? 'de' : localeFromPath(page.pathname);
-      reply.kind = signed || page.pathname === localizedHref('/danke/', reply.locale) ? 'source' : 'inquiry';
+      reply.locale = localeFromPath(page.pathname);
+      reply.kind = page.pathname === localizedHref('/danke/', reply.locale) ? 'source' : 'inquiry';
     }
   } catch { /* Fehlender/ungültiger Referrer: deutsche Standardsprache. */ }
   reply.t = createTranslator(reply.locale);
@@ -91,7 +88,7 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
   const get = (key: string) => String(form.get(key) ?? '').trim();
   reply.kind = get('kind') === 'quelle' ? 'source' : 'inquiry';
   // Honeypot: bewusst Erfolg vortäuschen, ohne Versand.
-  if (get('website')) return confirmed(reply, env);
+  if (get('website')) return confirmed(reply);
   // Zweite kleine Meldung von der Danke-Seite: woher die Anfrage kam. Keine Personendaten, nur Auswahl, optionaler
   // Kurztext und der Zufallswert der Anfrage (src/content/inquiry-source.mjs).
   if (reply.kind === 'source') return source(reply, env, form);
@@ -158,7 +155,7 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
     return fail(503, 'contactAPI.unconfirmed');
   }
   // Generated only after Brevo accepted the message. Never for honeypot/preview/error.
-  return confirmed(reply, env, crypto.randomUUID());
+  return confirmed(reply, crypto.randomUUID());
 };
 
 async function source(reply: Reply, env: Env, form: FormData): Promise<Response> {
@@ -182,78 +179,28 @@ async function source(reply: Reply, env: Env, form: FormData): Promise<Response>
       body: JSON.stringify({
         sender: { email: env.CONTACT_FROM, name: site }, to: [{ email: env.CONTACT_TO }],
         subject: `Quelle zur Anfrage über ${site}${ref ? ` (${ref})` : ''}`,
-        textContent: `Wo habt ihr das erste Mal von uns gehört?\nquelle: ${value}${text ? `\nfreitext: ${text}` : ''}\nref: ${ref || 'ohne Bezug (ohne JavaScript oder neue Sitzung)'}\n`,
+        textContent: `Wo habt ihr das erste Mal von uns gehört?\nquelle: ${value}${text ? `\nfreitext: ${text}` : ''}\nref: ${ref || 'ohne Bezug (direkter Aufruf, ohne JavaScript oder neue Sitzung)'}\n`,
       }),
     });
     if (!response.ok) return fail(502, 'contactAPI.delivery');
   } catch { return fail(503, 'contactAPI.unconfirmed'); }
-  return confirmed(reply, env);
+  return confirmed(reply);
 }
 
-/** Ohne JavaScript nach bestätigtem Versand: die Danke-Seite mit `data-sent` (Eingang + Herkunftsfrage), solange der
- * signierte Link gilt. Ein fremder, abgelaufener oder fehlerhafter Link führt auf die neutrale Seite; ohne `danke`
- * bleibt der Endpoint POST-only. */
-export const onRequestGet = async ({ request, env }: { request: Request; env: Env }): Promise<Response> => {
-  const url = new URL(request.url), token = url.searchParams.get('danke');
-  if (token === null) return json({ ok: false, detail: createTranslator('de')('contactAPI.post') }, 405);
-  const locale = LOCALES.find((value) => value === url.searchParams.get('sprache')) ?? 'de';
-  const neutral = new URL(localizedHref('/danke/', locale), url);
-  const toNeutral = () => new Response(null, { status: 303, headers: { location: neutral.toString(), 'cache-control': 'no-store', 'referrer-policy': 'no-referrer' } });
-  if (!env.ASSETS || !(await validThanksToken(env, locale, token))) return toNeutral();
-  try {
-    const page = await env.ASSETS.fetch(neutral);
-    if (!page.ok) return toNeutral();
-    const html = await page.text(), marked = html.replace(THANKS_MARK, `$1${THANKS_STATE_ATTR} data-sent`);
-    if (marked === html) return toNeutral();
-    // same-origin: die Herkunftsantwort von dieser Seite nennt den Link als Referrer (Sprache, Weg zurück zum Formular)
-    return new Response(marked, { status: 200, headers: { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store', 'x-robots-tag': 'noindex', 'x-content-type-options': 'nosniff', 'referrer-policy': 'same-origin' } });
-  } catch { return toNeutral(); }
-};
-
-/** Signierter Link zur Danke-Seite nach einem Versand ohne JavaScript: Zeitpunkt + HMAC über Sprache und Zeitpunkt,
- * Schlüssel aus dem Versandgeheimnis. Kurz gültig (Neuladen, Zurück), nicht von Hand herstellbar. */
-const THANKS_LINK_PATH = '/api/contact';
-const THANKS_LINK_TTL = 10 * 60_000;
-const THANKS_MARK = new RegExp(`(<section\\b[^>]*\\s)${THANKS_STATE_ATTR}(?=[\\s=>])`);
-async function thanksSignature(env: Env, locale: string, at: string): Promise<string | null> {
-  if (!env.BREVO_API_KEY) return null;
-  const encode = (text: string) => new TextEncoder().encode(text);
-  const key = await crypto.subtle.importKey('raw', encode(`danke:${env.BREVO_API_KEY}`), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
-  const mac = new Uint8Array(await crypto.subtle.sign('HMAC', key, encode(`${locale}.${at}`)));
-  return [...mac.slice(0, 16)].map((byte) => byte.toString(16).padStart(2, '0')).join('');
-}
-async function thanksLink(reply: Reply, env: Env): Promise<string | null> {
-  const at = String(Date.now()), signature = await thanksSignature(env, reply.locale, at);
-  if (!signature) return null;
-  const url = new URL(THANKS_LINK_PATH, reply.request.url);
-  url.search = new URLSearchParams({ danke: `${at}.${signature}`, sprache: reply.locale }).toString();
-  return url.toString();
-}
-async function validThanksToken(env: Env, locale: string, token: string): Promise<boolean> {
-  const [at, signature, rest] = token.split('.');
-  if (rest !== undefined || !/^\d{1,15}$/.test(at ?? '') || !/^[a-f0-9]{32}$/.test(signature ?? '')) return false;
-  const age = Date.now() - Number(at);
-  if (age < 0 || age > THANKS_LINK_TTL) return false;
-  const expected = await thanksSignature(env, locale, at);
-  if (!expected) return false;
-  let diff = 0;
-  for (let i = 0; i < expected.length; i++) diff |= expected.charCodeAt(i) ^ signature.charCodeAt(i);
-  return diff === 0;
-}
+/** Der Endpoint nimmt nur POST an. */
+export const onRequestGet = async (): Promise<Response> => json({ ok: false, detail: createTranslator('de')('contactAPI.post') }, 405);
 
 const configured = (env: Env) => Boolean(env.BREVO_API_KEY && env.CONTACT_TO && env.CONTACT_FROM);
 const siteName = (env: Env) => (env.SITE_NAME ?? 'Website').replace(/[\u0000-\u001f\u007f]/g, '').slice(0, 120);
 const wantsJson = (request: Request) => (request.headers.get('accept') ?? '').includes('application/json');
 
-/** Bestätigter Versand (oder Honeypot): JSON-Erfolg, ohne JavaScript Weiterleitung auf den signierten Danke-Link
- * (Anfrage; ohne Versandgeheimnis auf die neutrale Danke-Seite) bzw. eine Bestätigungsseite (Herkunftsantwort; ein
- * erneutes Senden beim Neuladen schickt nur dieselbe Auswahl). */
-async function confirmed(reply: Reply, env: Env, requestId?: string): Promise<Response> {
+/** Bestätigter Versand (oder Honeypot): JSON-Erfolg, ohne JavaScript Weiterleitung auf die Danke-Seite (Anfrage) bzw.
+ * eine Bestätigungsseite (Herkunftsantwort; ein erneutes Senden beim Neuladen schickt nur dieselbe Auswahl). */
+function confirmed(reply: Reply, requestId?: string): Response {
   if (wantsJson(reply.request)) return json({ ok: true, state: 'sent', ...(requestId ? { requestId } : {}) });
   const { t, locale } = reply;
   if (reply.kind === 'source') return page(reply, 200, t('thanks.answerReceived'), t('thanks.answerThanks'), [link(localizedHref('/', locale), t('contactAPI.toHome'))]);
-  const neutral = new URL(localizedHref('/danke/', locale), reply.request.url);
-  const location = await thanksLink(reply, env) ?? neutral.toString();
+  const location = new URL(localizedHref('/danke/', locale), reply.request.url).toString();
   return new Response(null, { status: 303, headers: { location, 'cache-control': 'no-store', 'referrer-policy': 'no-referrer' } });
 }
 /** Versand nicht eingerichtet: JSON-Zustand für das Skript, ohne JavaScript eine ehrliche Seite statt „Danke“. */
@@ -275,8 +222,8 @@ function formHref(reply: Reply): string {
   let page: URL | undefined;
   try { page = new URL(reply.request.headers.get('referer') ?? ''); if (page.origin !== new URL(reply.request.url).origin) page = undefined; }
   catch { /* Kein verwertbarer Referrer */ }
-  // Herkunftsfrage: zurück auf den signierten Danke-Link, solange er gilt (dort steht die Frage); sonst die Danke-Seite
-  if (reply.kind === 'source') return (page?.pathname === THANKS_LINK_PATH ? page.pathname + page.search : localizedHref('/danke/', reply.locale)) + '#danke';
+  // Herkunftsfrage: zurück auf die Danke-Seite, dort steht die Frage
+  if (reply.kind === 'source') return localizedHref('/danke/', reply.locale) + '#danke';
   if (page) return page.pathname + '#anfrage';
   return localizedHref('/kontakt/', reply.locale) + '#anfrage';
 }

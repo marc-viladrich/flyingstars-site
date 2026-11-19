@@ -2,12 +2,9 @@
 // Danke-Seite (Runde 4, Moritz 18.11.2026; Aufbau Runde 6 wie die Anfrage, Marc: „this is the last step“): links Kopf,
 // Text und darunter Chopper, der sich als Drohnenformation freut; rechts die freiwillige Frage nach der Quelle in der
 // Formular-Box der Anfrage (.inquiry/.ask aus ContactForm), mit Schrittanzeige als letztem Schritt.
-// Die Seite ist frei aufrufbar (Lesezeichen, neuer Tab, Neuladen). Direkt aufgerufen zeigt sie den neutralen Satz und
-// rechts den Weg zur Anfrage. Dank, Eingang (YAML `text`) und Herkunftsfrage zeigt sie nur im Übergang nach einem
-// bestätigten Versand (data-sent): mit JavaScript, wenn das Anfrageformular das Einmal-Merkmal INQUIRY_SENT_KEY gesetzt
-// hat (ein Inline-Skript vor dem ersten Bild verbraucht es, damit nichts springt); ohne JavaScript liefert der Endpoint
-// diese Seite nach dem Versand selbst mit data-sent aus (functions/api/contact.ts, signierter Link). Die Antwort geht als
-// zweite kleine Meldung über denselben Weg (kind=quelle) mit dem getrennt gespeicherten Bezug der Anfrage. Ihren Dank
+// Die Seite zeigt immer dasselbe (Marc, 19.11.2026): Dank (YAML `text`) und die Herkunftsfrage im Formularstil mit
+// Absenden, auch direkt aufgerufen (Lesezeichen, neuer Tab, Neuladen). Die Antwort geht als zweite kleine Meldung über
+// /api/contact (kind=quelle), mit dem Bezug der Anfrage aus sessionStorage, wenn es ihn gibt, sonst ohne. Ihren Dank
 // zeigt nur ein bestätigtes `sent`: mit JavaScript hier, ohne JavaScript als Seite des Endpoints.
 import type { Section } from '../../content.config';
 import SectionHead from '../SectionHead.astro';
@@ -15,28 +12,20 @@ import InquiryFormStyles from '../InquiryFormStyles.astro';
 import Chopper from '../Chopper.astro';
 import { site } from '../../site.config';
 import { forPath } from '../../i18n/server';
-import { SOURCE_OTHER, SOURCE_TEXT_MAX, SOURCE_DONE_ID, INQUIRY_SENT_KEY, INQUIRY_SENT_TTL, THANKS_STATE_ATTR } from '../../content/inquiry-source.mjs';
-import { CONTACT } from '../people';
+import { SOURCE_OTHER, SOURCE_TEXT_MAX, SOURCE_DONE_ID } from '../../content/inquiry-source.mjs';
 type Props = Extract<Section, { type: 'thanks' }> & { index: number };
 const { kicker, headline, text, question, options, otherLabel, sendLabel, doneText, cta, index, id = 'danke' } = Astro.props;
 const { t, locale, localHref } = forPath(Astro.url.pathname);
 const H = index === 0 ? 'h1' : 'h2';
 const headingId = `${id}-h`;
 ---
-<section class="section alt thanks" id={id} aria-labelledby={headingId} {...{ [THANKS_STATE_ATTR]: '' }}>
+<section class="section alt thanks" id={id} aria-labelledby={headingId}>
   <InquiryFormStyles />
-  <script is:inline define:vars={{ key: INQUIRY_SENT_KEY, ttl: INQUIRY_SENT_TTL }}>try{var at=sessionStorage.getItem(key);if(at!==null){sessionStorage.removeItem(key);if(Date.now()-Number(at)<ttl)document.currentScript.closest('.thanks').dataset.sent=''}}catch(e){}</script>
   <div class="inquiry">
     <SectionHead variant="embedded" class="intro" kicker={kicker} headline={headline} id={headingId} level={H}>
-      {/* Beide Fassungen liegen übereinander (gleiche Höhe), sichtbar ist nur die zum Zustand passende */}
-      <p class="lead thanks-lead"><span class="is-neutral">{t('thanks.leadNeutral')}</span>{text && <span class="is-sent">{text}</span>}</p>
-      <Chopper mood="happy" class="thanks-chopper" />
+      {text && <p class="lead">{text}</p>}
+      <Chopper mood="happy" class="thanks-chopper" scale={0.68} />
     </SectionHead>
-    {/* Direkter Aufruf: statt der Herkunftsfrage der Weg zur Anfrage, in derselben Box */}
-    <div class="ask thanks-direct">
-      <p class="thanks-q">{t('thanks.directInvite')}</p>
-      <div class="actions"><a class="btn primary" href={localHref(site.cta.href)}>{site.cta.label}</a><a class="link" href={CONTACT.phone.href}>{CONTACT.phone.label}</a></div>
-    </div>
     <form class="ask is-2" action={site.formEndpoint} method="post" data-source-form aria-labelledby="thanks-q">
       <div class="ask-steps" aria-hidden="true"><span>{t('thanks.stepSent')}</span><span class="on">{t('thanks.stepLast')}</span><i></i></div>
       <input type="hidden" name="kind" value="quelle" />
@@ -76,8 +65,8 @@ const headingId = `${id}-h`;
     const done = form.querySelector<HTMLElement>('.thanks-done')!;
     const otherText = form.querySelector<HTMLInputElement>('[name=quelle-text]')!;
     const button = form.querySelector<HTMLButtonElement>('button[type=submit]')!;
-    // Bezug nur im Übergang nach dem Versand, sonst ist die Frage gar nicht sichtbar
-    if (form.closest<HTMLElement>('.thanks')?.hasAttribute('data-sent')) form.querySelector<HTMLInputElement>('[data-source-ref]')!.value = read(INQUIRY_REF_KEY) ?? '';
+    // Bezug zur Anfrage, wenn das Anfrageformular in dieser Sitzung einen abgelegt hat; sonst geht die Antwort ohne Bezug
+    form.querySelector<HTMLInputElement>('[data-source-ref]')!.value = read(INQUIRY_REF_KEY) ?? '';
     form.noValidate = true;
     clearErrorsOnInput(form);
     // Ein deaktiviertes Feld gehört nicht zu FormData: der Freitext geht nur mit „Andere“ mit und bleibt beim
@@ -114,15 +103,9 @@ const headingId = `${id}-h`;
 
 <style>
   /* Raster, Kopf und Formular-Box kommen aus der Anfrage (.inquiry, .ask in InquiryFormStyles.astro); hier nur die Danke-Teile */
-  .thanks :global(.thanks-chopper) { max-width: 24rem; margin-top: calc(-1 * var(--space-4)); }
+  /* Chopper füllt die linke Spalte unter dem Text (Marc, 19.11.2026: „ein ganzes Stück größer“); gestapelt mittig und begrenzt */
+  .thanks :global(.thanks-chopper) { width: 100%; max-width: 36rem; margin-top: calc(-1 * var(--space-2)); }
   .thanks-q { padding: 0; margin: 0 0 var(--space-4); font: 500 var(--text-lead)/1.4 var(--display); color: var(--text); text-wrap: balance; }
-  /* Neutral oder bestätigt (data-sent): beide Fassungen in derselben Rasterzelle, die andere unsichtbar */
-  .thanks-lead { display: grid; }
-  .thanks-lead > span { grid-area: 1 / 1; }
-  .thanks[data-sent] .thanks-lead:has(.is-sent) .is-neutral, .thanks:not([data-sent]) .is-sent { visibility: hidden; }
-  /* Rechte Box: nach dem Versand die Herkunftsfrage, direkt aufgerufen der Weg zur Anfrage */
-  .thanks:not([data-sent]) [data-source-form], .thanks[data-sent] .thanks-direct { display: none; }
-  .thanks-direct .thanks-q { margin: 0; }
   .thanks .step:not(:has([data-other]:checked)) [data-source-other] { display: none; }
   .thanks [data-source-other] { animation: opt-in var(--dur-enter) var(--ease-enter); }
   .thanks .form-status:empty { display: none; }
@@ -132,5 +115,6 @@ const headingId = `${id}-h`;
   .ask.is-done .thanks-done { display: block; animation: opt-in var(--dur-enter) var(--ease-enter); }
   :global(html.motion-paused) .ask.is-done .thanks-done, :global(html.motion-paused) .thanks [data-source-other] { animation: none; }
   .ask.is-done :is(.step, [data-source-status]) { display: none; }
-  @media (--grid-stacked) { .thanks :global(.thanks-chopper) { margin-inline: auto; } }
+  /* Gestapelt steht die Frage unter Chopper: kleiner halten, damit sie nah bleibt */
+  @media (--grid-stacked) { .thanks :global(.thanks-chopper) { max-width: 26rem; margin-inline: auto; } }
 </style>

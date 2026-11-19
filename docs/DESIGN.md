@@ -11,7 +11,7 @@ Persönlichkeit, Kreativität und Innovation sind laut Fragebogen und Moritz' No
 - **Das warme Orange** aus dem Logo (`--accent`, `#f5a73c`) ist die Akzentfarbe für Texte und Icons: Kicker, Links, Kartenkicker, Icons. Marc, 31.10.: „Mir fehlt ein Schuss Farbe, den hatten wir durch die Eyebrow-Headings.“
 - **Space Grotesk** als Display-Schrift (mit durchgestrichener Null), Inter für Fließtext.
 - **Bewegung**: lebendige Wolke, Lichtlauf, Vorhang-Reveals, Laufband. Ruhig und magisch, nie hektisch.
-- **Der Himmel** (seit 15.11.2026 fest): ein Schwarm aus 300 Drohnen begleitet den Besuch, Punktübergänge zwischen den Sectionfarben, ein Lichtlauf über die H1. Regeln im Abschnitt „Himmel“.
+- **Der Himmel** (seit 15.11.2026 fest): ein Schwarm aus 300 Drohnen begleitet den Besuch, Punktübergänge zwischen den Sectionfarben, Verlaufsworte, die beim Hineinscrollen an Schriftstärke gewinnen. Regeln im Abschnitt „Himmel“.
 
 ## Grundlagen
 
@@ -25,7 +25,7 @@ Persönlichkeit, Kreativität und Innovation sind laut Fragebogen und Moritz' No
 **Schrift:**
 - Space Grotesk aus `public/fonts/space-grotesk-0.woff2` (Version 2.000, mit `zero`), auf der ganzen Seite `font-feature-settings: 'zero'`
 - Keine weiteren Ziffern-Varianten, kein Stilset, keine weiteren Webfonts (der Font-Wächter in `tests/network-allowlist.spec.ts` erlaubt genau Inter und Space Grotesk)
-- Kein Lichtlauf durch Schriftachsen. Der Lichtlauf der H1 (Abschnitt „Himmel“) arbeitet nur mit Helligkeit
+- Die Gewichtsachse (300–700) trägt genau einen Effekt: die Schriftstärke der Verlaufsworte (Abschnitt „Himmel“). Kein Schein (text-shadow, Glow) an Überschriften; der dunkle drop-shadow der Hero-H1 über Video ist Lesbarkeit, kein Schein
 - Pixelschriften sind geprüft und verworfen (Schrift-Labor, Runde 3, 13.11.2026: Geist Pixel und eine Ableitung mit weichen Ecken); Space Grotesk bleibt
 - Hervorhebung = Verlauf auf einzelnen Begriffen (`.grad`)
 
@@ -205,7 +205,7 @@ Verbindlich seit 15.11.2026 (Abschluss des Schrift-Labors). Konzept, Bühnenplan
 
 **Punktübergänge:** Jeder Wechsel der Section-Hintergrundfarbe auf jeder Seite bekommt eine Punktauflösung, nie eine Trennlinie: Die farbige Fläche läuft in Punkten (Größe wie beim Lichtpunkt-Hover, organisch verteilt) über ihre Kante aus (`public/media/uebergang*.svg`, Generator `tools/himmel/uebergang.mjs`, Regeln in `himmel.css`, Wächter `npm run check:uebergaenge`). Eine neue Fläche mit eigener Hintergrundfarbe kommt in die Liste in `himmel.css`. Folgen zwei gleichfarbige Flächen aufeinander, bleibt dort die Haarlinie.
 
-**Lichtlauf der H1:** nur die H1 jeder Seite, einmal beim Laden, unter einer Sekunde: zusätzliches Licht läuft Buchstabe für Buchstabe durch die Überschrift, die Schrift steht von Anfang an voll da. Nur Helligkeit, keine Schriftachse, kein Einblenden. Keine Auftritte an H2.
+**Schriftstärke der Verlaufsworte** (Runde 7, 19.11.2026; ersetzt den Lichtlauf der H1, Marc: „dieser Glow-Effekt ist einfach not nice at all“): Der markierte Begriff jeder Überschrift (`.grad`) steht zuerst in der dünnsten Stärke der Space Grotesk (300) und wird beim Hineinscrollen einmal in 1,1 s (ease-in-out) in die Stärke seiner Überschrift dicker; die H1 im ersten Bildschirm beginnt beim Laden. Kein Layoutsprung: Space Grotesk ist über die Achse fast gleich breit, den Rest gleicht ein mitlaufender Zeichenabstand aus. Ohne Bewegung (reduced motion, Pause) steht sofort die Endstärke. Kein Schein, kein Einblenden, keine Zerlegung in Buchstaben. Code: `src/scripts/himmel/staerke.ts`, `himmel.css`.
 
 ## Komponenten
 
@@ -300,7 +300,8 @@ Marc nach dem Umbau auf Moritz' Texte: „Why did you strip out the whole person
 - Drei Titelschnitte (voll/Kontur/Verlauf) als AI-Tell
 - Meilensteine als wachsender Schwarm („wirkt cheap“): Meilensteine als ruhige Timeline
 - Interaktive 3D-Demos
-- Lichtlauf durch Schriftachsen, Hubot Sans und Geologica
+- Hubot Sans und Geologica
+- Lichtlauf (Schein Buchstabe für Buchstabe) über die H1, Runde 7 entfernt: Marc mag den Glow nicht, und die Buchstaben-Spans machten in den Fallstudien jeden zweiten Buchstaben kurz zur Kontur
 - Pixelschriften (Geist Pixel, „FS Pixel Weich“), Auftritte an H2, Bedienleiste und URL-Schalter des Schrift-Labors
 - Musterschicht aus Punktlinien, Startfeld-Ecken und Wolken hinter Kästen (Schrift-Labor Runde 1: „Tapete“)
 - Hover-Lupe mit Drohnen
@@ -356,7 +357,7 @@ Bewusst global bleiben:
 - Header, Menü, Footer und Seitenanfang (`.page-top`): Teil des Layouts `Base.astro`, auf jeder Seite.
 - Gemeinsame Bausteine mehrerer Komponenten ohne eigenen Besitzer: Icon-Raster `.ig`/`.ic`, Auswahl-Pills `.chips`, `.native-select`, Reiter auf dem Handy `[data-mtabs]`, `.proof`/`.proof .quality` (LogoBar und LandingSite), Paketfarben.
 - Abschnitte, die noch als Sammlung in global.css stehen (Anlässe, Datenblatt, Projekte, Vergleich, Ablauf, Pakete, Fallstudien, Nachhaltigkeits-Scrollstory, Team, Zeitstrahl): Umzug je Komponente mit demselben Stilvergleich, nicht als Sammelumbau. Zeitstrahl `.ruler`/`.metro` zieht der Responsiv-Agent nach `ProcessList.astro`/`MetroLine.astro`.
-- Himmel (`himmel.css`): Schwarm-Ebene, Punktübergänge und Lichtlauf sind seitenweit. Der Platz für einzelne Stationen hängt an der Section-ID, weil die ID der Stationsvertrag in `schwarm.ts` ist (`plan()`, in `index.yaml` als „Vertrag mit dem Himmel-Agenten“ dokumentiert); ein zusätzliches Daten-Attribut würde dieselbe Station zweimal pflegen. `scripts/himmel-stationen.test.mjs` prüft, dass jede ID in `himmel.css` eine Station mit passender Bühne ist und in DE/EN/NL existiert.
+- Himmel (`himmel.css`): Schwarm-Ebene, Punktübergänge und die Schriftstärke der Verlaufsworte sind seitenweit. Der Platz für einzelne Stationen hängt an der Section-ID, weil die ID der Stationsvertrag in `schwarm.ts` ist (`plan()`, in `index.yaml` als „Vertrag mit dem Himmel-Agenten“ dokumentiert); ein zusätzliches Daten-Attribut würde dieselbe Station zweimal pflegen. `scripts/himmel-stationen.test.mjs` prüft, dass jede ID in `himmel.css` eine Station mit passender Bühne ist und in DE/EN/NL existiert.
 
 **Runde 17 (02.11.2026):** Die Vergleichstabelle Drohne/Feuerwerk/Laser zeigt ihre Einordnung („Ja“, „Leise“, „Grenze“) als farbiges Wort ohne Icon; Icons in Tabellen sind kein Muss und verwirrten hier. Jede Paketkarte (Vorschau, große Karte, Landing-Preiskarte) zeigt die Showzeit über `showtimeLine()` in `package-details.ts`. Das Extra heißt „Express-Show in unter zwei Wochen“.
 
@@ -395,7 +396,7 @@ Nur explizite `{{contact.email}}`, `{{contact.phone.label}}`, `{{contact.phone.i
 
 Anfrage und Herkunftsfrage (Danke-Seite) teilen einen Vertrag mit `/api/contact` (`functions/api/contact.ts`, Client `src/scripts/form-contract.ts`). Mit `Accept: application/json` antwortet der Endpoint immer JSON: `{ok:true,state:'sent'}` nur nach bestätigtem Versand (bzw. Honeypot), `{ok:true,state:'not-configured'}` ohne Versandkonfiguration, sonst `{ok:false,detail}`. Erfolg zeigen beide Formulare ausschließlich bei `sent`; Netz- und Formatfehler erscheinen als lokalisierter Ersatztext, nie als Browsermeldung.
 
-Die Danke-Seite ist frei aufrufbar und behauptet deshalb von sich aus keinen Versand: Sie zeigt den neutralen Satz `thanks.leadNeutral` und keine Schrittanzeige. Den Eingang (`text` der Seite, „Wir haben eure Anfrage erhalten“) und die Schrittanzeige zeigt sie nur, wenn das Anfrageformular nach einem bestätigten `sent` den Bezug `fs-anfrage-ref` in sessionStorage abgelegt hat; ein Inline-Skript entscheidet das vor dem ersten Bild. Ohne JavaScript leitet nur ein bestätigter Versand der Anfrage auf `/danke/` weiter (POST/Redirect/GET, die Seite bleibt neutral). Eine bestätigte Herkunftsantwort beantwortet der Endpoint ohne JavaScript selbst mit einer Bestätigungsseite; ein Sprungziel bestätigt nichts. Fehler und fehlende Konfiguration beantwortet der Endpoint mit einer lesbaren, lokalisierten Seite am Formularziel (Statuscode, Meldung, Weg zurück zum Formular, Kontaktwege). So bleibt die Zurück-Taste bei den Eingaben. Die Herkunftsfrage ist als Ganzes freiwillig, zum Senden braucht sie eine Auswahl (`required`, Gruppenfehler `#quelle-err`). Der Freitext „Wo genau?“ gehört nur zu „Andere“: sichtbar per CSS (`:has`), gesendet nur dann (Skript: `disabled`), und der Endpoint verwirft einen Rest neben einer festen Auswahl, statt die Antwort abzulehnen. Nachweis: `src/scripts/contact.test.mjs`, `scripts/inquiry.test.mjs`, `tests/forms-status.spec.ts`.
+Die Danke-Seite zeigt immer dasselbe, auch direkt aufgerufen (Marc, 19.11.2026: „im gleichen Stil wie in einem Formular, und dann mit Info absenden“): links Dank und Eingang (`text` der Seite) und Chopper als Drohnenformation, die die linke Spalte füllt; rechts die Schrittanzeige und die Herkunftsfrage in der Formular-Box mit „Antwort senden“. Die Antwort trägt den Bezug `fs-anfrage-ref` aus sessionStorage, wenn das Anfrageformular in dieser Sitzung einen abgelegt hat, sonst geht sie ohne Bezug (die Mail sagt das). Ohne JavaScript leitet ein bestätigter Versand der Anfrage per 303 auf `/danke/` der Sprache weiter (POST/Redirect/GET); der frühere signierte Link entfällt, weil es keinen eigenen Zustand „gesendet“ mehr gibt. Eine bestätigte Herkunftsantwort beantwortet der Endpoint ohne JavaScript selbst mit einer Bestätigungsseite. Fehler und fehlende Konfiguration beantwortet der Endpoint mit einer lesbaren, lokalisierten Seite am Formularziel (Statuscode, Meldung, Weg zurück zum Formular, Kontaktwege). So bleibt die Zurück-Taste bei den Eingaben. Die Herkunftsfrage ist als Ganzes freiwillig, zum Senden braucht sie eine Auswahl (`required`, Gruppenfehler `#quelle-err`). Der Freitext „Wo genau?“ gehört nur zu „Andere“: sichtbar per CSS (`:has`), gesendet nur dann (Skript: `disabled`), und der Endpoint verwirft einen Rest neben einer festen Auswahl, statt die Antwort abzulehnen. Nachweis: `src/scripts/contact.test.mjs`, `scripts/inquiry.test.mjs`, `tests/forms-status.spec.ts`.
 
 ## Showzeiten
 

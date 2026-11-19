@@ -100,12 +100,12 @@ for (const locale of ['en', 'nl'] as const) {
     const site = page.locator('#sicherheit.ls-site');
     await expect(site.locator('.st-tips > li')).toHaveCount(5);
     await expect(site.locator('.st-who')).toHaveCount(0);
-    await expect(site.locator('svg title')).toHaveText(t('landingsite.outdoorTitle'));
+    await expect(site.locator('svg[role="img"]')).toHaveAccessibleName(t('landingsite.outdoorTitle'));
     for (const route of ['drohnenshow-hochzeit', 'drohnenshow-indoor']) {
       await page.goto(`/${locale}/${route}/`);
       const map = page.locator('.ls-site').first();
       await expect(map.locator('.st-tips > li')).toHaveCount(5);
-      await expect(map.locator('svg title')).toHaveText(t(route === 'drohnenshow-indoor' ? 'landingsite.indoorTitle' : 'landingsite.outdoorTitle'));
+      await expect(map.locator('svg[role="img"]')).toHaveAccessibleName(t(route === 'drohnenshow-indoor' ? 'landingsite.indoorTitle' : 'landingsite.outdoorTitle'));
       // Die Nummern erscheinen erst nach der Eintrittsanimation der Karte.
       await map.locator('[data-st-map]').scrollIntoViewIfNeeded();
       const hotspot = map.locator('[data-hot]').first();

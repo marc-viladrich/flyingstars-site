@@ -1,8 +1,8 @@
-// Himmel: der Schwarm (schwarm.ts) und der Lichtlauf der H1 (lichtlauf.ts). Konzept: docs/himmel.md
-import { lichtlauf } from './lichtlauf';
+// Himmel: der Schwarm (schwarm.ts) und die Schriftstärke der Verlaufsworte (staerke.ts). Konzept: docs/himmel.md
+import { staerke } from './staerke';
 
-// Der Lichtlauf startet erst mit geladener Überschriftenschrift, sonst läuft das Licht über die Ersatzschrift
-(document.fonts?.ready ?? Promise.resolve()).then(lichtlauf);
+// Die Verlaufsworte messen ihren Ausgleich erst mit geladener Überschriftenschrift, sonst mit den Maßen der Ersatzschrift
+(document.fonts?.ready ?? Promise.resolve()).then(staerke);
 
 // Der Schwarm ist Zugabe, nicht erstes Bild (docs/himmel.md → Performance): Sein Code lädt erst, wenn das erste Bild steht,
 // also nach `load` und dem ersten Bild des Hero-Videos (spätestens 2,5 s nach `load`; Seiten ohne Video 1,5 s nach `load`),
@@ -26,3 +26,14 @@ const afterFirstView = () => {
 };
 addEventListener('scroll', start, { once: true, passive: true });
 if (document.readyState === 'complete') afterFirstView(); else addEventListener('load', afterFirstView, { once: true });
+
+// Punktwolke im Footer (footer-wolke.ts): Modul lädt erst, wenn der Footer näher als 600 px ist
+const sky = document.querySelector<HTMLCanvasElement>('canvas.footer-sky');
+if (sky && 'IntersectionObserver' in window) {
+  const near = new IntersectionObserver(([e]) => {
+    if (!e?.isIntersecting) return;
+    near.disconnect();
+    import('./footer-wolke').then(({ startFooterWolke }) => startFooterWolke(sky)).catch((err) => console.warn('Footer-Wolke nicht verfügbar:', err));
+  }, { rootMargin: '600px 0px' });
+  near.observe(sky.parentElement ?? sky);
+}

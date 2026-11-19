@@ -65,18 +65,18 @@ const factItems = await Promise.all(facts.map(async (fact) => {
        steht die normale Section-Überschrift mit Verlaufswort, enger an ihrem Bild. Ohne Bild ab breitem Desktop
        zweispaltig: Schlagzeile links, Einleitung und Link rechts unten bündig („weniger Whitespace, weniger Scrolling“). */}
   {staged ? null : lead
-    ? <SectionHead class="eco-head-std" kicker={kicker} headline={headline} id={headingId} level={H} />
+    ? <SectionHead class="eco-head-std" next="text" kicker={kicker} headline={headline} id={headingId} level={H} />
     : <SectionHead variant="display" class:list={['eco-head', { 'eco-split': split }]} titleClass="eco-title" revealTitle grouped={split} kicker={kicker} headline={plain(headline)} text={text} id={headingId} level={H}>
         <Fragment slot="title">{lines.map((line, i) => <span data-reveal style={`--i:${i}`} class:list={lineClass(line, i)}>{whole(line) ? plain(line) : accentParts(line).map((p) => p.g ? <span class="grad">{p.t}</span> : p.t)} </span>)}</Fragment>
         {cta && <p class="eco-more"><a class="link" href={localHref(cta.href)}>{cta.label} <span aria-hidden="true">→</span></a></p>}
       </SectionHead>}
   {/* Galerie (Über uns): Einleitung links schmal, Bilder von Festen groß daneben */}
-  {gallery && <Gallery set={gallery} class="eco-gallery"><div class="eco-lead-copy">
+  {gallery && <Gallery set={gallery} class="eco-gallery" after="text"><div class="eco-lead-copy">
     {text && text.split(/\n\s*\n/).map((para) => <p>{para.trim()}</p>)}
     {cta && <p class="eco-more"><a class="link" href={localHref(cta.href)}>{cta.label} <span aria-hidden="true">→</span></a></p>}
   </div></Gallery>}
   {staged && <div class="eco-staged">
-    <SectionHead class="eco-head-std eco-staged-head" kicker={kicker} headline={headline} id={headingId} level={H} />
+    <SectionHead class="eco-head-std eco-staged-head" next="text" kicker={kicker} headline={headline} id={headingId} level={H} />
     <div class="eco-lead-copy">
       {text && text.split(/\n\s*\n/).map((para) => <p>{para.trim()}</p>)}
       {cta && <p class="eco-more"><a class="link" href={localHref(cta.href)}>{cta.label} <span aria-hidden="true">→</span></a></p>}
@@ -134,7 +134,10 @@ const factItems = await Promise.all(facts.map(async (fact) => {
   /* Einzelwort im Verlauf bleibt in der Zeile (global: .eco-title span ist sonst block) */
   :global(.eco-title [data-reveal] > .grad) { display: inline; }
   .eco-lead { display: grid; gap: clamp(var(--space-7), 4vw, var(--space-14)); margin: 0 0 clamp(var(--space-10), 6vw, var(--space-20)); }
-  /* normale Section-Überschrift über Bild/Bühne/Galerie: näher am Bild als der Standardabstand der .sec-head */
+  /* normale Section-Überschrift über Bild/Bühne/Galerie: darunter steht die Einleitung, also Überschrift → Text
+     (Marc, Runde 7: „Der Abstand zwischen Heading und Bodycopy sollte einheitlich sein“; vorher --head-gap-content über
+     .sec-head). Bild, Bühne und Galerie stehen daneben, die Galerie holt ihren Inhaltsabstand selbst nach (after="text"). */
+  .eco-sec :global(.eco-head-std) { margin-bottom: var(--head-gap-text); }
   /* Scrollstory-Einstieg ab 1100 px zweispaltig: Schlagzeile links, Einleitung und Link als ein Block (SectionHead grouped)
      rechts, beide unten bündig; die Abstände im Block kommen aus den Kopfrollen */
   @media (--grid-expanded) {

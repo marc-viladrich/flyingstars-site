@@ -51,9 +51,11 @@ const itemOf = Object.fromEntries(items.map((item, i) => [item.zone, { ...item, 
     <figure {...sharedField("diagram")} class="st-fig">
       <div class:list={['st-map', `st-map-${variant}`]} data-st-map data-grid-zone={scene.gridZone}>
         <div class="st-stage">
-        <svg viewBox={scene.vb.join(' ')} role="img" aria-labelledby={`${id}-diagram-title ${id}-diagram-desc`}>
-          <title id={`${id}-diagram-title`}>{variant === 'outdoor' ? t('landingsite.outdoorTitle') : t('landingsite.indoorTitle')}</title>
-          <desc id={`${id}-diagram-desc`}>{factText(diagram.description,locale)} {t('landingsite.numberedList')} {factText(diagram.caption,locale)}</desc>
+        {/* Name und Beschreibung als verborgene Elemente statt <title>/<desc>: ein <title> im SVG zeigt der Browser beim
+             Hovern als Tooltip (Marc, Runde 7: „nervig“). aria-labelledby/-describedby lesen auch verborgene Elemente. */}
+        <span id={`${id}-diagram-title`} hidden>{variant === 'outdoor' ? t('landingsite.outdoorTitle') : t('landingsite.indoorTitle')}</span>
+        <span id={`${id}-diagram-desc`} hidden>{factText(diagram.description,locale)} {t('landingsite.numberedList')} {factText(diagram.caption,locale)}</span>
+        <svg viewBox={scene.vb.join(' ')} role="img" aria-labelledby={`${id}-diagram-title`} aria-describedby={`${id}-diagram-desc`}>
           {scene.layers.map((layer, li) => layer.key === 'drones'
             ? <g class="ly ly-drones" data-zone="drones" aria-hidden="true" style={`--from: 0px; --li: ${li}`}>{scene.drones.map((d) => <g class="dr" style={`--gx: ${d.g[0]}px; --gy: ${d.g[1]}px; --lx: ${d.l[0]}px; --ly: ${d.l[1]}px; --mx: ${d.m[0]}px; --my: ${d.m[1]}px; --c: ${d.c}; --k: ${d.k}`}><circle class="halo" r="5" /><circle class="core" r="2.3" /></g>)}</g>
             : <g class="ly" data-ly={layer.key} style={`--from: ${layer.from}px; --li: ${li}`} aria-hidden="true">

@@ -17,9 +17,9 @@ const H = index === 0 ? 'h1' : 'h2';
 const html = await marked.parse(contactText(body));
 ---
 {gallery ? <section class="section text-media has-gallery" id={anchor} aria-labelledby={id}>
-  {/* Galerie (Werbung #marketing): Kopf über Text und dominanter Spalte, die schmale Spalte steigt daneben auf */}
+  {/* Galerie (Werbung #marketing): Kopf über Text und Bildleiter; unter dem Kopf steht der Text (Überschrift → Text) */}
   <Gallery set={gallery}>
-    {headAbove && <SectionHead slot="head" kicker={kicker} headline={headline} id={id} level={H} class="tm-head" />}
+    {headAbove && <SectionHead slot="head" next="text" kicker={kicker} headline={headline} id={id} level={H} class="tm-head" />}
     <div class="prose">
       {!headAbove && <SectionHead variant="embedded" next="text" kicker={kicker} headline={headline} id={id} level={H} />}
       {editorBuild() && (Astro.props as any).__afe?.body ? <div {...field((Astro.props as any).__afe.body,editorFieldOptions)} set:html={html} /> : <Fragment set:html={html} />}
