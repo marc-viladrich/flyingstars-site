@@ -1,18 +1,20 @@
 // 3D-Fassungen zweier Hochzeitsmotive (Runde 7, docs/katalog-3d.md): anstoßende Gläser und verschlungene Eheringe.
 // Gleiche Methode wie die übrigen Fassungen: Maße aus der Katalogformation, Skelett statt Punktwolke, ein Teil bewegt
 // sich, der ganze Körper schwenkt.
-import { GOLD, WARM, DIAMOND, CYAN, mix, roll, pitch, glint, breathe, chase, sparkle } from '../../show-motion.js';
-import { revolve, tube, curves, spot, assemble, colour, ease, turn, posePart, poseLine, isPlus, TAU } from './kit.js';
+import { GOLD, WARM, DIAMOND, CYAN, mix, roll, pitch, glint, breathe, chase, sparkle, smooth } from '../../show-motion.js';
+import { revolve, tube, curves, spot, assemble, colour, turn, posePart, poseLine, isPlus, TAU } from './kit.js';
 
 // ---------------------------------------------------------------- Anstoßende Gläser ----------
 // Zwei Weingläser wie im Katalog, schräg zueinander, die Kelche berühren sich oben in der Mitte. Jedes Glas ist ein
 // Rotationskörper (Fuß, Stiel, Kelch, Rand), im eigenen Rahmen gebaut und schräg gestellt; darin der Wein als
-// Oberfläche, Perlen steigen auf. Die Gläser neigen sich zum Anstoßen zueinander, an der Berührstelle blitzt Licht.
+// Oberfläche, Perlen steigen auf. Die Gläser neigen sich zum Anstoßen zueinander und halten am Treffpunkt, dort blitzt
+// Licht.
 // Runde 9: 3D zeigt die beiden Gläser schlicht (Umriss, Fuß und Rand), sie stoßen an (Marc: „Anstoßen kann ruhig in 3D
 // rein“); 3D+ füllt sie mit Wein und Perlen, mehr Profillinien, und beim Anstoßen blitzt Licht an der Berührstelle.
 const GLASS = [[0.2, 0], [0.19, 0.03], [0.035, 0.07], [0.03, 0.5], [0.1, 0.56], [0.18, 0.64], [0.235, 0.77], [0.255, 0.9], [0.245, 1.04], [0.21, 1.17], [0.18, 1.27]];
 const GLASSES = [{ c: [-0.7, -0.92], r: -0.48, side: -1 }, { c: [0.56, -0.92], r: 0.2, side: 1 }];
 const TOUCH = [0.1, 0.5];
+const CLINK_TIME = 1.8; // Sekunden bis zum Treffpunkt
 export function anstossen(n, stufe) {
   const rich = isPlus(stufe, n), parts = [];
   for (const g of GLASSES) {
@@ -27,14 +29,16 @@ export function anstossen(n, stufe) {
   const pts = colour(shape, { wineL: GOLD, wineR: GOLD, pearlL: mix(GOLD, WARM, 0.5), pearlR: mix(GOLD, WARM, 0.5) }, (p) => mix(WARM, CYAN, 0.18));
   return { pts, live: (b, j, t, o) => {
     const tag = shape.tags[j], side = tag.endsWith('L') ? -1 : tag.endsWith('R') ? 1 : 0;
-    const clink = ease(t, 3.2) ** 2; // neigen sich zum Anstoßen und wieder zurück (in beiden Stufen)
+    // Anstoßen in beiden Stufen: eine monotone Neigung zueinander bis zum Treffpunkt, dann halten die Gläser ruhig (kein
+    // Hin und Zurück: das Zurückschwingen meldete der Finten-Wächter als Überschwingen, show-finte.test.mjs)
+    const clink = smooth(Math.max(0, t) / CLINK_TIME);
     // zueinander: in der Ruhelage ein Stück auseinander, auf dem Höhepunkt berühren sich die Kelche (bis Runde 9 lief die
     // Drehung mit falschem Vorzeichen, die Gläser neigten sich beim „Anstoßen“ voneinander weg)
     if (side) { const g = GLASSES[side < 0 ? 0 : 1]; roll(o, side * 0.11 * (clink - 0.5), g.c[0], g.c[1]); }
     if (!rich) { turn(o, t, 0.3, 0.3, 14, -0.05, 0); return; }
     if (tag.startsWith('pearl')) o[3] = chase(b[1], t, 0.25, 0.18, 0.4, 1.3);
     else if (tag.startsWith('wine')) o[3] = glint(b[0], t, 3.2, 0.4, -0.6, 0.6);
-    else o[3] = 1 + 0.9 * clink ** 3 * Math.exp(-(((b[0] - TOUCH[0]) ** 2 + (b[1] - TOUCH[1]) ** 2) / 0.04)); // Klirren: Licht an der Berührstelle
+    else { const flash = Math.exp(-(((t - CLINK_TIME) / 0.35) ** 2)); o[3] = 1 + 0.9 * flash * Math.exp(-(((b[0] - TOUCH[0]) ** 2 + (b[1] - TOUCH[1]) ** 2) / 0.04)); } // Klirren: Licht an der Berührstelle, wenn sie sich treffen
     turn(o, t, 0.3, 0.38, 13, -0.05, 0);
   } };
 }
