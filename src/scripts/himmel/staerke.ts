@@ -1,46 +1,86 @@
-// Schriftstärke der Verlaufsworte (docs/DESIGN.md → Himmel): Der markierte Begriff einer Überschrift (.grad aus Accent.astro)
-// steht zuerst in der dünnsten Stärke der variablen Space Grotesk (300) und wird beim Hineinscrollen einmal ruhig in die
-// Stärke seiner Überschrift dicker. Den dünnen Startzustand setzt himmel.css schon vor dem ersten Bild (html.reveal), dieses
-// Skript gibt nur den Auslöser. Ohne Bewegung (reduced motion, Pause) gilt sofort der Endzustand, ebenfalls über CSS.
-//
-// Kein Layoutsprung: Space Grotesk ist zwischen 300 und 700 fast gleich breit (Abweichung unter 0,06 em je Wort, gemessen
-// am Schriftschnitt). Den Rest gleicht ein Zeichenabstand aus, der beim Dickerwerden auf den Wert der Überschrift zurückgeht;
-// Start- und Endbreite sind damit gleich, und text-wrap: balance bricht nicht um.
+// Schriftstärke der Verlaufsworte (docs/DESIGN.md → Himmel; Runde 9): Der Begriff (.grad) steht dünn (300) und füllt sich, wenn
+// er über 58 % der Fensterhöhe steht, in einem Schwung zur Stärke der Überschrift. Jedes Wort steht in einer Hülle (.st-w) mit
+// unsichtbarer Kopie in Endstärke (::before, data-t), die allein die Breite bestimmt: kein Versatz, kein anderer Umbruch. Jedes
+// Wort malt den Verlauf selbst, am ganzen Begriff ausgerichtet (WebKit malt background-clip: text nicht in inline-blocks).
+// Begründungen und Maße: himmel.css; Wächter: scripts/staerke-glow.test.mjs. Im Editor-Build (data-afe) wird nichts umgebaut.
 
 const SEL = ':is(h1, h2, h3) .grad';
-const THIN = 300; // untere Grenze der Gewichtsachse in public/fonts/space-grotesk-0.woff2 (fonts.css: 300 700)
+const LATE = '0% 0% -42% 0%'; // auslösen, wenn das Wort über 58 % der Fensterhöhe steht
 
-let ctx: CanvasRenderingContext2D | null | undefined;
-const width = (text: string, weight: string, cs: CSSStyleDeclaration) => {
-  if (ctx === undefined) ctx = document.createElement('canvas').getContext('2d');
-  if (!ctx) return 0;
-  ctx.font = `${weight} ${cs.fontSize} ${cs.fontFamily}`;
-  return ctx.measureText(text).width;
-};
+function stack(el: HTMLElement): void {
+  if (el.classList.contains('st-bereit')) return;
+  const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+  const texts: Text[] = [];
+  for (let n = walker.nextNode(); n; n = walker.nextNode()) if (n.textContent) texts.push(n as Text);
+  for (const text of texts) {
+    const frag = document.createDocumentFragment();
+    // nur an umbrechbarem Leerraum teilen; geschützte Leerzeichen („Kein&nbsp;Müll.“) bleiben im Wort
+    for (const part of text.textContent!.split(/([ \t\n\r\f]+|\u00AD)/)) {
+      if (!part) continue;
+      if (/^([ \t\n\r\f]+|\u00AD)$/.test(part)) { frag.append(part); continue; }
+      const w = document.createElement('span'); w.className = 'st-w'; w.dataset.t = part;
+      const v = document.createElement('span'); v.className = 'st-v'; v.textContent = part;
+      w.append(v); frag.append(w);
+    }
+    text.replaceWith(frag);
+  }
+  // Satzzeichen direkt danach („Feuerwerk, …“) in die letzte Hülle, in Farbe und Stärke der Überschrift: nach einem
+  // inline-block bricht Chromium sonst vor dem Komma um
+  const next = el.nextSibling, last = [...el.querySelectorAll<HTMLElement>('.st-w')].pop();
+  const m = next?.nodeType === 3 && last && el.lastChild === last ? /^[,.;:!?)»“…]+/.exec(next.textContent ?? '') : null;
+  if (m && next && last) {
+    next.textContent = next.textContent!.slice(m[0].length);
+    const cs = getComputedStyle(el.parentElement ?? el);
+    const p = document.createElement('span'); p.className = 'st-p'; p.textContent = m[0];
+    p.style.fontWeight = cs.fontWeight; p.style.setProperty('-webkit-text-fill-color', cs.color); p.style.color = cs.color;
+    last.firstElementChild!.append(p); last.dataset.t += m[0];
+  }
+  el.classList.add('st-bereit');
+}
 
-// Zeichenabstand im dünnen Zustand, damit der Begriff dünn genauso breit ist wie in seiner Endstärke
-function compensate(el: HTMLElement): void {
-  const parent = el.parentElement; if (!parent) return;
-  const cs = getComputedStyle(parent);
-  let text = el.textContent ?? '';
-  if (cs.textTransform === 'uppercase') text = text.toUpperCase();
-  const n = Array.from(text).length; if (!n) return;
-  const delta = (width(text, cs.fontWeight, cs) - width(text, String(THIN), cs)) / n;
-  const base = parseFloat(cs.letterSpacing) || 0;
-  // in em der Überschrift (der Begriff hat dieselbe Schriftgröße)
-  el.style.setProperty('--st-ls0', `${((base + delta) / (parseFloat(cs.fontSize) || 1)).toFixed(4)}em`);
+const PAD = 0.3; // em, Malfläche des Worts über seine Hülle hinaus (himmel.css .grad .st-v)
+function verlauf(el: HTMLElement): void {
+  const frags = [...el.getClientRects()]; if (!frags.length) return;
+  const fs = parseFloat(getComputedStyle(el).fontSize) || 16;
+  // ohne hereingezogenes Satzzeichen (.st-p), wie vorher
+  const total = frags.reduce((n, q) => n + q.width, 0) - [...el.querySelectorAll('.st-p')].reduce((n, p) => n + p.getBoundingClientRect().width, 0);
+  for (const w of el.querySelectorAll<HTMLElement>('.st-w')) {
+    const q = w.getBoundingClientRect(), mid = q.top + q.height / 2;
+    let i = frags.findIndex((f) => mid >= f.top && mid <= f.bottom); if (i < 0) i = 0;
+    const offset = frags.slice(0, i).reduce((n, f) => n + f.width, 0) + (q.left - frags[i].left);
+    const v = w.firstElementChild as HTMLElement;
+    v.style.setProperty('--st-bw', `${(total / fs).toFixed(4)}em`);
+    v.style.setProperty('--st-bx', `${(PAD - offset / fs).toFixed(4)}em`);
+  }
+}
+
+const live = () => document.documentElement.classList.contains('reveal') && 'IntersectionObserver' in window;
+// Hüllen sofort beim Import (vor dem ersten Bild); staerke() startet nur die Auslöser
+const words = [...document.querySelectorAll<HTMLElement>(SEL)];
+for (const el of words) {
+  if (el.closest('[data-afe]') || !live()) el.classList.add('st-an');
+  else stack(el);
+}
+const stacked = words.filter((el) => el.classList.contains('st-bereit'));
+const ausrichten = () => { for (const el of stacked) verlauf(el); };
+ausrichten();
+if (stacked.length) {
+  (document.fonts?.ready ?? Promise.resolve()).then(ausrichten);
+  let raf = 0; addEventListener('resize', () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(ausrichten); }, { passive: true });
 }
 
 export function staerke(): void {
-  const root = document.documentElement;
-  const words = [...document.querySelectorAll<HTMLElement>(SEL)];
-  if (!words.length || !root.classList.contains('reveal') || !('IntersectionObserver' in window)) return;
-  for (const el of words) compensate(el);
-  const io = new IntersectionObserver((entries) => {
-    for (const e of entries) {
-      if (!e.isIntersecting) continue;
-      e.target.classList.add('st-an'); io.unobserve(e.target);
-    }
-  }, { rootMargin: '0px 0px -12% 0px' });
-  for (const el of words) io.observe(el);
+  const pending = new Set(words.filter((el) => !el.classList.contains('st-an')));
+  if (!pending.size) return;
+  const visible = new Set<Element>();
+  const fill = (el: Element) => { el.classList.add('st-an'); pending.delete(el as HTMLElement); late.unobserve(el); seen.unobserve(el); visible.delete(el); };
+  const late = new IntersectionObserver((entries) => { for (const e of entries) if (e.isIntersecting) fill(e.target); }, { rootMargin: LATE });
+  // Seitenende: was nie über 58 % kommt, füllt sich sichtbar am Ende
+  const atEnd = () => {
+    if (!pending.size || innerHeight + scrollY < document.documentElement.scrollHeight - 2) return;
+    for (const el of [...visible]) if (pending.has(el as HTMLElement)) fill(el);
+  };
+  const seen = new IntersectionObserver((entries) => { for (const e of entries) { if (e.isIntersecting) visible.add(e.target); else visible.delete(e.target); } atEnd(); });
+  for (const el of pending) { late.observe(el); seen.observe(el); }
+  addEventListener('scroll', atEnd, { passive: true });
 }
