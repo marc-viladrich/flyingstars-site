@@ -47,10 +47,11 @@ test('Motivformen haben genau die verlangte Punktzahl', () => {
   }
 });
 
-test('Jeder Anlass hat vier bis dreißig Motive (Runde 24: Katalog- und Showmotive), SPARK mindestens drei; Fassungen je Stufe; jede Fassung hat ihre Mindestzahl', () => {
+test('Jeder Anlass hat vier bis fünfzig Motive (Runde 24/10: Katalog-, Show- und Wahrzeichenmotive), SPARK mindestens drei; Fassungen je Stufe; jede Fassung hat ihre Mindestzahl', () => {
   assert.deepEqual(STEPS.map((s) => s.pkg), PACKAGE_ORDER);
   for (const occasion of OCCASIONS) {
-    assert.ok(occasion.motifs.length >= 4 && occasion.motifs.length <= 30, `${occasion.id}: ${occasion.motifs.length} Motive`);
+    // Runde 10: Stadtfest mit zehn Wahrzeichen und den ans Ende gestellten Motiven (Marc) hat gut 40; Obergrenze 50
+    assert.ok(occasion.motifs.length >= 4 && occasion.motifs.length <= 50, `${occasion.id}: ${occasion.motifs.length} Motive`);
     assert.ok(occasion.motifs.filter((m) => m.tiers.SPARK).length >= 3, `${occasion.id}: SPARK keeps at least three motifs`);
     for (const motif of occasion.motifs) {
       // SPARK may leave out a motif that its drones cannot draw; every motif has an ODYSSEY version, a package that has
