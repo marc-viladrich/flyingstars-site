@@ -5,9 +5,9 @@ import { money } from '../src/lib/price-core.mjs';
 test.use({reducedMotion:'reduce'});
 
 const labels = {
- de: {individual:'Eure 3D+-Show · ab 300 Drohnen', from:'ab', art:'Art der Show:'},
- en: {individual:'Your 3D+ show · from 300 drones', from:'from', art:'Type of show:'},
- nl: {individual:'Jullie 3D+-show · vanaf 300 drones', from:'vanaf', art:'Soort show:'},
+ de: {individual:'Eure 3D+ Show', from:'ab', art:'Art der Show:'},
+ en: {individual:'Your 3D+ show', from:'from', art:'Type of show:'},
+ nl: {individual:'Jullie 3D+ show', from:'vanaf', art:'Soort show:'},
 } as const;
 for (const locale of ['de', 'en', 'nl'] as const) {
  const prefix = locale === 'de' ? '' : `/${locale}`;

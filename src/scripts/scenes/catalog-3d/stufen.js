@@ -98,6 +98,18 @@ export const STUFE_EIGEN = {
   falter: ['3D+', 'Tier mit Flügelschlag'],
   lotus: ['3D+', 'zwei Blüten mit vielen Blättern (Marc 20.11.: 3D+ bestätigt)'],
   riesenrad: ['3D+', 'Szene: Rad mit Gondeln, Speichen, Gestell (Marc 20.11.: 3D+ bestätigt)'],
+  // Runde 10, Agent W (Wahrzeichen und Jahreszahl fürs Stadtfest, scenes/catalog-3d/wahrzeichen.js): die 3D-Fassung ist je
+  // schlicht (Stufe 3D), die aufwendigere spielt als ODYSSEY-Fassung in 3D+ (docs/katalog-wahrzeichen.md)
+  fernsehturm: ['3D', 'Rotationskörper mit Kugel, Licht läuft um die Kugel'],
+  rheinturm: ['3D', 'Rotationskörper mit Kanzel, die Lichtzeituhr leuchtet'],
+  brandenburgertor: ['3D', 'Säulenhalle als Körper, Licht gleitet'],
+  koelnerdom: ['3D', 'Fassade mit zwei Turmhelmen als Körper, Licht steigt'],
+  elbphilharmonie: ['3D', 'Sockel und Glasbau mit Wellenkrone, Licht gleitet'],
+  schwebebahn: ['3D', 'Gerüst und Wagen aus Grundkörpern, der Wagen steht (fährt erst in 3D+)'],
+  jahreszahl: ['3D', 'ein Zeichen mit kreisendem Lichtkranz'],
+  bremerschluessel: ['3D', 'ein flacher Gegenstand, dreht sich um den Schaft wie im Schloss'],
+  frankfurtskyline: ['3D', 'Silhouette mit Dächern in der Tiefe, Licht gleitet'],
+  siegessaeule: ['3D', 'Säule als Rotationskörper auf Sockelquadern, Gold glänzt'],
 };
 
 /** Katalogformationen, die schon im Katalog räumlich sind (kein Register-Eintrag, sie drehen sich als Formation). */

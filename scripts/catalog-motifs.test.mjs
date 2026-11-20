@@ -9,7 +9,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
 const catalog = JSON.parse(fs.readFileSync(new URL('../src/content/catalog-motifs.json', import.meta.url), 'utf8'));
-const { OCCASIONS, PACKAGE_ORDER } = await import('../src/content/show-configurator.js');
+const { OCCASIONS, PACKAGE_ORDER, STAGES, SPARK_AB } = await import('../src/content/show-configurator.js');
 const { variantFor } = await import('../src/scripts/scenes/catalog.js');
 const { DRONE_RANGES, DRONE_STEP, DRONES_MAX } = await import('../src/content/show-packages.ts');
 
@@ -31,7 +31,10 @@ test('Jede Katalogvariante liegt vor: Punktzahl wie angegeben, endlich, Einheits
   }
 });
 
-test('Katalogmotive im Konfigurator spielen ab ihrer gezählten Punktzahl (auf Zehner), nicht ab der Katalogbeschriftung', () => {
+// Runde 10 (Marc 20.11.2026): Schwellen auf den Stufen der Art (2D 100/150/200, 3D 200/250, 3D+ 300/400) statt auf jedem
+// Zehner; unter der gezählten Punktzahl nur flache Motive aus SPARK_AB (am Kontaktbogen geprüft, vollständig gebaut:
+// scripts/show-unlock-render.test.mjs)
+test('Katalogmotive im Konfigurator spielen ab ihrer gezählten Punktzahl auf der nächsten Stufe, nicht ab der Katalogbeschriftung', () => {
   let seen = 0;
   for (const o of OCCASIONS) for (const m of o.motifs) {
     if (!m.catalog) continue;
@@ -40,8 +43,9 @@ test('Katalogmotive im Konfigurator spielen ab ihrer gezählten Punktzahl (auf Z
     for (const pkg of PACKAGE_ORDER) {
       const tier = m.tiers[pkg];
       if (!tier?.build.startsWith('catalog:')) continue;
-      assert.ok(tier.minDrones >= min, `${o.id}/${m.id} ${pkg}: ab ${tier.minDrones}, braucht ${min}`);
-      assert.ok(tier.minDrones <= Math.max(min, DRONE_RANGES[pkg].min), `${o.id}/${m.id} ${pkg}: spielt zu spät (${tier.minDrones})`);
+      const need = pkg === 'SPARK' && SPARK_AB.has(m.catalog) ? SPARK_AB.get(m.catalog) : min;
+      assert.ok(tier.minDrones >= need, `${o.id}/${m.id} ${pkg}: ab ${tier.minDrones}, braucht ${need}`);
+      assert.ok(STAGES[pkg].includes(tier.minDrones), `${o.id}/${m.id} ${pkg}: ab ${tier.minDrones}, keine Stufe (${STAGES[pkg].join('/')})`);
     }
   }
   assert.ok(seen >= 30, `nur ${seen} Katalogmotive im Konfigurator`);

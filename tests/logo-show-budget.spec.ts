@@ -66,7 +66,7 @@ test('Cupra mit niedriger Dichte wird als 2D-Show mit 100 Drohnen übernommen', 
   await expect(page.locator('#cfg-scene')).toHaveText('Euer Logo', { timeout: 90000 });
   await expect.poll(async () => Number(await page.locator('#cfg-logo-n').textContent()), {timeout:90000}).toBeLessThan(200);
   await page.locator('#cfg-use-logo').click();
-  await expect(page.locator('#cfg-pkg')).toHaveText('Eure 2D-Show');
+  await expect(page.locator('#cfg-pkg')).toHaveText('Eure 2D Show');
   await expect(page.locator('#cfg-dronecount')).toHaveText('100');
   await expect(page.locator('#cfg-scene')).toHaveText('Euer Logo', {timeout:90000});
   await expect(page.locator('#cfg-field')).toHaveAttribute('data-points', '100');

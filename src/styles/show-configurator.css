@@ -213,7 +213,10 @@
        weicht aus (nav-away); die Bühne steht beim Sprung direkt unter der Kopfzeile statt unter weiteren 4 rem Leerraum (5,5 rem = scroll-padding-top in global.css) */
     .cfg { grid-template-columns: 1fr; padding-top: var(--space-3); scroll-margin-top: calc(var(--nav-h) - var(--space-3) - 5.5rem); gap: var(--space-5-5); }
     .cfg:not(.cfg-end-tight) { --cfg-end: 7.5rem; }
-    .cfg-stage { order: 0; top: 4rem; z-index: 5; height: 42svh; min-height: 17.5rem; margin: 0 calc(var(--cfg-gutter) * -1); border-radius: 0; border-left: 0; border-right: 0; transition: top var(--dur-standard) var(--ease-default); }
+    /* Runde 10 (Marc 20.11.2026: „der Konfigurator-Viewport ist zu klein“): die Bühne am Handy höher, 50 statt 42 % der
+       Sichthöhe (niedrige Handys 44 statt 36 %); --cfg-stage-h trägt die Höhe auch in den Abstand für angesteuerte Felder */
+    .cfg { --cfg-stage-h: max(50svh, 17.5rem); }
+    .cfg-stage { order: 0; top: 4rem; z-index: 5; height: var(--cfg-stage-h); min-height: 0; margin: 0 calc(var(--cfg-gutter) * -1); border-radius: 0; border-left: 0; border-right: 0; transition: top var(--dur-standard) var(--ease-default); }
     /* Runde 25: ist die Kopfzeile ausgewichen (nav-away), klebt die Bühne ganz oben; die Preisleiste weicht mit nach unten aus */
     :root.nav-away .cfg-stage { top: 0; }
     :root.nav-away .cfg.is-near .cfg-bar { transform: translateY(105%); }
@@ -231,14 +234,22 @@
     .cfg.is-near .cfg-bar { transform: none; visibility: visible; transition: transform var(--dur-standard) var(--ease-default); }
     .cfg-bar b { letter-spacing: 0.06em; margin-right: var(--space-1-5); }
     /* angesteuerte Felder (Fokus, Tastatur) bleiben zwischen der klebenden Bühne und der Preisleiste sichtbar */
-    .cfg-panel :is(input, select, button, .cfg-upload) { scroll-margin: calc(4rem + max(42svh, 17.5rem) + 1rem) 0 6rem; }
+    .cfg-panel :is(input, select, button, .cfg-upload) { scroll-margin: calc(4rem + var(--cfg-stage-h) + 1rem) 0 6rem; }
   }
   /* niedrige Handys (iPhone 13: 664 px Sichthöhe): Bühne und Abstände etwas knapper, damit Anlass, Paket und Preisleiste
      beim Sprung auf #konfigurator gemeinsam zu sehen sind (der Anlass „Euer Logo“ bringt eine dritte Chipreihe) */
   @media (--nav-collapsed) and (max-height: 45em) {
     .cfg { scroll-margin-top: calc(var(--nav-h) - var(--space-3) - 8.5rem); } /* der Kicker darf beim Sprung unter der Bühne liegen; die Paketknöpfe stehen über der Preisleiste */
-    .cfg-stage { height: 36svh; min-height: 14rem; }
+    .cfg { --cfg-stage-h: max(44svh, 14rem); }
     .cfg-panel { gap: var(--space-4); }
+  }
+  /* Runde 10 (Marc 20.11.2026: „die Leiste, wo man durch die Motive durchklicken kann, funktioniert on mobile gar nicht.
+     Vereinfachen, nur die zwei Pfeile“): auf schmalen Bildschirmen keine Spur, keine Lichtpunkte gesperrter Motive und kein
+     Hinweis dazu. Die Leiste bleibt so breit wie vorher und wird nur leerer: die unsichtbare Spur hält die Pfeile an ihren
+     Plätzen (‹ links neben der Pause, › vor dem Tempo). */
+  @media (--compact) {
+    .cfg-player .cfg-track { visibility: hidden; pointer-events: none; }
+    .cfg-player .cfg-locks, .cfg-player .cfg-tip { display: none; }
   }
   /* Handy quer (844 × 390): über der Bedienung bliebe zwischen klebender Bühne und Preisleiste kein Platz. Bedienung und
      Bühne stehen nebeneinander wie am Desktop; die Bühne klebt rechts zwischen Kopfzeile und Preisleiste, die Bedienung

@@ -2254,6 +2254,11 @@
     "en": "A snowflake becomes a tree of lights, a star appears",
     "nl": "Een sneeuwvlok wordt een lichtboom, een ster verschijnt"
   },
+  "showConfigurator.aSnowflakeBecomesATreeOfLightsItsStarGrowsBig": {
+    "de": "Aus einer Schneeflocke wird ein Lichterbaum, sein Stern wächst zum großen Stern",
+    "en": "A snowflake becomes a tree of lights, its star grows into a great star",
+    "nl": "Een sneeuwvlok wordt een lichtboom, zijn ster groeit uit tot een grote ster"
+  },
   "showConfigurator.fireworks": {
     "de": "Feuerwerk",
     "en": "Fireworks",
@@ -3044,6 +3049,11 @@
     "en": "…the tree turns, the lights change colour",
     "nl": "…de boom draait, de lichtjes veranderen van kleur"
   },
+  "winter.theStarOnTheTopGrowsIntoAGreatStar": {
+    "de": "…sein Stern wächst zum großen Stern, die Lichter fließen hinein",
+    "en": "…its star grows into a great star, the lights flow into it",
+    "nl": "…zijn ster groeit uit tot een grote ster, de lichtjes stromen erin"
+  },
   "language.choose": {
     "de": "Sprache wählen",
     "en": "Choose language",
@@ -3125,14 +3135,14 @@
     "nl": "Voorbeeldbeelden: {list}"
   },
   "configurator.newMotif": {
-    "de": "Neues Motiv freigeschaltet: {label}",
-    "en": "New motif unlocked: {label}",
-    "nl": "Nieuw beeld beschikbaar: {label}"
+    "de": "1 neues Motiv freigeschaltet",
+    "en": "1 new motif unlocked",
+    "nl": "1 nieuw beeld beschikbaar"
   },
   "configurator.newMotifs": {
-    "de": "{count} neue Motive: {list}",
-    "en": "{count} new motifs: {list}",
-    "nl": "{count} nieuwe beelden: {list}"
+    "de": "{count} neue Motive freigeschaltet",
+    "en": "{count} new motifs unlocked",
+    "nl": "{count} nieuwe beelden beschikbaar"
   },
   "configurator.captionStyle": {
     "de": "{caption}, in {style}",
@@ -3805,24 +3815,19 @@
     "nl": "Stel jullie show *zelf* samen"
   },
   "preise.yourShow.2d": {
-    "de": "Eure 2D-Show",
+    "de": "Eure 2D Show",
     "en": "Your 2D show",
-    "nl": "Jullie 2D-show"
+    "nl": "Jullie 2D show"
   },
   "preise.yourShow.3d": {
-    "de": "Eure 3D-Show",
+    "de": "Eure 3D Show",
     "en": "Your 3D show",
-    "nl": "Jullie 3D-show"
+    "nl": "Jullie 3D show"
   },
   "preise.yourShow.story": {
-    "de": "Eure 3D+-Show",
+    "de": "Eure 3D+ Show",
     "en": "Your 3D+ show",
-    "nl": "Jullie 3D+-show"
-  },
-  "preise.yourShowFrom": {
-    "de": "{name} · ab {n} Drohnen",
-    "en": "{name} · from {n} drones",
-    "nl": "{name} · vanaf {n} drones"
+    "nl": "Jullie 3D+ show"
   },
   "preise.fixedPrice": {
     "de": "Festes Paket · Festpreis",
@@ -3990,19 +3995,19 @@
     "nl": "vanaf {n}"
   },
   "preise.artName.2d": {
-    "de": "2D-Show",
+    "de": "2D Show",
     "en": "2D show",
-    "nl": "2D-show"
+    "nl": "2D show"
   },
   "preise.artName.3d": {
-    "de": "3D-Show",
+    "de": "3D Show",
     "en": "3D show",
-    "nl": "3D-show"
+    "nl": "3D show"
   },
   "preise.artName.story": {
-    "de": "3D+-Show",
+    "de": "3D+ Show",
     "en": "3D+ show",
-    "nl": "3D+-show"
+    "nl": "3D+ show"
   },
   "preise.artItem.2d.1": {
     "de": "Initialen, Logos oder Stadtwappen",
@@ -4513,5 +4518,260 @@
     "de": "Ihr erreicht uns auch direkt:",
     "en": "You can also reach us directly:",
     "nl": "Jullie kunnen ons ook rechtstreeks bereiken:"
+  },
+  "wahrzeichen.lightDrawsTheTvTower": {
+    "de": "Licht zeichnet den Fernsehturm",
+    "en": "Light draws the TV tower",
+    "nl": "Licht tekent de tv-toren"
+  },
+  "wahrzeichen.lightDrawsTheRheinturm": {
+    "de": "Licht zeichnet den Rheinturm",
+    "en": "Light draws the Rheinturm",
+    "nl": "Licht tekent de Rheinturm"
+  },
+  "wahrzeichen.lightDrawsTheGate": {
+    "de": "Licht zeichnet das Brandenburger Tor",
+    "en": "Light draws the Brandenburg Gate",
+    "nl": "Licht tekent de Brandenburger Poort"
+  },
+  "wahrzeichen.lightDrawsTheCathedral": {
+    "de": "Licht zeichnet den Kölner Dom",
+    "en": "Light draws Cologne Cathedral",
+    "nl": "Licht tekent de Dom van Keulen"
+  },
+  "wahrzeichen.lightDrawsTheElbphilharmonie": {
+    "de": "Licht zeichnet die Elbphilharmonie",
+    "en": "Light draws the Elbphilharmonie",
+    "nl": "Licht tekent de Elbphilharmonie"
+  },
+  "wahrzeichen.lightDrawsTheSchwebebahn": {
+    "de": "Licht zeichnet die Schwebebahn",
+    "en": "Light draws the Wuppertal suspension railway",
+    "nl": "Licht tekent de zweefspoorbaan van Wuppertal"
+  },
+  "wahrzeichen.lightWritesYourNumber": {
+    "de": "Licht schreibt eure Zahl",
+    "en": "Light writes your number",
+    "nl": "Licht schrijft jullie getal"
+  },
+  "wahrzeichen.years": {
+    "de": "JAHRE",
+    "en": "YEARS",
+    "nl": "JAAR"
+  },
+  "showConfigurator.wahrzeichen.fernsehturm": {
+    "de": "Fernsehturm",
+    "en": "TV tower",
+    "nl": "Tv-toren"
+  },
+  "showConfigurator.wahrzeichen.fernsehturm2d": {
+    "de": "Der Berliner Fernsehturm mit Warnlicht",
+    "en": "The Berlin TV tower with its warning light",
+    "nl": "De Berlijnse tv-toren met waarschuwingslicht"
+  },
+  "showConfigurator.wahrzeichen.fernsehturm3d": {
+    "de": "Der Fernsehturm in 3D, Licht läuft um die Kugel",
+    "en": "The TV tower in 3D, light runs around the sphere",
+    "nl": "De tv-toren in 3D, licht loopt rond de bol"
+  },
+  "showConfigurator.wahrzeichen.fernsehturmPlus": {
+    "de": "Die Kugel des Fernsehturms dreht sich, das Warnlicht blinkt",
+    "en": "The sphere of the TV tower turns, the warning light blinks",
+    "nl": "De bol van de tv-toren draait, het waarschuwingslicht knippert"
+  },
+  "showConfigurator.wahrzeichen.rheinturm": {
+    "de": "Rheinturm",
+    "en": "Rheinturm",
+    "nl": "Rheinturm"
+  },
+  "showConfigurator.wahrzeichen.rheinturm2d": {
+    "de": "Der Düsseldorfer Rheinturm mit seiner Lichtzeituhr",
+    "en": "Düsseldorf’s Rheinturm with its light clock",
+    "nl": "De Rheinturm van Düsseldorf met zijn lichtklok"
+  },
+  "showConfigurator.wahrzeichen.rheinturm3d": {
+    "de": "Der Rheinturm in 3D, die Lichtzeituhr leuchtet",
+    "en": "The Rheinturm in 3D, the light clock glows",
+    "nl": "De Rheinturm in 3D, de lichtklok brandt"
+  },
+  "showConfigurator.wahrzeichen.rheinturmPlus": {
+    "de": "Die Lichtzeituhr am Rheinturm zählt die Sekunden",
+    "en": "The light clock on the Rheinturm counts the seconds",
+    "nl": "De lichtklok aan de Rheinturm telt de seconden"
+  },
+  "showConfigurator.wahrzeichen.tor": {
+    "de": "Brandenburger Tor",
+    "en": "Brandenburg Gate",
+    "nl": "Brandenburger Poort"
+  },
+  "showConfigurator.wahrzeichen.tor2d": {
+    "de": "Das Brandenburger Tor mit Quadriga",
+    "en": "The Brandenburg Gate with its quadriga",
+    "nl": "De Brandenburger Poort met quadriga"
+  },
+  "showConfigurator.wahrzeichen.tor3d": {
+    "de": "Das Tor in 3D, Licht gleitet über die Säulen",
+    "en": "The gate in 3D, light glides over the columns",
+    "nl": "De poort in 3D, licht glijdt over de zuilen"
+  },
+  "showConfigurator.wahrzeichen.torPlus": {
+    "de": "Licht fährt durch die Durchgänge des Tors",
+    "en": "Light travels through the passages of the gate",
+    "nl": "Licht trekt door de doorgangen van de poort"
+  },
+  "showConfigurator.wahrzeichen.dom": {
+    "de": "Kölner Dom",
+    "en": "Cologne Cathedral",
+    "nl": "Dom van Keulen"
+  },
+  "showConfigurator.wahrzeichen.dom2d": {
+    "de": "Die Westfassade des Kölner Doms",
+    "en": "The west front of Cologne Cathedral",
+    "nl": "De westgevel van de Dom van Keulen"
+  },
+  "showConfigurator.wahrzeichen.dom3d": {
+    "de": "Der Dom in 3D, Licht steigt an den Türmen hinauf",
+    "en": "The cathedral in 3D, light climbs the towers",
+    "nl": "De dom in 3D, licht klimt langs de torens omhoog"
+  },
+  "showConfigurator.wahrzeichen.domPlus": {
+    "de": "Licht steigt in Wellen bis zu den Kreuzblumen",
+    "en": "Light rises in waves up to the finials",
+    "nl": "Licht stijgt in golven tot aan de kruisbloemen"
+  },
+  "showConfigurator.wahrzeichen.elphi": {
+    "de": "Elbphilharmonie",
+    "en": "Elbphilharmonie",
+    "nl": "Elbphilharmonie"
+  },
+  "showConfigurator.wahrzeichen.elphi2d": {
+    "de": "Die Elbphilharmonie mit ihrer Wellenkrone",
+    "en": "The Elbphilharmonie with its crown of waves",
+    "nl": "De Elbphilharmonie met haar golvende kroon"
+  },
+  "showConfigurator.wahrzeichen.elphi3d": {
+    "de": "Die Elbphilharmonie in 3D, Licht gleitet über das Glas",
+    "en": "The Elbphilharmonie in 3D, light glides over the glass",
+    "nl": "De Elbphilharmonie in 3D, licht glijdt over het glas"
+  },
+  "showConfigurator.wahrzeichen.elphiPlus": {
+    "de": "Licht wogt über die Krone, davor glitzert die Elbe",
+    "en": "Light ripples over the crown, the Elbe glitters in front",
+    "nl": "Licht golft over de kroon, ervoor glinstert de Elbe"
+  },
+  "showConfigurator.wahrzeichen.schwebebahn": {
+    "de": "Schwebebahn",
+    "en": "Suspension railway",
+    "nl": "Zweefspoorbaan"
+  },
+  "showConfigurator.wahrzeichen.schwebebahn2d": {
+    "de": "Die Wuppertaler Schwebebahn unter ihrem Gerüst",
+    "en": "The Wuppertal suspension railway under its frame",
+    "nl": "De zweefspoorbaan van Wuppertal onder haar stellage"
+  },
+  "showConfigurator.wahrzeichen.schwebebahn3d": {
+    "de": "Die Schwebebahn in 3D, Licht läuft über die Fenster",
+    "en": "The suspension railway in 3D, light runs over the windows",
+    "nl": "De zweefspoorbaan in 3D, licht loopt over de ramen"
+  },
+  "showConfigurator.wahrzeichen.schwebebahnPlus": {
+    "de": "Die Schwebebahn fährt ein und hält",
+    "en": "The suspension railway pulls in and stops",
+    "nl": "De zweefspoorbaan rijdt binnen en stopt"
+  },
+  "showConfigurator.wahrzeichen.jahre": {
+    "de": "Jahreszahl",
+    "en": "Anniversary number",
+    "nl": "Jubileumgetal"
+  },
+  "showConfigurator.wahrzeichen.jahre2d": {
+    "de": "Eure Zahl, darunter JAHRE",
+    "en": "Your number, with YEARS below",
+    "nl": "Jullie getal, met JAAR eronder"
+  },
+  "showConfigurator.wahrzeichen.jahre3d": {
+    "de": "Eure Zahl in 3D, ein Lichtkranz umkreist sie",
+    "en": "Your number in 3D, circled by a ring of light",
+    "nl": "Jullie getal in 3D, omcirkeld door een lichtkrans"
+  },
+  "showConfigurator.wahrzeichen.jahrePlus": {
+    "de": "Licht schreibt eure Zahl, zwei Lichtkränze umkreisen sie",
+    "en": "Light writes your number, two rings of light circle it",
+    "nl": "Licht schrijft jullie getal, twee lichtkransen omcirkelen het"
+  },
+  "wahrzeichen.lightDrawsTheKey": {
+    "de": "Licht zeichnet den Bremer Schlüssel",
+    "en": "Light draws the Bremen key",
+    "nl": "Licht tekent de sleutel van Bremen"
+  },
+  "wahrzeichen.lightDrawsTheSkyline": {
+    "de": "Licht zeichnet die Frankfurter Skyline",
+    "en": "Light draws the Frankfurt skyline",
+    "nl": "Licht tekent de skyline van Frankfurt"
+  },
+  "wahrzeichen.lightDrawsTheVictoryColumn": {
+    "de": "Licht zeichnet die Siegessäule",
+    "en": "Light draws the Victory Column",
+    "nl": "Licht tekent de Zegezuil"
+  },
+  "showConfigurator.wahrzeichen.schluessel": {
+    "de": "Bremer Schlüssel",
+    "en": "Bremen key",
+    "nl": "Sleutel van Bremen"
+  },
+  "showConfigurator.wahrzeichen.schluessel2d": {
+    "de": "Der Bremer Schlüssel mit Bart und Reide",
+    "en": "The Bremen key with its bit and bow",
+    "nl": "De sleutel van Bremen met baard en greep"
+  },
+  "showConfigurator.wahrzeichen.schluessel3d": {
+    "de": "Der Bremer Schlüssel dreht sich wie im Schloss",
+    "en": "The Bremen key turns as if in a lock",
+    "nl": "De sleutel van Bremen draait als in een slot"
+  },
+  "showConfigurator.wahrzeichen.schluesselPlus": {
+    "de": "Licht zeichnet den Schlüssel, dann dreht er sich weit",
+    "en": "Light draws the key, then it turns wide",
+    "nl": "Licht tekent de sleutel, dan draait hij ver"
+  },
+  "showConfigurator.wahrzeichen.skyline": {
+    "de": "Frankfurter Skyline",
+    "en": "Frankfurt skyline",
+    "nl": "Skyline van Frankfurt"
+  },
+  "showConfigurator.wahrzeichen.skyline2d": {
+    "de": "Die Frankfurter Skyline mit Messeturm und Commerzbank",
+    "en": "The Frankfurt skyline with the Messeturm and Commerzbank Tower",
+    "nl": "De skyline van Frankfurt met Messeturm en Commerzbank"
+  },
+  "showConfigurator.wahrzeichen.skyline3d": {
+    "de": "Die Skyline in 3D, die Türme in der Tiefe gestaffelt",
+    "en": "The skyline in 3D, the towers staggered in depth",
+    "nl": "De skyline in 3D, de torens in de diepte gestaffeld"
+  },
+  "showConfigurator.wahrzeichen.skylinePlus": {
+    "de": "Licht steigt Etage für Etage, die Antennen blinken",
+    "en": "Light rises floor by floor, the antennas blink",
+    "nl": "Licht stijgt verdieping na verdieping, de antennes knipperen"
+  },
+  "showConfigurator.wahrzeichen.siegessaeule": {
+    "de": "Siegessäule",
+    "en": "Victory Column",
+    "nl": "Zegezuil"
+  },
+  "showConfigurator.wahrzeichen.siegessaeule2d": {
+    "de": "Die Siegessäule mit der goldenen Viktoria",
+    "en": "The Victory Column with its golden Victoria",
+    "nl": "De Zegezuil met de gouden Victoria"
+  },
+  "showConfigurator.wahrzeichen.siegessaeule3d": {
+    "de": "Die Siegessäule in 3D, Gold glänzt an den Ringen",
+    "en": "The Victory Column in 3D, gold gleams on the rings",
+    "nl": "De Zegezuil in 3D, goud glanst aan de ringen"
+  },
+  "showConfigurator.wahrzeichen.siegessaeulePlus": {
+    "de": "Licht steigt die Säule hinauf bis zur Viktoria",
+    "en": "Light climbs the column up to Victoria",
+    "nl": "Licht klimt langs de zuil omhoog tot Victoria"
   }
 }

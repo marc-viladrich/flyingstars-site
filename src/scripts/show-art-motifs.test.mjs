@@ -22,7 +22,9 @@ test('3D zeigt nur Motive der Stufe 3D mit echter 3D-Fassung', () => {
 test('3D+ zeigt alle eingestuften Motive und kein Katalogmotiv ohne 3D-Fassung', () => {
   for (const o of OCCASIONS) for (const m of o.motifs) {
     const stufe = stufeOf(m);
-    if (stufe) assert.ok(m.tiers.ODYSSEY, `${o.id} ${m.id}: eingestuft (${stufe}), fehlt in 3D+`);
+    // Runde 10: ein Motiv darf in 3D+ fehlen, wenn eine 3D+-Story desselben Anlasses sein Bild schon zeigt (coveredBy)
+    const covered = m.coveredBy && o.motifs.some((x) => x.id === m.coveredBy && x.tiers.ODYSSEY);
+    if (stufe && !covered) assert.ok(m.tiers.ODYSSEY, `${o.id} ${m.id}: eingestuft (${stufe}), fehlt in 3D+`);
     if (catalogMotif(m) && !has3d(m)) assert.ok(!m.tiers.HORIZON && !m.tiers.ODYSSEY, `${o.id} ${m.id}: ohne 3D-Fassung in 3D/3D+`);
   }
 });

@@ -87,16 +87,18 @@ test('Freischalten: auch ein Paketwechsel meldet alle neuen Motive, in der Reihe
     }
   }
   // Hochzeit nach der Einstufung 3D/3D+ (Runde 9, Marc): 3D zeigt nur einfache 3D-Fassungen, 3D+ die komplexen samt
-  // eigener Szene vor ihrer Geschichte. Der Wechsel 3D → 3D+ schaltet deshalb neue Motive frei; der Antrag ab 450.
+  // eigener Szene vor ihrer Geschichte. Runde 10 (Marc 20.11.2026): Freischaltungen nur auf Stufen und je Stufe mindestens
+  // zwei Motive (2D 150, 3D 250 mit zwei Zugaben, 3D+ 400); der Antrag (Ring auf Hand) spielt wieder ab dem Einstieg in 3D+ (300).
   const wedding = OCCASIONS.find((o) => o.id === 'hochzeit').motifs, ids = (list) => list.map((m) => m.id);
-  assert.deepEqual(ids(freshMotifs(wedding, { pkg: 'SPARK', drones: 140 }, { pkg: 'SPARK', drones: 150 })), ['amor', 'lotusblume']);
-  assert.deepEqual(ids(freshMotifs(wedding, { pkg: 'SPARK', drones: 100 }, { pkg: 'HORIZON', drones: 200 })), ['torte', 'unendlich']);
-  assert.deepEqual(ids(freshMotifs(wedding, { pkg: 'HORIZON', drones: 240 }, { pkg: 'HORIZON', drones: 250 })), []);
-  assert.deepEqual(ids(freshMotifs(wedding, { pkg: 'HORIZON', drones: 290 }, { pkg: 'ODYSSEY', drones: 300 })), ['herz-szene', 'herz', 'taube', 'lotusblume', 'falter-szene', 'falter', 'lotus-szene', 'lotus']);
-  assert.deepEqual(ids(freshMotifs(wedding, { pkg: 'HORIZON', drones: 200 }, { pkg: 'ODYSSEY', drones: 600 })), ['herz-szene', 'herz', 'taube', 'lotusblume', 'falter-szene', 'falter', 'lotus-szene', 'lotus', 'antrag']);
-  assert.deepEqual(ids(freshMotifs(wedding, { pkg: 'ODYSSEY', drones: 440 }, { pkg: 'ODYSSEY', drones: 450 })), ['antrag']);
-  assert.equal(unlockNote([{ label: 'Ring' }]), 'Neues Motiv freigeschaltet: Ring');
-  assert.equal(unlockNote([{ label: 'Ring' }, { label: 'Lotusblüten' }, { label: 'Herz' }]), '3 neue Motive: Ring, Lotusblüten, Herz');
+  assert.deepEqual(ids(freshMotifs(wedding, { pkg: 'SPARK', drones: 140 }, { pkg: 'SPARK', drones: 150 })), ['amor', 'blueten', 'lotusblume', 'glocke', 'sektflasche', 'falter']);
+  assert.deepEqual(ids(freshMotifs(wedding, { pkg: 'SPARK', drones: 100 }, { pkg: 'HORIZON', drones: 200 })), []);
+  assert.deepEqual(ids(freshMotifs(wedding, { pkg: 'HORIZON', drones: 240 }, { pkg: 'HORIZON', drones: 250 })), ['glocke', 'sektflasche']); // Zugaben (Marc: die 3D-Körper bleiben bei 200)
+  assert.deepEqual(ids(freshMotifs(wedding, { pkg: 'HORIZON', drones: 290 }, { pkg: 'ODYSSEY', drones: 300 })), ['antrag', 'herz-szene', 'herz', 'taube', 'lotusblume']);
+  assert.deepEqual(ids(freshMotifs(wedding, { pkg: 'HORIZON', drones: 200 }, { pkg: 'ODYSSEY', drones: 600 })), ['antrag', 'herz-szene', 'herz', 'taube', 'lotusblume', 'glocke', 'sektflasche', 'falter-szene', 'falter', 'lotus-szene', 'lotus']);
+  assert.deepEqual(ids(freshMotifs(wedding, { pkg: 'ODYSSEY', drones: 300 }, { pkg: 'ODYSSEY', drones: 400 })), ['falter-szene', 'falter', 'lotus-szene', 'lotus']);
+  // Runde 10: nur die Zahl, keine Namen
+  assert.equal(unlockNote([{ label: 'Ring' }]), '1 neues Motiv freigeschaltet');
+  assert.equal(unlockNote([{ label: 'Ring' }, { label: 'Lotusblüten' }, { label: 'Herz' }]), '3 neue Motive freigeschaltet');
 });
 
 test('Mindestzahl: minDrones vor min, der Hinweis an der Spur nie unter dem Paketbereich', () => {

@@ -40,16 +40,28 @@ const inFinder = (r, c) => FINDERS.some(([fr, fc]) => Math.abs(r - fr) <= 4 && M
 /** The code's dark modules, module size m, centred on (cx, cy); row 0 on top, in reading order (row by row). */
 const qrCode = (m, cx = 0, cy = 0) => QR_DARK.map(([r, c]) => [cx + (c - 10) * m, cy + (10 - r) * m, 0]);
 
-/** The code with 100 drones: the three finder squares, a few real modules and nothing else (no real code fits). */
+/**
+ * The code with few drones (2D). Runde 10 (Marc 20.11.2026: „eine reduzierte Variante des QR-Codes … die Liniendichte
+ * reduzieren“; Nachrunde: das Erkennungsmerkmal sind die drei Ankerquadrate): the three finder squares carry the picture
+ * and get most of the drones. Every finder is its complete ring of 24 modules (even spacing, one module apart) with a
+ * filled 3 × 3 core, or one centre light while that would leave fewer than QR_MIN_DATA data modules (100–110 drones).
+ * The data modules in between are an even subset of the real ones and may be sparse. The gold scanner corners only come
+ * from 150 drones on (3 per corner, more above 210, when the whole real code of 198 modules fits).
+ */
+const QR_RING = [], QR_CORE = [];
+for (let dr = -3; dr <= 3; dr++) for (let dc = -3; dc <= 3; dc++) {
+  const d = Math.max(Math.abs(dr), Math.abs(dc));
+  if (d === 3) QR_RING.push([dr, dc]); else if (d <= 1) QR_CORE.push([dr, dc]);
+}
+const QR_DATA = QR_DARK.filter(([r, c]) => !inFinder(r, c));
+const QR_MIN_DATA = 15, QR_FRAME_FROM = 150;
+/** Drones of the scanner frame for n drones: none below QR_FRAME_FROM, then 12, and what the whole code leaves over. */
+const qrFrame = (n) => (n < QR_FRAME_FROM ? 0 : Math.max(12, n - FINDERS.length * (QR_RING.length + QR_CORE.length) - QR_DATA.length));
 function qrSketch(n, m) {
-  const finder = ([fr, fc]) => {
-    const cx = (fc - 10) * m, cy = (10 - fr) * m, s = 3 * m, sq = [[-s, s], [s, s], [s, -s], [-s, -s]], out = [];
-    for (let k = 0; k < 16; k++) { const a = sq[k >> 2], b = sq[((k >> 2) + 1) % 4], u = (k % 4) / 4; out.push([cx + a[0] + (b[0] - a[0]) * u, cy + a[1] + (b[1] - a[1]) * u, 0]); }
-    for (const [dx, dy] of [[0, 0], [-1, 1], [1, 1], [1, -1], [-1, -1]]) out.push([cx + dx * m, cy + dy * m, 0]); // the solid core
-    return out;
-  };
-  const finders = FINDERS.flatMap(finder);
-  const data = evenSubset(QR_DARK.filter(([r, c]) => !inFinder(r, c)).map(([r, c]) => [(c - 10) * m, (10 - r) * m, 0]), n - finders.length);
+  const full = n - FINDERS.length * (QR_RING.length + QR_CORE.length) >= QR_MIN_DATA;
+  const cells = [...QR_RING, ...(full ? QR_CORE : [[0, 0]])];
+  const finders = FINDERS.flatMap(([fr, fc]) => cells.map(([dr, dc]) => [(fc + dc - 10) * m, (10 - fr - dr) * m, 0]));
+  const data = evenSubset(QR_DATA.map(([r, c]) => [(c - 10) * m, (10 - r) * m, 0]), n - finders.length);
   return [...finders, ...data];
 }
 /** Corner brackets of a scanner frame around (cx, cy), half size h, arm length a; a drone sits exactly on every corner. */
@@ -156,9 +168,8 @@ export const builders = {
   // ---- Launch · QR-Code ----
   qr2d(n, caption) {
     // the finder squares, a few modules, a scanner frame; a band of light scans down over the code
-    // the sketch has at most 3 × 21 finder drones plus the dark data modules; above that (SPARK up to 190 drones since the
-    // thirteenth version) the scanner frame takes the extra drones
-    const m = 0.1, most = FINDERS.length * 21 + QR_DARK.filter(([r, c]) => !inFinder(r, c)).length, B = Math.max(20, n - most), code = paint(qrSketch(n - B, m), WARM), frame = paint(bracketCorners(B, 0, 0, 1.3, 0.36), GOLD);
+    // the frame (from QR_FRAME_FROM on) has at least 12 drones, corner and one on each arm; what the code cannot use goes to it
+    const m = 0.1, B = qrFrame(n), code = paint(qrSketch(n - B, m), WARM), frame = B ? paint(bracketCorners(B, 0, 0, 1.3, 0.36), GOLD) : [];
     return { beats: [{ pts: [...code, ...frame], caption, live: (b, j, t, o) => {
       if (j >= code.length) { o[3] = breathe(t, 3.2); return; }
       const beam = 1.25 - 2.5 * frac(t / 3.4);

@@ -202,7 +202,11 @@ export function initTeaser(root) {
     }
     last = { pkg: r.pkg, n: r.n, note: r.note };
   }
-  const field = createField(q("field"), { onBeat: (k, beat) => sync(beat), ...REEL_CLOUD });
+  // Runde 10: dieselbe Einpassung wie im Konfigurator (das Motiv so gemessen, wie es gezeichnet wird, show-field.js); frei
+  // bleibt unten nur der Platz der Paketzeile (.cft-note, rund 3,5 rem). Am Handy war das Motiv sonst so klein wie zuvor
+  // im Konfigurator (Marc: „teilweise auch zu klein“)
+  const rem = () => parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+  const field = createField(q("field"), { onBeat: (k, beat) => sync(beat), ...REEL_CLOUD, fitProjected: true, view: () => ({ top: rem(), bottom: rem() * 3.5 }) });
   field.setRate(REEL_RATE);
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   let done = false;

@@ -64,8 +64,8 @@ test('ODYSSEY erzählt jedes Motiv in Akten, ↻ beginnt die Show von vorn', asy
   await expect(scene(page)).toHaveText('Ein Glühfaden glimmt');
   await expect(scene(page)).toHaveText('um ihn formt sich die Glühbirne', { timeout: 20_000 });
   await page.locator('#cfg-track').focus();
-  await page.keyboard.press('Home'); // the track's start: the show from the beginning
-  await expect(scene(page)).toHaveText('Startklar');
+  await page.keyboard.press('Home'); // the track's start: the show from the beginning (Runde 10: Marketing beginnt mit Chat/QR)
+  await expect(scene(page)).toHaveText('Eine Nachricht kommt an');
 });
 
 test('Direktlink öffnet Anlass, Paket und Motiv', async ({ page }) => {
@@ -96,10 +96,11 @@ test('Vorführ-Steuerung: Pause friert das Bild ein, Tempo und Bildsprung über 
   await page.locator('[data-rate="2"]').click();
   await expect(page.locator('[data-rate="2"]')).toHaveAttribute('aria-pressed', 'true');
   await expect(page.locator('[data-rate="1"]')).toHaveAttribute('aria-pressed', 'false');
-  // the track: a click near its end jumps to a later picture; keyboard steps one picture
+  // the track: a click near its end jumps to a later picture; keyboard steps one picture. Runde 10: auf dem Handy gibt es
+  // die Spur nicht mehr (nur die Pfeile, eigener Test unten)
+  test.skip(Boolean(info.project.use.isMobile), 'Spur nur ab Tablet-Breite');
   const track = page.locator('#cfg-track'), box = (await track.boundingBox())!;
-  if (info.project.use.isMobile) await page.touchscreen.tap(box.x + box.width * 0.9, box.y + box.height / 2);
-  else await page.mouse.click(box.x + box.width * 0.9, box.y + box.height / 2);
+  await page.mouse.click(box.x + box.width * 0.9, box.y + box.height / 2);
   await expect.poll(async () => Number(await track.getAttribute('aria-valuenow'))).toBeGreaterThan(6); // ODYSSEY Launch with 300 drones: 9 pictures
   const at = Number(await track.getAttribute('aria-valuenow'));
   await track.focus(); await page.keyboard.press('ArrowLeft');
@@ -178,9 +179,9 @@ test('Spur: Überfahren und Fokus zeigen, ab wie vielen Drohnen eine Sequenz mö
   await expect.poll(async () => Number(await track.getAttribute('aria-valuemax'))).toBeGreaterThan(10);
   const box = (await track.boundingBox())!, seen = new Set<string>();
   for (let x = 0.02; x < 1; x += 0.04) { await page.mouse.move(box.x + box.width * x, box.y + box.height / 2); await expect(tip).toHaveClass(/is-on/); seen.add((await tip.textContent()) ?? ''); }
-  // every motif of the occasion with its minimum (Antrag needs 450, the others the package's start); Runde 9: als Preisstufe
-  // von 3D+ (100er-Schritte), also 500
-  expect([...seen]).toEqual(expect.arrayContaining(['Antrag · ab 500 Drohnen', 'Lotusblüten · ab 300 Drohnen', 'Ringe · ab 300 Drohnen']));
+  // every motif of the occasion with its minimum; Runde 10: der Antrag ab dem Einstieg in 3D+ (300), die Lotusblüten mit der
+  // zweiten Stufe von 3D+ (400)
+  expect([...seen]).toEqual(expect.arrayContaining(['Antrag · ab 300 Drohnen', 'Lotusblüten · ab 400 Drohnen', 'Ringe · ab 300 Drohnen']));
   // the hint stays inside the stage
   const t = (await tip.boundingBox())!, stage = (await page.locator('.cfg-stage').boundingBox())!;
   expect(t.x).toBeGreaterThanOrEqual(stage.x); expect(t.x + t.width).toBeLessThanOrEqual(stage.x + stage.width);
@@ -253,15 +254,15 @@ test('Runde 22: nicht gewählte Anlässe gedämpft, aber über 4,5:1, beim Zeige
 test('Runde 24: Katalogmotive spielen ab ihrer Punktzahl, der eigene Text hebt die Drohnenzahl auf seinen Bedarf', async ({ page }) => {
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
-  // Sportwagen (147 Punkte) spielt ab 150 Drohnen; ein Link mit weniger öffnet ihn mit genug Drohnen
-  await page.goto(`${CFG}?anlass=launch&paket=SPARK&drohnen=100&motiv=sportwagen#konfigurator`);
+  // Drehzahlmesser spielt ab der Stufe 150 (Runde 10: Freischaltungen nur auf Stufen); ein Link mit weniger öffnet ihn mit genug Drohnen
+  await page.goto(`${CFG}?anlass=launch&paket=SPARK&drohnen=100&motiv=drehzahl#konfigurator`);
   await expect(page.locator('#cfg-dronecount')).toHaveText('150');
-  await expect(scene(page)).toHaveText('Sportwagen, eine Formation aus dem FlyingStars-Katalog');
+  await expect(scene(page)).toHaveText('Drehzahlmesser, eine Formation aus dem FlyingStars-Katalog');
   await expect(field(page)).toHaveAttribute('data-points', '150');
-  // ein Lichtpunkt je Schwelle: bei 100 Drohnen schalten 120 und 150 je mehrere Motive frei
+  // ein Lichtpunkt je Schwelle: bei 100 Drohnen schaltet erst 150 wieder mehrere Motive frei (Runde 10)
   await page.goto(`${CFG}?anlass=launch&paket=SPARK&drohnen=100#konfigurator`);
   const locks = page.locator('#cfg-locks .cfg-lock');
-  await expect(locks.first()).toHaveAttribute('data-at', '110'); // Roboter, Zahnräder (Runde 25)
+  await expect(locks.first()).toHaveAttribute('data-at', '150'); // Runde 10: keine Einzel-Freischaltung bei 110–140
   const thresholds = await locks.evaluateAll((els) => els.map((el) => Number((el as HTMLElement).dataset.at)));
   expect(new Set(thresholds).size).toBe(thresholds.length);
   // Text: 10 Drohnen je Zeichen ohne Leerzeichen; „ANNA & BEN TOM“ = 11 Zeichen → 110 Drohnen
@@ -284,14 +285,33 @@ test('Runde 24: Katalogmotive spielen ab ihrer Punktzahl, der eigene Text hebt d
 });
 
 // ---------- Runde 5: Show-Art, Paket als Startpunkt, Upgrades eingeklappt, erster Bildschirm, Katalogmotive ----------
-const art = (page: Page, id: '2d' | '3d' | 'story') => page.locator(`#cfg-arts label[data-art="${id}"]`).click();
+// Runde 10: am Handy klebt die Bühne mit 50 % der Sichthöhe; Playwrights eigenes Scrollen legt die Pill dahinter oder unter
+// die Preisleiste. Wie ein Mensch: erst in den freien Streifen zwischen Bühne und Preisleiste scrollen, dann echt klicken
+const reach = async (page: Page, target: ReturnType<Page['locator']>) => {
+  for (let i = 0; i < 4; i++) {
+    const off = await target.evaluate((el) => {
+      const r = el.getBoundingClientRect(), stage = document.querySelector('.cfg-stage')!.getBoundingClientRect();
+      const bar = document.querySelector('.cfg-bar')!.getBoundingClientRect(), barTop = bar.height && bar.top < innerHeight ? bar.top : innerHeight;
+      const top = stage.bottom > 0 && stage.top < r.top ? Math.max(0, stage.bottom) : 0, mid = (r.top + r.bottom) / 2;
+      return mid > top + r.height / 2 + 4 && mid < barTop - r.height / 2 - 4 ? 0 : mid - (top + barTop) / 2;
+    });
+    if (!off) return;
+    await page.evaluate((y) => scrollBy(0, y), off);
+    await page.waitForTimeout(350);
+  }
+};
+const art = async (page: Page, id: '2d' | '3d' | 'story') => {
+  const pill = page.locator(`#cfg-arts label[data-art="${id}"]`);
+  await reach(page, pill);
+  await pill.click();
+};
 const price = (page: Page) => page.locator('#cfg-price');
 
 test('Runde 5: Start als individuelles 3D-Paket; Drohnenzahl und Art der Show bestimmen den Preis', async ({ page }) => {
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
   await page.goto(`${CFG}#konfigurator`);
-  await expect(page.locator('#cfg-pkg')).toHaveText('Eure 3D-Show · ab 200 Drohnen');
+  await expect(page.locator('#cfg-pkg')).toHaveText('Eure 3D Show');
   await expect(page.locator('#cfg-arts input[value="3d"]')).toBeChecked();
   await expect(droneCount(page)).toHaveText('200');
   await expect(price(page)).toHaveText('ab 15.900 €');
@@ -301,7 +321,7 @@ test('Runde 5: Start als individuelles 3D-Paket; Drohnenzahl und Art der Show be
   await art(page, '2d');
   await expect(droneCount(page)).toHaveText('100');
   await expect(price(page)).toHaveText('ab 7.900 €');
-  await expect(page.locator('#cfg-floor-note')).toHaveText('2D-Show ab 100 Drohnen');
+  await expect(page.locator('#cfg-floor-note')).toHaveText('2D Show ab 100 Drohnen');
   await page.locator('#cfg-drones').focus(); await page.keyboard.press('Home');
   await expect(droneCount(page)).toHaveText('100');
   await expect(price(page)).toHaveText('ab 7.900 €');
@@ -309,7 +329,7 @@ test('Runde 5: Start als individuelles 3D-Paket; Drohnenzahl und Art der Show be
   await art(page, 'story');
   await expect(droneCount(page)).toHaveText('300');
   await expect(price(page)).toHaveText('ab 34.900 €');
-  await expect(page.locator('#cfg-floor-note')).toHaveText('3D+-Show ab 300 Drohnen');
+  await expect(page.locator('#cfg-floor-note')).toHaveText('3D+ Show ab 300 Drohnen');
   // Runde 6: die Häkchen der gewählten Art blenden ein, die anderen sind unsichtbar (auch für Screenreader)
   await expect(page.locator('.cfg-check-list[data-art="story"]')).toBeVisible();
   await expect(page.locator('.cfg-check-list[data-art="story"] li').first()).toHaveText('Mit Storytelling');
@@ -346,7 +366,7 @@ test('Runde 5: ein Paket ist ein fester Startpunkt; jede Änderung, auch die Sho
   await expect(page.locator('#cfg-pkg-label')).toHaveText('Festes Paket · Festpreis');
   await expect(page.locator('#cfg-arts input[value="3d"]')).toBeChecked();
   await art(page, '2d');
-  await expect(page.locator('#cfg-pkg')).toHaveText('Eure 2D-Show');
+  await expect(page.locator('#cfg-pkg')).toHaveText('Eure 2D Show');
   await expect(price(page)).toHaveText('ab 7.900 €');
   expect(new URL(page.url()).searchParams.get('paket')).toBeNull();
   // ODYSSEY: Storytelling mit 300 Drohnen, Festpreis; mehr Drohnen = individuell mit dem Storytelling-Preis
@@ -355,7 +375,7 @@ test('Runde 5: ein Paket ist ein fester Startpunkt; jede Änderung, auch die Sho
   await expect(droneCount(page)).toHaveText('300');
   await expect(price(page)).toHaveText('34.900 €');
   await page.locator('#cfg-drones').focus(); await page.keyboard.press('ArrowRight');
-  await expect(page.locator('#cfg-pkg')).toHaveText('Eure 3D+-Show · ab 300 Drohnen');
+  await expect(page.locator('#cfg-pkg')).toHaveText('Eure 3D+ Show');
   await expect(droneCount(page)).toHaveText('400'); // Runde 9 (Punkt 8): eine Preisstufe weiter, 3D+ in 100er-Schritten
   await expect(price(page)).toHaveText('ab 44.800 €');
   // „SPARK anpassen“ auf derselben Seite setzt Drohnenzahl und Show-Art des Pakets
@@ -375,15 +395,15 @@ test('Runde 5: Upgrades eingeklappt mit Zähler, klappen weich auf, rechnen in d
   expect((await inner.boundingBox())?.height ?? 0).toBeLessThan(2);
   expect(await page.locator('.cfg-up-body').evaluate((el) => getComputedStyle(el).transitionProperty)).toContain('grid-template-rows');
   await expect(page.locator('#cfg-up-count')).toHaveText('(optional)');
-  await toggle.click();
+  await reach(page, toggle); await toggle.click();
   await expect(toggle).toHaveAttribute('aria-expanded', 'true');
   expect(await inner.evaluate((el) => (el as HTMLElement).inert)).toBe(false);
-  await page.locator('#cfg-upgrades label:has([value="film"])').click();
+  await reach(page, page.locator('#cfg-upgrades label:has([value="film"])')); await page.locator('#cfg-upgrades label:has([value="film"])').click();
   await expect(page.locator('#cfg-up-count')).toHaveText('1 gewählt');
   await expect(price(page)).toHaveText('ab 16.800 €');
-  await page.locator('#cfg-upgrades label:has([value="indoor"])').click();
+  await reach(page, page.locator('#cfg-upgrades label:has([value="indoor"])')); await page.locator('#cfg-upgrades label:has([value="indoor"])').click();
   await expect(page.locator('#cfg-up-count')).toHaveText('2 gewählt');
-  await toggle.click();
+  await reach(page, toggle); await toggle.click();
   await expect(toggle).toHaveAttribute('aria-expanded', 'false');
   await expect(page.locator('#cfg-up-count')).toHaveText('2 gewählt');
 });
@@ -414,13 +434,13 @@ test('Runde 5: die Anfrage nimmt Art der Show, Drohnenzahl und Paket mit', async
   await expect(droneCount(page)).toHaveText('300');
   // (über URLSearchParams lesen: „+“ ist seit Runde 9 Teil von „3D+“, kein kodiertes Leerzeichen)
   const link = new URL((await page.locator('#cfg-cta').getAttribute('href')) ?? '', page.url());
-  expect(link.searchParams.get('show')).toContain('Art der Show: 3D+-Show');
+  expect(link.searchParams.get('show')).toContain('Art der Show: 3D+ Show');
   expect(link.searchParams.get('drohnen')).toBe('300');
   await page.goto(`${CFG}?paket=SPARK#konfigurator`);
   await expect(page.locator('#cfg-pkg')).toHaveText('SPARK');
   const fixed = new URL((await page.locator('#cfg-cta').getAttribute('href')) ?? '', page.url());
   expect(fixed.searchParams.get('paket')).toBe('SPARK');
-  expect(fixed.searchParams.get('show')).toContain('Art der Show: 2D-Show');
+  expect(fixed.searchParams.get('show')).toContain('Art der Show: 2D Show');
 });
 
 // Runde 9: 2D reicht seit Runde 7 nur bis unter 400 Drohnen (Preisstufe 350), und die 2D-Verdichtung leuchtet dort alle
@@ -441,11 +461,11 @@ test('Runde 5/6: Katalogmotive zeichnen in 2D mit jeder Drohnenzahl dichter', as
 // gilt deren Mindestzahl; sonst folgt die Art der Drohnenzahl. Die Pills „Art der Show“ zeigen den Zustand, die Bühne
 // zeigt ein Motiv, die Seite wirft keinen Fehler.
 for (const [query, want] of [
-  ['?anlass=kultur&drohnen=190', { art: '2d', drones: '190', pkg: 'Eure 2D-Show', occasion: 'kultur' }],
-  ['?art=story&drohnen=190', { art: 'story', drones: '300', pkg: 'Eure 3D+-Show · ab 300 Drohnen' }],
-  ['?paket=ODYSSEY&drohnen=190', { art: '2d', drones: '190', pkg: 'Eure 2D-Show' }],
-  ['?drohnen=400', { art: '3d', drones: '400', pkg: 'Eure 3D-Show · ab 200 Drohnen' }],
-  ['?drohnen=210', { art: '3d', drones: '250', pkg: 'Eure 3D-Show · ab 200 Drohnen' }], // Runde 9: auf die Preisstufe
+  ['?anlass=kultur&drohnen=190', { art: '2d', drones: '190', pkg: 'Eure 2D Show', occasion: 'kultur' }],
+  ['?art=story&drohnen=190', { art: 'story', drones: '300', pkg: 'Eure 3D+ Show' }],
+  ['?paket=ODYSSEY&drohnen=190', { art: '2d', drones: '190', pkg: 'Eure 2D Show' }],
+  ['?drohnen=400', { art: '3d', drones: '400', pkg: 'Eure 3D Show' }],
+  ['?drohnen=210', { art: '3d', drones: '250', pkg: 'Eure 3D Show' }], // Runde 9: auf die Preisstufe
 ] as const) {
   test(`Linkabgleich ${query}`, async ({ page }) => {
     const errors: string[] = [];
@@ -466,3 +486,65 @@ for (const [query, want] of [
     expect(errors).toEqual([]);
   });
 }
+
+// ---------- Runde 10 (Marc 20.11.2026) ----------
+
+test('Runde 10: der Konfigurator startet direkt mit dem ersten Motiv, ohne lebendige Wolke vorweg', async ({ page }) => {
+  // jede Bildbeschreibung, die die Bühne ansagt; die Wolke des Einstiegs (Runde 9) hatte eine leere
+  await page.addInitScript(() => {
+    const seen: string[] = ((window as unknown as { __captions: string[] }).__captions = []);
+    document.addEventListener('DOMContentLoaded', () => {
+      const node = document.querySelector('#cfg-scene');
+      if (node) new MutationObserver(() => seen.push(node.textContent ?? '')).observe(node, { childList: true, characterData: true, subtree: true });
+    });
+  });
+  await page.goto(`${CFG}#konfigurator`);
+  await expect.poll(async () => Number(await field(page).getAttribute('data-lit'))).toBeGreaterThan(0);
+  await page.waitForTimeout(2500);
+  const captions = await page.evaluate(() => (window as unknown as { __captions: string[] }).__captions);
+  expect(captions.length).toBeGreaterThan(0);
+  expect(captions.filter((c) => !c.trim()), 'keine Wolke ohne Bildbeschreibung').toEqual([]);
+});
+
+test('Runde 10: am Handy hat die Steuerleiste nur Pause, Pfeile und Tempo, über die volle Breite', async ({ page }, info) => {
+  test.skip(!info.project.use.isMobile, 'schmale Breiten');
+  await page.goto(`${CFG}?anlass=hochzeit#konfigurator`);
+  await expect.poll(async () => Number(await field(page).getAttribute('data-lit'))).toBeGreaterThan(0);
+  await expect(page.locator('#cfg-track')).toBeHidden();
+  await expect(page.locator('#cfg-locks')).toBeHidden();
+  for (const id of ['#cfg-play', '#cfg-prev', '#cfg-next', '[data-rate="1"]']) await expect(page.locator(id)).toBeVisible();
+  const bar = (await page.locator('#cfg-player').boundingBox())!, stage = (await page.locator('.cfg-stage').boundingBox())!;
+  expect(bar.width, 'Leiste so breit wie die Bühne (abzüglich Rand)').toBeGreaterThan(stage.width - 32);
+  const before = await scene(page).textContent();
+  await page.locator('#cfg-next').tap();
+  await expect(scene(page)).not.toHaveText(before ?? '');
+});
+
+test('Runde 10: Preisbox heißt „Eure 2D Show“, „Eure 3D Show“, „Eure 3D+ Show“, ohne Drohnenzahl', async ({ page }) => {
+  await page.goto(`${CFG}#konfigurator`);
+  await expect.poll(async () => Number(await field(page).getAttribute('data-lit'))).toBeGreaterThan(0);
+  for (const [id, name] of [['2d', 'Eure 2D Show'], ['3d', 'Eure 3D Show'], ['story', 'Eure 3D+ Show']] as const) {
+    await page.locator(`#cfg-arts label[data-art="${id}"] input`).evaluate((i) => (i as HTMLInputElement).click());
+    await expect(page.locator('#cfg-pkg')).toHaveText(name);
+  }
+});
+
+test('Runde 10: das Motiv steht im freien Teil der Bühne, über der Steuerleiste und unter der Oberkante', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' }); // jedes Motiv steht sofort in Ruhe
+  await page.goto(`${CFG}?anlass=silvester&art=story&drohnen=600#konfigurator`);
+  await expect.poll(async () => Number(await field(page).getAttribute('data-lit'))).toBeGreaterThan(0);
+  for (let i = 0; i < 6; i++) {
+    const r = await page.evaluate(() => {
+      const c = document.querySelector<HTMLCanvasElement>('#cfg-field')!, k = c.width / c.getBoundingClientRect().width;
+      const d = c.getContext('2d')!.getImageData(0, 0, c.width, c.height).data;
+      let y0 = Infinity, y1 = -1;
+      for (let y = 0; y < c.height; y++) for (let x = 0; x < c.width; x++) { const o = (y * c.width + x) * 4; if (d[o] + d[o + 1] + d[o + 2] > 300) { y0 = Math.min(y0, y); y1 = Math.max(y1, y); } }
+      const s = document.querySelector('.cfg-stage')!.getBoundingClientRect(), p = document.querySelector('#cfg-player')!.getBoundingClientRect();
+      return { top: y0 / k, bottom: y1 / k, bar: p.top - s.top, scene: document.querySelector('#cfg-scene')!.textContent };
+    });
+    expect(r.top, `${r.scene}: oben frei`).toBeGreaterThan(2);
+    expect(r.bottom, `${r.scene}: über der Leiste`).toBeLessThan(r.bar);
+    await page.locator('#cfg-next').evaluate((b) => (b as HTMLButtonElement).click());
+    await page.waitForTimeout(400);
+  }
+});

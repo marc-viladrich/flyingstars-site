@@ -55,7 +55,10 @@ const LINE_SOURCE = { stern: 0 };
 /** Variante, die ein Motiv bei n Drohnen zeichnet (flache Motive mit LINE_SOURCE immer aus derselben). */
 export function flatVariant(key, n) {
   const m = CATALOG[key];
-  return LINE_SOURCE[key] != null && m.dimension !== '3D' && n >= m.variants[LINE_SOURCE[key]].points ? m.variants[LINE_SOURCE[key]] : variantFor(key, n);
+  if (LINE_SOURCE[key] != null && m.dimension !== '3D' && n >= m.variants[LINE_SOURCE[key]].points) return m.variants[LINE_SOURCE[key]];
+  // Runde 10 (Marc: „einige von den 110er/120er Motiven auf die 100-Drohnen-Kategorie runterbringen“): flache Motive zeichnen
+  // ihre Linien mit jeder Drohnenzahl, auch unter der Punktzahl der kleinsten Variante (Freigabe je Motiv: SPARK_AB in content/show-configurator.js)
+  return variantFor(key, n) ?? (m.dimension !== '3D' ? m.variants[0] : null);
 }
 /** Aktionen, die nur Lagen lesen (keine Katalogindizes): sie laufen direkt auf den abgetasteten Drohnen. */
 const BY_PLACE = new Set(['smiley', 'handschlag']);

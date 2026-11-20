@@ -10,17 +10,16 @@
 // Aufruf: node --test scripts/show-unlock.test.mjs
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { OCCASIONS, LADDER, PACKAGE_ORDER, unlockAt } from '../src/content/show-configurator.js';
+import { OCCASIONS, LADDER, PACKAGE_ORDER, STAGES, unlockAt } from '../src/content/show-configurator.js';
 import { DRONE_RANGES, DRONE_STEP, SHOW_ARTS, ART_TIER, artMin, droneStops, stopAtLeast } from '../src/content/show-packages.ts';
 import { freshMotifs, canPlay, possibleFrom } from '../src/scripts/show-tempo.js';
 
 const playing = (o, tier, n) => o.motifs.filter((m) => canPlay(m, tier, n));
-// Runde 9: in diesen Anlässen spielen alle 3D-Motive schon ab 200; die späteren (250) waren 3D+-Motive und stehen seit der
-// Einstufung nur in 3D+. Offen an Marc: ein 3D-Motiv je Anlass erst ab 250 freischalten? Neue Lücken fallen hier auf.
-const NO_3D_UNLOCK = new Set(['jubilaeum', 'festival', 'hochzeit', 'kultur']);
+// Runde 10 (Marc 20.11.2026: „mindestens 2 freigeschaltete Motive“ bei 3D 250): jede Art schaltet in jedem Anlass frei.
+const NO_3D_UNLOCK = new Set();
 
 test('Leiter: feste Inhaltsschwellen bleiben unabhängig vom Reglermaximum im Paketbereich', () => {
-  assert.deepEqual(LADDER, { SPARK: [100, 150], HORIZON: [200, 250], ODYSSEY: [300, 450] });
+  assert.deepEqual(LADDER, { SPARK: [100, 150], HORIZON: [200, 250], ODYSSEY: [300, 400] });
   for (const pkg of PACKAGE_ORDER) {
     const { min, max } = DRONE_RANGES[pkg], [a, b] = LADDER[pkg];
     assert.equal(a, min, `${pkg}: erste Sprosse = Einstieg`);
@@ -62,7 +61,8 @@ test('Mehr Drohnen nehmen nie ein Motiv weg (je Art über alle Preisstufen), jed
 test('3D+ zeigt bei derselben Drohnenzahl nie weniger als 3D', () => {
   for (const o of OCCASIONS) for (const n of droneStops('story')) {
     const three = playing(o, 'HORIZON', n), plus = playing(o, 'ODYSSEY', n);
-    for (const m of three) assert.ok(plus.includes(m), `${o.id} ${n}: ${m.id} in 3D, nicht in 3D+`);
+    // coveredBy (Runde 10): das Bild steckt in 3D+ in einer Story desselben Anlasses, die dann spielen muss
+    for (const m of three) assert.ok(plus.includes(m) || plus.some((x) => x.id === m.coveredBy), `${o.id} ${n}: ${m.id} in 3D, nicht in 3D+`);
   }
 });
 
@@ -92,5 +92,31 @@ test('Gesperrte Motive nennen ihre Schwelle als Preisstufe: dort spielen sie, ei
       assert.ok(below === undefined || !canPlay(m, tier, below), `${o.id} ${m.id} ${art}: spielt schon bei ${below}`);
       assert.equal(stopAtLeast(art, possibleFrom(m.tiers[tier], artMin(art))), shown, `${o.id} ${m.id} ${art}: Hinweis an der Spur`);
     }
+  }
+});
+
+// Runde 10 (Marc 20.11.2026: „Im Idealfall sollte es mindestens 2 freigeschaltete Motive geben … auch bei 150 Drohnen
+// mindestens 2 zusätzliche Motive … bei den 2D-Shows“, „überrascht, wie viele neue Motive auf einmal möglich werden, wenn
+// man nur auf 110 oder 120 hochschraubt“): Freischaltungen nur auf den Stufen der Art (2D 100/150/200, 3D 200/250,
+// 3D+ 300/400), und jede Stufe, die etwas freischaltet, schaltet mindestens zwei Motive frei. Über alle Anlässe und Arten
+// aus den Daten, neue Motive und Anlässe sind automatisch dabei.
+test('Freischaltungen nur auf den Stufen der Art, je Stufe mindestens zwei Motive', () => {
+  const wrong = [];
+  for (const o of OCCASIONS) for (const art of SHOW_ARTS) {
+    const tier = ART_TIER[art], stops = droneStops(art);
+    for (let i = 1; i < stops.length; i++) {
+      const fresh = freshMotifs(o.motifs, { pkg: tier, drones: stops[i - 1] }, { pkg: tier, drones: stops[i] });
+      if (!fresh.length) continue;
+      if (!STAGES[tier].includes(stops[i])) wrong.push(`${o.id} ${art} ${stops[i]}: keine Stufe (${fresh.map((m) => m.id).join(', ')})`);
+      else if (fresh.length < 2) wrong.push(`${o.id} ${art} ${stops[i]}: nur ${fresh[0].id}`);
+    }
+  }
+  assert.deepEqual(wrong, []);
+});
+
+test('3D 250 und 2D 150 schalten in jedem Anlass mindestens zwei Motive frei', () => {
+  for (const o of OCCASIONS) for (const [tier, a, b] of [['HORIZON', 200, 250], ['SPARK', 140, 150]]) {
+    const fresh = freshMotifs(o.motifs, { pkg: tier, drones: a }, { pkg: tier, drones: b });
+    assert.ok(fresh.length >= 2, `${o.id} ${tier} ${b}: ${fresh.map((m) => m.id).join(', ')}`);
   }
 });

@@ -39,8 +39,8 @@ Darunter die Paket-/Preis-Box mit Anfrage-Knopf und „Immer dabei“ (ruhige Li
 
 ## Zustände und Preis
 
-- **Eure Show** (Standard; „Eure 2D-Show“, „Eure 3D-Show · ab 200 Drohnen“, „Eure 3D+-Show · ab 300 Drohnen“, in der
-  Handy-Leiste ohne Zusatz; in der Anfrage „Unsere Show: …“): Preis aus `showArtPrice(art, drones)` (`src/content/show-packages.ts`) mit „ab“;
+- **Eure Show** (Standard; „Eure 2D Show“, „Eure 3D Show“, „Eure 3D+ Show“, Runde 10 ohne Bindestrich und ohne
+  „ab … Drohnen“, in Preisbox und Handy-Leiste gleich; in der Anfrage „Unsere Show: …“): Preis aus `showArtPrice(art, drones)` (`src/content/show-packages.ts`) mit „ab“;
   2D = `individualPrice` je Drohnenzahl, 3D derselbe Preis ab 200, 3D+ = ODYSSEY-Preis (`priceFor('ODYSSEY')`). Show
   warmweiß, keine Paketnamen.
 - **Startpunkt aus einer Paketkarte** (`?paket=SPARK|HORIZON|ODYSSEY#konfigurator`, auf der Preisseite ohne Neuladen):
@@ -55,8 +55,8 @@ Darunter die Paket-/Preis-Box mit Anfrage-Knopf und „Immer dabei“ (ruhige Li
 
 - Fassung der Motive nach Art (2D flach, 3D als Körper mit Schwenk, 3D+ in Akten) und Drohnenzahl (`unlockAt`); ein
   Wechsel der Art startet die Folge von vorn.
-- Erste Ansicht: lebendige Wolke, das erste Motiv formiert sich 1,8 s nachdem die Bühne sichtbar wurde (reduzierte
-  Bewegung 0,5 s); jede Eingabe vorher beendet den Einstieg. Startmotive: Lichterbaum, Rakete, Wappen, Ballons, Ring, Harfe.
+- Erste Ansicht: das erste Motiv steht sofort (Runde 10; der Einstieg über die lebendige Wolke aus Runde 9 ist wieder
+  raus, Marc: „direkt mit dem ersten Motiv reinstarten“). Startmotive: Lichterbaum, Rakete, Wappen, Ballons, Ring, Harfe.
 - FlyingStars-Katalogmotive werden auf die Drohnenzahl abgetastet (`scenes/catalog-resample.js`), verdichtet bis 200
   Drohnen (`DENSE_MAX`); darüber bleiben weitere Drohnen dunkel in Reserve.
 - Bewegung folgt der globalen Bewegungspolitik (Pause, reduzierte Bewegung: stehendes Bild); außerhalb des Bildes
@@ -1155,3 +1155,96 @@ seine 200er-Gestalt, weitere Drohnen bleiben dunkel in Reserve.
 - Geprüft (Playwright, echte Maus/Tastatur/Dateiwahl): Chromium und WebKit bei 390 und 1440 px; Messungen und Bilder unter
   `/tmp/fs-r9/k/`.
 
+
+### Freischaltungen Runde 10 (20.11.2026)
+
+Marc: „Im Idealfall sollte es mindestens 2 freigeschaltete Motive geben“ (3D bei 250, 2D bei 150), „überrascht, wie viele
+neue Motive auf einmal möglich werden, wenn man nur auf 110 oder 120 hochschraubt“, „Einige von den 110er/120er Motiven
+könnten wir auf die 100-Drohnen-Kategorie runterbringen“.
+
+- **Stufen** (`STAGES` in `src/content/show-configurator.js`): Motive werden nur auf diesen Drohnenzahlen frei, 2D 100/150/200,
+  3D 200/250, 3D+ 300/400. Katalogmotive bündeln ihre gezählte Punktzahl auf die nächste Stufe (`catalogAb`): 113 Punkte
+  spielen ab 150, nicht ab 120. Die zweite 3D+-Sprosse ist 400 statt 450. Seit Runde 9 springt der 3D+-Regler in
+  Hunderten, also erschien 450 erst bei 500.
+- **Regel, Wächter `scripts/show-unlock.test.mjs`**: Jede Stufe, die etwas freischaltet, schaltet in jedem Anlass und jeder
+  Art mindestens zwei Motive frei. 3D 250 und 2D 150 schalten überall mindestens zwei frei. Der Wächter liest alle Anlässe
+  und Arten aus den Daten.
+- **Gesenkt auf 100** (`SPARK_AB`, am Kontaktbogen bei 100 geprüft): Roboter, Zahnräder, Sportwagen, Lkw, Sparschwein,
+  Smiley, Handschlag, Förderturm, Autoscooter, Bierkrug, Blume, Unendlich, Hochzeitstorte, Fledermäuse; Feuerwehr und
+  Strandliege auf 150. Eigene Motive auf 100: Riesenrad, Feuerwerk, Masken. Technisch zeichnen flache Katalogmotive ihre Linien auch
+  mit weniger Drohnen, als die kleinste Variante Punkte hat (`flatVariant` in `scenes/catalog.js`). Nicht gesenkt wurden
+  Motive, deren Drohnen auf jedem Katalogpunkt verankert sind (Elefant, Palme, Anker, Kind, Drehzahlmesser, Blüten,
+  Leuchtturm …: bei 100 fehlen Teile), die Fahnen (Raster mit 117 Punkten), räumliche Formationen (Kugel, Atom, Spirale:
+  jeder Katalogpunkt bleibt), die Lotusblume (zu dünn) und der Fußballer (der Kopf zerfällt). Der Wächter
+  `scripts/show-unlock-render.test.mjs` baut jedes Katalogmotiv bei seiner Schwelle und prüft, dass das Bild genau n
+  Drohnen hat und keine Ankerpunkte abgeschnitten werden.
+- **3D 250**: Marc wollte die aufwendigeren Körper nicht erst ab 250 („eher nein“). Galaxie, Atom, Pyramide, Möbius,
+  Hochzeitstorte, Wasserball und Anker spielen ab 200 und sehen am Kontaktbogen dort sauber aus. Kein Katalogmotiv mit
+  3D-Fassung braucht mehr als 200 Drohnen (das größte, der Wasserball, hat 186 Punkte). Darum schaltet 250 je Anlass zwei
+  Zugaben frei (`zugabe()`): passende 3D-Motive, die im Anlass neu sind, in 2D ab 150, in 3D+ ab 300. Silvester:
+  Cocktailglas (+ Sektkorken). Marketing: Mikrofon, Stern. Jubiläum: Sektflasche, anstoßende Gläser. Stadtfest: Mikrofon,
+  Sonne. Hochzeit: Glocke, Sektflasche. Kultur: Stern, anstoßende Gläser.
+- **3D+ ab 400**: Marketing Mondlandung + Flugzeug, Jubiläum Kopfsprung + Medaille (Schluss derselben Geschichte),
+  Stadtfest Papierflieger + Drache, Hochzeit Falter + Lotus, Kultur Tanz + Bokkenrijders, Silvester Finale + Konfettikanone.
+- **Marketing**: Reihenfolge QR-Code (Chat → QR) → Logo → Rakete → Mondlandung. Der QR-Code spielt in jeder Art, in 2D ab 150 (Marc: „erst ab da … wirklich brauchbar“). Bei 100 eröffnet das Logo.
+  In 2D tragen die drei Ankerquadrate das Bild und bekommen die meisten Drohnen: Jedes ist ein vollständiger Rahmen aus 24
+  Modulen mit gleichem Abstand, dazu ein gefüllter 3×3-Kern. Bei 100–110 Drohnen ist der Kern ein einzelner Punkt, sonst
+  blieben weniger als 15 Datenmodule. Die Datenmodule dazwischen sind eine gleichmäßige Auswahl der echten und dürfen
+  spärlich sein. Die goldenen Scan-Ecken kommen erst ab 150 Drohnen (3 je Ecke), ab 210 passt der ganze Code
+  (`qrSketch`/`qrFrame` in `scenes/launch.js`). Verworfen: halbe Auflösung und ausgedünnte Ankerquadrate. Beide lasen sich
+  am Bogen als loses Punkteraster.
+- **Hochzeit**: Der Antrag (Ring auf Hand) steht wieder direkt nach den Ringen und spielt ab dem Einstieg in 3D+ (300).
+  Ursache für das Verschwinden: Die Schwelle 450 erschien seit den 100er-Schritten von Runde 9 erst bei 500. Nur in 3D+,
+  weil es eine Geschichte in drei Akten ist. Bei 300 bekommt das Armband 14 % der Hand (32 Drohnen), ab 450 die 46 aus
+  dem Foto.
+- **Stadtfest**: Vorn stehen Agent Ws Wahrzeichen und Jahreszahl, dann Ballons, Riesenrad, Autoscooter, Bierkrug,
+  Cocktail, Stern, Förderturm, Reise. Danach Kind, Anker, Leuchtturm, Traktor, Berge, Wasserball und die beiden Zugaben.
+  Kolibri, Biene, Hund und Delfin spielen in 2D ab 150. Ganz am Ende (Marc: „ans Ende“, nicht streichen) stehen Elefant,
+  Hasen, Robbe, Strandliege und Palme ab 150, die Kuh mit UFO ab 200.
+- Kontaktbögen je Anlass (2D 100/150/200, 3D 200/250, 3D+ 300/400, neue Motive gold): erzeugt mit dem Werkzeug unter
+  `/tmp/fs-r10/m/tools/` (nicht im Repo).
+
+## Runde 10 · Bedienung und Bühne (20.11.2026)
+
+Marcs Rückmeldung zu Handy und Desktop, umgesetzt an der gemeinsamen Mechanik statt je Motiv.
+
+- **Einpassung (Desktop und Handy)**: Die Motive standen in der Mitte der ganzen Leinwand. Die Steuerleiste liegt aber
+  über deren unterem Rand, also rutschte jedes Bild nach unten (am Kontaktbogen von 353 Motiven bei 1440 × 900 lag das
+  Motiv im Median 15 px unter der Oberkante der Leiste). Dazu passte die Einpassung nur die Punkte ein, nicht das
+  gezeichnete Bild: Kippung und Perspektive schoben 3D-Körper weiter nach unten, und Eigenbewegung (Korken-Fontäne,
+  sich wendende Seite) lief oben aus dem Bild. Jetzt (`src/scripts/show-field.js`, additiv, der Himmel setzt nichts davon):
+  - `view()` nennt den freien Teil der Leinwand (Konfigurator: bis 8 px über der Steuerleiste; Teaser: über der
+    Paketzeile). Die Motive stehen in dessen Mitte; `frameOf()` ist die eine Projektion für `render`, `screenOf` und
+    `drones`. Verschwindet die Leiste (Logo-Anlass), rechnet die Bühne über einen ResizeObserver neu (`relayout`).
+  - `fitProjected` passt das gezeichnete Bild ein: Rahmen nach Kippung und Perspektive, vier Nachführschritte, dazu
+    Stichproben der Eigenbewegung (`motionPts`, 8 Zeitpunkte × höchstens 160 Punkte, nur ohne `fitPts`). Gerechnet wird
+    nur mit Randpunkten (`edgePts`).
+  - Auf schmalen Bühnen (< 600 px) darf das Bild 92 % statt 83 % der Breite nutzen, auf hohen Bühnen ein hohes Motiv
+    die freie Höhe (bis 90 %).
+  - Ergebnis am Kontaktbogen (alle Motive aller Anlässe in 2D 300 / 3D 1000 / 3D+ 1000, reduzierte Bewegung): 1440 × 900
+    Median 39 px frei oben, 42 px über der Leiste (vorher 32 / −15); iPhone 390 × 844 Median 43 / 45. Übrig sind
+    Fälle der Szenen: Kopfsprung (`fitPts` ohne das Abtauchen), schwacher Sternenkranz ums Schmuckkästchen, Zahnräder
+    3 px über der Leiste.
+  - Kosten: `show()` mit 50 Bildern × 1000 Punkten 2,6 → 5,8 ms, mit Eigenbewegung in allen Bildern 4,2 → 12,2 ms; bei
+    4× gedrosselter CPU keine Long Tasks beim Laden und bei Anlasswechseln.
+- **Bühne am Handy größer**: 50 % der Sichthöhe statt 42 % (niedrige Handys 44 statt 36 %), Variable `--cfg-stage-h`
+  trägt die Höhe auch in den Fokus-Abstand der Bedienung.
+- **Steuerleiste am Handy** (`--compact`, bis 640 px): keine Spur, keine Lichtpunkte gesperrter Motive, kein Hinweis.
+  Pause, ‹, ›, Tempo bleiben an ihren Plätzen, die Leiste bleibt so breit wie vorher (die Spur hält unsichtbar den Platz).
+- **Freischalt-Meldung**: nur die Zahl, „1 neues Motiv freigeschaltet“ / „3 neue Motive freigeschaltet“ (EN „… new
+  motif(s) unlocked“, NL „… nieuw(e) beeld(en) beschikbaar“), `unlockNote` in `show-tempo.js`.
+- **Startseiten-Teaser**: dieselbe Einpassung (`view` über der Paketzeile, `fitProjected`).
+- Wächter: `scripts/show-fit.test.mjs` (Einpassung an fünf Bühnengrößen und vier Formen, Eigenbewegung, unveränderter
+  Himmel), `src/scripts/spelling-3d-plus.test.mjs` (Namen ohne Bindestrich, keine Drohnenzahl im Titel),
+  `scripts/show-price.test.mjs` (Meldung), in `tests/show-configurator.spec.ts` vier Specs „Runde 10“ (Einstieg ohne
+  Wolke, Handy-Leiste, Preisbox-Titel, Motiv im freien Teil), alle auf dem Stand vor Runde 10 rot. Der Test-Helfer
+  `reach()` scrollt am Handy wie ein Mensch in den Streifen zwischen Bühne und Preisleiste, bevor er klickt.
+
+
+## Runde 10 · Spotify-Bänder im Logo-Modus
+
+Ursache: Schmale, gebogene Striche, die als Loch einer Fläche entstehen (Spotify-Wellen), wurden als geschlossene Kontur abgetastet, deren zwei Seiten getrennt Punkte bekamen: Innenseite dünner als Außenseite, offene oder schräge Enden, bei 200 Drohnen versprengte Punkte. Die Glättung aus Runde 9 nahm nur die Pixeltreppe quer zur Linie heraus.
+
+Änderung: `regularRibbons()` in `src/scripts/logo-rows.mjs` erkennt solche Bänder und legt dieselben Punkte neu auf ein sauberes Band (geglättete Mittellinie, konstante oder gleichmäßig verjüngte Breite, runde Enden, gleiche Abstände); `cleanRows()` = Bänder, dann die Glättung aus Runde 9. Punktzahl, Farben und Reihenfolge bleiben, damit Budget, Liniendichte und vorberechnete `density`-Werte gültig bleiben. Alle drei Wege in `logo-mode.js` nutzen `cleanRows`. Schutzregeln gegen Fehlgriffe (Sichel, Linse, Ring, Bosch-„S“, Puma-Schwanz) stehen am Code.
+
+Prüfen: `node --test src/scripts/logo-rows.test.mjs` (Unruhe-Maß über alle Logos und Stufen, Spotify live bei Dichte 4–9, Kunstformen, die unangetastet bleiben müssen).

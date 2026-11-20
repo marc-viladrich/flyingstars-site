@@ -211,5 +211,6 @@ export const canPlay = (motif, pkg, drones) => Boolean(motif.tiers[pkg]) && minD
 export const possibleFrom = (version, rangeMin) => Math.max(minDronesOf(version), rangeMin);
 /** Motive, die bei `after` ({ pkg, drones }) spielen und bei `before` nicht, in der Reihenfolge des Anlasses. */
 export const freshMotifs = (motifs, before, after) => motifs.filter((m) => canPlay(m, after.pkg, after.drones) && !canPlay(m, before.pkg, before.drones));
-/** Freischalt-Meldung: ein Motiv mit Namen, mehrere mit Zahl und Namen. */
-export const unlockNote = (list) => (list.length === 1 ? message('configurator.newMotif', { label: list[0].label }) : message('configurator.newMotifs', { count: list.length, list: list.map((m) => m.label).join(', ') }));
+/** Freischalt-Meldung: nur die Zahl (Runde 10, Marc 20.11.2026: „sollte einfach nur sagen, wie viele Motive freigeschaltet
+ * wurden, nicht alle Namen auflisten“), „1 neues Motiv freigeschaltet“ / „3 neue Motive freigeschaltet“. */
+export const unlockNote = (list) => (list.length === 1 ? message('configurator.newMotif') : message('configurator.newMotifs', { count: list.length }));

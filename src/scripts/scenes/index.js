@@ -10,9 +10,11 @@ import { builders as festival } from "./festival.js";
 import { builders as natur } from "./natur.js";
 import { builders as kugel } from "./kugel.js"; // Show-Folge der Startseite (Himmel, Runde 4)
 import { builders as schnee } from "./schnee.js"; // Show-Folge der Startseite (Himmel, Runde 6)
+import { builders as wahrzeichen } from "./wahrzeichen.js"; // Wahrzeichen und Jahreszahl fürs Stadtfest (Runde 10)
 
 export const BUILDERS = {
   ...hochzeit, ...jubilaeum, ...launch, ...kultur, ...winter, ...festival, ...natur, ...kugel, ...schnee,
+  ...wahrzeichen,
   textSPARK: (n, caption, v) => textScene(n, caption, v, "SPARK"),
   textHORIZON: (n, caption, v) => textScene(n, caption, v, "HORIZON"),
   textODYSSEY: (n, caption, v) => textScene(n, caption, v, "ODYSSEY"),

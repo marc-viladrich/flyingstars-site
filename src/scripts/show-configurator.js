@@ -67,7 +67,16 @@ if (form) {
   let current = null, first = true, segment = 0;
   const track = $("#cfg-track"), marks = $("#cfg-marks"), play = $("#cfg-play"), stage = $(".cfg-stage"), tip = $("#cfg-tip"), player = $("#cfg-player"), locks = $("#cfg-locks");
   let drawn = null, scrubbing = false, lastTick = 0, tipAt = null;
+  // Runde 10 (Marc: Motive „zu weit nach unten“, am Handy „zu klein“): die Bühne zählt nur bis zur Steuerleiste, die Motive
+  // stehen in der Mitte dieses freien Teils und werden so eingepasst, wie sie gezeichnet werden (show-field.js, view und
+  // fitProjected). Verschwindet die Leiste (Logo-Anlass) oder ändert sie die Höhe, rechnet die Bühne neu.
+  const VIEW_GAP = 8;
   const field = createField($("#cfg-field"), {
+    view: () => {
+      const s = stage.getBoundingClientRect(), p = player.getBoundingClientRect();
+      return { top: VIEW_GAP, bottom: p.height ? Math.max(0, s.bottom - p.top) + VIEW_GAP : 0 };
+    },
+    fitProjected: true,
     onBeat: (k, beat) => {
       $("#cfg-scene").textContent = beat.caption;
       segment = beat.segment ?? 0;
@@ -78,6 +87,7 @@ if (form) {
     },
     onTick: (tl) => { const t = performance.now(); if (scrubbing || (t - lastTick < 90 && tl && !tl.paused)) return; lastTick = t; drawTrack(tl); },
   });
+  if ("ResizeObserver" in window) new ResizeObserver(() => field.relayout()).observe(player);
 
   // ---------- Vorführ-Steuerung ----------
   const count = () => current?.beats.length ?? 1;
@@ -501,9 +511,8 @@ if (form) {
       if (k < 0) k = built.loopTo;
       // the first picture of the page stands already, like a show that is already in the sky
       if (logoMode) { field.setPaused(false); setPlay(false); }
-      // Runde 9 (Punkt 9): die unberührte erste Ansicht beginnt mit der lebendigen Wolke; das erste Motiv formiert sich,
-      // wenn die Bühne 1,8 s sichtbar war (reduzierte Bewegung: 0,5 s). Jede Eingabe vorher beendet den Einstieg.
-      if (first) { await intro; if (id !== job) return; if (first) { cloud = true; first = false; } }
+      // Runde 10 (Marc 20.11.2026: „doch keine gute Idee, am Anfang die lebendige Wolke zu zeigen … direkt mit dem ersten
+      // Motiv reinstarten“): der Einstieg über die Wolke aus Runde 9 ist wieder raus, das erste Motiv steht sofort
       field.show(built, drones, size(), { instant: first, at: k, cloud: logo?.example ? false : cloud }); // Beispiele: sofort fliegen, ohne Wolke, aber mit Übergang
       first = false;
       drawTrack(field.timeline());
@@ -523,10 +532,9 @@ if (form) {
     return up.includes("indoor") ? Math.max(price, SHOW_EXTRAS.indoor.price.amount) : price;
   }
   function drawPrice() {
-    // Runde 9 (Punkt 6): „Eure 2D-Show“, „Eure 3D-Show · ab 200 Drohnen“, „Eure 3D+-Show · ab 300 Drohnen“; die Leiste am
-    // Handy trägt die kurze Fassung
-    const s = step(), price = currentPrice(), name = preset ?? message(`preise.yourShow.${art}`);
-    const boxName = preset || art === "2d" ? name : message("preise.yourShowFrom", { name, n: artMin(art) });
+    // Runde 10 (Marc 20.11.2026: „ab 300 Drohnen rausnehmen“, „keinen Bindestrich zwischen Typ und Show“): „Eure 2D Show“,
+    // „Eure 3D Show“, „Eure 3D+ Show“, in der Preisbox und in der Leiste am Handy gleich; die Mindestzahl steht am Regler
+    const s = step(), price = currentPrice(), name = preset ?? message(`preise.yourShow.${art}`), boxName = name;
     section.classList.toggle("is-individual", !preset);
     $("#cfg-new").textContent = preset ?? ""; $("#cfg-new").hidden = !preset;
     if (preset) document.documentElement.style.setProperty("--pkg", `rgb(${SHOW_PACKAGES[preset].color.join(",")})`);
@@ -569,7 +577,8 @@ if (form) {
   const toast = $("#cfg-toast");
   let toastTimer = 0;
   /** A short note on the stage; it fades by itself and is read out once (role=status). Fünfzehnte Fassung: the names of
-   * the motifs stand apart (in the FlyingStars gradient), the text read out stays the same sentence. */
+   * the motifs stand apart (in the FlyingStars gradient), the text read out stays the same sentence. Runde 10: the unlock
+   * note is only the count („2 neue Motive freigeschaltet“) and stands whole in the gradient. */
   function showToast(note) {
     clearTimeout(toastTimer);
     const cut = note.indexOf(": "), lead = document.createElement("span"), names = document.createElement("b");
@@ -1007,19 +1016,5 @@ if (form) {
 
   setPlay(false);
   if (motifNote) floorNote("preise.artForMotif", artMin(art), { motif: motifNote });
-  // Runde 9 (Punkt 9, Marc: „ein, zwei Sekunden lang die lebendige Wolke, und dann erst die erste Figur“): die Wolke steht
-  // sofort (ohne Rechenzeit), die Uhr des Einstiegs läuft erst, wenn die Bühne ins Bild kommt
-  const intro = new Promise((resolve) => {
-    if (!first) return resolve();
-    const cloudPts = Array.from({ length: drones }, (_, i) => { const a = i * 2.39996, r = Math.sqrt((i + 0.5) / drones); return [Math.cos(a) * r * 0.95, Math.sin(a) * r * 0.55, Math.sin(i * 1.7) * 0.25, 210, 220, 255]; });
-    field.show({ beats: [{ pts: cloudPts, caption: "", motif: "cloud", hold: 600, cloud: true, segment: 0, live: cloudLive }], loopTo: 0 }, drones, size(), { instant: true });
-    const io = new IntersectionObserver(([entry]) => {
-      if (!entry.isIntersecting) return;
-      io.disconnect(); setTimeout(resolve, stillQuery.matches ? 500 : 1800);
-    }, { threshold: 0.35 });
-    io.observe(stage);
-    // eine Eingabe vor dem Ende des Einstiegs: sofort weiter (first ist dann schon false)
-    for (const type of ["input", "click"]) form.addEventListener(type, resolve, { once: true });
-  });
   update(false, linkedMotif >= 0 ? linkedMotif : undefined);
 }

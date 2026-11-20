@@ -82,7 +82,12 @@ const outside = (i, out) => {
 // Himmel, Runde 4 (18.11.2026, additiv): lightScale vergrößert die Lichter (Indoor-Reihe mit 50 Drohnen: Indoor-Drohnen
 // stehen nah und leuchten groß; 1 = wie bisher). flightMax: längste Dauer eines Anflugs in echten Sekunden; ein längerer
 // Anflug läuft entsprechend schneller als flightRate (0 = keine Grenze, wie bisher).
-export function createField(canvas, { onBeat, onTick, cloudTime = 1, cloudSpread = 1, outside: away = outside, flightRate = null, joinLate = false, lightScale = 1, flightMax = 0 } = {}) {
+// Runde 10 (Marc 20.11.2026: „die Motive sind zu weit nach unten gerückt … können an den oberen Rand“, additiv, der Himmel
+// setzt nichts davon): view() nennt den Teil der Leinwand, den nichts verdeckt, als Abstände oben/unten in CSS-Pixeln (der
+// Konfigurator: über seiner Steuerleiste); die Motive stehen in dessen Mitte statt in der Mitte der ganzen Leinwand, die
+// Leiste zählt nicht mehr mit. fitProjected: die Einpassung misst das Motiv so, wie es gezeichnet wird (mit Kippung und
+// Perspektive), statt nur die Punkte; 3D-Motive mit Tiefe rutschten sonst nach unten bzw. stießen oben an.
+export function createField(canvas, { onBeat, onTick, cloudTime = 1, cloudSpread = 1, outside: away = outside, flightRate = null, joinLate = false, lightScale = 1, flightMax = 0, view = null, fitProjected = false } = {}) {
   const ctx = canvas.getContext("2d");
   const reduceQuery = matchMedia("(prefers-reduced-motion: reduce)");
   let capacity = INITIAL_CAPACITY;
@@ -106,7 +111,7 @@ export function createField(canvas, { onBeat, onTick, cloudTime = 1, cloudSpread
     for (let i = old; i < next; i++) { away(i, spot); pos.set(spot, i * 3); col.set([246, 241, 232], i * 3); }
     capacity = next;
   }
-  let W = 0, H = 0, DPR = 1, frame = 0, again = false, visible = true, lastT = 0;
+  let W = 0, H = 0, DPR = 1, frame = 0, again = false, visible = true, lastT = 0, inset = { top: 0, bottom: 0 };
   let scene = null, beat = 0, beatAt = 0, flight = 0, spread = 0, order = null, active = 0, leaveEnd = 0, size = 1, fitK = 1, fitX = 0, fitY = 0;
   const glow = new Map();
   let motionIndependent = false;
@@ -121,7 +126,10 @@ export function createField(canvas, { onBeat, onTick, cloudTime = 1, cloudSpread
   function resize() {
     DPR = Math.min(1.5, devicePixelRatio || 1);
     const r = canvas.getBoundingClientRect(); W = r.width; H = r.height;
+    inset = view?.() ?? { top: 0, bottom: 0 };
     canvas.width = Math.round(W * DPR); canvas.height = Math.round(H * DPR);
+    // mit view hängt die Einpassung von der Bühne ab: neu einpassen, das stehende Bild folgt sofort (Flüge ab dem nächsten)
+    if (view && fitProjected && scene) { fit(scene.beats); useFit(scene.beats[beat]); }
     render();
   }
   // Lichtpunkte wie in der Designsprache-Probe (fünfzehnte Fassung, Marc: „weniger hochwertig als die Probe-Seite“;
@@ -176,6 +184,56 @@ export function createField(canvas, { onBeat, onTick, cloudTime = 1, cloudSpread
    * so dicht stehen, dass sich die Höfe sonst zu einer Fläche addieren. */
   const haloOf = (S) => Math.round(Math.min(3.4, Math.max(2, 3.4 * (S / 250))) * 5) / 5;
 
+  /** Maßstab S und Mitte (ox, oy) des Bildes in CSS-Pixeln, eine Stelle für render(), screenOf() und drones(). Ohne view wie
+   * bisher (schmale Leinwand: kleiner und etwas tiefer, weil oben Meldungen und unten Bedienung liegen); mit view in der
+   * Mitte des freien Teils, auf schmalen Bühnen etwas breiter (Runde 10: „teilweise auch zu klein“). */
+  function frameOf() {
+    if (!view) { const narrow = W < 600; return { S: Math.min(W * 0.36, H * (narrow ? 0.38 : 0.6)), ox: W * 0.5, oy: H * (narrow ? 0.52 : 0.5) }; }
+    const h = Math.max(1, H - inset.top - inset.bottom);
+    return { S: Math.min(W * (W < 600 ? 0.4 : 0.36), h * 0.6), ox: W * 0.5, oy: inset.top + h * 0.5 };
+  }
+  /** Projected extent of point lists around centre (cx, cy) at scale k: the same tilt and perspective as render(). */
+  function projectedBox(sets, cx, cy, k) {
+    let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+    for (const set of sets) for (const p of set) {
+      const ux = (p[0] - cx) * k * size, uy = (p[1] - cy) * k * size, uz = (p[2] || 0) * k * size;
+      const Y = uy * TILT_C - uz * TILT_S, Z = uy * TILT_S + uz * TILT_C, pr = 3.4 / (3.4 - Z), X = ux * pr, V = Y * pr;
+      x0 = Math.min(x0, X); x1 = Math.max(x1, X); y0 = Math.min(y0, V); y1 = Math.max(y1, V);
+    }
+    return { x0, x1, y0, y1 };
+  }
+  /** Runde 10: wohin die Eigenbewegung (live) eines Bildes seine sichtbaren Punkte trägt (Korken-Fontäne, sich wendende
+   * Seite, aufklappender Deckel): Stichproben über die Standzeit, höchstens 160 Punkte × 8 Zeitpunkte je Bild. Nur für
+   * Bilder ohne fitPts; wer fitPts setzt, hat selbst entschieden, was im Bild bleiben muss (Teile, die abfliegen). */
+  function motionPts(b) {
+    if (!b.live || b.fitPts) return [];
+    const out = [], o = [0, 0, 0, 1], span = Math.min(8, Number.isFinite(b.hold) ? b.hold : 2.2), every = Math.max(1, Math.floor(b.pts.length / 160));
+    for (let s = 0; s <= 7; s++) for (let j = 0; j < b.pts.length; j += every) {
+      const p = b.pts[j]; o[0] = p[0]; o[1] = p[1]; o[2] = p[2] || 0; o[3] = 1;
+      try { b.live(p, j, (span * s) / 9, o); } catch { return out; }
+      if (o[3] > 0.3 && Number.isFinite(o[0]) && Number.isFinite(o[1])) out.push([o[0], o[1], o[2] || 0]);
+    }
+    return out;
+  }
+  /** Nur die Punkte, die eine Kante des gezeichneten Bildes bilden können: am Rand einer der Richtungen x, Bildhöhe
+   * (y·cos − z·sin, die Kippung) und deren Mischungen mit der Tiefe z (Perspektive). Die Einpassung rechnet dann je Schritt
+   * mit einigen Dutzend statt mehreren tausend Punkten (gemessen, 50 Bilder × 1000 Punkte je show(): ohne Einpassung aufs gezeichnete Bild 2,6 ms, mit 5,8 ms; tragen alle Bilder
+   * Eigenbewegung 4,2 → 12,2 ms; ohne diese Auswahl waren es 17–36 ms). */
+  const EDGE_DIRS = [1, 0, 0, 0, TILT_C, -TILT_S, 0, 0, 1, 1, 0, 0.5, 1, 0, -0.5, 0, TILT_C, 0.5 - TILT_S, 0, TILT_C, -0.5 - TILT_S], ED = EDGE_DIRS.length / 3;
+  function edgePts(sets) {
+    const lo = new Float64Array(ED).fill(Infinity), hi = new Float64Array(ED).fill(-Infinity);
+    for (const set of sets) for (const p of set) {
+      const x = p[0], y = p[1], z = p[2] || 0;
+      for (let i = 0, k = 0; i < ED; i++, k += 3) { const v = x * EDGE_DIRS[k] + y * EDGE_DIRS[k + 1] + z * EDGE_DIRS[k + 2]; if (v < lo[i]) lo[i] = v; if (v > hi[i]) hi[i] = v; }
+    }
+    for (let i = 0; i < ED; i++) { const m = (hi[i] - lo[i]) * 0.04; lo[i] += m; hi[i] -= m; }
+    const out = [];
+    for (const set of sets) for (const p of set) {
+      const x = p[0], y = p[1], z = p[2] || 0;
+      for (let i = 0, k = 0; i < ED; i++, k += 3) { const v = x * EDGE_DIRS[k] + y * EDGE_DIRS[k + 1] + z * EDGE_DIRS[k + 2]; if (v <= lo[i] || v >= hi[i]) { out.push(p); break; } }
+    }
+    return out;
+  }
   /** One scale per motif (beats with the same segment, optionally split by a named frame), so a story keeps its
    * proportions and every motif of a sequence fills the stage. */
   function fit(beats) {
@@ -185,7 +243,18 @@ export function createField(canvas, { onBeat, onTick, cloudTime = 1, cloudSpread
       let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
       for (const b of list) for (const p of b.fitPts ?? b.pts) { x0 = Math.min(x0, p[0]); x1 = Math.max(x1, p[0]); y0 = Math.min(y0, p[1]); y1 = Math.max(y1, p[1]); }
       // zoom: a picture may ask to fill more of the stage than its drone count would give it (the wide glitter band)
-      const f = { x: (x0 + x1) / 2, y: (y0 + y1) / 2, k: ((list.some((b) => b.live) ? 0.9 : 1) * (list[0].zoom ?? 1)) / Math.max((x1 - x0) / 2 / 1.15, (y1 - y0) / 2 / 0.75, 1e-6) };
+      const z = (list.some((b) => b.live) ? 0.9 : 1) * (list[0].zoom ?? 1), f = { x: (x0 + x1) / 2, y: (y0 + y1) / 2, k: z / Math.max((x1 - x0) / 2 / 1.15, (y1 - y0) / 2 / 0.75, 1e-6) };
+      // Runde 10: auf das gezeichnete Bild nachführen (vier Schritte reichen, die Perspektive ist schwach): Mitte des
+      // projizierten Rahmens auf die Bildmitte, größte Ausdehnung auf dieselben Grenzen wie oben. Mit view darf ein hohes
+      // Motiv die freie Höhe nutzen, wenn die Bühne höher ist, als die Breite erlaubt (Handy hochkant: „zu klein“)
+      const ay = view ? Math.max(0.75, (0.45 * Math.max(1, H - inset.top - inset.bottom)) / (frameOf().S || 1)) : 0.75;
+      const sets = fitProjected ? [edgePts([...list.map((b) => b.fitPts ?? b.pts), ...list.map(motionPts)])] : [];
+      if (fitProjected) for (let pass = 0; pass < 4; pass++) {
+        const q = projectedBox(sets, f.x, f.y, f.k), hx = (q.x1 - q.x0) / 2 / size, hy = (q.y1 - q.y0) / 2 / size, worst = Math.max(hx / 1.15, hy / ay);
+        if (!(worst > 0)) break;
+        f.x += (q.x0 + q.x1) / 2 / (f.k * size); f.y += (q.y0 + q.y1) / 2 / (f.k * size * TILT_C);
+        f.k *= z / worst;
+      }
       for (const b of list) b.fit = f;
     }
   }
@@ -448,8 +517,8 @@ export function createField(canvas, { onBeat, onTick, cloudTime = 1, cloudSpread
   function render() {
     ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, canvas.width, canvas.height);
     if (!scene) return;
-    const ct = TILT_C, st = TILT_S, narrow = W < 600;
-    const S = Math.min(W * 0.36, H * (narrow ? 0.38 : 0.6)) * DPR, ox = W * 0.5 * DPR, oy = H * (narrow ? 0.52 : 0.5) * DPR, list = [];
+    const ct = TILT_C, st = TILT_S, fr = frameOf();
+    const S = fr.S * DPR, ox = fr.ox * DPR, oy = fr.oy * DPR, list = [];
     const visibleEnd = Math.max(active, leaveEnd);
     for (let i = 0; i < visibleEnd; i++) {
       if (alpha[i] < 0.01) continue;
@@ -528,8 +597,7 @@ export function createField(canvas, { onBeat, onTick, cloudTime = 1, cloudSpread
    * a drone. For picking on the stage (logo mode): the same projection as render(). */
   function screenOf() {
     const b = scene?.beats[beat]; if (!b || !order) return null;
-    const ct = TILT_C, st = TILT_S, narrow = W < 600;
-    const S = Math.min(W * 0.36, H * (narrow ? 0.38 : 0.6)), ox = W * 0.5, oy = H * (narrow ? 0.52 : 0.5), out = new Array(b.pts.length).fill(null);
+    const ct = TILT_C, st = TILT_S, { S, ox, oy } = frameOf(), out = new Array(b.pts.length).fill(null);
     for (let i = 0; i < active; i++) {
       const j = order[i]; if (j < 0 || j >= b.pts.length) continue;
       const k = i * 3, y = pos[k + 1], z = pos[k + 2], Y = y * ct - z * st, Z = y * st + z * ct, pr = 3.4 / (3.4 - Z);
@@ -540,12 +608,12 @@ export function createField(canvas, { onBeat, onTick, cloudTime = 1, cloudSpread
   /** Lage (Canvas-Pixel, Projektion wie render()), Licht und Farbe der ersten n Drohnen; nicht fliegende sind dunkel. */
   function drones(n) {
     ensureCapacity(n);
-    const narrow = W < 600, S = Math.min(W * 0.36, H * (narrow ? 0.38 : 0.6)), ox = W * 0.5, oy = H * (narrow ? 0.52 : 0.5), lit = Math.max(active, leaveEnd), out = [];
+    const { S, ox, oy } = frameOf(), lit = Math.max(active, leaveEnd), out = [];
     for (let i = 0; i < n; i++) {
       const k = i * 3, y = pos[k + 1], z = pos[k + 2], Y = y * TILT_C - z * TILT_S, Z = y * TILT_S + z * TILT_C, pr = 3.4 / (3.4 - Z);
       out.push([ox + pos[k] * S * pr, oy - Y * S * pr, i < lit ? alpha[i] : 0, col[k] | 0, col[k + 1] | 0, col[k + 2] | 0]);
     }
     return out;
   }
-  return { drones, radius: () => radNow, setMotionIndependent(v) { motionIndependent = !!v; sync(); tick(); }, show, replay: () => goto(0), goto, beat: () => beat, setPaused, paused: () => userPaused, setRate: (r) => { rate = r; tick(); }, timeline, screenOf };
+  return { relayout: resize, drones, radius: () => radNow, setMotionIndependent(v) { motionIndependent = !!v; sync(); tick(); }, show, replay: () => goto(0), goto, beat: () => beat, setPaused, paused: () => userPaused, setRate: (r) => { rate = r; tick(); }, timeline, screenOf };
 }
