@@ -13,6 +13,7 @@ import { loadHeartData } from "./heart-data.js";
 import { textFormationAsync } from "./text-formation.js";
 import { TAU, DIAMOND, GREEN, WARM, GOLD, PINK, VIOLET, CYAN, BLUE, ORANGE, RED, MOON, mix, paint, place, frac, smooth, hash, yaw, roll, pitch, sway, breathe, glint, sparkle, chase, part, act, steadyClock, drift, wander, lightRank } from "./show-motion.js";
 import { transitions, planClouds } from "./scenes/interludes.js";
+import { GROSS } from "./scenes/gross/index.js"; // Runde 11: große Motive, je Motiv nachgeladen
 import { TEMPO, runFits } from "./show-tempo.js";
 import { star, extrude, evenSubset, sampleOutline, circle, heartOutline } from "./show-geometry.js";
 import { flute2d, flute3d, bubbles, trophy2d, trophy3d, bulb2d, bulb3d, bulbGlass, filament, notes2d, clover2d, clover3d } from "./show-shapes.js";
@@ -596,6 +597,9 @@ async function buildBeats(version, n) {
       ] };
     }
     default: {
+      // Runde 11: große Motive laden je Motiv nach (scenes/gross/index.js), nicht im gemeinsamen Szenenpaket
+      const lazy = GROSS[version.build];
+      if (lazy) return (await lazy()).builders[version.build](n, caption, version);
       // newer motifs live in one module per occasion (src/scripts/scenes/)
       const build = (await loadExtra())[version.build];
       return build ? build(n, caption, version) : { beats: [{ pts: [], caption: "" }] };
