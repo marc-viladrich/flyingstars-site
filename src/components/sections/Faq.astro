@@ -44,7 +44,7 @@ const ld = groups?.length ? JSON.stringify({ '@context': 'https://schema.org', '
     <div class="faq-body">
       {blocks.map((block, bi) => <div class="faq-group" id={block.id} aria-labelledby={block.headline ? `${block.id}-h` : undefined} role={block.headline ? 'group' : undefined}>
         {block.headline && <G class="faq-group-h" id={`${block.id}-h`}>{block.headline}</G>}
-        <div class="faq">{block.items.map(({ entry }, i) => <details open={openFirst && bi === 0 && i === 0}><summary>{Q ? <Q class="faq-q">{entry.data.question}</Q> : <span>{entry.data.question}</span>}<Icon name="plus" size={20} class="faq-ico" /></summary><div class="answer"><FaqAnswer entry={entry} /></div></details>)}</div>
+        <div class="faq">{block.items.map(({ entry }, i) => <details open={openFirst && bi === 0 && i === 0}><summary>{Q ? <Q class="faq-q">{entry.data.question}</Q> : <span>{entry.data.question}</span>}<Icon name="plus" size={20} class="faq-ico" /></summary><div class="faq-panel"><div class="answer"><FaqAnswer entry={entry} /></div></div></details>)}</div>
       </div>)}
       {closing && <CtaBox headline={closing.headline} text={closing.text} button={{ label: t('chopper404.requestAShow'), href: '/kontakt/' }} level={G} class="faq-cta" />}
     </div>
@@ -53,37 +53,57 @@ const ld = groups?.length ? JSON.stringify({ '@context': 'https://schema.org', '
 </section>
 
 <script>
-  // Weiches Öffnen/Schließen für Browser ohne interpolate-size (Safari 18, Firefox); Chromium macht es per CSS.
-  // Animiert die Höhe der Antwort mit Web Animations; bei reduzierter Bewegung oder pausierter Bewegung sofort.
+  // WebKit unterstützt ::details-content, lässt beim Schließen aber die Höhe des nativen
+  // Details-Inhalts sofort wegfallen. Dort bleibt das Element bis zum Ende der Animation offen.
   if (!CSS.supports('interpolate-size', 'allow-keywords')) {
-    const still = () => matchMedia('(prefers-reduced-motion: reduce)').matches || document.documentElement.classList.contains('motion-paused');
-    // Dauer und Kurve aus denselben Tokens wie der CSS-Weg (global.css: --dur-disclose, --ease-glide), gelesen beim ersten
-    // Klick: beim Ausführen des Moduls kann WebKit das Stylesheet noch nicht angewendet haben (dann wären beide leer)
-    let opts: KeyframeAnimationOptions | undefined;
-    const timing = () => {
-      if (opts) return opts;
-      const root = getComputedStyle(document.documentElement), dur = root.getPropertyValue('--dur-disclose').trim();
-      return (opts = { duration: parseFloat(dur) * (dur.endsWith('ms') ? 1 : 1000), easing: root.getPropertyValue('--ease-glide').trim() });
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+    let timing: KeyframeAnimationOptions | undefined;
+    const options = () => {
+      if (timing) return timing;
+      const root = getComputedStyle(document.documentElement);
+      const duration = root.getPropertyValue('--dur-disclose').trim();
+      return (timing = {
+        duration: parseFloat(duration) * (duration.endsWith('ms') ? 1 : 1000),
+        easing: root.getPropertyValue('--ease-glide').trim(),
+      });
     };
+    const running = new Map<HTMLDetailsElement, Animation>();
+    const still = () => reduced.matches || document.documentElement.classList.contains('motion-paused');
+    const finishWhenPaused = () => { if (still()) for (const animation of running.values()) animation.finish(); };
+    reduced.addEventListener('change', finishWhenPaused);
+    document.addEventListener('flyingstars:motion-change', finishWhenPaused);
+
     for (const details of document.querySelectorAll<HTMLDetailsElement>('.faq details')) {
-      const summary = details.querySelector('summary'), answer = details.querySelector<HTMLElement>('.answer');
-      if (!summary || !answer) continue;
-      let running: Animation | null = null;
+      const summary = details.querySelector('summary');
+      const panel = details.querySelector<HTMLElement>('.faq-panel');
+      const answer = panel?.querySelector<HTMLElement>('.answer');
+      if (!summary || !panel || !answer) continue;
       summary.addEventListener('click', (event) => {
         if (still()) return;
         event.preventDefault();
-        const from = running ? answer.getBoundingClientRect().height : (details.open ? answer.offsetHeight : 0);
-        running?.cancel();
-        answer.style.overflow = 'clip';
-        if (!details.open || answer.dataset.closing) {
-          delete answer.dataset.closing; details.open = true;
-          running = answer.animate([{ height: `${from}px`, opacity: from ? 1 : 0 }, { height: `${answer.scrollHeight}px`, opacity: 1 }], timing());
-          running.onfinish = () => { running = null; answer.style.overflow = ''; };
-        } else {
-          answer.dataset.closing = '1';
-          running = answer.animate([{ height: `${from}px`, opacity: 1 }, { height: '0', opacity: 0 }], timing());
-          running.onfinish = () => { running = null; delete answer.dataset.closing; details.open = false; answer.style.overflow = ''; };
-        }
+        const previous = running.get(details);
+        const closing = details.open && !details.hasAttribute('data-closing');
+        const from = details.open ? panel.getBoundingClientRect().height : 0;
+        const opacity = previous ? getComputedStyle(panel).opacity : (details.open ? 1 : 0);
+        const timing = options();
+        previous?.cancel();
+        details.open = true;
+        const to = closing ? 0 : answer.getBoundingClientRect().height;
+
+        details.toggleAttribute('data-closing', closing);
+        panel.style.overflow = 'clip';
+        const animation = panel.animate([
+          { height: `${from}px`, opacity },
+          { height: `${to}px`, opacity: closing ? 0 : 1 },
+        ], timing);
+        running.set(details, animation);
+        animation.onfinish = () => {
+          if (running.get(details) !== animation) return;
+          running.delete(details);
+          details.open = !closing;
+          details.removeAttribute('data-closing');
+          panel.style.overflow = '';
+        };
       });
     }
   }
@@ -116,17 +136,20 @@ const ld = groups?.length ? JSON.stringify({ '@context': 'https://schema.org', '
   /* Akkordeon-Icon: Lucide „plus“ (Icon.astro), dreht beim Öffnen weich zum X (Runde 5) */
   .faq-ico { flex: 0 0 auto; color: var(--text); transition: transform var(--dur-disclose) var(--ease-glide), color var(--dur-control); }
   .faq summary:hover .faq-ico { color: var(--accent); }
-  .faq details[open] > summary .faq-ico { transform: rotate(45deg); }
-  /* Öffnen und Schließen weich über die Höhe. Moderner Weg: ::details-content + interpolate-size (Chromium). Browser ohne
-     interpolate-size (Safari 18, Firefox) übernimmt ein kleines Skript in Faq.astro (Web Animations auf .answer) mit
-     derselben Dauer und Kurve (--dur-disclose, --ease-glide). */
+  .faq details[open]:not([data-closing]) > summary .faq-ico { transform: rotate(45deg); }
   @supports (interpolate-size: allow-keywords) {
-    .faq details { interpolate-size: allow-keywords; }
-    .faq details::details-content { block-size: 0; overflow-y: clip; opacity: 0; transition: block-size var(--dur-disclose) var(--ease-glide), opacity var(--dur-standard) var(--ease-default), content-visibility var(--dur-disclose) allow-discrete; }
+    .faq details::details-content { interpolate-size: allow-keywords; block-size: 0; overflow-y: clip; contain: layout; opacity: 0; }
     .faq details[open]::details-content { block-size: auto; opacity: 1; }
+    @media (prefers-reduced-motion: no-preference) {
+      html:not(.motion-paused) .faq details::details-content {
+        transition: block-size var(--dur-disclose) var(--ease-glide),
+          opacity var(--dur-standard) var(--ease-default),
+          content-visibility var(--dur-disclose) allow-discrete;
+      }
+    }
   }
-  @media (prefers-reduced-motion: reduce) { .faq details::details-content, .faq-ico { transition: none; } }
-  html.motion-paused .faq details::details-content { transition: none; }
+  @media (prefers-reduced-motion: reduce) { .faq-ico { transition: none; } }
+  html.motion-paused .faq-ico { transition: none; }
   .faq .answer { padding: 0 0 var(--space-6); color: var(--muted); display: grid; gap: var(--space-2-5); max-width: 64ch; }
   .faq .answer ul { margin: 0; padding-left: var(--space-4-5); display: grid; gap: var(--space-1-5); }
   .faq .answer a { color: var(--text); border-bottom: 1px solid var(--line-strong); transition: border-color var(--dur-control); }

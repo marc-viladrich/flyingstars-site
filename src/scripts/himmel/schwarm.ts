@@ -31,12 +31,13 @@ interface Scene { id: string; n: number; pts: Float32Array; col: Uint8Array; ran
 interface SlotDef { sel: string; place: Place; spec: Spec | ((host: HTMLElement) => Spec); deskOnly?: boolean; then?: Spec; react?: React; when?: (host: HTMLElement) => boolean; max?: number; folge?: boolean; up?: number; tall?: number }
 /** Die Show-Folge (folge.js), erst nahe an ihrer Section geladen. */
 interface Folge { ready: Promise<void>; canEnter(): boolean; place(box: Box): unknown; enter(box: Box): { pts: number[][]; radius: number } | null; peek(): number[][]; play(): void; leave(): number[][]; hide(): void }
-interface Slot { def: SlotDef; host: HTMLElement; box: Box; scene: Scene | null; want: string; spec: Spec; first: Spec; seqAt: number; own: HTMLElement | null; turned: boolean }
+interface Slot { def: SlotDef; host: HTMLElement; bounds?: Box; box: Box; scene: Scene | null; want: string; spec: Spec; first: Spec; seqAt: number; own: HTMLElement | null; turned: boolean }
 
 const N = 300;
 const DESK = 900;
 const html = () => document.documentElement;
-const still = () => matchMedia('(prefers-reduced-motion: reduce)').matches || html().classList.contains('motion-paused');
+const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+const still = () => reducedMotion.matches || html().classList.contains('motion-paused');
 const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 const lang = () => (['de', 'en', 'nl'].includes(html().lang) ? html().lang : 'de') as 'de' | 'en' | 'nl';
 const idOf = (s: Spec): string => ('motif' in s ? `m:${s.motif}:${s.budget ?? N}` : 'figure' in s ? `f:${s.figure}` : 'text' in s ? `t:${s.text}:${s.count}` : 'burst' in s ? 'burst' : `q:${s.seq.map(idOf).join('+')}`);
@@ -293,11 +294,14 @@ class Himmel {
       }
     }), { rootMargin: '120% 0px' });
     for (const slot of this.slots) near.observe(slot.host);
-    const again = () => { this.layout(); this.kick(); };
-    new ResizeObserver(again).observe(document.body);
+    const refresh = () => { this.layout(true); };
+    // Body-Änderungen können Bühnen verschieben. Ein Akkordeon unterhalb der Bühnen ändert ihre Geometrie nicht.
+    const sizes = new ResizeObserver(() => this.layout());
+    sizes.observe(document.body);
+    for (const { host } of this.slots) sizes.observe(host);
     this.sy = scrollY;
     addEventListener('scroll', () => { const dy = scrollY - this.sy; if (Math.abs(dy) > 4) { this.dir = dy > 0 ? 1 : -1; this.sy = scrollY; } this.kick(); }, { passive: true });
-    addEventListener('resize', again);
+    addEventListener('resize', refresh, { passive: true });
     // Zeiger verdrängt die Drohnen im Raum, eine Feder holt sie weich zurück (Runde 5, Marc: das Aufleuchten wirkte „cheap“;
     // dieselbe Mechanik wie die Punktwolke der Nachhaltigkeits-Scrollstory, effects/eco-scrolly.js). Licht bleibt, wie es ist.
     addEventListener('pointermove', (e) => {
@@ -310,12 +314,14 @@ class Himmel {
     addEventListener('pagehide', () => this.remember());
     this.recall();
     // Pause oder Fortsetzen (html.motion-paused): neu zeichnen, stehend oder fliegend
-    new MutationObserver(() => { this.last = 0; this.kick(); }).observe(html(), { attributes: true, attributeFilter: ['class'] });
-    document.fonts?.ready.then(again);
+    const motionChanged = () => { this.last = 0; this.kick(); };
+    document.addEventListener('flyingstars:motion-change', motionChanged);
+    reducedMotion.addEventListener('change', motionChanged);
+    document.fonts?.ready.then(refresh);
     const fs = this.slots.find((s) => s.def.folge);
     if (fs) this.loadFolge(fs);
     this.frame = this.frame.bind(this);
-    this.layout(); this.kick();
+    this.layout(true);
   }
   /** Die Show-Folge laden, sobald ihre Section näher als zwei Bildschirmhöhen ist (die Engine des Konfigurators ist groß). */
   loadFolge(slot: Slot) {
@@ -348,17 +354,36 @@ class Himmel {
     this.last = 0; this.kick();
   }
 
-  layout() {
-    const old = this.active ? { ...this.active.box } : null;
-    for (const s of this.slots) measure(s);
+  layout(force = false) {
+    const old = this.active?.box;
+    // Erst alle Außenmaße lesen. measure() kann für eine Bühne Platz im Seitenfluss ein- oder ausblenden.
+    const bounds = this.slots.map((slot) => page(slot.host));
+    let redraw = force;
+    for (const [i, slot] of this.slots.entries()) {
+      const next = bounds[i], prev = slot.bounds, before = slot.box;
+      slot.bounds = next;
+      if (force || !prev || prev.w !== next.w || prev.h !== next.h) measure(slot);
+      else if (before.w && (prev.x !== next.x || prev.y !== next.y)) {
+        // Verschiebt sich nur der Block, gelten Kollisionsprüfung und Maße weiter.
+        slot.box = { ...before, x: before.x + next.x - prev.x, y: before.y + next.y - prev.y };
+      }
+      const after = slot.box;
+      if (!force && before.x === after.x && before.y === after.y && before.w === after.w && before.h === after.h) continue;
+      // Eine entfernte Bühne braucht erst einen neuen Frame, wenn sie ins Spiel kommt.
+      redraw ||= slot === this.active || still() || Boolean(slot.scene && (this.inRange(slot, before) || this.inRange(slot, after)));
+      if (this.fol && slot.def.folge && after.w) {
+        this.fol.place(after);
+        if (this.folPts && !this.handed) this.folPts = this.fol.peek();
+      }
+    }
+    if (!redraw) return;
     // Layout hat sich verschoben (Bilder geladen, Akkordeon offen): der stehende Schwarm zieht mit, ohne Flug
     if (old && this.active && this.born) {
       const dx = this.active.box.x + this.active.box.w / 2 - (old.x + old.w / 2), dy = this.active.box.y + this.active.box.h / 2 - (old.y + old.h / 2);
       if (dx || dy) for (let i = 0; i < N; i++) { this.x[i] += dx; this.y[i] += dy; this.fx[i] += dx; this.fy[i] += dy; this.mx[i] += dx; this.my[i] += dy; }
     }
     this.fly.H = 0; this.stand.H = 0; this.last = 0; // Flächen neu ankern (angelegt wird nur bei neuer Pixelgröße)
-    const fs = this.slots.find((s) => s.def.folge);
-    if (this.fol && fs && fs.box.w) { this.fol.place(fs.box); if (this.folPts && !this.handed) this.folPts = this.fol.peek(); }
+    this.kick();
   }
 
   /** Zeichenfläche wählen und in Seitenkoordinaten ankern. Flug (wide): ein Fenster von 1,7 Bildschirmhöhen über die ganze
@@ -394,6 +419,13 @@ class Himmel {
     return true;
   }
 
+  inRange(slot: Slot, box = slot.box): boolean {
+    const vh = innerHeight, y = scrollY;
+    // Das Formular fliegt etwas früher an, weil der Einleitungstext auf dem Handy länger ist.
+    const ahead = this.dir > 0 ? (slot.def.place === 'form' ? vh * 1.2 : vh * 0.3) : 60;
+    return box.w > 0 && box.y + box.h >= y - (this.dir < 0 ? vh * 0.3 : 60) && box.y <= y + vh + ahead;
+  }
+
   /** Welche Bühne spielt. Der Blick eilt dem Scrollen voraus: Der Schwarm fliegt los, sobald die nächste Bühne ins Bild kommt,
    *  und steht, wenn man dort ankommt (Marc, 13.11.: nicht auf eine leere Fläche warten). Wer im Formular tippt, behält sein Bild. */
   pick(): Slot | null {
@@ -402,11 +434,7 @@ class Himmel {
     if (form && form.host.contains(document.activeElement) && form.scene) return form;
     let best: Slot | null = null, bd = Infinity;
     for (const s of this.slots) {
-      if (!s.scene || !s.box.w) continue;
-      // im Bild oder kurz davor (in Scrollrichtung etwas weiter). Das Formular steuert er schon gut eine Bildschirmhöhe
-      // vorher an: Dort soll das Bild stehen, bevor man ankommt (auf dem Handy liegt davor ein langer Einleitungstext)
-      const ahead = this.dir > 0 ? (s.def.place === 'form' ? vh * 1.2 : vh * 0.3) : 60;
-      if (s.box.y + s.box.h < scrollY - (this.dir < 0 ? vh * 0.3 : 60) || s.box.y > scrollY + vh + ahead) continue;
+      if (!s.scene || !this.inRange(s)) continue;
       const dist = Math.abs(s.box.y + s.box.h / 2 - line) - (s === this.active ? vh * 0.14 : 0);
       if (dist < bd) { bd = dist; best = s; }
     }
