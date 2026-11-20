@@ -114,7 +114,8 @@ export function boundaryReason(file, context) {
  if(file==='src/scripts/show-configurator.js'&&/\.style\.setProperty\("--(?:x|tip-left|tip-arrow|tip-top)"/.test(context))return 'DOMRect-/Zeigerkoordinaten sind CSS-px; numerische Geometrie nicht durch 16 teilen.';
  // Gemessene Layout-Geometrie (offset*/scrollHeight/DOMRect) ist CSS-px; ein Teilen durch 16 wäre bei größerer Grundschrift falsch
  if(file==='src/scripts/grid-glide.ts'&&/^set\('--ig-(?:w0|x)', `\$\{(?:base\.w|cell\.offsetLeft)\}px`\); set\('--ig-(?:h0|y)', `\$\{(?:base\.h|cell\.offsetTop)\}px`\);$/.test(context))return 'offsetLeft/offsetTop/offsetWidth der Rasterzelle sind CSS-px.';
- if(file==='src/components/sections/Faq.astro'&&/^running = answer\.animate\(\[\{ height: `\$\{from\}px`, opacity: [^}]*\}, \{ height: (?:`\$\{answer\.scrollHeight\}px`|'0'), opacity: [01] \}\], timing\(\)\);$/.test(context))return 'Höhe aus getBoundingClientRect/scrollHeight der Antwort ist CSS-px (Web-Animations-Ersatz für interpolate-size).';
+ if(file==='src/components/sections/Faq.astro'&&/^\{ height: `\$\{(?:from|to)\}px`, opacity(?:: closing \? 0 : 1)? \},$/.test(context))return 'Höhe aus getBoundingClientRect der ungepolsterten Antwort-Hülle ist CSS-px (Web-Animations-Ersatz für interpolate-size, Runde 10).';
+if(file==='src/components/sections/Faq.astro'&&/^running = answer\.animate\(\[\{ height: `\$\{from\}px`, opacity: [^}]*\}, \{ height: (?:`\$\{answer\.scrollHeight\}px`|'0'), opacity: [01] \}\], timing\(\)\);$/.test(context))return 'Höhe aus getBoundingClientRect/scrollHeight der Antwort ist CSS-px (Web-Animations-Ersatz für interpolate-size).';
  if(file==='src/components/landing/LandingSite.astro'&&context==='{ transform: `translateY(${-height}px)`, offset: 0.42, easing: easeFall },')return 'Sprung eines SVG-<g> in Benutzerkoordinaten des viewBox.';
  return null;
 }
