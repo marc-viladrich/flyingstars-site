@@ -1,4 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
+import { reach } from './helpers/reach';
 
 // Runde 5 (18.11.2026): seit Moritz' Preistext gibt es keine Paketknöpfe mehr. Der Konfigurator startet als „Individuelles
 // Paket“; Drohnenzahl und Art der Show (2D · 3D · 3D+, Runde 6 als Pills mit Häkchen) bestimmen Vorschau und Preis, die drei Pakete sind
@@ -63,6 +64,8 @@ test('ODYSSEY erzählt jedes Motiv in Akten, ↻ beginnt die Show von vorn', asy
   await page.goto(`${CFG}?anlass=launch&paket=ODYSSEY&motiv=idee#konfigurator`);
   await expect(scene(page)).toHaveText('Ein Glühfaden glimmt');
   await expect(scene(page)).toHaveText('um ihn formt sich die Glühbirne', { timeout: 20_000 });
+  // Runde 10: am Handy gibt es keine Strichleiste mehr (nur Pfeile), dort entfällt der Sprung an den Anfang
+  if (!(await page.locator('#cfg-track').isVisible())) return;
   await page.locator('#cfg-track').focus();
   await page.keyboard.press('Home'); // the track's start: the show from the beginning (Runde 10: Marketing beginnt mit Chat/QR)
   await expect(scene(page)).toHaveText('Eine Nachricht kommt an');
@@ -285,21 +288,7 @@ test('Runde 24: Katalogmotive spielen ab ihrer Punktzahl, der eigene Text hebt d
 });
 
 // ---------- Runde 5: Show-Art, Paket als Startpunkt, Upgrades eingeklappt, erster Bildschirm, Katalogmotive ----------
-// Runde 10: am Handy klebt die Bühne mit 50 % der Sichthöhe; Playwrights eigenes Scrollen legt die Pill dahinter oder unter
-// die Preisleiste. Wie ein Mensch: erst in den freien Streifen zwischen Bühne und Preisleiste scrollen, dann echt klicken
-const reach = async (page: Page, target: ReturnType<Page['locator']>) => {
-  for (let i = 0; i < 4; i++) {
-    const off = await target.evaluate((el) => {
-      const r = el.getBoundingClientRect(), stage = document.querySelector('.cfg-stage')!.getBoundingClientRect();
-      const bar = document.querySelector('.cfg-bar')!.getBoundingClientRect(), barTop = bar.height && bar.top < innerHeight ? bar.top : innerHeight;
-      const top = stage.bottom > 0 && stage.top < r.top ? Math.max(0, stage.bottom) : 0, mid = (r.top + r.bottom) / 2;
-      return mid > top + r.height / 2 + 4 && mid < barTop - r.height / 2 - 4 ? 0 : mid - (top + barTop) / 2;
-    });
-    if (!off) return;
-    await page.evaluate((y) => scrollBy(0, y), off);
-    await page.waitForTimeout(350);
-  }
-};
+// Runde 10: reach/tap liegen in tests/helpers/reach.ts (auch für logo-show-budget und inquiry-roundtrip)
 const art = async (page: Page, id: '2d' | '3d' | 'story') => {
   const pill = page.locator(`#cfg-arts label[data-art="${id}"]`);
   await reach(page, pill);

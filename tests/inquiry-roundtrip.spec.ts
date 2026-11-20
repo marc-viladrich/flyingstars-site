@@ -1,4 +1,5 @@
 import {test,expect} from '@playwright/test';
+import { tap } from './helpers/reach';
 import {onRequestPost} from '../functions/api/contact';
 import { money } from '../src/lib/price-core.mjs';
 
@@ -14,14 +15,14 @@ for (const locale of ['de', 'en', 'nl'] as const) {
  const pricing = `${prefix}/drohnenshow-preise/`;
  test(`${locale}: Festpaket anpassen, Show-Art und Extras bis ins Preisformular übernehmen`, async ({page, isMobile}) => {
   await page.goto(pricing);
-  if (isMobile) await page.locator('#pakete .mtabs').getByText('SPARK', {exact:true}).click();
+  if (isMobile) await tap(page, page.locator('#pakete .mtabs').getByText('SPARK', {exact:true}));
   await page.locator('[data-cfg-preset=SPARK]').press('Enter');
   await expect(page).toHaveURL(url => url.searchParams.get('paket') === 'SPARK' && url.hash === '#konfigurator');
   await expect(page.locator('#cfg-pkg')).toHaveText('SPARK');
   await expect(page.locator('#cfg-price')).toHaveText(money(7900, locale));
 
   for (const [art, drones, amount] of [['3d', 200, 15900], ['story', 300, 34900], ['2d', 100, 7900], ['story', 300, 34900]] as const) {
-   await page.locator(`#cfg-arts label[data-art="${art}"]`).click();
+   await tap(page, page.locator(`#cfg-arts label[data-art="${art}"]`));
    await expect(page.locator('#cfg-arts input:checked')).toHaveValue(art);
    await expect(page.locator('#cfg-drones')).toHaveValue(String(drones));
    await expect(page.locator('#cfg-price')).toHaveText(`${labels[locale].from} ${money(amount, locale)}`);
@@ -29,11 +30,11 @@ for (const locale of ['de', 'en', 'nl'] as const) {
   await expect(page.locator('#cfg-pkg')).toHaveText(labels[locale].individual);
   await expect(page).toHaveURL(url => !url.searchParams.has('paket'));
 
-  await page.locator('[data-occasion=hochzeit]').click();
-  await page.locator('#cfg-up-toggle').click();
-  await page.locator('#cfg-upgrades label:has([value=film])').click();
+  await tap(page, page.locator('[data-occasion=hochzeit]'));
+  await tap(page, page.locator('#cfg-up-toggle'));
+  await tap(page, page.locator('#cfg-upgrades label:has([value=film])'));
   await expect(page.locator('#x-film')).toBeChecked();
-  await page.locator('.xc', {has:page.locator('#x-express')}).click();
+  await tap(page, page.locator('.xc', {has:page.locator('#x-express')}));
   await expect(page.locator('#cfg-upgrades [value=express]')).toBeChecked();
   await expect(page.locator('#cfg-price')).toHaveText(`${labels[locale].from} ${money(35800, locale)}`);
 
@@ -80,7 +81,7 @@ for (const locale of ['de', 'en', 'nl'] as const) {
    });
 
    await page.goto(pricing, {waitUntil:'domcontentloaded'});
-   if (isMobile) await page.locator('#pakete .mtabs').getByText('SPARK', {exact:true}).click();
+   if (isMobile) await tap(page, page.locator('#pakete .mtabs').getByText('SPARK', {exact:true}));
    await page.locator('#pakete [data-pick-paket=SPARK]').press('Enter');
    await expect(page).toHaveURL(url => url.pathname === pricing && url.searchParams.get('paket') === 'SPARK' && url.hash === '#anfrage');
 
