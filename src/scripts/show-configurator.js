@@ -934,7 +934,14 @@ if (form) {
     // die Empfehlung gilt in beide Richtungen (Cupra mit 92 → SPARK); Runde 9: aufgerundet auf die nächste Preisstufe der
     // Art (233 → 250 bei 3D, 300 bei 3D+), nie unter den Bedarf, damit die Show dieselbe Formation zeigt wie der Logo-Modus
     // Runde 10b: genau die Empfehlung der Preiskarte (logo-advice.mjs), Show-Art eingeschlossen (152 bei 3D → 2D mit 160)
-    if (need) { const a = advice(); leavePreset(); if (a.art !== art) { art = a.art; auto3d = false; drawArt(); } drones = a.drones; slider.value = String(drones); }
+    // kommt die Empfehlung über die 2D-Grenze (2D ab 400 → 3D), ist das 3D „automatisch“ wie am Regler: wer wieder unter 400
+    // geht, ist wieder bei 2D (Runde 7)
+    if (need) {
+      const a = advice(), auto = art === "2d" && a.art === artForDrones("2d", a.drones) && a.art !== "2d";
+      leavePreset();
+      if (a.art !== art) { art = a.art; auto3d = auto; drawArt(); if (auto) floorNote('preise.art2dMax', TWO_D_LIMIT); }
+      drones = a.drones; slider.value = String(drones);
+    }
     // ab 400 Drohnen ist 2D automatisch 3D (Runde 7), auch bei der Übernahme eines Logos
     if (artForDrones(art, drones) !== art) { art = artForDrones(art, drones); auto3d = true; drawArt(); floorNote('preise.art2dMax', TWO_D_LIMIT); }
     // Runde 28: erst zurück zur Show, dann den Anfrage-Anhang im Hintergrund vorbereiten (das Punktbild zu kodieren dauert

@@ -87,9 +87,13 @@ test('Eine nicht passende strenge Fassung bleibt sichtbar mit Mindestbedarf und 
   expect(need).toBeGreaterThan(100);
   await tap(page, page.locator('#cfg-use-logo'));
   await page.locator('#cfg-drones').focus(); await page.keyboard.press('Home'); // 2D-Show mit 100 Drohnen
-  await expect(page.locator('#cfg-scene')).toHaveText(`Euer Logo braucht mindestens ${need} Drohnen`);
+  // Runde 10b: die große Zahl ist die buchbare Empfehlung (logo-advice.mjs, Preisstufe), die Bühne nennt den echten
+  // Mindestbedarf der Formation (ihre Punktzahl); der liegt nie über der Empfehlung
+  await expect(page.locator('#cfg-scene')).toHaveText(/^Euer Logo braucht mindestens \d+ Drohnen$/);
+  const raw = Number(await page.locator('#cfg-field').getAttribute('data-points'));
+  await expect(page.locator('#cfg-scene')).toHaveText(`Euer Logo braucht mindestens ${raw} Drohnen`);
+  expect(raw).toBeGreaterThan(100); expect(raw).toBeLessThanOrEqual(need);
   await expect(page.locator('#cfg-logo-caption')).toHaveCount(0);
   await expect(page.locator('#cfg-logo-status')).toHaveText('');
   await expect(page.locator('#cfg-error')).toBeHidden();
-  await expect(page.locator('#cfg-field')).toHaveAttribute('data-points', String(need));
 });
