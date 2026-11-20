@@ -434,11 +434,13 @@ fieldset.cfg-tool { margin: 0; padding: 0; border: 0; min-width: 0; }
 .cfg.has-head > :is(.cfg-panel, .cfg-stage) { margin-top: var(--head-gap-tool); }
 .cfg-head :is(h1, h2) { margin: 0; font-size: clamp(2.125rem, 3vw, 3.25rem); line-height: 1.02; letter-spacing: -0.035em; text-wrap: balance; }
 .cfg-facts > .fact-list { margin: 0; max-width: none; }
-/* Die Bühne passt mit Steuerleiste in den ersten Bildschirm, auch in niedrigen Fenstern wie 1280 × 720; --cfg-head-reserve
-   ist Seitenanfang, Kopf und Luft unter der Steuerleiste. Beim Scrollen klebt sie in derselben Höhe neben der Bedienung */
+/* Runde 11 (Marc 20.11.2026: „das Konfigurator-Window ist auf dem Laptop viel zu eng, mindestens doppelt so hohe min
+   height“): Früher passte die Bühne samt Kopf in den ersten Bildschirm und schrumpfte dafür bis auf 18 rem (1280 × 720:
+   288 px, 1440 × 800: 354 px); der Logo-Hinweis lief dabei über den Rand. Jetzt ist sie mindestens 36 rem hoch, sonst so
+   hoch wie das Fenster unter der Navigation (wie ohne Seitenkopf), höchstens 48 rem. Beim Scrollen klebt sie neben der
+   Bedienung. Wächter: tests/show-configurator.spec.ts „Laptop: Bühne …“ */
 @media (--nav-expanded) {
-  .cfg.has-head { --cfg-head-reserve: 22rem; }
-  .cfg.has-head > .cfg-stage { height: clamp(18rem, calc(100svh - var(--cfg-head-reserve) - var(--head-gap-tool)), 48rem); min-height: 0; }
+  .cfg.has-head > .cfg-stage { height: clamp(36rem, calc(100svh - 6.75rem), 48rem); min-height: 0; }
 }
 @media (--nav-collapsed) {
   .cfg.has-head { grid-template-areas: "head" "facts" "stage" "panel" "intro"; grid-template-rows: none; }

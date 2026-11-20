@@ -129,6 +129,31 @@ test('Große Bildschirme: Bedienung links, Bühne rechts; mobil gestapelt', asyn
   }
 });
 
+// Runde 11 (Marc 20.11.2026: „das Konfigurator-Window ist auf dem Laptop viel zu eng … dann wäre das Overlay auch nicht
+// komplett broken“): Bei Laptop-Fenstern ist die Bühne mindestens 36 rem hoch, und der Logo-Hinweis steht samt Knopf
+// ganz in der Ablagefläche, in allen drei Sprachen.
+test('Laptop: Bühne mindestens 36 rem hoch, Logo-Hinweis passt in die Ablagefläche', async ({ page }, info) => {
+  test.skip(!!info.project.use.isMobile, 'Desktop-Fenster');
+  test.setTimeout(180000);
+  for (const prefix of ['', '/en', '/nl']) for (const [w, h] of [[1100, 700], [1280, 720], [1366, 768], [1440, 800], [1920, 1080]]) {
+    await page.setViewportSize({ width: w, height: h });
+    await page.goto(`${prefix}${CFG}?drohnen=200&art=2d#konfigurator`);
+    await page.reload(); // gleiche Adresse mit Anker lädt sonst nicht neu, und der Logo-Anlass bliebe offen
+    await expect(page.locator('#cfg-field')).toHaveAttribute('data-points', /[0-9]+/);
+    await tap(page, page.locator('[data-occasion="logo"]'));
+    await expect(page.locator('.cfg-notice')).toBeVisible();
+    const m = await page.evaluate(() => {
+      const r = (s: string) => document.querySelector(s)!.getBoundingClientRect();
+      const rem = parseFloat(getComputedStyle(document.documentElement).fontSize);
+      const stage = r('.cfg-stage'), drop = r('.cfg-drop'), notice = r('.cfg-notice');
+      return { rem, stage: stage.height, inDrop: notice.top >= drop.top - 1 && notice.bottom <= drop.bottom + 1, inStage: drop.top >= stage.top && drop.bottom <= stage.bottom };
+    });
+    expect(m.stage, `${prefix || '/de'} ${w}×${h}: Bühnenhöhe`).toBeGreaterThanOrEqual(36 * m.rem - 1);
+    expect(m.inDrop, `${prefix || '/de'} ${w}×${h}: Hinweis in der Ablagefläche`).toBe(true);
+    expect(m.inStage, `${prefix || '/de'} ${w}×${h}: Ablagefläche in der Bühne`).toBe(true);
+  }
+});
+
 // ---------- Vierzehnte Fassung (A): Bedienung ----------
 
 /** Records every beat and how it is reached (data-cloud: all / part / empty) on the stage. */
