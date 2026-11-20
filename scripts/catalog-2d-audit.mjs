@@ -57,14 +57,15 @@ export async function audit(key, n) {
   // (Katalogpunkte selbst sind nie eine Lücke: Innenpunkte einer Fläche und Naben bleiben gewollt einzeln, Runde 9)
   const gaps = lit.filter((p, i) => nn[i] > 2.6 * typical && !isDot(rest[i]) && !(rest[i] < (beat.anchors ?? 0))).length;
   let off = 0;
-  if (!L.shape && !beat.hold) { // Aktionen enden in ihrem eigenen Bild (Händedruck, gezogene Schnur), nicht im Katalog
+  // Runde 10b: eigene Formen (starre Hände, Räder im Eingriff, rund gezogene Galaxie; beat.ownForm) misst niemand am Katalogbild
+  if (!L.shape && !beat.hold && !beat.ownForm) { // Aktionen enden in ihrem eigenen Bild (Händedruck, gezogene Schnur), nicht im Katalog
     const s0 = L.s0;
     for (const p of lit) { let d = Infinity; for (const q of src) d = Math.min(d, Math.hypot(q[0] - p[0], q[1] - p[1])); if (d > 1.3 * s0) off++; }
   }
   // Lücken an Linienenden: ein freies Ende, das knapp vor einer anderen Linie aufhört, darf im Bild kein Loch zeigen
   // (entlang der Verbindung steht alle halben Abstände eine Drohne in Reichweite)
   let ends = 0;
-  if (!L.field && !beat.hold) {
+  if (!L.field && !beat.hold && !beat.ownForm) {
     for (const b of prepareLines(L).bridges) {
       if (b.d <= 1.2 * typical || b.d >= 2.5 * typical) continue;
       const k = Math.ceil(b.d / (0.5 * typical));
@@ -75,7 +76,8 @@ export async function audit(key, n) {
     }
   }
   // sichtbar soll sein, was die Bühne bei n zeigt (Reserve nur, wo auch die kleinsten Lichter die Linien nicht trennen)
-  const expected = Math.min(n, stageSample(prepareLines(L), n).pts.length);
+  // (eigene Form: was die Szene selbst zeigt, abzüglich der Drohnen, die im Endbild verdeckt sind, beat.hidden)
+  const expected = beat.ownForm ? beat.pts.filter((p) => !(p[3] === 60 && p[4] === 60 && p[5] === 60)).length - (beat.hidden ?? 0) : Math.min(n, stageSample(prepareLines(L), n).pts.length);
   return { key, n, visible: lit.length, reserve: n - expected, catalogPairs, ends, short: expected - lit.length, typical, clumps, gaps, off };
 }
 

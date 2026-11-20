@@ -14,6 +14,7 @@
 // Mehr Drohnen wählen die größere Katalogvariante, wo es eine gibt (Ballons 100 → 150, Atom 147 → 162 → 220).
 import catalog from '../../content/catalog-motifs.json' with { type: 'json' };
 import { TAU, mix, frac, hash, yaw, roll, pitch, sway, breathe, glint, sparkle, chase, trace, wander, lightRank, part, act } from '../show-motion.js';
+import { ease } from './catalog-3d/kit.js';
 
 import { catalogAction } from './catalog-actions.js';
 import { analyse, resample, placeDerived, derive, prepareLines, stageSample, attach } from './catalog-resample.js';
@@ -40,10 +41,10 @@ function densify(id, pts, n) {
  * scripts/catalog-2d-lines.mjs), Farbe und Elternpunkt vom nächsten Katalogpunkt. Einmal je Variante und Zahl.
  */
 const flatCache = new Map(), prepared = new Map();
-async function flatForm(id, source, n) {
+async function flatForm(id, source, n, M = null) {
   const key = `${id}|${n}`;
   if (!flatCache.has(key)) {
-    if (!prepared.has(id)) prepared.set(id, load(id, 'linien/').then(prepareLines));
+    if (!prepared.has(id)) prepared.set(id, load(id, 'linien/').then((L) => prepareLines(M ? mapLines(L, M) : L)));
     const L = await prepared.get(id);
     if (flatCache.size > 300) flatCache.clear();
     const sample = stageSample(L, n);
@@ -61,7 +62,11 @@ export function flatVariant(key, n) {
   return variantFor(key, n) ?? (m.dimension !== '3D' ? m.variants[0] : null);
 }
 /** Aktionen, die nur Lagen lesen (keine Katalogindizes): sie laufen direkt auf den abgetasteten Drohnen. */
-const BY_PLACE = new Set(['smiley', 'handschlag']);
+const BY_PLACE = new Set(['smiley', 'handschlag', 'zahnraeder']);
+/** Aktionen, die eine eigene Form bauen (starre Hände, Räder im Eingriff): die Drohnen haben keinen Katalog-Elternpunkt. */
+const OWN_FORM = new Set(['handschlag', 'zahnraeder']);
+/** Profile, die das ganze Bild in der Bildebene drehen: das Bild muss rund sein, sonst eiert es (Wächter im Test). */
+export const WHOLE_TURN = new Set(['swirl', 'spin']);
 /** Profile, deren Motive in SPARK nur Licht bewegen, auch wenn sie räumlich sind (siehe glow, shimmer). */
 const LIGHT_ONLY = new Set(['glow', 'shimmer', 'twinkle', 'breathe', 'run', 'confetti', 'rainbow', 'charge']);
 const lang = () => { const l = typeof document === 'undefined' ? 'de' : document.documentElement?.lang; return ['de', 'en', 'nl'].includes(l) ? l : 'de'; };
@@ -91,7 +96,72 @@ function bright([x, y, z, r, g, b]) {
  * blitzte beim Start der lebendigen Wolke als Fremdkörper auf; hinter der Form steigen sie aus dem Motiv auf. */
 const reserve = (k, form, depth = 0.55) => Array.from({ length: k }, (_, i) => { const p = form[(i * 7) % form.length]; return [p[0], p[1], (p[2] || 0) - depth - 0.04 * (i % 3), 60, 60, 60]; });
 /** Ganze Form: Drehung in der Bildebene, die bei t = 0 genau null ist (keine Finte, kein Sprung beim Ankommen). */
+/** Ende des Nadelwegs (wie NEEDLE_PEAK in catalog-3d/technik.js): rechts oben, kurz vor dem roten Bereich. */
+const NEEDLE_PEAK = (12 * Math.PI) / 180;
 const settle = (amp, w) => (t) => amp * (1 - Math.cos(t * w)) / 2; // 0 → amp → 0, Hin- und Rückweg gleich lang
+
+// ------------------------------------------------------------------ Geometrie der bewegten Teile (Runde 10b) ----------
+// Marc (20.11.2026): „bei den 2D-Animationen … wirken Sachen, die sich drehen oder bewegen, einfach nicht so nice. Es wirkt
+// falsch oder kaputt.“ Gemeinsame Ursache: Drehpunkte und Teile kamen aus groben Schätzungen beim Katalogimport
+// (Schwerpunkt eines angeschnittenen Rads, das Nadelende statt der Nabe, alle Punkte, deren nächster Katalogpunkt zur
+// Gruppe gehört). Ein Teil, das um den falschen Punkt dreht, eiert und reißt Nachbarpunkte mit. Jetzt wird der Drehpunkt
+// aus der Form gemessen (Kreis durch die Punkte des Rings), und zum Teil gehört nur, was auf diesem Ring liegt.
+/** Kreis durch Punkte (algebraischer Ausgleich): { cx, cy, r }. */
+export function fitCircle(P) {
+  let sxx = 0, sxy = 0, syy = 0, sx = 0, sy = 0, sxz = 0, syz = 0, sz = 0;
+  for (const [x, y] of P) { const z = x * x + y * y; sxx += x * x; sxy += x * y; syy += y * y; sx += x; sy += y; sxz += x * z; syz += y * z; sz += z; }
+  const A = [[sxx, sxy, sx, -sxz], [sxy, syy, sy, -syz], [sx, sy, P.length, -sz]];
+  for (let i = 0; i < 3; i++) { let p = i; for (let k = i + 1; k < 3; k++) if (Math.abs(A[k][i]) > Math.abs(A[p][i])) p = k; [A[i], A[p]] = [A[p], A[i]]; for (let k = 0; k < 3; k++) if (k !== i) { const f = A[k][i] / A[i][i]; for (let c = i; c < 4; c++) A[k][c] -= f * A[i][c]; } }
+  const D = A[0][3] / A[0][0], E = A[1][3] / A[1][1], F = A[2][3] / A[2][2], cx = -D / 2, cy = -E / 2;
+  return { cx, cy, r: Math.sqrt(Math.max(0, cx * cx + cy * cy - F)) };
+}
+/**
+ * Rad: Kreis durch die Gruppenpunkte, ohne Ausreißer (Kotflügel, Streupunkte) neu angepasst. Der Import nahm nur Punkte
+ * aus dem unteren Bildteil (Traktor: das große Hinterrad ohne seinen oberen Bogen); zum Ring gehört jetzt jeder
+ * Katalogpunkt auf dem Kreis, zur Nabe nur, was schon in der Gruppe war.
+ */
+export function wheelRing(pts, idx) {
+  let c = fitCircle(idx.map((j) => pts[j]));
+  const band = (p, k) => Math.abs(Math.hypot(p[0] - c.cx, p[1] - c.cy) - c.r) < k * c.r;
+  for (let k = 0; k < 3; k++) { const keep = idx.filter((j) => band(pts[j], 0.25)); if (keep.length >= 5) c = fitCircle(keep.map((j) => pts[j])); }
+  const ring = pts.flatMap((p, j) => (band(p, 0.15) ? [j] : []));
+  if (ring.length >= 5) c = fitCircle(ring.map((j) => pts[j]));
+  return { ...c, group: new Set(idx) };
+}
+/** Liegt eine Drohne auf dem Rad? Auf dem Ring (nach Lage) oder an der Nabe (Elternpunkt in der Radgruppe). */
+export const onWheel = (w, b, j) => { const d = Math.hypot(b[0] - w.cx, b[1] - w.cy); return Math.abs(d - w.r) < 0.15 * w.r || (d < 0.35 * w.r && w.group.has(j)); };
+/** Nabe einer Nadel: der Ring, auf dem die meisten Nadelpunkte liegen (kleiner Kreis um den Drehpunkt). */
+export function needleHub(pts, idx, guess) {
+  const P = idx.map((j) => pts[j]); let best = { n: -1 };
+  for (let x = guess[0] - 0.25; x <= guess[0] + 0.25; x += 0.01) for (let y = guess[1] - 0.25; y <= guess[1] + 0.25; y += 0.01) {
+    const d = P.map((p) => Math.hypot(p[0] - x, p[1] - y));
+    for (let r = 0.06; r <= 0.2; r += 0.005) { let n = 0, e = 0; for (const v of d) if (Math.abs(v - r) < 0.02) { n++; e += Math.abs(v - r); } if (n > best.n || (n === best.n && e < best.e)) best = { n, e, cx: x, cy: y, r }; }
+  }
+  // fein: Kreis durch die Ringpunkte
+  const ring = P.filter((p) => Math.abs(Math.hypot(p[0] - best.cx, p[1] - best.cy) - best.r) < 0.025);
+  return ring.length >= 5 ? fitCircle(ring) : { cx: best.cx, cy: best.cy, r: best.r };
+}
+/**
+ * Galaxie (Marc: „sieht squashed aus“): FlyingStars' Galaxie ist schon im Katalog eine gestauchte Spirale (in ihrer eigenen
+ * Ebene 2 : 1,3, dazu 25° gekippt). Dreht sich ein Oval in der Bildebene, eiert es. Ein Motiv, das sich als Ganzes dreht,
+ * wird deshalb rund gezogen: die kurze Hauptachse auf die Länge der langen (Seitenverhältnis der Punktverteilung).
+ * null, wenn das Bild schon rund genug ist (Mandala, Sonne, Basketball).
+ */
+export function roundingMap(P, min = 0.85) {
+  const n = P.length, mx = P.reduce((s, p) => s + p[0], 0) / n, my = P.reduce((s, p) => s + p[1], 0) / n;
+  let a = 0, b = 0, c = 0; for (const p of P) { a += (p[0] - mx) ** 2; b += (p[0] - mx) * (p[1] - my); c += (p[1] - my) ** 2; }
+  const tr = (a + c) / n, det = (a * c - b * b) / n / n, l1 = tr / 2 + Math.sqrt(Math.max(0, tr * tr / 4 - det)), l2 = tr / 2 - Math.sqrt(Math.max(0, tr * tr / 4 - det));
+  if (Math.sqrt(l2 / l1) >= min) return null;
+  const th = 0.5 * Math.atan2(2 * b, a - c) + Math.PI / 2, ex = Math.cos(th), ey = Math.sin(th), k = Math.sqrt(l1 / l2) - 1; // Nebenachse
+  return { c: [mx, my], M: [[1 + k * ex * ex, k * ex * ey], [k * ex * ey, 1 + k * ey * ey]] };
+}
+const mapPt = ({ c, M }, p) => { const x = p[0] - c[0], y = p[1] - c[1]; return [c[0] + M[0][0] * x + M[0][1] * y, c[1] + M[1][0] * x + M[1][1] * y, ...p.slice(2)]; };
+/** Linien einer Variante (public/media/katalog/linien/) durch dieselbe Abbildung. */
+function mapLines(L, T) {
+  const f = (p) => mapPt(T, p), s = Math.sqrt(Math.abs(T.M[0][0] * T.M[1][1] - T.M[0][1] * T.M[1][0]));
+  const loopOf = (l) => (l.circle ? { ...l, circle: undefined, p: Array.from({ length: 48 }, (_, i) => f([l.circle[0] + Math.cos((i / 48) * TAU) * l.circle[2], l.circle[1] + Math.sin((i / 48) * TAU) * l.circle[2]])) } : { ...l, p: l.p.map(f) });
+  return { ...L, s0: L.s0 * s, nodes: L.nodes.map(f), dots: L.dots.map(f), curves: L.curves.map((c) => ({ ...c, p: c.p.map(f) })), loops: L.loops.map(loopOf), ...(L.grid ? { grid: { ...L.grid, p: L.grid.p.map(f) } } : {}) };
+}
 
 /**
  * Bewegung eines Profils für die Punkte einer Formation (Einheitskoordinaten). Gibt live(b, j, t, o) für die ersten
@@ -105,10 +175,12 @@ function profile(motion, f, pts, { body = false } = {}) {
   switch (motion) {
     case 'drive': {
       // Räder drehen sich um ihre Mitte, die Fahrtlinien hinter dem Wagen leuchten nach hinten ab; der Wagen steht.
-      const wheelOf = new Map(); (g.wheels ?? []).forEach((w, k) => w.idx.forEach((j) => wheelOf.set(j, w)));
+      // Runde 10b: Mitte = Kreis durch die Radpunkte (der Schwerpunkt eines oben angeschnittenen Rads liegt zu tief, das Rad
+      // eierte und warf Punkte ab), zum Rad gehört nur, was auf dem Ring oder an der Nabe liegt
+      const wheels = (g.wheels ?? []).map((q) => wheelRing(pts, q.idx));
       const xs = pts.map((p) => p[0]), right = Math.max(...xs);
       return (b, j, t, o) => {
-        const w = wheelOf.get(j);
+        const w = wheels.find((q) => onWheel(q, b, j));
         if (w) roll(o, -t * 2.4, w.cx, w.cy);
         else if (b[0] > right - 0.32 && b[1] > 0.1) o[3] = chase(-b[0], t, 0.9, 0.35, 0.55, 1.45); // Fahrtwind
         else o[3] = glint(b[0], t, 4.2, 0.3);
@@ -116,9 +188,20 @@ function profile(motion, f, pts, { body = false } = {}) {
       };
     }
     case 'needle': {
-      // Die Nadel schwingt über die Skala (Gas geben, zurücknehmen), die Skala leuchtet unter der Nadel auf.
-      const idx = new Set(g.needle?.idx ?? []), cx = g.needle?.cx ?? 0, cy = g.needle?.cy ?? 0, a = settle(0.9, 0.9);
-      return (b, j, t, o) => { if (idx.has(j)) { roll(o, -a(t), cx, cy); o[3] = 1.2; } else o[3] = lift(j, t); if (body) swayAll(o, t); };
+      // Die Nadel dreht hoch über die Skala und zurück, die Skala leuchtet unter der Nadel auf.
+      // Runde 10b (Marc: „bei 3D mega nice und smooth, bei 2D sehr awkward“): Drehpunkt war das Nadelende neben der Nabe,
+      // die Nadel eierte um 0,1 Bildbreiten; jetzt die Mitte des Nabenrings (needleHub). Bewegung wie in 3D
+      // (catalog-3d/technik.js drehzahl: ease über 6,5 s, von der Ruhelage im Uhrzeigersinn bis rechts oben), nur die Nadel.
+      const list = g.needle?.idx ?? [], idx = new Set(list), hub = list.length ? needleHub(pts, list, [g.needle.cx, g.needle.cy]) : { cx: 0, cy: 0 };
+      const tip = list.reduce((m, j) => (Math.hypot(pts[j][0] - hub.cx, pts[j][1] - hub.cy) > Math.hypot(pts[m][0] - hub.cx, pts[m][1] - hub.cy) ? j : m), list[0] ?? 0);
+      const rest = Math.atan2(pts[tip][1] - hub.cy, pts[tip][0] - hub.cx), sweep = (((rest - NEEDLE_PEAK) % TAU) + TAU) % TAU;
+      const angle = (t) => sweep * ease(t, 6.5), dir = pts.map((p) => Math.atan2(p[1] - hub.cy, p[0] - hub.cx));
+      return (b, j, t, o) => {
+        const a = angle(t);
+        if (idx.has(j)) { roll(o, -a, hub.cx, hub.cy); o[3] = 1.2; }
+        else o[3] = lift(j, t) * (0.85 + 0.45 * Math.max(0, Math.cos(rest - a - dir[j])) ** 12); // Licht folgt der Nadel
+        if (body) swayAll(o, t);
+      };
     }
     case 'bob': {
       // Jeder Ballon schwebt in eigenem Takt ein wenig auf und ab und pendelt um seine Schnur.
@@ -161,7 +244,10 @@ function profile(motion, f, pts, { body = false } = {}) {
       const of = new Map(), a = settle(1.15, 0.55); (g.wings ?? []).forEach((w, k) => w.idx.forEach((j) => of.set(j, [w, k])));
       return (b, j, t, o) => { const hit = of.get(j); if (hit) yaw(o, (hit[1] ? 1 : -1) * a(t), hit[0].hinge, 0); o[3] = lift(j, t); if (body) swayAll(o, t); };
     }
-    case 'swirl': return (b, j, t, o) => { roll(o, t * 0.18); o[3] = lift(j, t); if (body) pitch(o, 0.5); };
+    // Runde 10b: ruhig wie die 3D-Galaxie (0,14 rad/s), um die Mitte des rund gezogenen Bilds (roundingMap)
+    case 'swirl': { const cx = pts.reduce((s, p) => s + p[0], 0) / pts.length, cy = pts.reduce((s, p) => s + p[1], 0) / pts.length; return (b, j, t, o) => { roll(o, t * 0.14, cx, cy); o[3] = lift(j, t); if (body) pitch(o, 0.5); }; }
+    // Runde 10b: eine Blume am Stiel dreht sich nicht als Bild um ihre Mitte (der Stiel kreiste mit), sie wiegt sich um den Fuß des Stiels
+    case 'stem': { const low = pts.reduce((m, p) => (p[1] < m[1] ? p : m), pts[0]), a = settle(0.07, 0.8); return (b, j, t, o) => { roll(o, a(t) - 0.035 * (1 - Math.cos(t * 0.5)), low[0], low[1]); o[3] = lift(j, t); if (body) swayAll(o, t); }; }
     // als Körper nur gekippt (feste Neigung zeigt die zweite Ebene), Drehen und Schwenken zugleich ergäben ungleiche Wege
     case 'spin': return (b, j, t, o) => { roll(o, t * 0.12); o[3] = lift(j, t); if (body) pitch(o, 0.45); };
     // kein Dauerfunkeln (Wächter show-clouds: ein funkelnder Stern liest sich als ruhende Wolke): Licht läuft die Zacken entlang
@@ -201,8 +287,9 @@ export async function catalogScene(key, tier, n, caption) {
   // doppelte Binnenlinien), die Drohnenzahl bestimmt nur die Liniendichte
   const v = flatVariant(key, n);
   if (!v) throw new Error(`Katalogmotiv ${key}: keine Variante für ${n} Drohnen`);
-  const f = await load(v.id), source = prepare(f, !deep);
-  let front, fit, live, drawLive, hold, parents, anchorCount = 0, dotCount = n;
+  const f = await load(v.id), round = !deep && WHOLE_TURN.has(m.motion) ? roundingMap(f.points) : null;
+  const source = prepare(f, !deep).map((p) => (round ? mapPt(round, p) : p));
+  let front, fit, live, drawLive, hold, parents, parts, hidden = 0, own = false, anchorCount = 0, dotCount = n;
   if (deep) {
     // räumliche Formationen: Katalogpunkte behalten Platz und Index, neue Drohnen zeichnen die Linien nach (derive())
     const derived = densify(v.id, source, n), order = lightRank(source);
@@ -214,7 +301,7 @@ export async function catalogScene(key, tier, n, caption) {
     // Runde 7 (Marc, 19.11.2026): flache Motive gleichmäßig auf sauberen Linien, Liniendichte aus der Drohnenzahl. Jede
     // Drohne bewegt sich wie ihr nächster Katalogpunkt: Profile rechnen mit der eigenen Lage und der Gruppe des Elternpunkts
     // (Räder, Nadel, Flügel drehen exakt), Aktionen mit Katalogindizes verschieben die Drohne wie ihren Elternpunkt.
-    const { pts: sampled, parent, anchors, dots } = await flatForm(v.id, source, n);
+    const { pts: sampled, parent, anchors, dots } = await flatForm(v.id, source, n, round);
     anchorCount = anchors; dotCount = dots;
     const byPlace = BY_PLACE.has(key) ? catalogAction(key, f, sampled) : null;
     const action = byPlace ?? catalogAction(key, f, source);
@@ -235,16 +322,22 @@ export async function catalogScene(key, tier, n, caption) {
       live = (b, j, t, o) => own(b, parent[j], t, o);
     }
     front = base;
-    fit = action ? [...base, ...base.map((p, j) => { const o = [...p.slice(0, 3), 1]; live(p, j, action.duration, o); return o.slice(0, 3); })] : base;
+    // im Bild bleibt, was die Aktion überstreicht (Hände vom Start bis zum Schütteln, Räder über eine Weile)
+    const span = action?.duration ?? (action ? 8 : 0);
+    fit = action ? [...base, ...[1, 2, 3, 4, 5, 6, 7, 8].flatMap((k) => base.map((p, j) => { const o = [...p.slice(0, 3), 1]; live(p, j, (span * k) / 8, o); return o.slice(0, 3); }))] : base;
     const order = lightRank(base);
     drawLive = (b, j, t, o) => { if (action) live(b, j, 0, o); o[3] *= trace(order[j], t, 2.2); };
     hold = action?.duration;
-    parents = parent;
+    hidden = action?.hidden ?? 0;
+    parts = action?.parts;
+    // eigene Form (starre Hände, Räder): keine Katalog-Elternpunkte; das Artefakt-Audit misst sie nicht am Katalogbild
+    if (OWN_FORM.has(key) || round) own = true; else parents = parent;
+    if (OWN_FORM.has(key)) anchorCount = 0;
   }
   const rest = reserve(n - front.length, front), k = front.length;
   const run = (b, j, t, o) => { if (j >= k) { o[3] = 0; return; } live(b, j, t, o); };
   // anchors: die ersten Drohnen stehen exakt auf FlyingStars' Punkten (Runde 9); drones: Lichtgröße bei dichten Linien
-  const extra = { ...(hold ? { hold } : {}), ...(parents ? { parents, anchors: anchorCount } : {}), ...(dotCount > front.length ? { drones: dotCount } : {}) };
+  const extra = { ...(hold ? { hold } : {}), ...(parents ? { parents, anchors: anchorCount } : {}), ...(own ? { ownForm: true } : {}), ...(hidden ? { hidden } : {}), ...(parts ? { parts } : {}), ...(dotCount > front.length ? { drones: dotCount } : {}) };
   if (tier !== 'ODYSSEY') return { beats: [{ pts: [...front, ...rest], fitPts: fit, caption, live: run, shimmer: false, ...extra }] };
   return { beats: [
     act([part('form', front), part('reserve', rest, { offstage: true })], { caption: say('lightDraws', name), hold: 1.6, live: (b, j, t, o) => { if (j >= k) { o[3] = 0; return; } drawLive(b, j, t, o); } }),

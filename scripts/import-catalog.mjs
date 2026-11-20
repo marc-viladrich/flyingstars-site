@@ -251,13 +251,13 @@ for (const c of SHOWS) {
 // nicht doppelt vorkommt. Farben wie im Katalogbild. `into` hängt die Formation als weitere Variante an ein Motiv an.
 const BILD = [
   { key: 'diskokugel', file: '12-1-die-diskokugel', motion: 'twinkle' },
-  { key: 'blume', file: '20-1-blume-var-2', motion: 'spin', de: 'Blume', en: 'Flower', nl: 'Bloem' },
+  { key: 'blume', file: '20-1-blume-var-2', motion: 'stem', de: 'Blume', en: 'Flower', nl: 'Bloem' },
   { key: 'blume2', file: '19-1-blume-var-1', motion: 'glide', de: 'Blume am Stiel', en: 'Flower on a stem', nl: 'Bloem aan een steel' },
   { key: 'biene', file: '22-1-die-biene', motion: 'glide' },
   { key: 'marienkaefer', file: '25-1-der-marienkafer', motion: 'shimmer' },
   { key: 'roboter', file: '27-1-der-kleine-roboter', motion: 'shimmer', de: 'Kleiner Roboter', en: 'Little robot', nl: 'Kleine robot' },
   { key: 'schluessel', file: '28-1-der-schraubenschlussel', motion: 'shimmer' },
-  { key: 'zahnraeder', file: '29-1-drehende-zahnrader', motion: 'spin', de: 'Zahnräder', en: 'Gears', nl: 'Tandwielen' },
+  { key: 'zahnraeder', file: '29-1-drehende-zahnrader', motion: 'gears', de: 'Zahnräder', en: 'Gears', nl: 'Tandwielen' },
   { key: 'lkw', file: '30-1-der-ausladende-lkw', motion: 'drive', de: 'Lastwagen', en: 'Truck', nl: 'Vrachtwagen' },
   { key: 'bagger', file: '31-1-der-bagger', motion: 'shimmer' },
   { key: 'feuerwehr', file: '36-2-das-feuerwehrauto', motion: 'drive' },

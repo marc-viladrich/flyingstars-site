@@ -2038,7 +2038,7 @@
    },
    "theme": "bild",
    "labels": [],
-   "motion": "spin",
+   "motion": "stem",
    "dimension": "2D",
    "variants": [
     {
@@ -2180,7 +2180,7 @@
    },
    "theme": "bild",
    "labels": [],
-   "motion": "spin",
+   "motion": "gears",
    "dimension": "2D",
    "variants": [
     {

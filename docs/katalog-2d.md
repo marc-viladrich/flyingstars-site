@@ -90,3 +90,36 @@ seine Zielkonturen (`catalog-actions.js`, Runde 9): Die Finger liefen hin und zu
 Jeden Bogen ansehen: Ist ein Motiv verzerrt, verfüllt oder zerrissen? Gibt es Klumpen an Kreuzungen oder Punkte neben der
 Linie? Der Wächter prüft, dass die Linien-Dateien aktuell sind, höchstens n Drohnen auf einer Linie stehen, der Mindestabstand
 eingehalten wird, abgeleitete Linien beim Katalogbild bleiben und die Rechenzeit stimmt.
+
+## Bewegung in 2D (Runde 10b, 20.11.2026)
+
+Marc: „Bei den 2D-Animationen, z. B. bei Marketing, wirken Sachen, die sich drehen oder bewegen, einfach nicht so nice. Es
+wirkt falsch oder kaputt.“ Alle bewegten 2D-Motive wurden als Frame-Folge angesehen und klassifiziert. Gemeinsame Ursache:
+Drehpunkte und bewegte Teile kamen aus groben Schätzungen beim Import (`scripts/import-catalog.mjs groupsFor`) oder es
+drehte sich ein ganzes flaches Bild, das dafür nicht taugt.
+
+| Motiv | Vorher | Jetzt |
+|---|---|---|
+| Drehzahlmesser | Drehpunkt war das Nadelende neben der Nabe: die Nadel eierte um 0,1 Bildbreiten, Schwenk nur 52° | Drehpunkt = Mitte des Nabenrings (`needleHub`, Kreis durch die Nadelpunkte); Nadel dreht wie in 3D (`ease` über 6,5 s) von der Ruhelage bis 12° rechts oben und zurück, Skala steht, Striche leuchten unter der Nadel |
+| Zahnräder | das ganze Katalogbild (ein Rad, zwei angeschnittene Räder, die wie ein Kabel aussehen) drehte sich als ein Stück | eigene Form wie die 3D-Fassung: zwei Räder (unter 170 Drohnen) oder drei, Achsabstand = Summe der Teilkreise, Zahn greift in Lücke (`gearPhases`), gegenläufig, Drehzahl ∝ 1/Zähne; jede Drohne fährt starr mit |
+| Galaxie | schon im Katalog gestaucht (in ihrer Ebene 2 : 1,3, dazu 25° gekippt); ein Oval, das sich dreht, eiert | rund gezogen (`roundingMap`: kurze Hauptachse auf die Länge der langen, Linien und Katalogpunkte gleich abgebildet), ruhige Drehung in der Bildebene (0,14 rad/s wie 3D) |
+| Handschlag | Konturen morphten aus der offenen Katalogpose in den Händedruck | zwei starre Hände (die beiden Konturen des Endbilds), erst getrennt, gleiten über 3,5 s (`smooth5`) ineinander, schütteln zweimal; wo die hintere Hand verdeckt ist, gehen ihre Drohnen aus (`hidden`, höchstens 8 %) |
+| Traktor, Golfcaddy, Sportwagen | Radmitte = Schwerpunkt eines angeschnittenen Rings (zu tief), Gruppe nur aus der unteren Bildhälfte: der obere Radbogen stand still, Punkte flogen vom Rad | Radmitte = Kreis durch die Radpunkte (`wheelRing`), zum Rad gehört jede Drohne auf dem Ring (nach Lage) und die Nabe |
+| Blume (am Stiel) | drehte sich als Bild um die Mitte, der Stiel kreiste mit | wiegt sich um den Fuß des Stiels (Profil `stem`) |
+
+Unverändert, weil sie sich richtig lesen: Mandala, Sonne, Basketball (rund, drehen sich in der Bildebene), Peace (rund; ob
+es sich drehen soll, ist eine offene Frage an Marc), Blüten, Ballons, Palme, Schiff, Glocke, Tor, Fledermäuse, Fahnen,
+Gläser, Konfetti, Zwinkern. Das Tor schwenkt seine Flügel räumlich auf (Katalogclip „Tor“), das verkürzt sie bewusst.
+
+Eigene Formen (Zahnräder, Hände, rund gezogene Galaxie) tragen `beat.ownForm`; das Artefakt-Audit misst sie nicht am
+Katalogbild („abseits“), prüft aber Zahl, Klumpen und Lücken. `beat.parts` nennt das starre Teil jeder Drohne.
+
+Wächter: `src/scripts/scenes/catalog-2d-motion.test.mjs` über alle 2D-Motive aus `catalog-motifs.json`:
+starre Teile statt Morphing (jede Drohne behält zu einem Nachbarn ihren Abstand; Ausnahmen mit Grund: Fahnen, Konfetti,
+Sektflasche, Gläser-Funken, Zwinkern), ganze Radringe drehen auf der Stelle, Nadel um die Nabe wie in 3D, Zahnräder ohne
+Durchdringung über 12 s und mit richtigem Übersetzungsverhältnis, Handschlag starr/getrennt/ineinander in allen Show-Arten,
+was sich als Ganzes dreht, ist rund.
+
+```sh
+node --test src/scripts/scenes/catalog-2d-motion.test.mjs src/scripts/scenes/catalog-actions.test.mjs
+```

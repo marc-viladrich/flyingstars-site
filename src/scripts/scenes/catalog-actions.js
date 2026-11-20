@@ -1,8 +1,103 @@
 // Semantic masks traced against the catalogue point renders, not x<0: tilted bowls cross the centre.
 // Indices refer to immutable catalogue variants. Spark points above the rims belong to neither glass.
-import { smooth } from '../show-motion.js';
+import { smooth, roll, TAU } from '../show-motion.js';
 import { sampleOutline } from '../show-geometry.js';
-import { assign } from '../show-flight.js';
+import { assemble, curves } from './catalog-3d/kit.js';
+
+/** Glatter als smooth: Geschwindigkeit UND Beschleunigung sind an beiden Enden null (ruhiges Anfliegen, sanftes Ankommen). */
+const smooth5 = (u) => (u <= 0 ? 0 : u >= 1 ? 1 : u * u * u * (u * (u * 6 - 15) + 10));
+/** Mittlere Farbe der Katalogdrohnen (die eigenen Formen behalten den Ton des Katalogbilds). */
+const tone = (pts) => [3, 4, 5].map((k) => Math.round(pts.reduce((s, p) => s + (p[k] ?? 255), 0) / Math.max(1, pts.length)));
+/** Punkte gleichmäßig auf offenen Polylinien, so ausgedünnt, dass keine zwei näher als g stehen. */
+function thinned(dense, g) {
+  const out = [], grid = new Map(), cell = (x, y) => `${Math.floor(x / g)},${Math.floor(y / g)}`;
+  for (const p of dense) {
+    const gx = Math.floor(p[0] / g), gy = Math.floor(p[1] / g); let ok = true;
+    for (let dx = -1; dx <= 1 && ok; dx++) for (let dy = -1; dy <= 1 && ok; dy++) for (const q of grid.get(`${gx + dx},${gy + dy}`) ?? []) if (Math.hypot(q[0] - p[0], q[1] - p[1]) < g) { ok = false; break; }
+    if (ok) { out.push(p); const k = cell(p[0], p[1]); if (!grid.has(k)) grid.set(k, []); grid.get(k).push(p); }
+  }
+  return out;
+}
+
+// ------------------------------------------------------------------ Handschlag ----------
+// Die beiden Hände im fertigen Händedruck (nachgezeichnet am Endbild von Katalogclip 24, m-3a2eec826186dbb9): links die
+// Hand, die von links kommt (Arm, dann die Finger schräg nach unten), rechts die Hand von rechts (Arm, Daumen oben, die
+// gekrümmten Finger unten). Jede Hand ist ein Stück und bleibt eins.
+const HANDS = [
+  [[-1,.53],[-.65,.48],[-.30,.47],[-.15,.39],[.02,.25],[.23,.08],[.43,-.11],[.40,-.21],[.30,-.23],[.10,-.08],[.34,-.28],[.29,-.38],[.19,-.38],[-.02,-.22],[.19,-.42],[.11,-.50],[.02,-.48],[-.19,-.30],[-.04,-.49],[-.14,-.55],[-.31,-.46],[-.62,-.23],[-1,-.13]],
+  [[1,.53],[.64,.49],[.33,.50],[.10,.47],[-.05,.38],[-.11,.20],[-.06,.09],[.05,.07],[.14,.20],[.25,.18],[.42,.01],[.55,-.08],[.35,-.34],[.08,-.57],[-.12,-.56],[-.31,-.46],[-.37,-.35],[-.28,-.29],[-.13,-.39],[-.26,-.26],[-.19,-.18],[-.04,-.27],[-.16,-.15],[-.07,-.08],[.11,-.20],[.42,-.28],[.68,-.15],[1,.03]],
+];
+/**
+ * n Drohnen auf den beiden Händen (Endbild), je Hand gleichmäßig; Startlage: die Hände so weit auseinander, dass zwischen
+ * ihnen deutlich Luft ist (mehr als 3 Linienabstände), die linke etwas tiefer, die rechte etwas höher.
+ * fade: Drohnen der rechten Hand, die im fertigen Händedruck auf einer Drohne der linken stünden (Kreuzungen) — sie
+ * gehen beim Zugreifen aus, damit das Endbild keinen Klumpen hat.
+ */
+function handshake(src) {
+  const n = src.length, lens = HANDS.map((h) => h.slice(1).reduce((s, p, i) => s + Math.hypot(p[0] - h[i][0], p[1] - h[i][1]), 0));
+  const dense = HANDS.map((h) => sampleOutline([{ pts: h, closed: false }], Math.ceil(n * 10 * lens[HANDS.indexOf(h)] / (lens[0] + lens[1]))));
+  const both = (g) => dense.map((d) => thinned(d, g));
+  let lo = 1e-4, hi = 0.5;
+  for (let it = 0; it < 24; it++) { const mid = (lo + hi) / 2; if (both(mid).reduce((s, q) => s + q.length, 0) >= n) lo = mid; else hi = mid; }
+  const g = hi, sets = both(g);
+  // knapp zu wenige: die fehlenden dorthin, wo auf ihrer Hand am meisten Platz ist
+  while (sets[0].length + sets[1].length < n) {
+    let best = null;
+    sets.forEach((q, h) => dense[h].forEach((c) => { const d = Math.min(...q.map((p) => Math.hypot(p[0] - c[0], p[1] - c[1]))); if (!best || d > best.d) best = { d, c, h }; }));
+    sets[best.h].push(best.c);
+  }
+  while (sets[0].length + sets[1].length > n) sets[sets[0].length > sets[1].length ? 0 : 1].pop();
+  const final = [...sets[0], ...sets[1]], hand = [...sets[0].map(() => 0), ...sets[1].map(() => 1)];
+  // Abstand der Hände beim Start: so weit, dass zwischen ihnen mindestens 3 g Luft ist
+  const gapAt = (d) => { let m = Infinity; for (const p of sets[0]) for (const q of sets[1]) m = Math.min(m, Math.hypot(q[0] + d - p[0] + d, q[1] + 0.12 * d - p[1] + 0.12 * d)); return m; };
+  // (Linienabstand = mittlerer Abstand zum nächsten Nachbarn in der eigenen Hand; g ist nur der Mindestabstand)
+  const nn = sets.flatMap((q) => q.map((p, i) => Math.min(...q.map((r, k) => (k === i ? Infinity : Math.hypot(r[0] - p[0], r[1] - p[1])))))).sort((x, y) => x - y), sp = nn[nn.length >> 1];
+  let d = 0.1; while (gapAt(d) < 3.3 * sp && d < 1) d += 0.02;
+  const start = [[-d, -0.12 * d], [d, 0.12 * d]];
+  const fade = new Set(sets[1].flatMap((q, i) => (sets[0].some((p) => Math.hypot(p[0] - q[0], p[1] - q[1]) < 0.5 * g) ? [sets[0].length + i] : [])));
+  const c = tone(src);
+  return { pts: final.map((p, j) => [p[0] + start[hand[j]][0], p[1] + start[hand[j]][1], 0, ...c]), hand, start, meet: g, fade };
+}
+
+// ------------------------------------------------------------------ Zahnräder ----------
+// Wie die 3D-Fassung (catalog-3d/technik.js: großes Rad oben rechts wie im Katalog, darunter ein mittleres, links ein
+// kleines), aber flach und so gesetzt, dass jedes Rad wirklich im Eingriff mit dem vorigen steht: Achsabstand = Summe der
+// Teilkreise, gleicher Modul (Teilkreis ∝ Zähnezahl). w: Drehzahl relativ zum großen Rad = −Zähne(vorheriges)/Zähne.
+const GEAR_SPEED = -0.32; // rad/s des großen Rads (wie GEAR_W in 3D, im Uhrzeigersinn)
+const MODULE = 0.053, TIP = 0.07;
+const gearAt = (from, dir, teeth) => { const r = MODULE * teeth, d = from.pitch + r + 0.012; return { c: [from.c[0] + Math.cos(dir) * d, from.c[1] + Math.sin(dir) * d], pitch: r, teeth }; };
+const G0 = { c: [0.36, 0.2], pitch: MODULE * 10, teeth: 10 }, G1 = gearAt(G0, Math.atan2(-0.7, -0.65), 7), G2 = gearAt(G1, Math.atan2(0.44, -0.64), 5);
+export const GEARS_2D = [G0, G1, G2].reduce((list, g, i) => [...list, { ...g, w: i ? (-list[i - 1].w * list[i - 1].teeth) / g.teeth : 1 }], []);
+/** Zahnkontur: Fuß, Flanke, Kopf, Flanke, Fuß (Zahnmitte bei u = 0,35 einer Teilung, wie in 3D). */
+function gearOutline({ c, pitch, teeth }, phase, k = 6) {
+  const tip = pitch + TIP, root = pitch - TIP, pts = [];
+  for (let i = 0; i < teeth; i++) {
+    const a = phase + (i / teeth) * TAU, d = TAU / teeth;
+    for (const [u, r] of [[0, root], [0.12, root], [0.22, tip], [0.48, tip], [0.58, root]]) pts.push([c[0] + Math.cos(a + u * d) * r, c[1] + Math.sin(a + u * d) * r, 0]);
+    for (let m = 1; m < k / 2; m++) { const u = 0.58 + (0.42 * m) / (k / 2); pts.push([c[0] + Math.cos(a + u * d) * root, c[1] + Math.sin(a + u * d) * root, 0]); }
+  }
+  return { pts, closed: true };
+}
+/** Phasen: am Berührpunkt steht bei Rad i eine Zahnmitte genau dort, wo Rad i+1 eine Lückenmitte hat (s_i + s_k = ½). */
+export function gearPhases(gears = GEARS_2D, phase0 = 0.15) {
+  const ph = [phase0];
+  for (let k = 1; k < gears.length; k++) {
+    const a = gears[k - 1], b = gears[k], th = Math.atan2(b.c[1] - a.c[1], b.c[0] - a.c[0]), da = TAU / a.teeth, db = TAU / b.teeth;
+    const si = ((((th - ph[k - 1]) / da - 0.35) % 1) + 1) % 1, sk = 0.5 - si;
+    ph.push(th + Math.PI - (sk + 0.35) * db);
+  }
+  return ph;
+}
+/** n Drohnen auf zwei Rädern (unter 170) oder drei, je mit Nabenring; gear[j] = Rad der Drohne. */
+function gearTrain(src) {
+  const n = src.length, k = n < 170 ? 2 : 3, ph = gearPhases();
+  const parts = GEARS_2D.slice(0, k).flatMap((g, i) => [
+    curves(`g${i}`, [gearOutline(g, ph[i])]),
+    curves(`h${i}`, [{ pts: Array.from({ length: 24 }, (_, m) => [g.c[0] + Math.cos((m / 24) * TAU) * g.pitch * 0.26, g.c[1] + Math.sin((m / 24) * TAU) * g.pitch * 0.26, 0]), closed: true }], { w: 0.8 }),
+  ]);
+  const shape = assemble(parts, n), c = tone(src);
+  return { pts: shape.pts.map((p) => [p[0], p[1], 0, ...c]), gear: shape.tags.map((t) => +t.slice(1)) };
+}
 const LEFT = {
   'm-a819a681c8cee7a2': [0,1,2,4,5,6,8,9,10,11,12,14,15,16,18,19,20,21,24,25,26,27,28,30,33,41,42,45,46,53,54,56,62,63,64,66],
   'm-c0934127db49df2e': [0,7,8,9,10,14,15,18,20,21,22,23,25,29,38,40,43,44,45,47,48,51,53,54,55,56,57,58,59,60,61,63,65,69,73,77,78,79,80,82,83,86,87],
@@ -33,30 +128,30 @@ export function catalogAction(key,f,pts) {
     return { live:(b,j,t,o)=>{const u=progress(t,.5,.9)*(1-progress(t,1.65,.9)); const q=targets.get(j); if(q) interpolate(b,q,u,o); else if(off.has(j)) o[3]*=1-progress(t,.5,.35)*(1-progress(t,1.75,.35)); }, duration:3 };
   }
   if(key==='handschlag') {
-    // The source is the OPEN pose (clip 24, 0.63 s). Separate hands first; fold fingers into the clasp, then hold.
-    const start=pts.map(p=>[p[0]+(p[0]<0?-.22:.22),p[1],p[2],...p.slice(3)]);
-    const targets=new Map();
-    const contours=[
-      [[-1,.53],[-.65,.48],[-.30,.47],[-.15,.39],[.02,.25],[.23,.08],[.43,-.11],[.40,-.21],[.30,-.23],[.10,-.08],[.34,-.28],[.29,-.38],[.19,-.38],[-.02,-.22],[.19,-.42],[.11,-.50],[.02,-.48],[-.19,-.30],[-.04,-.49],[-.14,-.55],[-.31,-.46],[-.62,-.23],[-1,-.13]],
-      [[1,.53],[.64,.49],[.33,.50],[.10,.47],[-.05,.38],[-.11,.20],[-.06,.09],[.05,.07],[.14,.20],[.25,.18],[.42,.01],[.55,-.08],[.35,-.34],[.08,-.57],[-.12,-.56],[-.31,-.46],[-.37,-.35],[-.28,-.29],[-.13,-.39],[-.26,-.26],[-.19,-.18],[-.04,-.27],[-.16,-.15],[-.07,-.08],[.11,-.20],[.42,-.28],[.68,-.15],[1,.03]],
-    ];
-    // Runde 9 (Claude): die Konturen laufen an den Fingern hin und zurück, dort lagen Ziele doppelt (Klumpen im Händedruck).
-    // Ziele jetzt aus beiden Konturen gemeinsam: dicht abgetastet, so ausgedünnt, dass keine zwei näher als g stehen
-    // (g auf die Drohnenzahl gelöst), und allen Drohnen gemeinsam optimal zugeordnet.
-    const N=pts.length, dense=sampleOutline(contours.map(c=>({pts:c,closed:false})),N*8);
-    const thin=(g)=>{const out=[],grid=new Map(),key=(x,y)=>`${Math.floor(x/g)},${Math.floor(y/g)}`;
-      for(const p of dense){const gx=Math.floor(p[0]/g),gy=Math.floor(p[1]/g);let ok=true;
-        for(let dx=-1;dx<=1&&ok;dx++)for(let dy=-1;dy<=1&&ok;dy++)for(const q of grid.get(`${gx+dx},${gy+dy}`)??[])if(Math.hypot(q[0]-p[0],q[1]-p[1])<g){ok=false;break;}
-        if(ok){out.push(p);const k=key(p[0],p[1]);if(!grid.has(k))grid.set(k,[]);grid.get(k).push(p);}}
-      return out;};
-    let lo=1e-4,hi=.5; for(let it=0;it<22;it++){const mid=(lo+hi)/2; if(thin(mid).length>=N) lo=mid; else hi=mid;}
-    // knapp zu wenige (Abstand hi): die fehlenden dorthin, wo auf der Kontur am meisten Platz ist
-    const q=thin(hi), far=dense.map(c=>Math.min(...q.map(p=>Math.hypot(p[0]-c[0],p[1]-c[1]))));
-    while(q.length<N){let j=0;for(let k=1;k<dense.length;k++)if(far[k]>far[j])j=k;const c=dense[j];q.push(c);for(let k=0;k<dense.length;k++)far[k]=Math.min(far[k],Math.hypot(dense[k][0]-c[0],dense[k][1]-c[1]));}
-    for(let i=0;i<q.length;i++) q[i]=[q[i][0],q[i][1],0];
-    const order=assign(Float64Array.from(pts.flatMap((_,j)=>start[j].slice(0,3))),Float64Array.from(q.flat()));
-    pts.forEach((_,j)=>targets.set(j,q[order[j]]));
-    return {pts:start, duration:4.5, live:(b,j,t,o)=>interpolate(b,targets.get(j),progress(t,.5,3.5),o)};
+    // Runde 10b (Marc 20.11.: „aktuell morphen die Hände quasi ineinander … so wie die Animation von FlyingStars geplant ist,
+    // sieht man die Hände erst getrennt, und dann fliegen sie slowly but surely ineinander“): zwei STARRE Hände. Jede Hand
+    // ist eine der beiden Konturen des fertigen Händedrucks (Katalogclip 24, Endbild); sie stehen zuerst getrennt, gleiten
+    // dann langsam aufeinander zu, bis die eine Hand in der anderen liegt, und schütteln sich zweimal. Kein Punkt wechselt
+    // dabei seinen Platz in der Hand (Wächter: catalog-2d-motion.test.mjs).
+    const {pts:out,hand,start,meet,fade}=handshake(pts);
+    const T0=.8,T1=4.3,PUMP=4.6;
+    const u=(t)=>smooth5((t-T0)/(T1-T0));
+    // hidden: Drohnen der hinteren Hand, die im fertigen Händedruck verdeckt sind und deshalb ausgehen (Artefakt-Audit)
+    return {pts:out, parts:hand, hidden:fade.size, duration:6.4, live:(b,j,t,o)=>{
+      const v=u(t), s=start[hand[j]];
+      o[0]=b[0]-s[0]*v; o[1]=b[1]-s[1]*v;
+      // zweimal schütteln, beide Hände zusammen (starr)
+      o[1]+=.035*Math.sin((t-PUMP)*TAU/.7)*(t>PUMP&&t<PUMP+1.4?Math.sin((t-PUMP)*Math.PI/1.4):0);
+      if(fade.has(j)) o[3]*=1-smooth((u(t)-.82)/.18);
+    }, meet};
+  }
+  if(key==='zahnraeder') {
+    // Runde 10b (Marc: „die Zahnräder sind ein bisschen awkward … könnten sich ja auch ineinander drehen, so wie bei der
+    // 3D-Version“): vorher drehte sich das ganze Katalogbild (ein Rad und zwei angeschnittene Räder) als ein Stück. Jetzt
+    // ganze Räder im Eingriff wie in catalog-3d/technik.js: Zahn greift in Lücke, Drehzahl umgekehrt proportional zur
+    // Zähnezahl, gegenläufig; jede Drohne fährt starr mit ihrem Rad.
+    const {pts:out,gear}=gearTrain(pts);
+    return {pts:out, parts:gear, live:(b,j,t,o)=>{const g=GEARS_2D[gear[j]]; roll(o,GEAR_SPEED*g.w*t,g.c[0],g.c[1]);}};
   }
   if(key==='anstossen') {
     // Runde 5 (Marc, 18.11.: „kaputt, schon lange“): Vorher schob sich das rechte Glas ganz auf das linke, das linke erlosch,
