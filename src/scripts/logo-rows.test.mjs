@@ -32,3 +32,146 @@ for (const id of ids) test(`${id}: geglättet, ohne Punkte zu verlieren oder weg
 test('Spotify: die Schallwellen stehen glatt (p90 unter 0,02 Punktabständen, vorher 0,09)', () => {
   for (const n of [100, 150, 200]) assert.ok(roughness(smoothRows(read('spotify', n))) < 0.02);
 });
+
+// ---------------------------------------------------------------------------------------------------------------------
+// Runde 10 (Marc 20.11.2026: „Spotify Logo ist immer noch broken“): schmale Bänder (dünne Striche als geschlossene
+// Kontur) werden neu gelegt (regularRibbons). Wächter: ein von der Anpassung unabhängiges Unruhe-Maß je Strich, über alle
+// Beispiele und alle vorberechneten Stufen; dazu Spotify live gerechnet bei den Liniendichte-Stufen 4–9, synthetische
+// Formen, die NICHT angefasst werden dürfen (Linse, Sichel, Ring), und ein Rechteck, das eckig bleiben muss.
+// Prüfbilder aller Logos × Stufen × Drohnenzahlen: /tmp/fs-r10/l/ (Runde 10, Agent L).
+import { cleanRows, regularRibbons, contourChains, fitRibbon } from './logo-rows.mjs';
+
+const segDist = (p, a, b) => { const dx = b.x - a.x, dy = b.y - a.y, L2 = dx * dx + dy * dy || 1e-12, t = Math.max(0, Math.min(1, ((p.x - a.x) * dx + (p.y - a.y) * dy) / L2)); return Math.hypot(p.x - a.x - t * dx, p.y - a.y - t * dy); };
+const lineDist = (p, P) => { let m = Infinity; for (let i = 0; i < P.length - 1; i++) m = Math.min(m, segDist(p, P[i], P[i + 1])); return m; };
+/**
+ * Unruhe je Strich (geschlossene Kontur, höchstens 3 Punktabstände breit, mindestens 4-mal so lang wie breit), gemessen
+ * ohne fitRibbon: Schwankung der Schrittweite entlang der Kontur (stepCV), größter Schritt (gap, offene Enden) und
+ * Schwankung des Abstands Seite 1 → Seite 2 im Mittelteil (spread = (p90 − p10) / Median).
+ */
+function strokeUnrest(pts) {
+  const out = [];
+  for (const c of contourChains(pts)) {
+    const N = c.length; if (N < 14) continue;
+    const Q = c.map((i) => pts[i]), st = Q.map((p, t) => { const q = Q[(t + 1) % N]; return Math.hypot(p.x - q.x, p.y - q.y); });
+    const h = [...st].sort((a, b) => a - b)[N >> 1]; if (!(h > 0) || Math.max(...st) > 2.5 * h) continue;
+    let a = 0, b = 0, far = -1;
+    for (let i = 0; i < N; i++) for (let j = i + 1; j < N; j++) { const d = Math.hypot(Q[i].x - Q[j].x, Q[i].y - Q[j].y); if (d > far) { far = d; a = i; b = j; } }
+    const s1 = [], s2 = []; for (let i = a; ; i = (i + 1) % N) { s1.push(Q[i]); if (i === b) break; } for (let i = b; ; i = (i + 1) % N) { s2.push(Q[i]); if (i === a) break; }
+    const inner = (S) => S.slice(Math.ceil(S.length * 0.15), Math.floor(S.length * 0.85));
+    const w = [...inner(s1).map((p) => lineDist(p, s2)), ...inner(s2).map((p) => lineDist(p, s1))].map((d) => d / h).sort((x, y) => x - y);
+    if (w.length < 4) continue;
+    const mw = w[w.length >> 1]; if (mw > 3 || far / h < 4 * mw) continue;
+    const mean = st.reduce((x, y) => x + y, 0) / N, sd = Math.sqrt(st.reduce((x, y) => x + (y - mean) ** 2, 0) / N);
+    out.push({ chain: c, stepCV: sd / mean, gap: Math.max(...st) / h, spread: (w[Math.floor(0.9 * (w.length - 1))] - w[Math.floor(0.1 * (w.length - 1))]) / mw });
+  }
+  return out;
+}
+const allPrepared = (id) => {
+  const d = JSON.parse(fs.readFileSync(new URL(`${id}.json`, dir))), refs = new Set([...Object.values(d.steps), ...Object.values(d.strict || {}).flatMap((x) => Object.values(x))]);
+  return [...refs].map((ref) => { const f = d.formations[ref], p = decodePoints(f.p), pts = []; for (let i = 0; i < p.length; i += 5) pts.push({ x: p[i] / 1000, y: p[i + 1] / 1000, c: d.palette[p[i + 2]], e: p[i + 3], cg: p[i + 4] }); pts.meta = { ref }; return pts; });
+};
+
+for (const id of ids) test(`${id}: Bänder neu gelegt ohne Verlust, alle anderen Konturen unverändert, keine neue Unruhe`, () => {
+  for (const pts of allPrepared(id)) {
+    const rib = [], out = smoothRows(regularRibbons(pts, { ribbons: rib }));
+    assert.equal(out.length, pts.length); assert.deepEqual(out.meta, pts.meta);
+    out.forEach((q, i) => { assert.equal(q.c, pts[i].c); assert.equal(q.e, pts[i].e); assert.equal(q.cg, pts[i].cg); });
+    assert.deepEqual(cleanRows(pts), out);
+    // ohne Band ist das Ergebnis genau die Glättung von Runde 9
+    if (!rib.length) assert.deepEqual(out, smoothRows(pts));
+    const moved = new Set(rib.flatMap((r) => r.chain)), sp = rowSpacing(regularRibbons(pts));
+    pts.forEach((p, i) => { if (!moved.has(i)) assert.ok(Math.hypot(out[i].x - p.x, out[i].y - p.y) <= 0.3 * sp + 1e-9); });
+    // jedes neu gelegte Band: gleichmäßige Schritte, keine Lücke, nichts weiter als 1,5 Punktabstände verschoben
+    for (const r of rib) {
+      const u = strokeUnrest(out).find((x) => x.chain.length === r.chain.length && x.chain.every((j, k) => j === r.chain[k]));
+      if (u) { assert.ok(u.stepCV <= 0.08, `${id} ${pts.meta.ref}: Schrittweite schwankt (${u.stepCV.toFixed(3)})`); assert.ok(u.gap <= 1.5, `${id} ${pts.meta.ref}: Lücke ${u.gap.toFixed(2)}`); }
+      r.chain.forEach((j, k) => assert.ok(Math.hypot(r.pts[k][0] - pts[j].x, r.pts[k][1] - pts[j].y) <= 1.5 * r.step, `${id}: Punkt ${j} zu weit verschoben`));
+    }
+    // über alle Striche: nachher nie unruhiger als vorher (Mittel über die Striche)
+    const avg = (u, k) => (u.length ? u.reduce((t, x) => t + x[k], 0) / u.length : 0), b = strokeUnrest(smoothRows(pts)), a = strokeUnrest(out);
+    for (const k of ['stepCV', 'gap', 'spread']) assert.ok(avg(a, k) <= avg(b, k) + 0.02, `${id} ${pts.meta.ref}: ${k} ${avg(b, k).toFixed(3)} → ${avg(a, k).toFixed(3)}`);
+  }
+});
+
+test('Spotify (vorberechnet): alle drei Wellen sind Bänder mit runden Enden, gleichmäßigen Schritten und geschlossenen Enden', () => {
+  for (const n of [100, 150, 200]) {
+    const pts = read('spotify', n), rib = [], out = cleanRows(pts, { ribbons: rib });
+    assert.equal(rib.length, 3, `${n}: ${rib.length} Bänder`);
+    assert.ok(rib.every((r) => r.caps === 'round'));
+    // die Breiten folgen dem Logo (oben breiteste Welle), konstant (Verjüngung unter 20 %)
+    const w = rib.map((r) => r.width).sort((a, b) => a - b);
+    assert.ok(w[0] < w[1] && w[1] < w[2] && rib.every((r) => Math.abs(r.taper) < 0.2));
+    for (const u of strokeUnrest(out).filter((x) => rib.some((r) => r.chain.length === x.chain.length))) {
+      assert.ok(u.stepCV <= 0.03, `${n}: Schrittweite ${u.stepCV.toFixed(3)} (vorher bis 0,24)`);
+      assert.ok(u.gap <= 1.15, `${n}: Lücke ${u.gap.toFixed(2)} (vorher bis 2,3)`);
+      assert.ok(u.spread <= 0.15, `${n}: Breite schwankt ${u.spread.toFixed(3)}`);
+    }
+  }
+});
+
+test('Spotify live gerechnet (Konverter v10) bei Liniendichte-Stufen 4–9: drei saubere Bänder', async () => {
+  const V = new URL('./logo-v10/', import.meta.url);
+  const { convert } = await import(new URL('converter/convert.mjs', V));
+  const { contentPipeline } = await import(new URL('content-fit.mjs', V));
+  const { fitToShow } = await import(new URL('formation-core.mjs', V));
+  const { DENSITIES } = await import('./logo-density.mjs');
+  const R = JSON.parse(fs.readFileSync(new URL('spotify.raster.json', dir)));
+  const raster = async (size) => { const im = R[size]; assert.ok(im, `kein Raster ${size}`); return { width: im.width, height: im.height, data: new Uint8ClampedArray(Buffer.from(im.rgba, 'base64')) }; };
+  for (let i = 4; i <= 9; i++) {
+    const out = await contentPipeline(raster, convert, { flex: 'auto', part: 'auto', drones: 200, density: DENSITIES[i] }, {});
+    const pts = await fitToShow(out.result, 200), rib = [], res = cleanRows(pts, { ribbons: rib });
+    assert.equal(res.length, pts.length);
+    assert.ok(rib.length >= (i <= 8 ? 3 : 2), `Stufe ${i}: ${rib.length} Bänder`);
+    for (const r of rib) { assert.equal(r.caps, 'round'); assert.ok(r.err.mean < 0.1, `Stufe ${i}: Abweichung ${r.err.mean}`); }
+    // (Sehnen in den runden Kappen sind etwas kürzer als auf den Seiten: daher 0,05 statt 0)
+    for (const u of strokeUnrest(res).filter((x) => rib.some((r) => r.chain.length === x.chain.length))) assert.ok(u.stepCV <= 0.05 && u.gap <= 1.15, `Stufe ${i}: ${JSON.stringify({ ...u, chain: u.chain.length })}`);
+  }
+});
+
+/** geschlossene Kontur aus einer Breitenfunktion entlang einer Mittellinie c(t), t ∈ [0, 1], gleichmäßig abgetastet */
+function band(center, half, { n = 40, noise = 0, seed = 1 } = {}) {
+  const M = 400, up = [], down = [];
+  for (let k = 0; k <= M; k++) { const t = k / M, p = center(t), q = center(Math.min(1, t + 1e-3)), o = center(Math.max(0, t - 1e-3)), tx = q[0] - o[0], ty = q[1] - o[1], l = Math.hypot(tx, ty), r = half(t); up.push([p[0] - (ty / l) * r, p[1] + (tx / l) * r]); down.push([p[0] + (ty / l) * r, p[1] - (tx / l) * r]); }
+  const ring = [...up, ...down.reverse()], s = [0]; for (let i = 1; i < ring.length; i++) s.push(s[i - 1] + Math.hypot(ring[i][0] - ring[i - 1][0], ring[i][1] - ring[i - 1][1]));
+  let r = seed; const rnd = () => ((r = (r * 16807) % 2147483647) / 2147483647 - 0.5) * 2;
+  const out = []; let j = 0;
+  for (let k = 0; k < n; k++) { const u = (s.at(-1) * k) / n; while (s[j + 1] < u) j++; const t = (u - s[j]) / (s[j + 1] - s[j] || 1); out.push({ x: ring[j][0] + t * (ring[j + 1][0] - ring[j][0]) + noise * rnd(), y: ring[j][1] + t * (ring[j + 1][1] - ring[j][1]) + noise * rnd() }); }
+  return out;
+}
+const arc = (t) => [Math.cos(Math.PI * (0.25 + 0.5 * t)) * 3, -Math.sin(Math.PI * (0.25 + 0.5 * t)) * 3];
+
+test('synthetisch: verrauschter Bogen wird ein gleichmäßiges Band mit runden Enden', () => {
+  const pts = band(arc, () => 0.12, { n: 44, noise: 0.03 }), rib = [], out = regularRibbons(pts, { ribbons: rib });
+  assert.equal(rib.length, 1); assert.equal(rib[0].caps, 'round');
+  const u = strokeUnrest(out)[0], b = strokeUnrest(pts)[0];
+  assert.ok(u.stepCV < b.stepCV / 2 && u.stepCV < 0.05, `${b.stepCV} → ${u.stepCV}`);
+  assert.ok(Math.abs(rib[0].width - 0.24) < 0.03, `Breite ${rib[0].width}`);
+});
+
+test('synthetisch: Linse, Sichel und kurze Formen bleiben unverändert', () => {
+  const line = (t) => [t * 2 - 1, 0];
+  for (const [name, pts] of [
+    ['Linse', band(line, (t) => 0.2 * Math.sin(Math.PI * t) + 0.005, { n: 30 })],
+    ['Sichel', band(arc, (t) => 0.25 * Math.sin(Math.PI * t) + 0.005, { n: 40 })],
+    ['zu wenige Punkte', band(arc, () => 0.12, { n: 12 })],
+  ]) assert.deepEqual(regularRibbons(pts), pts.map((p) => ({ ...p })), name);
+  // Ring (zwei getrennte Konturen um ein Loch) ist kein Band
+  const ring = [];
+  for (let k = 0; k < 60; k++) ring.push({ x: Math.cos((k / 60) * 2 * Math.PI), y: Math.sin((k / 60) * 2 * Math.PI) });
+  for (let k = 0; k < 50; k++) ring.push({ x: 0.85 * Math.cos((k / 50) * 2 * Math.PI), y: 0.85 * Math.sin((k / 50) * 2 * Math.PI) });
+  assert.deepEqual(regularRibbons(ring), ring.map((p) => ({ ...p })));
+});
+
+test('synthetisch: schmales Rechteck (Buchstabenstamm, Innenraum) behält gerade Enden und seine Lage', () => {
+  const pts = []; const W = 0.1, H = 1, step = 0.05;
+  for (let k = 0; k < 20; k++) pts.push({ x: 0, y: k * step });
+  for (let k = 0; k < 2; k++) pts.push({ x: k * step, y: H });
+  for (let k = 0; k < 20; k++) pts.push({ x: W, y: H - k * step });
+  for (let k = 0; k < 2; k++) pts.push({ x: W - k * step, y: 0 });
+  const r = fitRibbon(pts.map((p) => [p.x, p.y]));
+  assert.ok(r, 'als Band erkannt'); assert.equal(r.caps, 'square');
+  r.pts.forEach((q, k) => assert.ok(Math.hypot(q[0] - pts[k].x, q[1] - pts[k].y) < 0.6 * step, `Punkt ${k} verschoben`));
+  // alle vier Ecken sind besetzt, alle Punkte liegen auf dem Rechteck
+  for (const [x, y] of [[0, 0], [W, 0], [0, H], [W, H]]) assert.ok(r.pts.some((q) => Math.hypot(q[0] - x, q[1] - y) < 0.1 * step), `Ecke ${x},${y}`);
+  for (const q of r.pts) assert.ok(Math.min(Math.abs(q[0]), Math.abs(q[0] - W), Math.abs(q[1]), Math.abs(q[1] - H)) < 0.1 * step);
+});
