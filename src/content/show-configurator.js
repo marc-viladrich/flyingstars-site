@@ -297,11 +297,10 @@ return  [
     // Runde 10b (Marc 20.11.: der Drache sah „mega krass 2D“ aus): 3D ab 200 ein aufsteigender Drache als Körper, 3D+ der
     // aztekische Drachenkopf als Relief, der sich zu euch dreht und Feuer speit (scenes/catalog-3d/drache.js), ab 300: 3D+ zeigt
     // nie weniger als 3D (scripts/show-unlock.test.mjs). dragon3d/dragonStory (scenes/festival.js) bleiben ungespielt im Code.
-    // in 3D+ ab 400 zusätzlich der Drachenflug (der aufsteigende Drache mit Beinen, Schuppen, Flughautrippen) vor dem Kopf: so
-    // schaltet 3D+ 400 mit dem Papierflieger zwei Motive frei (scripts/show-unlock.test.mjs)
-    motif('drachenflug', t('showConfigurator.motif.dracheScene'), null, null, v('dragonRise', t('showConfigurator.dragonFlightCaption')), O1),
     motif('drache', t('showConfigurator.dragon'), null, v('dragonRise', t('showConfigurator.dragonRiseCaption')), v('dragonHead', t('showConfigurator.dragonHeadCaption')), ['HORIZON', 0]),
-    ab(motif('delfin', t('showConfigurator.dolphin'), v('dolphin2d', t('showConfigurator.aDolphinOverAWave')), v('dolphin3d', t('showConfigurator.aDolphinJumpsOutOfTheWaterIn3d')), v('dolphinStory', t('showConfigurator.wavesOneDolphinJumpsDivesInTwoDolphinsJumpIn'))), { SPARK: 150 }),
+    // Runde 11b: die Delfin-Geschichte schaltet mit dem Papierflieger 3D+ 400 frei (ohne den Drachenflug, Marc: „sieht mega weird aus“,
+    // stünde dort nur noch der Flieger; je Stufe mindestens zwei, scripts/show-unlock.test.mjs). In 3D spielt der Delfin nicht.
+    ab(motif('delfin', t('showConfigurator.dolphin'), v('dolphin2d', t('showConfigurator.aDolphinOverAWave')), v('dolphin3d', t('showConfigurator.aDolphinJumpsOutOfTheWaterIn3d')), v('dolphinStory', t('showConfigurator.wavesOneDolphinJumpsDivesInTwoDolphinsJumpIn'))), { SPARK: 150, ODYSSEY: 400 }),
     // Marc 20.11.: nicht streichen, ans Ende (nur 2D, ab 150; Kuh mit UFO ab 200)
     catalogMotif('elefant', 'festival', t, locale),
     catalogMotif('hasen', 'festival', t, locale),
@@ -388,7 +387,7 @@ export function stufeOf(m) {
  */
 const EIGENE_3DPLUS_SZENE = {
   fussball: 'showConfigurator.motif.shot', sprung: 'showConfigurator.motif.jump',
-  kolibri: 'showConfigurator.motif.kolibriScene', delfin: 'showConfigurator.motif.delfinScene', drache: 'showConfigurator.motif.dracheScene',
+  kolibri: 'showConfigurator.motif.kolibriScene', delfin: 'showConfigurator.motif.delfinScene',
   falter: 'showConfigurator.motif.falterScene', lotus: 'showConfigurator.motif.lotusScene', riesenrad: 'showConfigurator.motif.riesenradScene',
   tanz: 'showConfigurator.motif.tanzScene', herz: 'showConfigurator.motif.herzScene', vorhang: 'showConfigurator.motif.vorhangScene',
   feuerwerk: 'showConfigurator.motif.feuerwerkScene',

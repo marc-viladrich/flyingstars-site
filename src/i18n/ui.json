@@ -1814,11 +1814,6 @@
     "en": "Dolphin leap",
     "nl": "Dolfijnsprong"
   },
-  "showConfigurator.motif.dracheScene": {
-    "de": "Drachenflug",
-    "en": "Dragon flight",
-    "nl": "Drakenvlucht"
-  },
   "showConfigurator.motif.falterScene": {
     "de": "Falterflug",
     "en": "Butterfly flight",
@@ -1993,11 +1988,6 @@
     "de": "Ein Drache steigt in 3D auf, die Flügel schlagen",
     "en": "A dragon rises in 3D, its wings beating",
     "nl": "Een draak stijgt op in 3D, de vleugels slaan"
-  },
-  "showConfigurator.dragonFlightCaption": {
-    "de": "Der Drache steigt auf, mit Beinen, Schuppen und gerippten Flügeln",
-    "en": "The dragon rises, with legs, scales and ribbed wings",
-    "nl": "De draak stijgt op, met poten, schubben en geribde vleugels"
   },
   "showConfigurator.dragonHeadCaption": {
     "de": "Ein aztekischer Drachenkopf dreht sich zu euch und speit Feuer",
