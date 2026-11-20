@@ -11,10 +11,12 @@ import { builders as natur } from "./natur.js";
 import { builders as kugel } from "./kugel.js"; // Show-Folge der Startseite (Himmel, Runde 4)
 import { builders as schnee } from "./schnee.js"; // Show-Folge der Startseite (Himmel, Runde 6)
 import { builders as wahrzeichen } from "./wahrzeichen.js"; // Wahrzeichen und Jahreszahl fürs Stadtfest (Runde 10)
+import { builders as drache } from "./catalog-3d/drache.js"; // Drache als Körper (3D) und Azteken-Kopf (3D+), Runde 10b
 
 export const BUILDERS = {
   ...hochzeit, ...jubilaeum, ...launch, ...kultur, ...winter, ...festival, ...natur, ...kugel, ...schnee,
   ...wahrzeichen,
+  ...drache,
   textSPARK: (n, caption, v) => textScene(n, caption, v, "SPARK"),
   textHORIZON: (n, caption, v) => textScene(n, caption, v, "HORIZON"),
   textODYSSEY: (n, caption, v) => textScene(n, caption, v, "ODYSSEY"),

@@ -43,7 +43,7 @@ test('am Einstieg jeder Art spielen je Anlass mindestens drei Motive, mehr Drohn
 
 test('3D+ spielt die einzelne 3D-Szene jedes 3D+-Motivs vor seiner Geschichte, 3D nicht', () => {
   const all = OCCASIONS.flatMap((o) => o.motifs.map((m, i) => ({ o, m, i })));
-  const scenes = [['fussball', 'kickHorizon'], ['sprung', 'diveHorizon'], ['kolibri', 'hummingbird3d'], ['delfin', 'dolphin3d'], ['drache', 'dragon3d'], ['falter', 'butterfly3d'], ['lotus', 'lotus3d'], ['riesenrad', 'wheel3d'], ['tanz', 'dancer3d'], ['herz', 'heartTunnel'], ['vorhang', 'curtainStar'], ['feuerwerk', 'fireworkHorizon']];
+  const scenes = [['fussball', 'kickHorizon'], ['sprung', 'diveHorizon'], ['kolibri', 'hummingbird3d'], ['delfin', 'dolphin3d'], ['falter', 'butterfly3d'], ['lotus', 'lotus3d'], ['riesenrad', 'wheel3d'], ['tanz', 'dancer3d'], ['herz', 'heartTunnel'], ['vorhang', 'curtainStar'], ['feuerwerk', 'fireworkHorizon']];
   // jedes eigene 3D+-Motiv mit Geschichte hat seine Szene (neue Motive fallen sonst durch)
   for (const [id, [stufe]] of Object.entries(STUFE_EIGEN)) if (stufe === '3D+') assert.ok(scenes.some(([x]) => x === id), `${id}: 3D+-Motiv ohne eigene Szene vor der Geschichte`);
   for (const [id, build] of scenes) {

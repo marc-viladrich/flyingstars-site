@@ -94,7 +94,7 @@ export const STUFE_EIGEN = {
   tanz: ['3D+', 'Figur mit fliegendem Rock'],
   kolibri: ['3D+', 'Tier mit Flügelschlag'],
   delfin: ['3D+', 'Tier mit Wasser'],
-  drache: ['3D+', 'Tier mit Flügeln'],
+  drache: ['3D', 'Runde 10b (Marc 20.11.): in 3D ein aufsteigender Drache als Körper, in 3D+ der Azteken-Kopf (scenes/catalog-3d/drache.js)'],
   falter: ['3D+', 'Tier mit Flügelschlag'],
   lotus: ['3D+', 'zwei Blüten mit vielen Blättern (Marc 20.11.: 3D+ bestätigt)'],
   riesenrad: ['3D+', 'Szene: Rad mit Gondeln, Speichen, Gestell (Marc 20.11.: 3D+ bestätigt)'],
