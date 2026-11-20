@@ -1267,3 +1267,13 @@ Prüfen: `node --test src/scripts/logo-rows.test.mjs` (Unruhe-Maß über alle Lo
 - **Text-X**: `#cfg-text-clear` im Feld rechts, gleiche Zeichnung wie das Logo-X, nur mit Text sichtbar, „Text entfernen“
   (DE/EN/NL); ein Klick leert sofort und lässt den Fokus im Feld.
 
+
+## Große Motive (Runde 11, 20./21.11.2026)
+
+Marc: „für ALLE Anlässe für jede 100er Steigerungsstufe mindestens 2 Motive … sonst checkt man den Mehrwert von mehr Drohnen nicht.“ Qualitätsmaßstab: 3D-Fußballer, 3D-Fahrzeuge, Baumstern → 3D-Stern mit Übergang.
+
+- **Stufen:** `STAGES` in `src/content/show-configurator.js`: 2D 100/150/200/300, 3D 200/250/300–1000, 3D+ 300–1000 in Hunderten. Ab 400 wird 2D automatisch 3D (`TWO_D_LIMIT`).
+- **Nachladen:** Jedes große Motiv liegt in `src/scripts/scenes/gross/<motiv>.js` und wird über `gross/index.js` per `import()` erst geladen, wenn der Konfigurator es baut. Nie statisch importieren (Wächter `scripts/gross-lazy.test.mjs`). Einstufung 3D/3D+ zusätzlich in `scenes/catalog-3d/stufen.js`.
+- **Auswahl:** Marcs Freigabe von 40 Kandidaten plus Countdown steht im Hub unter `freelance/clients/flyingstars/25-motiv-shortlist-2026-11-20/marc-auswahl.md`.
+- **Erste Welle:** Countdown (Winter 900, Steigerung der Uhr), Adventskranz (Winter 300, auch 2D), Satellit (Marketing 700, nach Rakete/Mondlandung), Tintenfisch (Stadtfest 400, nach dem Delfin), Erster Tanz (Hochzeit 500, nach dem Antrag). Je Motiv ein Wächter `scripts/<motiv>.test.mjs`.
+- **Offen:** Stufen mit nur einem neuen Motiv stehen als `AUFBAU` in `scripts/show-unlock.test.mjs`; die Liste muss mit jeder Welle kürzer werden. Die meisten Stufen von 500 bis 1000 sind in den meisten Anlässen noch leer.

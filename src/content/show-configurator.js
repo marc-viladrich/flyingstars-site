@@ -75,7 +75,11 @@ const v = (build, caption) => ({ build, caption });
  * gibt es nur auf diesen Stufen je Art, keine einzelnen bei 110, 130 oder 170. Jede Stufe, die etwas freischaltet, schaltet
  * mindestens zwei Motive frei (Wächter: scripts/show-unlock.test.mjs, über alle Anlässe und Arten).
  */
-export const STAGES = { SPARK: [100, 150, 200], HORIZON: [200, 250], ODYSSEY: [300, 400] };
+// Runde 11 (Marc 20.11.2026: „für ALLE Anlässe für jede 100er Steigerungsstufe mindestens 2 Motive … sonst checkt man den
+// Mehrwert von mehr Drohnen nicht“): über den alten Stufen jede volle Hundert bis 1000. 2D endet bei 300, ab 400 wird
+// 2D automatisch 3D (TWO_D_LIMIT in show-packages.ts). Große Motive liegen in scenes/gross/ und laden je Motiv nach.
+const HUNDREDS = (from) => Array.from({ length: (1000 - from) / 100 + 1 }, (_, i) => from + i * 100);
+export const STAGES = { SPARK: [100, 150, 200, 300], HORIZON: [200, 250, ...HUNDREDS(300)], ODYSSEY: [300, ...HUNDREDS(400)] };
 /** Kleinste Stufe ab n (über der letzten: n selbst, der Wächter meldet das). */
 const stage = (pkg, n) => STAGES[pkg].find((s) => s >= n) ?? n;
 /**
@@ -176,7 +180,14 @@ return  [
   { id: 'silvester', label: t('showConfigurator.winterAndNewYear'), season: [11, 12], motifs: [
     // Runde 9 (Marc 20.11.: „unspektakulär, wenn die erste Form die Uhr ist“): der Lichterbaum eröffnet, die Uhr folgt später
     motif('schnee', t('showConfigurator.lightTree'), v('snow2d', t('showConfigurator.aSnowflakeTurns')), v('snowTree3d', t('showConfigurator.aLightTreeAsASpiralLightAscends')), v('snowTreeStarStory', t('showConfigurator.aSnowflakeBecomesATreeOfLightsItsStarGrowsBig'))), // Runde 9: die Flocke faltet sich räumlich auf und wird zum Lichterbaum; Runde 10: in 3D+ wächst sein Stern ohne Wolke zum großen 3D-Stern (scenes/schnee.js)
+    // Runde 11 (große Motive, Kandidat FSK-001): Adventskranz mit vier Kerzen nach dem Lichterbaum (Advent vor Silvester), ab 300 in
+    // 2D, 3D und 3D+; in 3D+ hebt sich ein goldenes Band Stück für Stück zu den Flammen (scenes/gross/adventskranz.js)
+    ab(motif('adventskranz', t('showConfigurator.adventskranz.label'), v('adventskranz2d', t('showConfigurator.adventskranz.caption2d')), v('adventskranz3d', t('showConfigurator.adventskranz.caption3d')), v('adventskranzStory', t('showConfigurator.adventskranz.captionStory'))), { SPARK: 300, HORIZON: 300, ODYSSEY: 300 }),
     motif('uhr', t('showConfigurator.clock'), v('clock', t('showConfigurator.theHandsRunToTwelve')), v('clock3d', t('showConfigurator.3dWatchTheHandsAreRunning')), v('clockStory', t('showConfigurator.midnightSparksSwirlOutAndWriteTheNewYear'))),
+    // Runde 11 (große Motive, Marc: Countdown ausdrücklich gewünscht): Steigerung der Uhr, direkt dahinter; aus dem Zifferblatt
+    // wird ein Sekundenring, aus den Zeigern die „10“. 3D und 3D+ ab 900; in 3D+ drehen sich die letzten Ziffern durch die
+    // Tiefe und die Null zerspringt zum Feuerwerk (scenes/gross/countdown.js)
+    ab(motif('countdown', t('showConfigurator.countdown.label'), null, v('countdown3d', t('showConfigurator.countdown.caption3d')), v('countdownStory', t('showConfigurator.countdown.captionStory')), ['HORIZON', 0]), { HORIZON: 900, ODYSSEY: 900 }),
     catalogMotif('sektflasche', 'silvester', t, locale),
     // Runde 10: in 3D+ wächst der Baumstern schon zum großen 3D-Stern (snowTreeStarStory), der Katalogstern käme doppelt
     withoutTier(catalogMotif('stern', 'silvester', t, locale), 'ODYSSEY', 'schnee'),
@@ -204,6 +215,9 @@ return  [
     motif('logo', 'Logo', v('logo', t('showConfigurator.exampleLogoWithLightSkating')), v('logo3d', t('showConfigurator.exampleLogoIn3dWithLightGlimmer')), v('logoStory', t('showConfigurator.yourLogoBecomesA3dRingOfLight'))),
     motif('rakete', t('showConfigurator.rocket'), v('rocket', t('showConfigurator.rocketWithFlame')), v('rocket3d', t('showConfigurator.theRocketAsABodyFloatsAndRotates')), v('rocketLaunch', t('showConfigurator.launchFromThePadTheRocketEntersOrbitAroundA'))),
     motif('mond', t('showConfigurator.moonLanding'), null, null, v('moonStory', t('showConfigurator.theRocketLeavesOrbitAndLandsOnTheMoonA')), O1),
+    // Runde 11 (große Motive): der Satellit als Steigerung von Rakete und Mondlandung, ab 700 in 3D und 3D+; seine Teile
+    // heißen wie in der Mondlandung, die Drohnen bleiben beim Wechsel in ihrem Teil (scenes/gross/satellit.js)
+    ab(motif('satellit', t('showConfigurator.satellite'), null, v('satellite3d', t('showConfigurator.satellite3dCaption')), v('satelliteStory', t('showConfigurator.satelliteStoryCaption')), ['HORIZON', 0]), { HORIZON: 700, ODYSSEY: 700 }),
     catalogMotif('galaxie', 'launch', t, locale),
     catalogMotif('batterie', 'launch', t, locale),
     catalogMotif('atom', 'launch', t, locale),
@@ -301,6 +315,8 @@ return  [
     // Runde 11b: die Delfin-Geschichte schaltet mit dem Papierflieger 3D+ 400 frei (ohne den Drachenflug, Marc: „sieht mega weird aus“,
     // stünde dort nur noch der Flieger; je Stufe mindestens zwei, scripts/show-unlock.test.mjs). In 3D spielt der Delfin nicht.
     ab(motif('delfin', t('showConfigurator.dolphin'), v('dolphin2d', t('showConfigurator.aDolphinOverAWave')), v('dolphin3d', t('showConfigurator.aDolphinJumpsOutOfTheWaterIn3d')), v('dolphinStory', t('showConfigurator.wavesOneDolphinJumpsDivesInTwoDolphinsJumpIn'))), { SPARK: 150, ODYSSEY: 400 }),
+    // Runde 11 (große Motive): Tintenfisch zwischen Korallen hinter dem Delfin (Meer), ab 400 in 3D und 3D+ (scenes/gross/tintenfisch.js)
+    ab(motif('tintenfisch', t('showConfigurator.octopus'), null, v('octopus3d', t('showConfigurator.octopus3dCaption')), v('octopusStory', t('showConfigurator.octopusStoryCaption')), ['HORIZON', 0]), { HORIZON: 400, ODYSSEY: 400 }),
     // Marc 20.11.: nicht streichen, ans Ende (nur 2D, ab 150; Kuh mit UFO ab 200)
     catalogMotif('elefant', 'festival', t, locale),
     catalogMotif('hasen', 'festival', t, locale),
@@ -315,6 +331,9 @@ return  [
     // springt der 3D+-Regler in Hunderten, die Schwelle 450 erschien erst bei 500. Jetzt ab dem Einstieg in 3D+ (300), direkt
     // nach den Ringen; nur in 3D+, weil es eine Geschichte in drei Akten ist (Ring, Schachtel, Hand)
     motif('antrag', t('showConfigurator.proposal'), null, null, v('ringStory', t('showConfigurator.aRingBoxOpensTheRingFindsTheRingFinger')), O0),
+    // Runde 11 (große Motive): Erster Tanz auf dem Parkettkreis, ab 500 in 3D und 3D+, direkt nach dem Antrag (in 3D nach den
+    // Ringen); zwei gegliederte Figuren nach der Bauweise des 3D-Fußballers, das Kleid schwingt mit Nachlauf (scenes/gross/erster-tanz.js)
+    ab(motif('erstertanz', t('showConfigurator.firstDance'), null, v('firstDance3d', t('showConfigurator.firstDance3dCaption')), v('firstDanceStory', t('showConfigurator.firstDanceStoryCaption')), ['HORIZON', 0]), { HORIZON: 500, ODYSSEY: 500 }),
     catalogMotif('doppelherz', 'hochzeit', t, locale),
     catalogMotif('tor', 'hochzeit', t, locale),
     catalogMotif('eheringe', 'hochzeit', t, locale),

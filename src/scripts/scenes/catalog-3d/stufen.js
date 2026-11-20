@@ -110,6 +110,12 @@ export const STUFE_EIGEN = {
   bremerschluessel: ['3D', 'ein flacher Gegenstand, dreht sich um den Schaft wie im Schloss'],
   frankfurtskyline: ['3D', 'Silhouette mit Dächern in der Tiefe, Licht gleitet'],
   siegessaeule: ['3D', 'Säule als Rotationskörper auf Sockelquadern, Gold glänzt'],
+  adventskranz: ['3D', 'liegender Kranz mit vier Kerzen, ab 300 auch in 2D (in 3D+ zündet eine Lichtspur die Kerzen an)'],
+  countdown: ['3D', 'Ziffern als Körper im Sekundenring, ab 900 (in 3D+ drehen sich die letzten durch die Tiefe, Feuerwerk bei 0)'],
+  // Runde 11 (große Motive, scenes/gross/): je eine eigene 3D- und 3D+-Fassung wie beim Drachen
+  satellit: ['3D', 'Kasten mit Schüssel und klappbaren Solarflügeln, ab 700 (in 3D+ über der Erde mit Lichtimpuls)'],
+  tintenfisch: ['3D', 'Mantel und acht Arme, die sich einrollen, ab 400 (in 3D+ mit Rückstoß aus dem Riff)'],
+  erstertanz: ['3D', 'zwei gegliederte Figuren im Walzer, Kleid mit Nachlauf, ab 500 (in 3D+ Ankunft, Walzer, Dip, Lichter)'],
 };
 
 /** Katalogformationen, die schon im Katalog räumlich sind (kein Register-Eintrag, sie drehen sich als Formation). */

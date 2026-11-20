@@ -1994,6 +1994,51 @@
     "en": "An Aztec dragon head turns to you and breathes fire",
     "nl": "Een Azteekse drakenkop draait zich naar jullie toe en spuwt vuur"
   },
+  "showConfigurator.firstDance": {
+    "de": "Erster Tanz",
+    "en": "First dance",
+    "nl": "Eerste dans"
+  },
+  "showConfigurator.firstDance3dCaption": {
+    "de": "Das Brautpaar dreht sich im Walzer auf dem Parkett, das Kleid schwingt mit",
+    "en": "The couple turns in a waltz on the dance floor, the dress swirling with them",
+    "nl": "Het bruidspaar draait in een wals op de dansvloer, de jurk zwiert mee"
+  },
+  "showConfigurator.firstDanceStoryCaption": {
+    "de": "Das Brautpaar betritt die Tanzfläche, tanzt Walzer und endet im Dip, rundherum gehen die Lichter an",
+    "en": "The couple steps onto the dance floor, waltzes and ends in a dip as the lights come on all around",
+    "nl": "Het bruidspaar betreedt de dansvloer, walst en eindigt in een dip terwijl rondom de lichtjes aangaan"
+  },
+  "showConfigurator.satellite": {
+    "de": "Satellit",
+    "en": "Satellite",
+    "nl": "Satelliet"
+  },
+  "showConfigurator.satellite3dCaption": {
+    "de": "Ein Satellit in 3D klappt seine Solarflügel aus und dreht sie zur Sonne",
+    "en": "A satellite in 3D unfolds its solar wings and turns them to the sun",
+    "nl": "Een satelliet in 3D klapt zijn zonnevleugels uit en draait ze naar de zon"
+  },
+  "showConfigurator.satelliteStoryCaption": {
+    "de": "Über der Erde klappt ein Satellit seine Paneele aus und sendet einen Lichtimpuls",
+    "en": "Above the Earth a satellite unfolds its panels and sends a pulse of light",
+    "nl": "Boven de aarde klapt een satelliet zijn panelen uit en zendt een lichtpuls"
+  },
+  "showConfigurator.octopus": {
+    "de": "Tintenfisch",
+    "en": "Octopus",
+    "nl": "Octopus"
+  },
+  "showConfigurator.octopus3dCaption": {
+    "de": "Ein Tintenfisch in 3D zwischen Korallen, die Arme wogen und rollen sich ein",
+    "en": "An octopus in 3D among corals, its arms sway and curl up",
+    "nl": "Een octopus in 3D tussen koralen, de armen golven en krullen zich op"
+  },
+  "showConfigurator.octopusStoryCaption": {
+    "de": "Aus dem Riff öffnet ein Tintenfisch seine Arme, rollt sie ein und schwimmt davon",
+    "en": "An octopus opens its arms from the reef, curls them up and swims away",
+    "nl": "Een octopus opent zijn armen uit het rif, rolt ze op en zwemt weg"
+  },
   "showConfigurator.rings": {
     "de": "Ringe",
     "en": "Rings",
@@ -2213,6 +2258,51 @@
     "de": "Uhr",
     "en": "Clock",
     "nl": "Klok"
+  },
+  "showConfigurator.countdown.label": {
+    "de": "Countdown",
+    "en": "Countdown",
+    "nl": "Aftellen"
+  },
+  "showConfigurator.countdown.caption3d": {
+    "de": "Ein Countdown von 10 bis 0 in 3D, jede Ziffer entsteht aus der vorigen",
+    "en": "A countdown from 10 to 0 in 3D, each digit grows out of the one before",
+    "nl": "Aftellen van 10 tot 0 in 3D, elk cijfer ontstaat uit het vorige"
+  },
+  "showConfigurator.countdown.captionStory": {
+    "de": "Countdown von 10 bis 0: die letzten Ziffern drehen sich durch die Tiefe, die Null zerspringt zum Feuerwerk",
+    "en": "Countdown from 10 to 0: the last digits turn through the depth, the zero bursts into fireworks",
+    "nl": "Aftellen van 10 tot 0: de laatste cijfers draaien door de diepte, de nul spat uiteen in vuurwerk"
+  },
+  "showConfigurator.countdown.storyCount": {
+    "de": "Zehn Sekunden: jede Ziffer entsteht aus der vorigen, die letzten drehen sich durch die Tiefe",
+    "en": "Ten seconds: each digit grows out of the one before, the last ones turn through the depth",
+    "nl": "Tien seconden: elk cijfer ontstaat uit het vorige, de laatste draaien door de diepte"
+  },
+  "showConfigurator.countdown.storyZero": {
+    "de": "Null! Sie faltet sich zur Kugel und zerspringt zum Feuerwerk",
+    "en": "Zero! It folds into a sphere and bursts into fireworks",
+    "nl": "Nul! Hij vouwt zich tot een bol en spat uiteen in vuurwerk"
+  },
+  "showConfigurator.adventskranz.label": {
+    "de": "Adventskranz",
+    "en": "Advent wreath",
+    "nl": "Adventskrans"
+  },
+  "showConfigurator.adventskranz.caption2d": {
+    "de": "Ein Adventskranz, vier Kerzen brennen",
+    "en": "An Advent wreath, four candles burning",
+    "nl": "Een adventskrans, vier kaarsen branden"
+  },
+  "showConfigurator.adventskranz.caption3d": {
+    "de": "Der Adventskranz in 3D, die Flammen flackern",
+    "en": "The Advent wreath in 3D, the flames flicker",
+    "nl": "De adventskrans in 3D, de vlammen flakkeren"
+  },
+  "showConfigurator.adventskranz.captionStory": {
+    "de": "Eine warme Lichtspur zündet die vier Kerzen nacheinander an",
+    "en": "A warm trail of light lights the four candles one after another",
+    "nl": "Een warm lichtspoor steekt de vier kaarsen één voor één aan"
   },
   "showConfigurator.theHandsRunToTwelve": {
     "de": "Die Zeiger laufen auf zwölf",
@@ -2738,6 +2828,66 @@
     "de": "und speit Feuer",
     "en": "and breathes fire",
     "nl": "en spuwt vuur"
+  },
+  "ersterTanz.theyStepOntoTheFloor": {
+    "de": "Das Brautpaar betritt die Tanzfläche",
+    "en": "The couple steps onto the dance floor",
+    "nl": "Het bruidspaar betreedt de dansvloer"
+  },
+  "ersterTanz.theyTakeHold": {
+    "de": "Sie wenden sich einander zu und nehmen Haltung an",
+    "en": "They turn to each other and take hold",
+    "nl": "Ze draaien zich naar elkaar toe en nemen de danshouding aan"
+  },
+  "ersterTanz.andWaltz": {
+    "de": "…und tanzen Walzer, das Kleid schwingt mit",
+    "en": "…and waltz, the dress swirling with them",
+    "nl": "…en walsen, de jurk zwiert mee"
+  },
+  "ersterTanz.aDipAndTheLightsComeOn": {
+    "de": "Zum Schluss ein Dip, rundherum gehen die Lichter an",
+    "en": "A dip to finish, the lights come on all around",
+    "nl": "Tot slot een dip, rondom gaan de lichtjes aan"
+  },
+  "satellit.inOrbit": {
+    "de": "Ein Satellit im Orbit über der Erde",
+    "en": "A satellite in orbit above the Earth",
+    "nl": "Een satelliet in een baan boven de aarde"
+  },
+  "satellit.firstPanel": {
+    "de": "Das erste Paneel klappt aus",
+    "en": "The first panel unfolds",
+    "nl": "Het eerste paneel klapt uit"
+  },
+  "satellit.secondPanel": {
+    "de": "dann das zweite",
+    "en": "then the second",
+    "nl": "dan het tweede"
+  },
+  "satellit.pulse": {
+    "de": "Die Antenne sendet einen Lichtimpuls zur Erde",
+    "en": "The antenna sends a pulse of light to Earth",
+    "nl": "De antenne zendt een lichtpuls naar de aarde"
+  },
+  "tintenfisch.inTheReef": {
+    "de": "Im Riff regt sich etwas",
+    "en": "Something stirs in the reef",
+    "nl": "In het rif beweegt iets"
+  },
+  "tintenfisch.armsOpen": {
+    "de": "Die Arme öffnen sich",
+    "en": "The arms open",
+    "nl": "De armen gaan open"
+  },
+  "tintenfisch.armsCurl": {
+    "de": "und rollen sich nacheinander ein",
+    "en": "and curl up one after another",
+    "nl": "en rollen zich een voor een op"
+  },
+  "tintenfisch.jet": {
+    "de": "Mit einem Rückstoß schwimmt er nach oben",
+    "en": "With a jet it swims upwards",
+    "nl": "Met een terugstoot zwemt hij omhoog"
   },
   "festival.itCirclesOnce": {
     "de": "er dreht eine Runde",

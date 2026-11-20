@@ -69,7 +69,9 @@ test('3D+ zeigt bei derselben Drohnenzahl nie weniger als 3D', () => {
 test('Komplexere Motive später: eine Geschichte ohne kleinere Fassung kommt nach jedem Motiv mit 2D-Fassung', () => {
   for (const o of OCCASIONS) {
     const odysseyOnly = o.motifs.filter((m) => !m.tiers.SPARK && !m.tiers.HORIZON), withSpark = o.motifs.filter((m) => m.tiers.SPARK);
-    for (const s of odysseyOnly) for (const m of withSpark) assert.ok(s.minDrones > m.minDrones, `${o.id}: ${s.id} (${s.minDrones}) vor ${m.id} (${m.minDrones})`);
+    // Runde 11: 2D reicht jetzt bis 300 (Adventskranz); eine Geschichte ab 300 darf zusammen mit einem 2D-Motiv ab 300 kommen,
+    // nur nicht früher als eines.
+    for (const s of odysseyOnly) for (const m of withSpark) assert.ok(s.minDrones > m.minDrones || (s.minDrones === m.minDrones && m.minDrones >= 300), `${o.id}: ${s.id} (${s.minDrones}) vor ${m.id} (${m.minDrones})`);
     // minDrones am Motiv = erste Drohnenzahl, bei der es in irgendeiner Art spielt
     for (const m of o.motifs) {
       const first = Math.min(...SHOW_ARTS.flatMap((art) => droneStops(art).filter((n) => canPlay(m, ART_TIER[art], n)).slice(0, 1)));
@@ -100,6 +102,16 @@ test('Gesperrte Motive nennen ihre Schwelle als Preisstufe: dort spielen sie, ei
 // man nur auf 110 oder 120 hochschraubt“): Freischaltungen nur auf den Stufen der Art (2D 100/150/200, 3D 200/250,
 // 3D+ 300/400), und jede Stufe, die etwas freischaltet, schaltet mindestens zwei Motive frei. Über alle Anlässe und Arten
 // aus den Daten, neue Motive und Anlässe sind automatisch dabei.
+// Runde 11, erste Welle großer Motive (Marc: „mit 3–5 starten … dann schauen wir weiter“): diese Stufen schalten bisher nur
+// ein Motiv frei. Die Liste wird mit jeder Welle kürzer und muss am Ende leer sein; ein neues Motiv auf einer dieser Stufen
+// entfernt seine Zeile hier. Marcs Ziel und offene Stufen: docs/show-konfigurator.md, Abschnitt „Große Motive“.
+const AUFBAU = [
+  'silvester 2d 300: nur adventskranz', 'silvester 3d 300: nur adventskranz',
+  'silvester 3d 900: nur countdown', 'silvester story 900: nur countdown',
+  'launch 3d 700: nur satellit', 'launch story 700: nur satellit',
+  'festival 3d 400: nur tintenfisch',
+  'hochzeit 3d 500: nur erstertanz', 'hochzeit story 500: nur erstertanz',
+];
 test('Freischaltungen nur auf den Stufen der Art, je Stufe mindestens zwei Motive', () => {
   const wrong = [];
   for (const o of OCCASIONS) for (const art of SHOW_ARTS) {
@@ -111,7 +123,7 @@ test('Freischaltungen nur auf den Stufen der Art, je Stufe mindestens zwei Motiv
       else if (fresh.length < 2) wrong.push(`${o.id} ${art} ${stops[i]}: nur ${fresh[0].id}`);
     }
   }
-  assert.deepEqual(wrong, []);
+  assert.deepEqual(wrong, AUFBAU);
 });
 
 test('3D 250 und 2D 150 schalten in jedem Anlass mindestens zwei Motive frei', () => {

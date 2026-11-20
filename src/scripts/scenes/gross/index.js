@@ -4,4 +4,15 @@
 // Vite macht aus jedem import() ein eigenes kleines Paket. Nie ein Modul aus diesem Ordner statisch importieren
 // (Wächter: scripts/gross-lazy.test.mjs). Jedes Modul exportiert `builders` mit genau den hier genannten Baunamen.
 export const GROSS = {
+  countdown3d: () => import('./countdown.js'),
+  countdownStory: () => import('./countdown.js'),
+  adventskranz2d: () => import('./adventskranz.js'),
+  adventskranz3d: () => import('./adventskranz.js'),
+  adventskranzStory: () => import('./adventskranz.js'),
+  firstDance3d: () => import('./erster-tanz.js'),
+  firstDanceStory: () => import('./erster-tanz.js'),
+  satellite3d: () => import('./satellit.js'),
+  satelliteStory: () => import('./satellit.js'),
+  octopus3d: () => import('./tintenfisch.js'),
+  octopusStory: () => import('./tintenfisch.js'),
 };
