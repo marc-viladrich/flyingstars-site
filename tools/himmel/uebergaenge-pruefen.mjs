@@ -39,11 +39,31 @@ export function pairBlocks(rects) {
   return out;
 }
 
-/** Im Browser: Grenzen zwischen benachbarten Sections mit Farbe, Übergang und Linie. pair = pairBlocks (als Argument,
- *  weil page.evaluate nur die Funktion selbst überträgt). */
-function inspect(pair) {
+/**
+ * Karte statt Section-Fläche (Runde 10, Marc 20.11.2026): Eine gerahmte Fläche (Rahmen oder runde Ecken), die seitlich
+ * eingerückt ist, also nicht die volle Breite ihres Elternelements einnimmt, ist keine Fläche der Seite, sondern ein Objekt
+ * darauf (etwa die Formation der Fallstudien). An ihrer Ober- und Unterkante wechselt die Seitenfläche nicht: Ihre Farbe
+ * zählt nicht als Section-Farbe, ihr Rahmen nicht als Trennlinie. Maßgeblich ist die Fläche dahinter.
+ * @param {{left: number, right: number}} box  das Element
+ * @param {{left: number, right: number}} parent  sein Elternelement
+ * @param {{border: boolean, radius: number}} frame  sichtbarer Rahmen, Eckradius in px
+ */
+export function isCard(box, parent, { border, radius }) {
+  const inset = box.left - parent.left > 1 || parent.right - box.right > 1;
+  return inset && (border || radius > 0);
+}
+
+/** Im Browser: Grenzen zwischen benachbarten Sections mit Farbe, Übergang und Linie. pair = pairBlocks, card = isCard
+ *  (als Argumente, weil page.evaluate nur die Funktion selbst überträgt). */
+function inspect(pair, card) {
+  const framed = (el) => {
+    const p = el.parentElement; if (!p) return false;
+    const s = getComputedStyle(el), border = ['Top', 'Right', 'Bottom', 'Left'].some((d) => parseFloat(s[`border${d}Width`]) > 0 && s[`border${d}Style`] !== 'none' && !/rgba\(.*,\s*0\)$|transparent/.test(s[`border${d}Color`]));
+    return card(el.getBoundingClientRect(), p.getBoundingClientRect(), { border, radius: parseFloat(s.borderTopLeftRadius) || 0 });
+  };
   const bg = (el) => {
     for (let e = el; e; e = e.parentElement) {
+      if (framed(e)) continue; // Karte: es zählt die Fläche dahinter
       const { backgroundColor, backgroundImage } = getComputedStyle(e);
       if (!/rgba\(.*,\s*0\)$|transparent/.test(backgroundColor)) return backgroundColor;
       // Ein Gradient ohne Grundfarbe ist trotzdem eine eigene Fläche.
@@ -56,7 +76,7 @@ function inspect(pair) {
   const mask = (el, pseudo) => { const s = getComputedStyle(el, pseudo); return s.content !== 'none' && /uebergang/.test(s.maskImage || s.webkitMaskImage || '') && !clips(el); };
   // sichtbarer Teil eines Elements: zugeschnitten auf Vorfahren mit overflow (zugeklappte Antworten, Leisten)
   const visible = (el, stop) => { const q = el.getBoundingClientRect(); let t = q.top, bt = q.bottom, l = Math.max(0, q.left), rt = Math.min(innerWidth, q.right); for (let u = el.parentElement; u && u !== stop.parentElement; u = u.parentElement) { const o = getComputedStyle(u); if (o.overflowY === 'visible' && o.overflowX === 'visible') continue; const c = u.getBoundingClientRect(); t = Math.max(t, c.top); bt = Math.min(bt, c.bottom); l = Math.max(l, c.left); rt = Math.min(rt, c.right); } return bt - t > 1 && rt - l > 1 ? { top: t, bottom: bt, width: rt - l, height: bt - t } : null; };
-  const line = (el, side) => { const s = getComputedStyle(el); const w = parseFloat(s[`border${side}Width`]); const c = s[`border${side}Color`]; return w > 0 && s[`border${side}Style`] !== 'none' && !/rgba\(.*,\s*0\)$|transparent/.test(c) ? `${w}px ${c}` : null; };
+  const line = (el, side) => { if (framed(el)) return null; const s = getComputedStyle(el); const w = parseFloat(s[`border${side}Width`]); const c = s[`border${side}Color`]; return w > 0 && s[`border${side}Style`] !== 'none' && !/rgba\(.*,\s*0\)$|transparent/.test(c) ? `${w}px ${c}` : null; };
   // Blöcke der Seite: Sections und Kopf-/Fußbereiche, die nicht in einer anderen Section liegen
   const all = [...document.querySelectorAll('main section, main > *, body > footer, footer.footer')].filter((el) => el.offsetHeight > 40 && !el.parentElement.closest('main section'));
   const blocks = [...new Set(all)].map((el) => ({ el, r: el.getBoundingClientRect() })).sort((a, b) => a.r.top - b.r.top);
@@ -65,7 +85,7 @@ function inspect(pair) {
     const a = blocks[i], b = blocks[j];
     const ca = bg(a.el), cb = bg(b.el), name = (e) => e.id || e.tagName.toLowerCase() + '.' + [...e.classList].slice(0, 2).join('.');
     // Das untere Band von a liegt unter b, sobald b positioniert ist und selbst eine Fläche malt; dann zählt nur das obere von b
-    const sb = getComputedStyle(b.el), covers = sb.position !== 'static' && (!/rgba\(.*,\s*0\)$|transparent/.test(sb.backgroundColor) || sb.backgroundImage !== 'none');
+    const sb = getComputedStyle(b.el), covers = !framed(b.el) && sb.position !== 'static' && (!/rgba\(.*,\s*0\)$|transparent/.test(sb.backgroundColor) || sb.backgroundImage !== 'none');
     const up = mask(b.el, '::before'), down = mask(a.el, '::after') && !covers;
     // Kein Band darf Inhalt des Nachbarn überdecken (Bilder, Text, Bedienelemente). Canvas-Kästen zählen nicht (Show-Bühnen sind
     // absichtlich größer als ihr Bild), ebenso Elemente, die selbst über die Kante ragen (Leisten, aufklappbare Inhalte).
@@ -93,7 +113,7 @@ export async function check(base, paths, { width = 1440 } = {}) {
       await page.goto(base + path, { waitUntil: 'load' });
       // einmal durchscrollen: Sections mit content-visibility werden erst in der Nähe ausgelegt, vorher stimmen ihre Maße nicht
       await page.evaluate(async () => { for (let y = 0; y < document.documentElement.scrollHeight; y += innerHeight * 0.8) { scrollTo({ top: y, behavior: 'instant' }); await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))); } scrollTo({ top: 0, behavior: 'instant' }); });
-      for (const g of await page.evaluate(`(${inspect})(${pairBlocks})`)) result.push({ path, ...g, missing: g.differ && !g.dots, lined: !!g.line, hides: g.differ && g.covered.length > 0 });
+      for (const g of await page.evaluate(`(${inspect})(${pairBlocks}, ${isCard})`)) result.push({ path, ...g, missing: g.differ && !g.dots, lined: !!g.line, hides: g.differ && g.covered.length > 0 });
     }
   } finally { await browser.close(); }
   return result;

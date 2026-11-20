@@ -126,12 +126,19 @@ Funkwellen am Fernsehturm, Kolibri mit Blüte, QR schneller, Feuerregen zurück,
 Marc zur leeren Icon-Karte neben „Faszinierend wie Feuerwerk, sicher wie Laser“: „Hier würde eigentlich auch eine Animations-Reihe
 wie auf der Startseite sehr gut passen.“ Dieselbe Technik, `createFolge(canvas, { variant: "indoor" })`, kein zweites System.
 
-- **Motive** (`scenes/indoor.js`, 50 Drohnen wie eine echte Indoor-Show): Herz (Herzschlag aus Licht), Diamant (Edelstein-Kontur,
-  schwenkt), Welle (läuft durch die Linie), lachendes Gesicht (zwinkert), Initialen „L ♥ M“ (Lichtlauf schreibt nach),
-  Doppelspirale (dreht sich), Stern (dreht sich in der Bildebene), Krone, Ring mit Stein (schwenkt, zeigt die Tiefe), zwei
-  Achtelnoten (wiegen sich). Feste Runde, je 1,4 s Standzeit (Runde 6, vorher sechs Motive à 2 s), Wechsel durch die lebendige
-  Wolke in etwa 0,5 s; eine Runde dauert gut 26 s. Ein Brillantschliff im Raum las sich mit 50 Punkten nur als Punktwolke.
-  Das FlyingStars-Zeichen las sich mit 50 Punkten nicht und ist darum nicht dabei.
+- **Motive** (`scenes/indoor.js`, 20 bis 50 Drohnen wie eine echte Indoor-Show). Runde 10 (Marc, 20.11.2026: „Bei
+  Indoor-Shows ist das eher ein Business-Event … Smiley und Herz ist mir zu doll … Der Ring ist wieder weird … Mehr solche
+  geometrischen Formen, die man mit 20 bis 50 Drohnen machen kann“): Herz, lachendes Gesicht, Initialen und Ring sind raus.
+  Reihe, flach und räumlich im Wechsel: Welle (läuft durch die Linie, 50), Würfel (8 Ecken, je 3 Drohnen pro Kante, dreht
+  sich, 44), Stern (50), Doppelhelix (50), Formen (36 Drohnen laufen Kreis → Dreieck → Quadrat → Sechseck; 36 ist durch 3, 4
+  und 6 teilbar, jede Ecke trägt eine Drohne), Raster (5 × 10 als Fläche im Raum, ein Wellenring läuft aus der Mitte, 50),
+  Diamant (50), Tetraeder (dreht sich, 28), zwei Achtelnoten (50), liegende Acht (40 Drohnen laufen auf ihr um, sie kippt
+  sacht), Krone (50; Marcs „Wahrzeichen“, sie liest sich als Burg-Silhouette). Standzeit 1,4 s, Motive mit eigener Handlung
+  länger (Würfel 2,2, Formen 3,4, Raster 2,4, Tetraeder 2,0, Acht 2,4 s), festgelegt in `INDOOR_ROW` (`folge.js`). Was ein Bild
+  nicht braucht, fliegt dunkel unter die Bühne (`joinLate`). Wächter: `scripts/indoor-motive.test.mjs` (Reihe = Motive, keine
+  Liebesmotive, 20–50 Drohnen, keine zwei Drohnen aufeinander über die Standzeit). Verworfen im Kontaktbogen: Würfel mit
+  2 Drohnen je Kante (zerfiel in Einzelpunkte), räumliche Lissajous-Figur 3 : 2 mit 40 Drohnen (zu lang, Punktwolke).
+  Ein Brillantschliff im Raum las sich mit 50 Punkten nur als Punktwolke; das FlyingStars-Zeichen las sich mit 50 Punkten nicht.
 - **Bühne:** `show: indoor` am Abschnitt (`Sustainability.astro`), ohne Rahmen und Punktmuster. Runde 6: Indoor-Reihe und
   Chopper-Szene (Hochzeit, `scene: chopper-play`) teilen einen Mechanismus, das Grid `.eco-staged` mit den Bereichen `head`,
   `copy`, `stage`: ab breitem Desktop stehen Kopf und Text links (5fr), die Bühne spannt rechts (7fr) beide Zeilen bis zur
@@ -141,6 +148,19 @@ wie auf der Startseite sehr gut passen.“ Dieselbe Technik, `createFolge(canvas
   reicht oben und unten über die Bühne hinaus (CSS), Lichter 1,6-mal so groß wie auf der Startseite (`lightScale`). Weil das
   Canvas bis neben die Überschrift reicht, findet der Schwarm dort keinen freien Platz mehr (`free()`); die frühere Diskokugel bei
   `#unterschied` entfällt damit, es gibt nur ein bewegtes Element in der Section.
+- **Chopper-Spielszene** (Hochzeit, `scene: chopper-play`, Runde 10; Marc: „Die Illustration könnte ein ganzes Stück größer
+  sein … Punkte überall an den Kleidern, die Arme so dicht besiedelt und die Beine so wenig … Das Gesicht kann man nicht richtig
+  erkennen“). Ursache: Die Kinder waren gefüllte SVG-Flächen, abgetastet wie ein Logo, mit fester Drohnenzahl je Teil statt
+  nach Linienlänge. Jetzt `effects/chopper-play.js` nach der Methode der Katalogfiguren (`catalog-3d/kit.js`): nur Umrisse,
+  Drohnen in gleichem Abstand entlang der Linien, verdeckte Linien fallen weg; Kopf als Kreis, Haare als Fläche, die dem Kopf
+  folgt (eine eigene Kappe las sich als Mütze), Augen und Lächeln als einzelne Lichter. Chopper ist in dieser Szene ebenfalls ein
+  Umriss aus seiner echten Geometrie (gleiche Ellipsen, Beine, Ohr, Schwanz, Mütze wie `chopper.js`); Danke-Seite und 404
+  behalten den gefüllten Hund. Größe: Die Szene setzt `sw.scale` je Frame aus ihrem über eine Schleife gemessenen Rahmen
+  (`PLAY_BOX` 2,44 × 1,08 Einheiten, die breiteste Stelle ist der Jubelarm in der Waagerechten); bei 1440 px sind die Kinder
+  rund 260 statt 200 px hoch, bei 1920 px rund 355 px. Standbild ohne JavaScript neu aus dem Renderer:
+  `node tools/chopper-standbild.mjs <basis-url>`. Wächter: `scripts/chopper-play.test.mjs` (Linienabstand je Körperteil ±30 %,
+  keine Füllung im Oberkörper, Gesicht mit zwei Augen und Mund und nichts Fremdem, Hund gleich dicht, jede Drohne über eine
+  ganze Schleife im Rahmen).
 - **Start:** Modul lädt, wenn die Bühne näher als 300 px ist (`whenNear`); das erste Motiv entsteht in Leerlauf-Tasks; los geht es,
   wenn ein Drittel der Bühne im Bild ist: Die Drohnen steigen dunkel von unten auf und bilden das Herz. Pause-Taste und reduzierte
   Bewegung: das Herz steht. Ohne JavaScript bleibt die Bühne weg, der Text steht allein.
@@ -287,6 +307,12 @@ effect“, Punkte zu klein (sollen wie beim Lichtpunkt-Hover auf Bildern sein), 
   als Befund. `npm run perf:start` prüft sechs typische Seiten bei 390 und
   1440 px, `scripts/himmel-perf.test.mjs` die Quelltext-Regeln. Stand 18.11.: 77 Seiten, 368 Grenzen, 171 Farbwechsel, bei 390,
   1440 und 1920 px ohne Befund (vorher: 33 Farbwechsel ohne Übergang, 45 mit Trennlinie, Preisseite 5 abgeschnitten).
+- **Karten sind keine Section-Flächen** (Runde 10, 20.11.2026, von Marc bestätigt): Eine gerahmte Fläche (Rahmen oder runde
+  Ecken), die seitlich eingerückt ist, also nicht die volle Breite ihres Elternelements einnimmt, ist ein Objekt auf der Seite.
+  Ihre Farbe zählt nicht als Section-Farbe, ihr Rahmen nicht als Trennlinie, sie deckt kein Band ab; es zählt die Fläche
+  dahinter (`isCard()` im Prüfwerkzeug, Tests in `scripts/uebergaenge-paare.test.mjs`). Betraf die Formation der Fallstudien
+  (`.c-play`, je Seite `c-story → c-play` und `c-play → c-reel`, 24 Befunde auf 12 Seiten). Keine Klassenausnahme: Eine neue
+  Karte dieser Art ist automatisch erfasst, eine eingerückte Fläche ohne Rahmen bleibt eine eigene Fläche.
 
 ## Offen
 
@@ -295,6 +321,5 @@ effect“, Punkte zu klein (sollen wie beim Lichtpunkt-Hover auf Bildern sein), 
 - Bewegte Inhalte über 5 s (drehende 3D-Motive, Lichtlauf alle 9 s): Die Pause-Taste im Seitenkopf hält sie an; ob das für
   WCAG 2.2.2 reicht, ist nicht geprüft.
 - Kein Wächter-Test für Bewegung und Bilder von Schwarm und Show-Folge (für die Ladezeit siehe Performance).
-- Show-Folge: Auswahl und Reihenfolge sind Entwürfe, nicht mit FlyingStars abgestimmt. Indoor-Reihe: Initialen „L ♥ M“ sind
-  ein Beispiel, keine echten Kundeninitialen.
+- Show-Folge: Auswahl und Reihenfolge sind Entwürfe, nicht mit FlyingStars abgestimmt.
   Gesichtet auf der deutschen Startseite; en/nl nutzen dieselben Stücke (die Folge enthält keine Worte mehr).

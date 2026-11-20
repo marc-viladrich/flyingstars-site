@@ -45,6 +45,8 @@ const still = { happy: { src: '/media/chopper/happy.webp', width: 720, height: 5
   .chopper-mood { display: block; width: 100%; aspect-ratio: 4 / 3; }
   .chopper-mood.is-still { height: auto; object-fit: contain; }
   @media (scripting: none) { canvas.chopper-mood { display: none; } }
+  /* Runde 10 (Marc: „die Illustration könnte ein ganzes Stück größer sein“): die Szene füllt die Bühne selbst
+     (chopper-moods.js, playScale, gemessener Rahmen ≈ 2 : 1); 16 : 9 lässt dabei kaum Leerraum */
   .chopper-mood.is-play { aspect-ratio: 16 / 9; }
   @media (max-width: 40em) { .chopper-mood.is-play { aspect-ratio: 4 / 3; } }
 </style>

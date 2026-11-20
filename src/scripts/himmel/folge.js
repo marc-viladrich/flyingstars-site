@@ -78,12 +78,16 @@ const PIECES = {
 const OPENING = { kind: "story", tags: ["feuer"], steps: [O("fireworkFinale", { story: 2.0, rate: 1.5, hold: 2.6 })] }; // Finale, dann Goldregen
 const FIRST = ["maske", "logo", "qr", "kugel", "delfine", "turm", "wappen", "musik", "kolibri", "buch", "baum", "taenzerin", "riesenrad", "feuerwerk"];
 
-/** Indoor-Reihe (scenes/indoor.js): 50 Drohnen, einfache Motive, je 2 s, in fester Runde. */
+/** Indoor-Reihe (scenes/indoor.js): bis 50 Drohnen, einfache Motive, in fester Runde. */
 const NI = 50;
 // Runde 6 (Marc: „die Wechsel bzw. die Anzahl und Art der Formen sollten schneller rotieren“): zehn Motive, flach und
 // räumlich im Wechsel, je 1,4 s Standzeit (vorher sechs à 2 s).
-const I = (key) => ({ build: `indoor:${key}`, pkg: "SPARK", n: NI, hold: 1.4, rate: 1 });
-const INDOOR = Object.fromEntries(["herz", "diamant", "welle", "smiley", "initialen", "spirale", "stern", "krone", "ring", "noten"].map((k) => [k, { kind: "indoor", tags: [], steps: [I(k)] }]));
+// Runde 10 (Marc, 20.11.2026: Indoor ist meist ein Business-Event, „mehr solche geometrischen Formen“): Herz, Gesicht,
+// Initialen und Ring raus, Würfel, Formen-Morph, Raster, Tetraeder und liegende Acht dazu; flach und räumlich im Wechsel.
+// Motive mit eigener Handlung stehen länger (Sekunden): die Formen laufen durch vier Gestalten, der Wellenring braucht Zeit.
+const I = (key, hold = 1.4) => ({ build: `indoor:${key}`, pkg: "SPARK", n: NI, hold, rate: 1 });
+const INDOOR_ROW = [["welle"], ["wuerfel", 2.2], ["stern"], ["spirale"], ["formen", 3.4], ["raster", 2.4], ["diamant"], ["tetraeder", 2.0], ["noten"], ["lissajous", 2.4], ["krone"]];
+const INDOOR = Object.fromEntries(INDOOR_ROW.map(([k, hold]) => [k, { kind: "indoor", tags: [], steps: [I(k, hold)] }]));
 
 /** Varianten: Startseite (Übergabe vom Himmel-Schwarm) und Indoor-Seite (eigene Bühne in #unterschied). */
 const VARIANTS = {
