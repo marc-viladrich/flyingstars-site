@@ -66,8 +66,8 @@
   },
   {
     "id": "ford",
-    "bytes": 93223,
-    "gzip": 17994
+    "bytes": 94131,
+    "gzip": 17271
   },
   {
     "id": "eon",
@@ -81,13 +81,13 @@
   },
   {
     "id": "berlin",
-    "bytes": 169921,
-    "gzip": 27452
+    "bytes": 170912,
+    "gzip": 26773
   },
   {
     "id": "bremen",
-    "bytes": 345292,
-    "gzip": 65022
+    "bytes": 346252,
+    "gzip": 63022
   },
   {
     "id": "rewe",
@@ -96,7 +96,7 @@
   },
   {
     "id": "nieheim",
-    "bytes": 72220,
-    "gzip": 9086
+    "bytes": 47866,
+    "gzip": 5212
   }
 ]

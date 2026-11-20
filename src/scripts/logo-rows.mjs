@@ -349,5 +349,120 @@ export function regularRibbons(pts, { ribbons = null, ...opt } = {}) {
   return out;
 }
 
-/** Die Nachbearbeitung jeder Logo-Formation: erst schmale Bänder neu legen, dann quer zur Linie glätten. */
-export function cleanRows(pts, opt) { return smoothRows(regularRibbons(pts, opt)); }
+/** Die Nachbearbeitung jeder Logo-Formation: schmale Bänder neu legen, gleiche kleine Formen gleich zeichnen, dann quer
+ * zur Linie glätten. */
+export function cleanRows(pts, opt) { return smoothRows(equalTwins(regularRibbons(pts, opt), opt)); }
+
+// ---------------------------------------------------------------------------------------------------------------------
+// Runde 10b (Lead nach Sichtung, Nieheim: „die vier Kugeln sind nicht gleich“). Der Konverter kürzt auf ein festes
+// Budget, indem er einzelnen Figuren Punkte nimmt; gleiche Figuren werden dabei nicht gleich behandelt (Nieheim, Fassung
+// für 170 Drohnen: Kugeln mit 5/4/4/4 Punkten, als Fünfeck und als Raute). Am Himmel liest sich das als Fehler.
+// equalTwins sucht kleine runde geschlossene Formen (4 bis 8 Punkte; drei Punkte sind oft nur ein Stück eines dünn
+// besetzten Buchstabens, Rundheit 4πA/U² ≥ 0,6) derselben Farbe, die
+// gleich groß mindestens dreimal vorkommen (wiederholte Motive: Kugeln, Punkte) und deren Punktzahlen abweichen,
+// gibt allen dieselbe Punktzahl (die häufigste) und dieselbe Auslegung (die Form eines Mitglieds, gleichmäßig neu
+// ausgelegt, erster Punkt oben, an jeden Schwerpunkt verschoben; auch gespiegelt gesetzte Kugeln werden so gleich). Überzählige oder fehlende Punkte wandern in die längste geschlossene Kontur (gleichmäßig neu
+// verteilt), damit die Drohnenzahl gleich bleibt. Ohne passende Kontur bleibt alles, wie es ist.
+
+/** Geschlossene Kurve durch die Punkte (Catmull-Rom), gleichmäßig nach Bogenlänge auf m Punkte; erster Punkt dort, wo
+ * die Kurve vom Schwerpunkt aus gesehen am weitesten oben liegt (Richtung −y), Umlauf im Uhrzeigersinn (Bildschirm). */
+function resampleLoop(P, m) {
+  const n = P.length, D = [];
+  for (let i = 0; i < n; i++) {
+    const p0 = P[(i - 1 + n) % n], p1 = P[i], p2 = P[(i + 1) % n], p3 = P[(i + 2) % n];
+    for (let k = 0; k < 12; k++) {
+      const t = k / 12, t2 = t * t, t3 = t2 * t;
+      D.push([0, 1].map((c) => 0.5 * (2 * p1[c] + (-p0[c] + p2[c]) * t + (2 * p0[c] - 5 * p1[c] + 4 * p2[c] - p3[c]) * t2 + (-p0[c] + 3 * p1[c] - 3 * p2[c] + p3[c]) * t3)));
+    }
+  }
+  let area = 0; for (let i = 0; i < D.length; i++) { const a = D[i], b = D[(i + 1) % D.length]; area += a[0] * b[1] - b[0] * a[1]; }
+  if (area < 0) D.reverse(); // y nach unten: positive Fläche = im Uhrzeigersinn auf dem Bildschirm
+  const cx = D.reduce((s, p) => s + p[0], 0) / D.length, cy = D.reduce((s, p) => s + p[1], 0) / D.length;
+  let start = 0, best = Infinity;
+  D.forEach((p, i) => { const a = Math.atan2(p[0] - cx, -(p[1] - cy)), d = Math.abs(a); if (d < best) { best = d; start = i; } });
+  const R = [...D.slice(start), ...D.slice(0, start), D[start]], s = cumul(R), L = s.at(-1), out = [];
+  let j = 0;
+  for (let k = 0; k < m; k++) {
+    const u = (L * k) / m; while (j < R.length - 2 && s[j + 1] < u) j++;
+    const t = (u - s[j]) / (s[j + 1] - s[j] || 1e-12); out.push([R[j][0] + t * (R[j + 1][0] - R[j][0]), R[j][1] + t * (R[j + 1][1] - R[j][1])]);
+  }
+  return out;
+}
+
+const sameColour = (a, b) => !a.c || !b.c || a.c.join() === b.c.join();
+/** dasselbe kleine runde Motiv: Breite und Höhe je höchstens 20 % verschieden, Rundheit höchstens 0,1 (bei 3–8 Punkten
+ * unterscheiden sich schon gespiegelte Fünfecke im Umriss deutlich, darum kein Punkt-für-Punkt-Vergleich) */
+function congruent(a, b) {
+  const rel = (u, v) => Math.abs(u - v) <= 0.2 * Math.max(u, v);
+  return rel(a.w, b.w) && rel(a.hgt, b.hgt) && Math.abs(a.round - b.round) <= 0.1;
+}
+
+/** Gleiche kleine Formen gleich zeichnen (siehe oben). Gibt neue Punkt-Objekte zurück; twins (Array) erfährt die Gruppen. */
+export function equalTwins(pts, { maxPoints = 8, minRound = 0.6, minGroup = 3, twins = null } = {}) {
+  if (!pts?.length) return pts;
+  const chains = contourChains(pts), info = [];
+  for (const c of chains) {
+    const Q = c.map((i) => [pts[i].x, pts[i].y]), n = Q.length;
+    if (n < 3) continue;
+    const st = Q.map((p, t) => { const q = Q[(t + 1) % n]; return hyp(p[0], p[1], q[0], q[1]); }), h = median(st);
+    if (!(h > 0) || Math.max(...st) > 2.5 * h) continue; // nur geschlossene Formen
+    const cx = Q.reduce((s, p) => s + p[0], 0) / n, cy = Q.reduce((s, p) => s + p[1], 0) / n;
+    let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity; for (const p of Q) { x0 = Math.min(x0, p[0]); x1 = Math.max(x1, p[0]); y0 = Math.min(y0, p[1]); y1 = Math.max(y1, p[1]); }
+    const r = Q.reduce((s, p) => s + hyp(p[0], p[1], cx, cy), 0) / n;
+    // Umriss relativ zum Schwerpunkt, gleichmäßig abgetastet (für die Rundheit)
+    const shape = resampleLoop(Q, 32).map(([x, y]) => [x - cx, y - cy]);
+    let A = 0, U = 0; for (let k = 0; k < 32; k++) { const a = shape[k], b = shape[(k + 1) % 32]; A += a[0] * b[1] - b[0] * a[1]; U += hyp(a[0], a[1], b[0], b[1]); }
+    const round = (4 * Math.PI * Math.abs(A / 2)) / (U * U || 1);
+    info.push({ c, Q, n, h, r, shape, round, w: x1 - x0, hgt: y1 - y0, len: st.reduce((a, b) => a + b, 0), first: pts[c[0]] });
+  }
+  // nur kleine, runde Motive (Kugeln, Punkte); Strichspitzen, Buchstaben-Innenräume und Wellen sind keine
+  const small = info.filter((f) => f.n >= 4 && f.n <= maxPoints && f.round >= minRound), used = new Set(), out = pts.map((p) => ({ ...p }));
+  // die längste geschlossene Kontur nimmt überzählige Punkte auf bzw. gibt fehlende ab
+  const donor = info.filter((f) => f.n > maxPoints).sort((a, b) => b.len - a.len)[0];
+  let delta = 0; const regroup = [];
+  for (const f of small) {
+    if (used.has(f)) continue;
+    const g = small.filter((o) => !used.has(o) && sameColour(o.first, f.first) && Math.abs(o.r - f.r) <= 0.15 * Math.max(o.r, f.r) && Math.abs(o.n - f.n) <= 2 && congruent(o, f));
+    if (g.length < minGroup) continue; // ein wiederholtes Motiv: mindestens dreimal
+    g.forEach((o) => used.add(o));
+    // schon gleich (gleiche Punktzahl, gleiches Punktmuster um den eigenen Schwerpunkt): so lassen, wie der Konverter sie
+    // gesetzt hat. Gespiegelte Muster (schematische Wappen: Fünfecke links nach rechts, rechts nach links) gelten als ungleich
+    const pattern = (o) => { const mx = o.Q.reduce((t, p) => t + p[0], 0) / o.n, my = o.Q.reduce((t, p) => t + p[1], 0) / o.n; return o.Q.map(([x, y]) => [x - mx, y - my]); };
+    const samePattern = (A, B) => A.every((a) => B.some((b) => hyp(a[0], a[1], b[0], b[1]) <= 0.25 * f.r));
+    if (g.every((o) => o.n === g[0].n && samePattern(pattern(o), pattern(g[0])))) continue;
+    const freq = new Map(); for (const o of g) freq.set(o.n, (freq.get(o.n) || 0) + 1);
+    const target = [...freq].sort((a, b) => b[1] - a[1] || a[0] - b[0])[0][0];
+    regroup.push({ g, target }); delta += g.reduce((s, o) => s + o.n - target, 0);
+  }
+  if (!regroup.length) return pts;
+  if (delta !== 0 && (!donor || donor.n + delta < 8)) return pts; // keine Kontur, die den Ausgleich trägt
+  // freie Indizes (aus zu großen Formen) und Plätze für zu kleine Formen
+  const spare = [], need = [];
+  for (const { g, target } of regroup) for (const o of g) {
+    if (o.n > target) spare.push(...o.c.slice(target));
+    if (o.n < target) need.push({ o, k: target - o.n });
+  }
+  // Ausgleich mit der Spenderkontur: sie bekommt die übrigen Indizes bzw. gibt welche ab
+  let donorIdx = donor ? donor.c.slice() : [];
+  for (const { o, k } of need) for (let t = 0; t < k; t++) { const i = spare.length ? spare.pop() : donorIdx.pop(); o.c = [...o.c, i]; }
+  if (donor) donorIdx = [...donorIdx, ...spare.splice(0)];
+  // eine Schablone je Gruppe: die Form eines Mitglieds mit der Zielpunktzahl (gleichmäßig neu ausgelegt, erster Punkt
+  // oben), an den Schwerpunkt jedes Mitglieds verschoben; so sind alle gleich, auch gespiegelt gesetzte
+  for (const { g, target } of regroup) {
+    const model = g.find((o) => o.n === target) ?? g[0], mx = model.Q.reduce((t, p) => t + p[0], 0) / model.n, my = model.Q.reduce((t, p) => t + p[1], 0) / model.n;
+    const tpl = resampleLoop(model.Q, target).map(([x, y]) => [x - mx, y - my]);
+    for (const o of g) {
+      const idx = o.c.slice(0, target), proto = o.first, ox = o.Q.reduce((t, p) => t + p[0], 0) / o.n, oy = o.Q.reduce((t, p) => t + p[1], 0) / o.n;
+      idx.forEach((i, k) => { out[i] = { ...out[i], x: ox + tpl[k][0], y: oy + tpl[k][1], c: proto.c, e: proto.e, cg: proto.cg }; });
+      twins?.push({ n: target, chain: idx });
+    }
+  }
+  if (donor && delta !== 0) {
+    const place = resampleLoop(donor.Q, donorIdx.length), proto = donor.first;
+    // Reihenfolge der Spenderpunkte beibehalten: die neuen Lagen folgen dem Umlauf ab dem Punkt, der der alten ersten Lage am nächsten liegt
+    let sh = 0, bd = Infinity; place.forEach((p, k) => { const d = hyp(p[0], p[1], donor.Q[0][0], donor.Q[0][1]); if (d < bd) { bd = d; sh = k; } });
+    donorIdx.forEach((i, k) => { const p = place[(sh + k) % place.length]; out[i] = { ...out[i], x: p[0], y: p[1], c: proto.c, e: proto.e, cg: proto.cg }; });
+  }
+  for (const key of Object.keys(pts)) if (!/^\d+$/.test(key)) out[key] = pts[key];
+  return out;
+}

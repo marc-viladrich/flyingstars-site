@@ -39,7 +39,7 @@ test('Spotify: die Schallwellen stehen glatt (p90 unter 0,02 Punktabständen, vo
 // Beispiele und alle vorberechneten Stufen; dazu Spotify live gerechnet bei den Liniendichte-Stufen 4–9, synthetische
 // Formen, die NICHT angefasst werden dürfen (Linse, Sichel, Ring), und ein Rechteck, das eckig bleiben muss.
 // Prüfbilder aller Logos × Stufen × Drohnenzahlen: /tmp/fs-r10/l/ (Runde 10, Agent L).
-import { cleanRows, regularRibbons, contourChains, fitRibbon } from './logo-rows.mjs';
+import { cleanRows, regularRibbons, contourChains, fitRibbon, equalTwins } from './logo-rows.mjs';
 
 const segDist = (p, a, b) => { const dx = b.x - a.x, dy = b.y - a.y, L2 = dx * dx + dy * dy || 1e-12, t = Math.max(0, Math.min(1, ((p.x - a.x) * dx + (p.y - a.y) * dy) / L2)); return Math.hypot(p.x - a.x - t * dx, p.y - a.y - t * dy); };
 const lineDist = (p, P) => { let m = Infinity; for (let i = 0; i < P.length - 1; i++) m = Math.min(m, segDist(p, P[i], P[i + 1])); return m; };
@@ -76,9 +76,11 @@ for (const id of ids) test(`${id}: Bänder neu gelegt ohne Verlust, alle anderen
     const rib = [], out = smoothRows(regularRibbons(pts, { ribbons: rib }));
     assert.equal(out.length, pts.length); assert.deepEqual(out.meta, pts.meta);
     out.forEach((q, i) => { assert.equal(q.c, pts[i].c); assert.equal(q.e, pts[i].e); assert.equal(q.cg, pts[i].cg); });
-    assert.deepEqual(cleanRows(pts), out);
-    // ohne Band ist das Ergebnis genau die Glättung von Runde 9
-    if (!rib.length) assert.deepEqual(out, smoothRows(pts));
+    // Runde 10b: cleanRows = Bänder, gleiche kleine Motive (equalTwins), Glättung; die Drohnenzahl bleibt
+    const tw = [], full = cleanRows(pts, { twins: tw });
+    assert.equal(full.length, pts.length);
+    // ohne Band und ohne ungleiche Motive ist das Ergebnis genau die Glättung von Runde 9
+    if (!rib.length && !tw.length) assert.deepEqual(full, smoothRows(pts));
     const moved = new Set(rib.flatMap((r) => r.chain)), sp = rowSpacing(regularRibbons(pts));
     pts.forEach((p, i) => { if (!moved.has(i)) assert.ok(Math.hypot(out[i].x - p.x, out[i].y - p.y) <= 0.3 * sp + 1e-9); });
     // jedes neu gelegte Band: gleichmäßige Schritte, keine Lücke, nichts weiter als 1,5 Punktabstände verschoben
@@ -174,4 +176,45 @@ test('synthetisch: schmales Rechteck (Buchstabenstamm, Innenraum) behält gerade
   // alle vier Ecken sind besetzt, alle Punkte liegen auf dem Rechteck
   for (const [x, y] of [[0, 0], [W, 0], [0, H], [W, H]]) assert.ok(r.pts.some((q) => Math.hypot(q[0] - x, q[1] - y) < 0.1 * step), `Ecke ${x},${y}`);
   for (const q of r.pts) assert.ok(Math.min(Math.abs(q[0]), Math.abs(q[0] - W), Math.abs(q[1]), Math.abs(q[1] - H)) < 0.1 * step);
+});
+
+// ---------------------------------------------------------------------------------------------------------------------
+// Runde 10b (Lead nach Sichtung des Kontaktbogens, Nieheim: „die vier Kugeln sind nicht gleich“). Wächter: gleiche kleine
+// Motive gleich gezeichnet (equalTwins), über alle vorberechneten Fassungen von Nieheim, und synthetisch; dazu: Formen,
+// die nur ähnlich sind (Strichspitzen, dünn besetzte Buchstaben), bleiben unangetastet.
+const discsOf = (pts) => { const xs = pts.map((q) => q.x), cx = (Math.min(...xs) + Math.max(...xs)) / 2; return contourChains(pts).map((c) => c.map((i) => pts[i])).filter((g) => g.length >= 3 && g.length <= 8).map((g) => ({ g, mx: g.reduce((t, q) => t + q.x, 0) / g.length, my: g.reduce((t, q) => t + q.y, 0) / g.length })).filter((d) => Math.abs(d.mx - cx) > 0.25 && Math.abs(d.my) > 0.2); };
+test('Nieheim: in jeder Fassung (Automatik und vereinfacht) vier gleiche Kugeln, zwei Farben', () => {
+  const d = JSON.parse(fs.readFileSync(new URL('nieheim.json', dir)));
+  assert.equal(new Set(d.palette.map((c) => c.join())).size, 2, 'Rot und Gelb, keine Mischfarben an den Kanten');
+  for (const pts of allPrepared('nieheim')) {
+    const discs = discsOf(cleanRows(pts));
+    assert.equal(discs.length, 4, `${pts.meta.ref}: ${discs.length} Kugeln`);
+    const pat = discs.map(({ g, mx, my }) => g.map((q) => [q.x - mx, q.y - my]));
+    for (const P of pat) { assert.equal(P.length, pat[0].length, `${pts.meta.ref}: Punktzahlen ${pat.map((x) => x.length)}`); for (const a of P) assert.ok(pat[0].some((b) => Math.hypot(a[0] - b[0], a[1] - b[1]) < 0.012), `${pts.meta.ref}: Kugeln verschieden ausgelegt`); }
+  }
+});
+test('flächige neue Beispiele ohne Mischfarben (nur die Farben des Logos)', () => {
+  for (const [id, n] of [['ford', 2], ['bremen', 2], ['nieheim', 2], ['berlin', 3]]) assert.equal(new Set(JSON.parse(fs.readFileSync(new URL(`${id}.json`, dir))).palette.map((c) => c.join())).size, n, id);
+  for (const id of ['rewe', 'eon', 'volkswagen']) { const p = JSON.parse(fs.readFileSync(new URL(`${id}.json`, dir))).palette; for (const c of p) assert.ok(Math.hypot(c[0] - p[0][0], c[1] - p[0][1], c[2] - p[0][2]) <= 8, `${id}: ${c} weicht ab`); }
+});
+const ring = (cx, cy, r, n, rot = 0, c = [252, 221, 9]) => Array.from({ length: n }, (_, k) => ({ x: cx + r * Math.sin(rot + (2 * Math.PI * k) / n), y: cy - r * Math.cos(rot + (2 * Math.PI * k) / n), c }));
+test('synthetisch: vier Kugeln mit 5/4/4/4 Punkten werden gleich, ein Punkt wandert in die längste Kontur', () => {
+  const big = ring(0, 0, 0.9, 60, 0, [255, 138, 126]), pts = [...big, ...ring(-0.4, -0.4, 0.06, 5), ...ring(0.4, -0.4, 0.06, 4), ...ring(-0.4, 0.4, 0.06, 4), ...ring(0.4, 0.4, 0.06, 4)];
+  const tw = [], out = equalTwins(pts, { twins: tw });
+  assert.equal(out.length, pts.length); assert.equal(tw.length, 4); assert.ok(tw.every((t) => t.n === 4));
+  assert.equal(out.filter((q) => q.c[0] === 255).length, 61, 'der überzählige Punkt gehört jetzt zum Rand (rot)');
+});
+test('synthetisch: gespiegelt gesetzte Fünfecke werden gleich ausgerichtet', () => {
+  const pts = [...ring(0, 0, 0.9, 60, 0, [255, 138, 126]), ...ring(-0.4, -0.4, 0.06, 5, Math.PI / 2), ...ring(0.4, -0.4, 0.06, 5, -Math.PI / 2), ...ring(-0.4, 0.4, 0.06, 5, Math.PI / 2), ...ring(0.4, 0.4, 0.06, 5, -Math.PI / 2)];
+  const discs = discsOf(equalTwins(pts)), pat = discs.map(({ g, mx, my }) => g.map((q) => [q.x - mx, q.y - my]));
+  assert.equal(discs.length, 4);
+  for (const P of pat) for (const a of P) assert.ok(pat[0].some((b) => Math.hypot(a[0] - b[0], a[1] - b[1]) < 1e-6));
+});
+test('synthetisch: nur zwei gleiche Formen, Dreiecke oder schon gleiche Motive bleiben unangetastet', () => {
+  const big = ring(0, 0, 0.9, 60, 0, [255, 138, 126]);
+  for (const [name, pts] of [
+    ['zwei Kugeln', [...big, ...ring(-0.4, 0, 0.06, 5), ...ring(0.4, 0, 0.06, 4)]],
+    ['Dreiecke', [...big, ...ring(-0.4, -0.4, 0.06, 3), ...ring(0.4, -0.4, 0.06, 3, 1), ...ring(-0.4, 0.4, 0.06, 3, 2)]],
+    ['schon gleich', [...big, ...ring(-0.4, -0.4, 0.06, 5), ...ring(0.4, -0.4, 0.06, 5), ...ring(-0.4, 0.4, 0.06, 5)]],
+  ]) assert.deepEqual(equalTwins(pts), pts, name);
 });
