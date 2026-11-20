@@ -61,7 +61,9 @@ test('Jeder Anlass hat vier bis dreißig Motive (Runde 24: Katalog- und Showmoti
       // ODYSSEY. Ausgeblendet heißt: die Fassung fehlt ganz, nie eine flache Ersatzfassung in 3D.
       const stufe = stufeOf(motif), first = PACKAGE_ORDER.findIndex((pkg) => motif.tiers[pkg]), id = `${occasion.id}/${motif.id}`;
       assert.ok(first >= 0, `${id}: keine Fassung`);
-      if (stufe === '3D') PACKAGE_ORDER.slice(first).forEach((pkg) => assert.ok(motif.tiers[pkg], `${id}: ${pkg} fehlt nach ${PACKAGE_ORDER[first]}`));
+      // Runde 10: coveredBy = in ODYSSEY zeigt eine Story desselben Anlasses dieses Bild schon (Baumstern → großer Stern)
+      const covered = (pkg) => pkg === 'ODYSSEY' && motif.coveredBy && occasion.motifs.some((x) => x.id === motif.coveredBy && x.tiers.ODYSSEY);
+      if (stufe === '3D') PACKAGE_ORDER.slice(first).forEach((pkg) => assert.ok(motif.tiers[pkg] || covered(pkg), `${id}: ${pkg} fehlt nach ${PACKAGE_ORDER[first]}`));
       else if (stufe === '3D+') assert.ok(!motif.tiers.HORIZON && motif.tiers.ODYSSEY?.build, `${id}: 3D+ gehört nur nach ODYSSEY`);
       else if ('flat' in motif) assert.deepEqual(Object.keys(motif.tiers), ['SPARK'], `${id}: ohne 3D-Fassung nur SPARK`);
       else assert.deepEqual(Object.keys(motif.tiers), ['ODYSSEY'], `${id}: eigene Geschichte ohne Stufe nur ODYSSEY`);
