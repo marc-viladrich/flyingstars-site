@@ -224,6 +224,11 @@
     "en": "Your text",
     "nl": "Jullie tekst"
   },
+  "showconfigurator.clearText": {
+    "de": "Text entfernen",
+    "en": "Remove text",
+    "nl": "Tekst verwijderen"
+  },
   "showconfigurator.removeLogo": {
     "de": "Logo entfernen",
     "en": "Remove logo",
@@ -1984,6 +1989,21 @@
     "en": "A dragon rises, circles and breathes fireworks",
     "nl": "Een draak stijgt op, cirkelt en spuwt vuurwerk"
   },
+  "showConfigurator.dragonRiseCaption": {
+    "de": "Ein Drache steigt in 3D auf, die Flügel schlagen",
+    "en": "A dragon rises in 3D, its wings beating",
+    "nl": "Een draak stijgt op in 3D, de vleugels slaan"
+  },
+  "showConfigurator.dragonFlightCaption": {
+    "de": "Der Drache steigt auf, mit Beinen, Schuppen und gerippten Flügeln",
+    "en": "The dragon rises, with legs, scales and ribbed wings",
+    "nl": "De draak stijgt op, met poten, schubben en geribde vleugels"
+  },
+  "showConfigurator.dragonHeadCaption": {
+    "de": "Ein aztekischer Drachenkopf dreht sich zu euch und speit Feuer",
+    "en": "An Aztec dragon head turns to you and breathes fire",
+    "nl": "Een Azteekse drakenkop draait zich naar jullie toe en spuwt vuur"
+  },
   "showConfigurator.rings": {
     "de": "Ringe",
     "en": "Rings",
@@ -2708,6 +2728,26 @@
     "de": "Ein Drache steigt auf",
     "en": "A dragon rises",
     "nl": "Een draak stijgt op"
+  },
+  "drache.aHeadAppears": {
+    "de": "Ein Drachenkopf zeichnet sich ab",
+    "en": "A dragon head takes shape",
+    "nl": "Een drakenkop tekent zich af"
+  },
+  "drache.itTurnsToYou": {
+    "de": "Er dreht sich zu euch",
+    "en": "It turns to you",
+    "nl": "Hij draait zich naar jullie toe"
+  },
+  "drache.opensItsMaw": {
+    "de": "Das Maul öffnet sich",
+    "en": "Its jaws open",
+    "nl": "De muil gaat open"
+  },
+  "drache.andBreathesFire": {
+    "de": "und speit Feuer",
+    "en": "and breathes fire",
+    "nl": "en spuwt vuur"
   },
   "festival.itCirclesOnce": {
     "de": "er dreht eine Runde",
@@ -3752,6 +3792,8 @@
     "en": "Desired number of drones",
     "nl": "Gewenst aantal drones"
   },
+  "logoMode.notice": {"de": "Euer Logo setzt hier ein automatischer Algorithmus um. Er zeigt nur eine Annäherung und kann deshalb Unreinheiten enthalten. Für eine echte Show setzen wir jedes Logo sauber um, oft mit weniger Drohnen, als der Algorithmus hier annimmt.", "en": "An automatic algorithm turns your logo into drones here. It only shows an approximation and may therefore contain rough spots. For a real show we set up every logo cleanly, often with fewer drones than the algorithm estimates here.", "nl": "Een automatisch algoritme zet jullie logo hier om. Het toont alleen een benadering en kan daardoor onzuiverheden bevatten. Voor een echte show zetten we elk logo zuiver om, vaak met minder drones dan het algoritme hier inschat."},
+  "logoMode.noticeOk": {"de": "Verstanden", "en": "Got it", "nl": "Begrepen"},
   "logoInquiry.purpose": {"de": "Wir senden das Logo erst mit eurer Anfrage und nutzen es nur für Motivprüfung, Entwurf und Angebot, nicht für Veröffentlichungen. Bitte sendet nur Logos, die ihr dafür verwenden dürft.", "en": "We only send the logo with your enquiry and use it solely to review the motif, prepare a draft and quote, not for publication. Please send only logos you may use for this.", "nl": "We versturen het logo pas met jullie aanvraag en gebruiken het alleen om het motief te beoordelen, een ontwerp te maken en een offerte op te stellen, niet voor publicatie. Stuur alleen logo’s die jullie hiervoor mogen gebruiken."},
   "logoInquiry.original": {"de": "Original-Logo", "en": "Original logo", "nl": "Origineel logo"},
   "logoInquiry.preview": {"de": "Punkte-Vorschau", "en": "Dot preview", "nl": "Stippenvoorbeeld"},
@@ -3813,6 +3855,11 @@
     "de": "Baut eure Show *selbst* zusammen",
     "en": "Build your show *yourself*",
     "nl": "Stel jullie show *zelf* samen"
+  },
+  "showConfigurator.aHeartWithYourInitials": {
+    "de": "Ein Herz, eure Initialen darin",
+    "en": "A heart with your initials inside",
+    "nl": "Een hart met jullie initialen erin"
   },
   "preise.yourShow.2d": {
     "de": "Eure 2D Show",
@@ -4565,19 +4612,19 @@
     "nl": "Tv-toren"
   },
   "showConfigurator.wahrzeichen.fernsehturm2d": {
-    "de": "Der Berliner Fernsehturm mit Warnlicht",
-    "en": "The Berlin TV tower with its warning light",
-    "nl": "De Berlijnse tv-toren met waarschuwingslicht"
+    "de": "Der Berliner Fernsehturm sendet, Funkwellen gehen von der Kugel aus",
+    "en": "The Berlin TV tower broadcasts, radio waves leave the sphere",
+    "nl": "De Berlijnse tv-toren zendt, radiogolven vertrekken vanaf de bol"
   },
   "showConfigurator.wahrzeichen.fernsehturm3d": {
-    "de": "Der Fernsehturm in 3D, Licht läuft um die Kugel",
-    "en": "The TV tower in 3D, light runs around the sphere",
-    "nl": "De tv-toren in 3D, licht loopt rond de bol"
+    "de": "Der Fernsehturm in 3D, Licht läuft um die Kugel, er sendet",
+    "en": "The TV tower in 3D, light runs around the sphere as it broadcasts",
+    "nl": "De tv-toren in 3D, licht loopt rond de bol terwijl hij zendt"
   },
   "showConfigurator.wahrzeichen.fernsehturmPlus": {
-    "de": "Die Kugel des Fernsehturms dreht sich, das Warnlicht blinkt",
-    "en": "The sphere of the TV tower turns, the warning light blinks",
-    "nl": "De bol van de tv-toren draait, het waarschuwingslicht knippert"
+    "de": "Die Kugel des Fernsehturms dreht sich, Funkwellen gehen hinaus",
+    "en": "The sphere of the TV tower turns, radio waves go out",
+    "nl": "De bol van de tv-toren draait, radiogolven gaan naar buiten"
   },
   "showConfigurator.wahrzeichen.rheinturm": {
     "de": "Rheinturm",

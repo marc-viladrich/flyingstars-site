@@ -63,6 +63,9 @@ const frame = (occasion, k, r) => (occasion === "hochzeit"
   : sampleOutline([circle(0, 0, r, 160)], k).map(([x, y]) => [x, y, 0]));
 
 const height = (pts) => { const ys = pts.map((p) => p[1]); return Math.max(...ys) - Math.min(...ys); };
+/** Runde 10b (Marc: „die Initialen sind nicht richtig im Herz drin“): Im Herz stehen die Initialen etwas kleiner und
+ * höher, dort, wo das Herz am breitesten ist; mittig gesetzt berührte der Schwung des A ab 150 Drohnen die Linie. */
+const intoFrame = (occasion, pts) => (occasion === "hochzeit" ? pts.map(([x, y, z, ...c]) => [x * 0.86, y * 0.86 + 0.14, z, ...c]) : pts);
 
 /** The text motif for one package. version: { value, style, occasion }. */
 export async function textScene(n, caption, version, pkg) {
@@ -71,7 +74,7 @@ export async function textScene(n, caption, version, pkg) {
   if (pkg === "SPARK") {
     const write = writeTime(label);
     if (style === "initials") {
-      const [t, f] = share(n, [3, 2]), letters = await lettering(value, style, t), rank = lightRank(letters), pts = [...paint(letters, WARM), ...paint(frame(occasion, f, 0.95), occasion === "hochzeit" ? PINK : GOLD)];
+      const [t, f] = share(n, [3, 2]), letters = intoFrame(occasion, await lettering(value, style, t)), rank = lightRank(letters), pts = [...paint(letters, WARM), ...paint(frame(occasion, f, 0.95), occasion === "hochzeit" ? PINK : GOLD)];
       const frameRank = lightRank(pts.slice(t));
       return { beats: [{ pts, caption, hold: write + HOLD, live: (b, j, tt, o) => { o[3] = j < t ? textLight(rank[j], tt, write) : textLight(frameRank[j - t], tt, write * 0.8, 0.3 + write * 0.5); } }] };
     }
@@ -80,7 +83,7 @@ export async function textScene(n, caption, version, pkg) {
   }
 
   if (pkg === "HORIZON") {
-    const [t, d] = share(n, [5, 1]), text = await lettering(value, style, t), h = height(text), rank = lightRank(text);
+    const [t, d] = share(n, [5, 1]), text = style === "initials" ? intoFrame(occasion, await lettering(value, style, t)) : await lettering(value, style, t), h = height(text), rank = lightRank(text);
     const deco = style === "initials" ? frame(occasion, d, 0.95) : ornament(occasion, d, WIDTH, h / 2 + 0.08);
     const colour = (p) => mix(WARM, occasion === "hochzeit" ? PINK : GOLD, 0.15);
     const pts = [...paint(text, colour), ...paint(deco, occasion === "hochzeit" ? PINK : GOLD)];

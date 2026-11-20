@@ -9,7 +9,7 @@
 // (Wächter scripts/wahrzeichen.test.mjs).
 import { TAU, revolve, ellipsoid, tube, curves, spot, assemble, colour, turn } from './kit.js';
 import { WARM, GOLD, CYAN, RED, BLUE, DIAMOND, mix, glint, chase } from '../../show-motion.js';
-import { FT, RT, BT, KD, EP, SB, SKY, ANTENNA, SG, crownLine, SHAPES, linesOf } from '../wahrzeichen.js';
+import { FT, RT, RT_POD, BT, KD, EP, SB, SKY, ANTENNA, SG, crownLine, SHAPES, linesOf, waveArcs, waveLight } from '../wahrzeichen.js';
 import { turnAbout } from './kit.js';
 import { prepareLines, lineSample } from '../catalog-resample.js';
 
@@ -27,25 +27,27 @@ const line3 = (...pts) => ({ pts: pts.map(([x, y, z = 0]) => [x, y, z]) });
 const at = (pts, z) => ({ pts: pts.map(([x, y]) => [x, y, z]) });
 
 // ---------- Fernsehturm ----------
+// Runde 10b: Proportionen und Funkwellen wie die 2D-Fassung (scenes/wahrzeichen.js, FT, FT_WAVES); die Kugel als Globus
+// (Breitenkreise und zwei Meridiane, wie der ältere Jubiläums-Turm), in 3D+ dreht sie sich. Die Wellen liegen in der
+// Bildebene und schwenken nicht mit, sie sind ein Zeichen, kein Körper.
 export function fernsehturm(n, stufe = '3D') {
-  const plus = stufe === '3D+', [cx, cy, r] = FT.sphere, bottom = cy - r * 0.97, top = cy + r;
-  const foot = plus ? [[0.1, FT.ground], [0.074, FT.ground + 0.1], [FT.shaftBottom, FT.ground + 0.2]] : [[FT.shaftBottom, FT.ground]];
+  const plus = stufe === '3D+', [cx, cy, r] = FT.sphere, bottom = cy - r * 0.97, top = cy + r, y0 = FT.ground;
   const parts = [
-    revolve('shaft', [0, 0, 0], [...foot, [FT.shaftTop, bottom]], { meridians: plus ? 6 : 4, phase: Math.PI / 4, rings: plus ? [FT.ground + 0.2 - 0.0] : [] }),
-    ellipsoid('sphere', [cx, cy, 0], [r, r, r], { lat: plus ? [-0.55, 0.15, 0.65] : [0.15], mer: plus ? [Math.PI / 4, (3 * Math.PI) / 4] : [Math.PI / 4, (3 * Math.PI) / 4] }),
+    revolve('shaft', [0, 0, 0], [[0.15, y0], [0.105, y0 + 0.1], [FT.shaftBottom, y0 + 0.22], [FT.shaftTop, bottom]], { meridians: plus ? 6 : 4, phase: Math.PI / 4, rings: plus ? [y0 + 0.22] : [] }),
+    ellipsoid('sphere', [cx, cy, 0], [r, r, r], { lat: [-0.5, 0.15, 0.6], mer: plus ? [Math.PI / 6, Math.PI / 2, (5 * Math.PI) / 6] : [Math.PI / 4, (3 * Math.PI) / 4] }),
+    revolve('korb', [0, 0, 0], [[0.035, top - 0.005], [0.035, FT.korb]], { meridians: 4, phase: Math.PI / 4, rings: [FT.korb] }),
+    curves('antenna', [line3([0, FT.korb], [0, FT.tip - 0.04]), ...(plus ? FT.bars.flatMap((y) => [line3([-0.03, y], [0.03, y]), line3([0, y, -0.03], [0, y, 0.03])]) : [])]),
+    curves('wave', waveArcs(3).map((pts) => ({ pts: pts.map(([x, y]) => [x, y, 0]) })), { w: 0.8 }),
+    spot('tip', [0, FT.tip, 0], 1),
   ];
-  if (plus) {
-    parts.push(revolve('korb', [0, 0, 0], [[0.03, top - 0.005], [0.03, FT.korb]], { meridians: 4, phase: Math.PI / 4, rings: [FT.korb] }));
-    parts.push(curves('antenna', [line3([0, FT.korb], [0, FT.tip - 0.04]), line3([-0.03, 0.68], [0.03, 0.68]), line3([0, 0.68, -0.03], [0, 0.68, 0.03])]));
-  } else parts.push(curves('antenna', [line3([0, top], [0, FT.tip - 0.04])]));
-  parts.push(spot('tip', [0, FT.tip, 0], 1));
-  const shape = assemble(parts, n), pts = colour(shape, { shaft: WARM, sphere: DIAMOND, korb: WARM, antenna: WARM, tip: RED }, WARM);
+  const shape = assemble(parts, n), pts = colour(shape, { shaft: WARM, sphere: DIAMOND, korb: WARM, antenna: WARM, wave: CYAN, tip: RED }, WARM);
   const tags = shape.tags, SPIN = 0.35;
   return { pts, tags, live: (b, j, t, o) => {
     const tag = tags[j];
+    if (tag === 'wave') { o[3] = waveLight(Math.hypot(b[0] - cx, b[1] - cy), t); return; }
     if (tag === 'tip') o[3] = warning(t);
     else if (tag === 'sphere') {
-      // 3D+: die Kugel dreht sich um den Schaft (Meridiane wandern), 3D: Licht läuft um die Kugel
+      // 3D+: die Kugel dreht sich um den Schaft (Meridiane wandern); das Fensterband glänzt rundum
       if (plus) { const a = t * SPIN, x = o[0] - cx, z = o[2]; o[0] = cx + x * Math.cos(a) + z * Math.sin(a); o[2] = -x * Math.sin(a) + z * Math.cos(a); }
       o[3] = Math.abs(b[1] - cy - 0.15 * r) < 0.02 ? glint(Math.atan2(b[2], b[0] - cx), t, 3.2, 0.7, -Math.PI, Math.PI) : 1;
     }
@@ -54,9 +56,9 @@ export function fernsehturm(n, stufe = '3D') {
 }
 
 // ---------- Rheinturm ----------
-const RT_POD = [[0.07, 0.466], [0.17, 0.594], [0.17, 0.615], [0.15, 0.628], [0.15, 0.665], [0.128, 0.7], [0.128, 0.735], [0.04, 0.754]];
 /** Lichtzeituhr (Ziffern von unten: Sekunden-Einer, -Zehner, Minuten-Einer, -Zehner, Stunden-Einer, -Zehner). */
-export const CLOCK = { from: -0.82, to: 0.36, groups: [9, 5, 9, 5, 9, 2], start: 20 * 3600 + 15 * 60 };
+// Start 23:58:47 (Runde 10b): dann leuchtet der größte Teil der Punktreihe, um 20:15 waren es nur ein paar verstreute Punkte
+export const CLOCK = { from: -0.82, to: 0.36, groups: [9, 5, 9, 5, 9, 2], start: 23 * 3600 + 58 * 60 + 47 };
 /** Leuchtet die Drohne an Stelle u (0 unten … 1 oben) der Lichtzeituhr zur Zeit t? null = Trenner zwischen den Ziffern. */
 export function clockLit(u, t) {
   const total = CLOCK.groups.reduce((a, b) => a + b + 1, -1), s = Math.floor(CLOCK.start + Math.max(0, t)), k = Math.min(total - 1, Math.floor(u * total));
@@ -69,12 +71,15 @@ export function clockLit(u, t) {
   }
   return null;
 }
+/** Licht einer Drohne der Lichtzeituhr: leuchtende Ziffer hell, nicht leuchtende kaum, Trenner dunkel (eine Punktreihe). */
+export const clockLight = (u, t) => { const lit = clockLit(u, t); return lit === null ? 0 : lit ? 1.4 : 0.14; };
 export function rheinturm(n, stufe = '3D') {
+  // Runde 10b: Kanzel nach dem Foto (RT_POD in scenes/wahrzeichen.js), Reifen an den drei Rändern machen aus ihnen Teller
   const plus = stufe === '3D+', y0 = RT.ground, rAt = (y) => 0.1 + (0.07 - 0.1) * ((y - y0) / (RT.shaftTop[1] - y0));
   const parts = [
     revolve('shaft', [0, 0, 0], [[0.1, y0], RT.shaftTop], { meridians: 4, phase: Math.PI / 4, rings: plus ? [y0 + 0.002] : [] }),
-    revolve('pod', [0, 0, 0], plus ? RT_POD : [[0.07, 0.466], [0.17, 0.594], [0.15, 0.64], [0.128, 0.7], [0.04, 0.754]], { meridians: plus ? 8 : 6, phase: Math.PI / 8, rings: plus ? [0.594, 0.665, 0.735] : [0.594] }),
-    curves('antenna', [line3([0, 0.754], [0, RT.tip - 0.04])]),
+    revolve('pod', [0, 0, 0], RT_POD, { meridians: plus ? 8 : 6, phase: Math.PI / 8, rings: plus ? [...RT.rims, ...RT.tops].map((q) => q[1]) : RT.rims.map((q) => q[1]) }),
+    curves('antenna', [line3([0, RT.antenna], [0, RT.tip - 0.04])]),
     // die Lichtzeituhr: eine Reihe Lichter vorn auf dem Schaft
     curves('clock', [{ pts: Array.from({ length: 13 }, (_, i) => { const y = CLOCK.from + ((CLOCK.to - CLOCK.from) * i) / 12; return [0, y, rAt(y) + 0.012]; }) }], { w: plus ? 1.2 : 1 }),
     spot('tip', [0, RT.tip, 0], 1),
@@ -83,8 +88,8 @@ export function rheinturm(n, stufe = '3D') {
   return { pts, tags, live: (b, j, t, o) => {
     const tag = tags[j];
     if (tag === 'tip') o[3] = warning(t);
-    else if (tag === 'clock') { const lit = clockLit((b[1] - CLOCK.from) / (CLOCK.to - CLOCK.from), plus ? t : 0); o[3] = lit === null ? 0.2 : lit ? 1.35 : 0.3; }
-    else if (tag === 'pod' && Math.abs(b[1] - 0.594) < 0.012) o[3] = glint(Math.atan2(b[2], b[0]), t, 3.6, 0.6, -Math.PI, Math.PI);
+    else if (tag === 'clock') o[3] = clockLight((b[1] - CLOCK.from) / (CLOCK.to - CLOCK.from), plus ? t : 0);
+    else if (tag === 'pod' && Math.abs(b[1] - RT.rims[0][1]) < 0.012) o[3] = glint(Math.atan2(b[2], b[0]), t, 3.6, 0.6, -Math.PI, Math.PI);
     turn(o, t, 0, plus ? 0.3 : 0.4, 14);
   } };
 }

@@ -38,9 +38,16 @@ export function densityIndexFromCounts(counts, auto) {
  */
 export async function searchDensityIndex(countAt, auto, { stopped = () => false, counts = {} } = {}) {
   const at = async (i) => { if (counts[i] == null) { if (stopped()) throw new Error("stopped"); counts[i] = await countAt(i); } return counts[i]; };
-  let lo = 0, hi = DENSITIES.length - 1;
-  if ((await at(hi)) < auto) lo = hi;
+  // Runde 10b (Marc 20.11.2026: „bei komplexeren hochgeladenen Logos wird die Liniendichte in der Mitte angesetzt, und wenn
+  // ich sie runterschiebe, steigt die Drohnenanzahl“): Bei Wappen und anderen komplexen Logos geht die Automatik über das
+  // grobe Ende der Skala hinaus (Konverter-Leiter „over“: Punkte weiter auseinander als bei Stufe 0; Arsenal-Wappen bei 200
+  // Drohnen: Automatik 583, Stufe 0 schon 662). Dann gehört der Griff ganz nach unten. Zuerst Stufe 0 messen: das erspart
+  // in diesem Fall die ganze Suche (eine Umrechnung statt sieben, im Browser 10–15 s statt über eine Minute, in der der
+  // Griff blass in der Mitte stand und ein Schieben die Messung abbrach).
+  if ((await at(0)) >= auto) return { index: 0, counts };
+  let lo = 1, hi = DENSITIES.length - 1;
   while (lo < hi) { const mid = (lo + hi) >> 1; if ((await at(mid)) >= auto) hi = mid; else lo = mid + 1; }
+  await at(lo);
   if (lo > 0) await at(lo - 1);
   if (lo > 1 && Math.abs(counts[lo - 1] - auto) <= Math.abs(counts[lo] - auto)) await at(lo - 2);
   const index = densityIndexFromCounts(counts, auto);

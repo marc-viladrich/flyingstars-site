@@ -43,3 +43,36 @@ for (const id of ids) test(`Beispiel ${id}: gemessene Stufe je Drohnenstufe, ein
     assert.ok(raw);
   }
 });
+
+// Runde 10b (Marc 20.11.2026: „bei komplexeren hochgeladenen Logos wird die Liniendichte in der Mitte angesetzt, und wenn ich
+// sie runterschiebe, steigt die Drohnenanzahl“). Wächter mit echten Wappen über den echten Konverter, auf dem Weg für
+// hochgeladene Logos (keine vorberechneten Stufen): Bremen, dessen Automatik bei 100 Drohnen gröber ist als Stufe 0, und
+// Nieheim und Berlin (bei 200), deren Automatik innerhalb der Skala liegt. Gemessen wird wie im Browser (effectiveDensity: contentPipeline mit density).
+const live = async (id) => {
+  const V = new URL('./logo-v10/', import.meta.url);
+  const { convert } = await import(new URL('converter/convert.mjs', V));
+  const { contentPipeline } = await import(new URL('content-fit.mjs', V));
+  const R = JSON.parse(fs.readFileSync(new URL(`${id}.raster.json`, dir)));
+  const raster = async (size) => { const im = R[size] ?? R[512]; return { width: im.width, height: im.height, data: new Uint8ClampedArray(Buffer.from(im.rgba, 'base64')) }; };
+  return async (n, density) => (await contentPipeline(raster, convert, { flex: 'auto', part: 'auto', drones: n, ...(density == null ? {} : { density }) }, {})).result.points.length;
+};
+// (bei 100 gewünschten Drohnen; gemessen im Browser: Bremen 266 automatisch, Stufe 0 braucht 293)
+for (const id of ['bremen']) test(`hochgeladenes Wappen ${id}: Automatik gröber als Stufe 0 → Griff ganz unten nach EINER Umrechnung`, async () => {
+  const count = await live(id), auto = await count(100);
+  let calls = 0;
+  const { index, counts } = await searchDensityIndex(async (i) => { calls++; return count(100, DENSITIES[i]); }, auto);
+  assert.equal(index, 0); assert.equal(calls, 1, `${calls} Umrechnungen`);
+  assert.ok(counts[0] >= auto, `Stufe 0 braucht ${counts[0]}, Automatik ${auto}`);
+});
+for (const id of ['nieheim', 'berlin']) test(`hochgeladenes Wappen ${id}: Griff auf der gemessenen Stufe, ein Schritt nach unten braucht nie mehr Drohnen`, async () => {
+  const count = await live(id), auto = await count(200);
+  const { index, counts } = await searchDensityIndex((i) => count(200, DENSITIES[i]), auto);
+  assert.ok(index > 0, `${id}: Stufe ${index}`);
+  const below = counts[index - 1] ?? (await count(200, DENSITIES[index - 1]));
+  assert.ok(below <= auto, `${id}: Stufe ${index - 1} braucht ${below} > Automatik ${auto}`);
+});
+test('Suche beginnt bei Stufe 0: liegt die Automatik darunter, genügt eine Messung', async () => {
+  let calls = 0;
+  const { index } = await searchDensityIndex(async (i) => { calls++; return 662 + 400 * i; }, 583); // Arsenal-Wappen bei 200
+  assert.equal(index, 0); assert.equal(calls, 1);
+});

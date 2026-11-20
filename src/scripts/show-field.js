@@ -234,6 +234,47 @@ export function createField(canvas, { onBeat, onTick, cloudTime = 1, cloudSpread
     }
     return out;
   }
+  /** Runde 10b (Marc: „die meisten Logos sind sehr nah am oberen Rand, zu viel White Space nach unten“): ein Bild mit
+   * area { top, bottom, width, maxZoom, avoid } (Anteile der Bühne) steht exakt mittig im Band top…bottom, so groß, wie
+   * Band und Breite erlauben, höchstens maxZoom × die normale Einpassung. avoid: Flächen über dem unteren Rand
+   * ({ top, left, right }), die das Band nur kürzen, wenn das Bild waagrecht über ihnen liegt (Minimap rechts unten
+   * nicht, die breite Hinweiskarte schon). Gerechnet in der echten Projektion, kein Hilfspunkt (logo-stage.mjs). */
+  function placeInArea(f, sets, a) {
+    const { S, oy } = frameOf(), cap = f.k * (a.maxZoom ?? 1), k0 = f.k, x0 = f.x, y0 = f.y;
+    const place = (top, bottom, maxW = (a.width ?? 0.88) * W, kMax = cap) => {
+      f.k = k0; f.x = x0; f.y = y0;
+      for (let pass = 0; pass < 5; pass++) {
+        let q = projectedBox(sets, f.x, f.y, f.k);
+        const hS = (q.y1 - q.y0) * S, wS = (q.x1 - q.x0) * S;
+        if (!(hS > 0) || !(wS > 0)) return null;
+        f.k = Math.min(kMax, f.k * Math.min((bottom - top) / hS, maxW / wS));
+        q = projectedBox(sets, f.x, f.y, f.k);
+        const want = (oy - (top + bottom) / 2) / S; // Bildschirm-y = oy − V · S
+        f.x += (q.x0 + q.x1) / 2 / (f.k * size); f.y += ((q.y0 + q.y1) / 2 - want) / (f.k * size * TILT_C);
+      }
+      const q = projectedBox(sets, f.x, f.y, f.k);
+      return { left: W / 2 + q.x0 * S, right: W / 2 + q.x1 * S, bottom: oy - q.y0 * S, k: f.k, x: f.x, y: f.y };
+    };
+    // erst im ganzen Band; überschneidet das fertige Logo dann eine Abdeckung, zwei Auswege, der größere gewinnt: im Band
+    // darüber (die breite Hinweiskarte) oder im ganzen Band, aber schmaler, seitlich an ihr vorbei (die Minimap in der Ecke)
+    const top = a.top * H, bottom = a.bottom * H, hits = (p) => (a.avoid ?? []).filter((c) => c.left * W < p.right && c.right * W > p.left && p.bottom > c.top * H);
+    const full = place(top, bottom);
+    if (!full) return;
+    const under = hits(full);
+    if (!under.length) return;
+    // Auswege, der größere gewinnt; bei fast gleicher Größe (5 %) der mittige im ganzen Band (Marc: „optisch mittig“)
+    const above = place(top, Math.min(bottom, ...under.map((c) => c.top * H))), options = [];
+    if (above) {
+      options.push({ ...above, centred: false });
+      // so klein, wie es über der Abdeckung sein muss, passt es vielleicht schon mittig an ihr vorbei
+      const again = place(top, bottom, (a.width ?? 0.88) * W, above.k);
+      if (again && !hits(again).length) options.push({ ...again, centred: true });
+    }
+    const side = Math.min(...under.map((c) => (c.left * W > W / 2 ? c.left * W - W / 2 : c.right * W < W / 2 ? W / 2 - c.right * W : 0)));
+    if (side > 0) { const p = place(top, bottom, 2 * side - 0.06 * W); if (p && !hits(p).length) options.push({ ...p, centred: true }); } // 3 % Luft zur Abdeckung
+    const best = options.sort((p, q) => q.k * (q.centred ? 1.05 : 1) - p.k * (p.centred ? 1.05 : 1))[0];
+    if (best) { f.k = best.k; f.x = best.x; f.y = best.y; }
+  }
   /** One scale per motif (beats with the same segment, optionally split by a named frame), so a story keeps its
    * proportions and every motif of a sequence fills the stage. */
   function fit(beats) {
@@ -255,6 +296,7 @@ export function createField(canvas, { onBeat, onTick, cloudTime = 1, cloudSpread
         f.x += (q.x0 + q.x1) / 2 / (f.k * size); f.y += (q.y0 + q.y1) / 2 / (f.k * size * TILT_C);
         f.k *= z / worst;
       }
+      if (fitProjected && list[0].area && W && H) placeInArea(f, sets, list[0].area);
       for (const b of list) b.fit = f;
     }
   }

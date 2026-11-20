@@ -239,7 +239,9 @@ return  [
     catalogMotif('sparschwein', 'jubilaeum', t, locale),
     catalogMotif('basketball', 'jubilaeum', t, locale),
     catalogMotif('smiley', 'jubilaeum', t, locale),
-    motif('wahrzeichen', t('showConfigurator.landmarks'), v('tower', t('showConfigurator.exampleBerlinTvTowerWithWarningLight')), v('tower3d', t('showConfigurator.theTvTowerIn3dLightRunsAroundTheBall')), v('towerStory', t('showConfigurator.theTvTowerBroadcastsAndBecomesTheBrandenburgGate'))),
+    // Runde 10b (Marc: „Eine Mischung aus beidem“): derselbe Fernsehturm wie im Stadtfest (scenes/wahrzeichen.js); die alten Szenen
+    // tower/tower3d/towerStory bleiben nur für die Show-Folge der Startseite (himmel/folge.js)
+    motif('wahrzeichen', t('showConfigurator.landmarks'), v('fernsehturm2d', t('showConfigurator.exampleBerlinTvTowerWithWarningLight')), v('fernsehturm3d', t('showConfigurator.wahrzeichen.fernsehturm3d')), v('fernsehturmPlus', t('showConfigurator.wahrzeichen.fernsehturmPlus'))),
     catalogMotif('handschlag', 'jubilaeum', t, locale),
     catalogMotif('stern', 'jubilaeum', t, locale),
     catalogMotif('atom', 'jubilaeum', t, locale),
@@ -292,7 +294,13 @@ return  [
     ab(catalogMotif('hund', 'festival', t, locale), { SPARK: 150 }),
     // Runde 9: Drache vor Delfin. Beide Geschichten beginnen mit einer Wolke; mit den 3D+-Szenen davor lägen sonst sechs Bilder
     // zwischen ihnen, und der Wolkenplan bräuchte zwei Wolken direkt hintereinander (scripts/show-clouds.test.mjs)
-    ab(motif('drache', t('showConfigurator.dragon'), null, v('dragon3d', t('showConfigurator.aDragonIn3dThatBeatsWings')), v('dragonStory', t('showConfigurator.aDragonRisesCirclesAndBreathesFireworks')), H1), { ODYSSEY: 400 }), // Runde 10: mit dem Papierflieger die zweite Stufe von 3D+
+    // Runde 10b (Marc 20.11.: der Drache sah „mega krass 2D“ aus): 3D ab 200 ein aufsteigender Drache als Körper, 3D+ der
+    // aztekische Drachenkopf als Relief, der sich zu euch dreht und Feuer speit (scenes/catalog-3d/drache.js), ab 300: 3D+ zeigt
+    // nie weniger als 3D (scripts/show-unlock.test.mjs). dragon3d/dragonStory (scenes/festival.js) bleiben ungespielt im Code.
+    // in 3D+ ab 400 zusätzlich der Drachenflug (der aufsteigende Drache mit Beinen, Schuppen, Flughautrippen) vor dem Kopf: so
+    // schaltet 3D+ 400 mit dem Papierflieger zwei Motive frei (scripts/show-unlock.test.mjs)
+    motif('drachenflug', t('showConfigurator.motif.dracheScene'), null, null, v('dragonRise', t('showConfigurator.dragonFlightCaption')), O1),
+    motif('drache', t('showConfigurator.dragon'), null, v('dragonRise', t('showConfigurator.dragonRiseCaption')), v('dragonHead', t('showConfigurator.dragonHeadCaption')), ['HORIZON', 0]),
     ab(motif('delfin', t('showConfigurator.dolphin'), v('dolphin2d', t('showConfigurator.aDolphinOverAWave')), v('dolphin3d', t('showConfigurator.aDolphinJumpsOutOfTheWaterIn3d')), v('dolphinStory', t('showConfigurator.wavesOneDolphinJumpsDivesInTwoDolphinsJumpIn'))), { SPARK: 150 }),
     // Marc 20.11.: nicht streichen, ans Ende (nur 2D, ab 150; Kuh mit UFO ab 200)
     catalogMotif('elefant', 'festival', t, locale),
@@ -313,7 +321,9 @@ return  [
     catalogMotif('eheringe', 'hochzeit', t, locale),
     catalogMotif('torte', 'hochzeit', t, locale),
     motif('herz', t('showConfigurator.heart'), v('heart2d', t('showConfigurator.aHeartLightTravelsAlongItsOutline')), v('heartTunnel', t('showConfigurator.aTunnelOfHeartsLightFlowingThrough')), v('heartsStory', t('showConfigurator.cupidSArrowStrikesA3dHeartTwoHeartsOrbit'))),
-    catalogMotif('initialen', 'hochzeit', t, locale),
+    // Runde 10b (Marc: „die Initialen sind nicht richtig im Herz drin … das nehmen, was wir sonst dynamisch über ‚Euer Text
+    // oder Logo' definieren“): Herz und Initialen über denselben Weg wie der eigene Text (scenes/text.js, Stil initials), nur 2D
+    { ...motif('initialen', catalogName('initialen', locale), { build: 'textSPARK', caption: t('showConfigurator.aHeartWithYourInitials'), value: 'A & T', style: 'initials', occasion: 'hochzeit' }, null, null), flat: true },
     catalogMotif('amor', 'hochzeit', t, locale),
     catalogMotif('taube', 'hochzeit', t, locale),
     withCatalogSpark(motif('glaeser', t('showConfigurator.sparklingGlasses'), v('flutes2d', t('showConfigurator.twoChampagneGlassesClinkLightGlidesAcrossTheGlass')), v('flutes3d', t('showConfigurator.sparklingGlassesIn3dThePearlsRise')), v('flutesStory', t('showConfigurator.theGlassesStrikeThePearlsRiseAsHeart'))), 'anstossen', 'hochzeit', t, locale),

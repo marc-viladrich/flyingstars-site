@@ -72,8 +72,20 @@ test('Jeder Anlass hat vier bis fünfzig Motive (Runde 24/10: Katalog-, Show- un
       assert.equal(new Set(builds).size, builds.length, `${occasion.id}/${motif.id}: every package needs its own version`);
     }
   }
-  const all = OCCASIONS.flatMap((o) => o.motifs.flatMap((m) => Object.values(m.tiers).map((t) => t.build)));
-  assert.equal(new Set(all).size, all.length, 'motif versions are not shared between occasions');
+  // Runde 10b: eine Show (Anlass × Paket) zeigt keine Fassung doppelt. Über Anlässe hinweg teilen sich nur ausdrücklich
+  // gewollte Fassungen (Marc: der gemischte Fernsehturm ersetzt auch das Jubiläums-Motiv); der Drache nutzt dragonRise in 3D
+  // als „drache“ und in 3D+ als „drachenflug“, also nie zweimal in derselben Show.
+  const SHARED = new Set(['fernsehturm2d', 'fernsehturm3d', 'fernsehturmPlus']);
+  for (const o of OCCASIONS) for (const pkg of PACKAGE_ORDER) {
+    const builds = o.motifs.map((m) => m.tiers[pkg]?.build).filter(Boolean);
+    assert.equal(new Set(builds).size, builds.length, `${o.id} ${pkg}: eine Fassung doppelt in derselben Show`);
+  }
+  const owner = new Map();
+  for (const o of OCCASIONS) for (const m of o.motifs) for (const t of Object.values(m.tiers)) {
+    const prev = owner.get(t.build);
+    if (prev && prev !== o.id) assert.ok(SHARED.has(t.build), `${t.build}: zwischen ${prev} und ${o.id} geteilt`);
+    owner.set(t.build, o.id);
+  }
 });
 
 test('Übergänge: höchstens zwei pro Runde in jedem Paket, Figuren nur bei SPARK und nur mit Bezug zum Anlass', async () => {

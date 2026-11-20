@@ -92,3 +92,19 @@ Einbindung ins Stadtfest (2D ab 100, 3D ab 200, 3D+ ab 300, Stufe 3D).
   Elbphilharmonie und an den Dachecken der Skyline, der Lichtkranz der Jahreszahl läuft vor den Ziffern durch.
 - Das ältere Jubiläums-Motiv `wahrzeichen` (Fernsehturm aus `show-shapes.js`) bleibt unverändert; es könnte auf die neuen
   Szenen umgestellt werden.
+
+## Runde 10b: Fernsehturm und Rheinturm (Marc: „noch nicht besonders nice/erkennbar“)
+
+- **Fernsehturm, Mischung aus altem und neuem.** Vom älteren Jubiläums-Turm (`tower` in `show-shapes.js`): die große Kugel
+  und der kompakte Umriss, daran erkennt man ihn sofort. Von der vermessenen Fassung: Turmkorb, Fußbau, goldenes Fensterband,
+  feine Antenne mit Querstreben. Kugel r 0,19 auf 2,18 Höhe (echt 0,107 auf 2,3, alt 0,225 auf 2,2), Kugelmitte bei 58 % der
+  Höhe. **Funkwellen** (`FT_WAVES`, `waveArcs()`, `waveLight()`): links und rechts der Kugel kurze Bögen (±24°), bei 100
+  Drohnen einer je Seite, ab 150 zwei, ab 250 drei; ein Lichtpuls läuft nach außen und verblasst, keine Bewegung, keine
+  Ringe. In 3D liegen sie in der Bildebene und schwenken nicht mit.
+- **Jubiläum:** Das Motiv `wahrzeichen` spielt jetzt `fernsehturm2d/3d/Plus` (Wächter in `wahrzeichen.test.mjs`). Die alten
+  Szenen `tower`/`tower3d`/`towerStory` bleiben nur für die Show-Folge der Startseite (`himmel/folge.js`).
+- **Rheinturm, neu vermessen.** Der Schaft stimmte (halbe Breite unten 0,099, oben 0,07). Es fehlte die Kanzel: Glasschale
+  (bis 0,171), darüber zwei flache Teller (0,148 und 0,127) mit Einzügen, darauf die lange Antenne. Die Kanzel ist als
+  Erkennungszeichen um 1,3 vergrößert (`POD_SCALE`), ihre Maße untereinander bleiben vermessen; bis 249 Drohnen die schlichte
+  Kanzel mit sieben Ecken je Seite, ab 250 die volle mit Telleroberseiten. Lichtzeituhr als Punktreihe: leuchtende Ziffern
+  hell, übrige kaum, Trenner dunkel; Start 23:58:47, damit die Reihe gut gefüllt ist (um 20:15 leuchteten nur wenige Punkte).

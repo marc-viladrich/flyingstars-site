@@ -76,6 +76,25 @@
   @media (hover: hover) { .cfg-stage[data-drop-hover]:hover .cfg-drop { opacity: 1; background: rgb(var(--rgb-media-ground) / 0.42); -webkit-backdrop-filter: blur(0.1875rem); backdrop-filter: blur(0.1875rem); } }
   .cfg-stage.is-drag .cfg-drop { opacity: 1; border-color: var(--pkg, var(--amber)); background: rgb(var(--rgb-media-ground) / 0.55); -webkit-backdrop-filter: blur(0.25rem); backdrop-filter: blur(0.25rem); }
   .cfg-stage.is-done .cfg-drop { opacity: 0; transition: none; }
+  /* Runde 10b (Marc 20.11.): Hinweis zum Algorithmus im Logo-Modus. Die Dropzone liegt von Anfang an über den
+     durchlaufenden Logos (wie die Einladung, etwas leichter), darunter der Hinweis mit Info-Zeichen und ein ruhiger Knopf;
+     nach „Verstanden“ ist die Bühne frei. Nur der Hinweis nimmt Klicks an, die Fläche bleibt Ablageziel. */
+  .cfg-stage.is-notice .cfg-drop { opacity: 1; background: rgb(var(--rgb-media-ground) / 0.66); -webkit-backdrop-filter: blur(0.1875rem); backdrop-filter: blur(0.1875rem); }
+  .cfg-notice { pointer-events: auto; display: grid; justify-items: center; gap: var(--space-2-5); max-width: 28rem; margin: var(--space-4) var(--space-3) 0; }
+  .cfg-notice p { display: flex; gap: var(--space-2); align-items: flex-start; margin: 0; font: 400 var(--text-xs)/1.5 var(--body); color: var(--muted); text-align: left; text-wrap: pretty; }
+  .cfg-notice p svg { flex: none; width: 1rem; height: 1rem; margin-top: 0.125rem; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; }
+  .cfg-notice button { min-height: 2.25rem; padding: 0 var(--space-3); border: 1px solid var(--line-strong); border-radius: var(--radius-pill); background: transparent; color: var(--text); font: 400 var(--text-sm)/1 var(--body); cursor: pointer; transition: border-color var(--dur-quick) var(--ease-default), background var(--dur-quick) var(--ease-default); }
+  @media (hover: hover) { .cfg-notice button:hover { border-color: var(--text); background: var(--line-soft); } }
+  .cfg-notice button:focus-visible { outline: 0.125rem solid var(--cyan); outline-offset: 0.125rem; }
+  .cfg-stage.is-done .cfg-notice { pointer-events: none; }
+  .cfg-notice[hidden] { display: none; }
+  /* Handy: die Bühne ist niedrig (ab 14 rem); im Logo-Modus gibt es keine Steuerleiste, die Fläche nutzt die ganze Bühne,
+     Ablage-Zeichen und Dateitypen treten für den Hinweis zurück (gezogen wird am Handy ohnehin nicht) */
+  @media (--compact) {
+    .cfg-stage.is-notice .cfg-drop { inset: 0.625rem; gap: var(--space-1-5); }
+    .cfg-stage.is-notice .cfg-drop > svg, .cfg-stage.is-notice .cfg-drop > small { display: none; }
+    .cfg-stage.is-notice .cfg-notice { margin-top: var(--space-1); }
+  }
   /* Spur: beim Überfahren und mit Fokus ein kleiner Hinweis, ab wie vielen Drohnen die Sequenz möglich ist */
   .cfg-tip { position: absolute; bottom: calc(100% + 0.5rem); left: var(--x, 50%); transform: translateX(-50%); white-space: nowrap; padding: var(--space-1) var(--space-2-25); border: 1px solid var(--line); border-radius: var(--radius-6); background: var(--overlay-panel); color: var(--muted); font: 400 var(--text-xs)/1.3 var(--body); opacity: 0; transition: opacity var(--dur-quick) var(--ease-default); pointer-events: none; }
   .cfg-tip b { color: var(--text); font-weight: 500; }
@@ -94,6 +113,14 @@
   /* eigener Text und Logo in einer Zeile */
   .cfg-own-row { display: flex; gap: var(--space-1-5); align-items: stretch; }
   .cfg-own-row .cfg-text { flex: 1 1 auto; min-width: 0; }
+  /* Runde 10b: Text-X im Feld, dieselbe Zeichnung wie am Logo (.cfg-logo-off), ohne eigenen Rahmen, weil es im Feld steht */
+  .cfg-text-wrap { position: relative; display: flex; flex: 1 1 auto; min-width: 0; }
+  .cfg-text-wrap:has(.cfg-text-clear:not([hidden])) .cfg-text { padding-right: 2.75rem; }
+  .cfg-text-clear { position: absolute; top: 50%; right: 0.25rem; width: 2.25rem; height: 2.25rem; margin-top: -1.125rem; border: 0; border-radius: var(--radius-8); background: transparent; color: var(--muted); cursor: pointer; display: grid; place-items: center; }
+  .cfg-text-clear[hidden] { display: none; }
+  .cfg-text-clear svg { width: 0.875rem; height: 0.875rem; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
+  .cfg-text-clear:hover { color: var(--text); background: var(--line-soft); }
+  .cfg-text-clear:focus-visible { outline: 0.1875rem solid var(--cyan); outline-offset: -0.125rem; }
   .cfg-upload { position: relative; flex: none; display: inline-flex; align-items: center; gap: var(--space-1-75); min-height: 2.625rem; padding: 0 var(--space-3-5); border: 1px solid var(--line-strong); border-radius: var(--radius-10); color: var(--text); font-size: var(--text-control); cursor: pointer; }
   .cfg-upload:hover { background: var(--fill-hover); }
   .cfg-upload svg { width: 1.0625rem; height: 1.0625rem; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
@@ -317,7 +344,7 @@ fieldset.cfg-tool { margin: 0; padding: 0; border: 0; min-width: 0; }
 
 /* Runde 27, vierte Runde: Upload oben, dann Beispiele, Bedarf + Regler, Liniendichte. Bedarfspunkt auf dem Regler in der
    Paketfarbe des Bedarfs (wie die große Zahl), der gewünschte Griff und seine Zahl blass; Liniendichte mit Risikobereich */
-.cfg.is-logomode .cfg-own > legend, .cfg.is-logomode .cfg-text, .cfg.is-logomode .cfg-styles, .cfg.is-logomode .cfg-text-budget { display: none; }
+.cfg.is-logomode .cfg-own > legend, .cfg.is-logomode .cfg-text-wrap, .cfg.is-logomode .cfg-styles, .cfg.is-logomode .cfg-text-budget { display: none; }
 .cfg.is-logomode .cfg-own-wrap { order: 0; }
 .cfg.is-logomode .cfg-own { display: grid; gap: var(--space-4); }
 .cfg.is-logomode .cfg-drones { margin-top: var(--space-4); }

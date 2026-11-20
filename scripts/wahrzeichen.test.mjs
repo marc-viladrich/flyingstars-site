@@ -103,10 +103,10 @@ test('Aufbau schnell genug für den Anlasswechsel (2D und Körper je Zahl < 25 m
 });
 
 test('Lichtzeituhr: zeigt die Uhrzeit dezimal, Trenner zwischen den Ziffern', () => {
-  // 20:15:07 → Sekunden-Einer 7 von 9 Lichtern, Sekunden-Zehner 0 von 5, Minuten-Einer 5 von 9 …
+  // Start 23:58:47, nach 7 s also 23:58:54 → Sekunden-Einer 4 von 9 Lichtern, Sekunden-Zehner 5 von 5, Minuten-Einer 8 von 9 …
   const total = 9 + 5 + 9 + 5 + 9 + 2 + 5, lit = (k) => clockLit((k + 0.5) / total, 7);
   const groups = [[0, 9], [10, 5], [16, 9], [26, 5], [32, 9], [42, 2]].map(([a, m]) => Array.from({ length: m }, (_, i) => lit(a + i)).filter(Boolean).length);
-  assert.deepEqual(groups, [7, 0, 5, 1, 0, 2]);
+  assert.deepEqual(groups, [4, 5, 8, 5, 3, 2]);
   for (const k of [9, 15, 25, 31, 41]) assert.equal(lit(k), null, `Stelle ${k} ist ein Trenner`);
 });
 
@@ -132,4 +132,10 @@ test('Stadtfest: jedes Wahrzeichen und die Jahreszahl spielen in 2D ab 100 (Skyl
     assert.equal(stufeOf(m), '3D', `${id}: Stufe`);
     assert.ok(STUFE_EIGEN[id], `${id}: Begründung in STUFE_EIGEN`);
   }
+});
+
+test('Jubiläum: das Motiv Wahrzeichen spielt denselben Fernsehturm wie das Stadtfest (Runde 10b)', async () => {
+  const { OCCASIONS } = await import('../src/content/show-configurator.js');
+  const m = OCCASIONS.find((o) => o.id === 'jubilaeum').motifs.find((x) => x.id === 'wahrzeichen');
+  assert.deepEqual(Object.values(m.tiers).map((v) => v.build), Object.values(LANDMARKS.fernsehturm));
 });

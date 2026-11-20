@@ -5,7 +5,18 @@ import fs from 'node:fs';
 import {gzipSync} from 'node:zlib';
 const root=new URL('../../',import.meta.url);
 const policy=JSON.parse(fs.readFileSync(new URL('src/content/preview-policy.json',root)));
-const ids=['mastercard','ikea','dhl','firefox','spotify','nike','apple','mcdonalds','adidas','puma','cupra','duolingo','lamborghini','shell','target'];
+import {LOGO_EXAMPLES,CUSTOMER_EXAMPLES} from './logo-examples.mjs';
+// Runde 10b: die Liste kommt aus logo-examples.mjs (dieselbe wie die Knöpfe); jedes Beispiel hat SVG, Daten und Raster
+const ids=LOGO_EXAMPLES.map(([id])=>id);
+test('Beispielliste: Daten vollständig, keine Reste, Kund*innen echt',()=>{
+ const dir=new URL('public/media/logo-modus/beispiele/',root),sizes=JSON.parse(fs.readFileSync(new URL('sizes.json',dir))).map(x=>x.id);
+ assert.deepEqual([...sizes].sort(),[...ids].sort(),'sizes.json und logo-examples.mjs nennen dieselben Beispiele');
+ const index=Object.values(JSON.parse(fs.readFileSync(new URL('rasters-index.json',dir))));
+ assert.deepEqual([...index].sort(),[...ids].sort(),'rasters-index.json kennt genau die Beispiele');
+ for(const id of ids)for(const ext of ['svg','json','raster.json'])assert.ok(fs.existsSync(new URL(`${id}.${ext}`,dir)),`${id}.${ext} fehlt`);
+ for(const id of ['shell','target'])assert.ok(!fs.existsSync(new URL(`${id}.json`,dir)),`${id} ist raus (Marc 20.11.)`);
+ for(const id of CUSTOMER_EXAMPLES)assert.ok(fs.existsSync(new URL(`public/brand/logos/kunde-${id}-weiss.svg`,root)),`${id}: kein FlyingStars-Kundenlogo`);
+});
 for(const id of ids) test(`prepared logo ${id}: all slider steps, bounded payload, valid editable points`,()=>{
  const text=fs.readFileSync(new URL(`public/media/logo-modus/beispiele/${id}.json`,root),'utf8'),data=JSON.parse(text);
  assert.equal(data.version,3);

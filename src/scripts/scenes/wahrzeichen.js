@@ -8,7 +8,7 @@
 import { prepareLines, stageSample, DOT_MAX } from './catalog-resample.js';
 import { t as message } from '../../i18n/ui.mjs';
 import { WARM, GOLD, CYAN, RED, BLUE, DIAMOND, mix, glint, chase, sway, trace, reveal, lightRank, share, part, act, sparkle } from '../show-motion.js';
-import { WAHRZEICHEN_3D, warning, clockLit, CLOCK } from './catalog-3d/wahrzeichen.js';
+import { WAHRZEICHEN_3D, warning, clockLight, CLOCK } from './catalog-3d/wahrzeichen.js';
 import { textFormationAsync } from '../text-formation.js';
 import { sampleOutline } from '../show-geometry.js';
 
@@ -25,47 +25,64 @@ const mirror = (pts) => pts.map(([x, y]) => [-x, y]);
 const silhouette = (profile) => [...profile.map(([r, y]) => [r, y]), ...profile.slice().reverse().map(([r, y]) => [-r, y])];
 
 // ---------- Berliner Fernsehturm ----------
-// Maße nach der Kontur auf Commons (Kontur-BerlinerFernsehturm.svg): Höhe 2,3 Einheiten = 368 m, Kugel r 0,107 (hier
-// 0,13, sonst verschwindet sie bei 100 Drohnen neben dem Schaft), Kugelmitte 0,20 über der Mitte, Schaft oben 0,029, unten
-// 0,046 halbe Breite (hier 0,04 und 0,065, damit die beiden Schaftlinien mehr als einen Drohnenabstand trennt).
-export const FT = { ground: -1.15, sphere: [0, 0.2, 0.13], shaftTop: 0.04, shaftBottom: 0.065, korb: 0.47, tip: 1.15 };
+// Runde 10b (Marc: „Eine Mischung aus beidem fänd ich nice“): aus dem älteren Jubiläums-Turm (show-shapes.js tower) die
+// große Kugel und der kompakte Umriss, dadurch sofort erkennbar; aus der vermessenen Fassung (Kontur-BerlinerFernsehturm.svg
+// auf Commons) Turmkorb, Fußbau, Fensterband und die feine Antenne. Kugel r 0,19 auf 2,18 Höhe (echt 0,107 auf 2,3, alt
+// 0,225 auf 2,2), Kugelmitte bei 58 % der Höhe wie im Original. Dazu dezente Funkwellen (FT_WAVES).
+export const FT = { ground: -1.0, sphere: [0, 0.28, 0.19], shaftTop: 0.05, shaftBottom: 0.085, korb: 0.56, tip: 1.18, bars: [0.76, 0.96] };
+/** Funkwellen: links und rechts der Kugel je drei kurze Bögen (±24°), die nacheinander nach außen aufleuchten und
+ * verblassen; nur Licht, keine Bewegung. Radien relativ zur Kugelmitte. */
+export const FT_WAVES = { radii: [0.3, 0.39, 0.48], half: 0.42, period: 2.4 };
+/** Die Bögen als Polylinien (Seite −1 links, +1 rechts), so viele wie gewünscht von innen. */
+export const waveArcs = (count = 3) => FT_WAVES.radii.slice(0, count).flatMap((R) => [1, -1].map((side) => Array.from({ length: 9 }, (_, i) => { const a = -FT_WAVES.half + (2 * FT_WAVES.half * i) / 8; return [FT.sphere[0] + side * Math.cos(a) * R, FT.sphere[1] + Math.sin(a) * R]; })));
+/** Licht einer Wellen-Drohne im Abstand R von der Kugelmitte: ein Puls läuft nach außen und verblasst. */
+export const waveLight = (R, t) => { const u = ((t % FT_WAVES.period) / FT_WAVES.period), r0 = FT_WAVES.radii[0] - 0.06, r1 = FT_WAVES.radii.at(-1) + 0.06, at = r0 + (r1 - r0) * u; return 0.06 + 1.15 * (1 - u * 0.6) * Math.exp(-(((R - at) / 0.045) ** 2)); };
 function fernsehturm(lv) {
   const [cx, cy, r] = FT.sphere, y0 = FT.ground, top = cy - r * Math.cos(Math.asin(FT.shaftTop / r)), out = [];
-  // Schaft: zwei Linien vom Fuß bis an die Kugel; ab Stufe 1 mit dem breiteren Fuß (Fußbau)
-  const foot = lv ? [[0.13, y0], [0.075, y0 + 0.1], [FT.shaftBottom, y0 + 0.2]] : [[FT.shaftBottom, y0]];
+  // Schaft: zwei Linien vom Fuß bis an die Kugel; ab Stufe 1 mit dem breiteren Fuß (Fußbau) und der Bodenlinie
+  const foot = lv ? [[0.15, y0], [0.105, y0 + 0.1], [FT.shaftBottom, y0 + 0.22]] : [[FT.shaftBottom, y0]];
   out.push(P('shaft', [...foot, [FT.shaftTop, top]]), P('shaft', mirror([...foot, [FT.shaftTop, top]])));
-  if (lv) out.push(P('base', [[-0.13, y0], [0.13, y0]]));
+  if (lv) out.push(P('base', [[-0.15, y0], [0.15, y0]]));
   out.push(P('sphere', arc(cx, cy, r, r, 0, TAU, 72).slice(0, 72), true));
-  if (lv) out.push(P('band', [[-r * 0.97, cy + 0.02], [r * 0.97, cy + 0.02]]));
-  if (lv === 2) out.push(P('band', [[-r * 0.97, cy - 0.025], [r * 0.97, cy - 0.025]]));
+  // das Fensterband: eine goldene Linie, ab Stufe 2 zwei
+  out.push(P('band', [[-r * 0.97, cy + 0.03], [r * 0.97, cy + 0.03]]));
+  if (lv === 2) out.push(P('band', [[-r * 0.96, cy - 0.035], [r * 0.96, cy - 0.035]]));
   const sTop = cy + r;
   if (lv) {
     // Turmkorb über der Kugel: ein schmaler Hals, oben ein Kragen, dann die Antenne
-    const k = FT.korb, w = 0.03;
-    out.push(P('korb', [[w, sTop + 0.002], [w, k]]), P('korb', [[-w, sTop + 0.002], [-w, k]]), P('korb', [[-w - 0.02, k], [w + 0.02, k]]));
+    const k = FT.korb, w = 0.035;
+    out.push(P('korb', [[w, sTop + 0.002], [w, k]]), P('korb', [[-w, sTop + 0.002], [-w, k]]), P('korb', [[-w - 0.025, k], [w + 0.025, k]]));
     out.push(P('antenna', [[0, k], [0, FT.tip]]));
-    if (lv === 2) for (const y of [0.68, 0.88]) out.push(P('antenna', [[-0.025, y], [0.025, y]]));
-  } else out.push(P('antenna', [[0, sTop], [0, FT.tip]]));
+    if (lv === 2) for (const y of FT.bars) out.push(P('antenna', [[-0.03, y], [0.03, y]]));
+    // Funkwellen: bei 100 ein Bogen je Seite, ab 150 zwei, ab 250 drei
+    for (const w2 of waveArcs(lv === 2 ? 3 : 2)) out.push(P('wave', w2));
+  } else out.push(P('antenna', [[0, sTop], [0, FT.tip]]), ...waveArcs(1).map((w2) => P('wave', w2))); // bei 100 ein Bogen je Seite
   return out;
 }
 
 // ---------- Rheinturm Düsseldorf ----------
-// Maße nach „Rheinturm - Gesamtansicht vom Medienhafen“ (Commons): 2,3 Einheiten = 240,5 m. Schaft halbe Breite unten
-// 0,1, oben 0,07; Kanzel: Glaskegel bis 0,17 bei y 0,59, darüber zwei Scheiben, Antenne ab 0,75.
-export const RT = { ground: -1.15, shaftTop: [0.07, 0.466], tip: 1.15 };
-const RT_POD = [[0.07, 0.466], [0.17, 0.594], [0.17, 0.615], [0.15, 0.628], [0.15, 0.665], [0.128, 0.7], [0.128, 0.735], [0.04, 0.754]];
-const RT_POD_SIMPLE = [[0.07, 0.466], [0.17, 0.594], [0.15, 0.64], [0.128, 0.7], [0.04, 0.754]];
+// Runde 10b (Marc: „noch nicht besonders nice/erkennbar“). Neu vermessen an „Rheinturm - Gesamtansicht vom Medienhafen“
+// (Commons), 2,3 Einheiten = 240,5 m: Der Schaft war richtig (halbe Breite unten 0,099, oben 0,07, verjüngt). Was fehlte,
+// ist die Kanzel: unten die Glasschale bis 0,171, darüber zwei flache Teller (Restaurant-Ebenen) mit 0,148 und 0,127, je
+// deutlich breiter als hoch, mit Einzügen dazwischen; darauf die lange Antenne (17 % der Höhe). Die alte Fassung hatte
+// einen Kegel mit einer Scheibe und las sich als Knolle. Lichtzeituhr als Punktreihe in der Mitte des Schafts.
+// Wie die Kugel des Fernsehturms ist die Kanzel als Erkennungszeichen um 1,3 vergrößert (um den Schaftkopf), ihre
+// Maße untereinander bleiben die vermessenen; sonst ging sie auf dem langen Schaft unter.
+const POD_SCALE = 1.3, pod = (list) => list.map(([x, y]) => [x * POD_SCALE, 0.46 + (y - 0.46) * POD_SCALE]);
+export const RT_POD = pod([[0.07, 0.46], [0.118, 0.475], [0.171, 0.604], [0.1, 0.612], [0.148, 0.655], [0.14, 0.668], [0.09, 0.674], [0.08, 0.705], [0.127, 0.73], [0.12, 0.742], [0.025, 0.748]]).map(([x, y], i) => [i ? x : 0.07, y]);
+const RT_POD_SIMPLE = pod([[0.07, 0.46], [0.171, 0.604], [0.1, 0.612], [0.148, 0.66], [0.088, 0.678], [0.127, 0.732], [0.025, 0.748]]).map(([x, y], i) => [i ? x : 0.07, y]);
+export const RT = { ground: -1.15, shaftTop: [0.07, 0.46], tip: 1.2, rims: [RT_POD[2], RT_POD[4], RT_POD[8]], tops: [RT_POD[5], RT_POD[9]], antenna: RT_POD.at(-1)[1] };
 function rheinturm(lv) {
-  const y0 = RT.ground, pod = lv ? RT_POD : RT_POD_SIMPLE, out = [];
+  const y0 = RT.ground, pod = lv === 2 ? RT_POD : RT_POD_SIMPLE, out = [];
   out.push(P('shaft', [[0.1, y0], RT.shaftTop]), P('shaft', mirror([[0.1, y0], RT.shaftTop])));
   out.push(P('pod', pod), P('pod', mirror(pod)));
-  // die Kanzel: unter dem Glas eine Linie quer (der Kegel sitzt auf dem Schaft), darüber die Scheiben
-  out.push(P('pod', [[-0.07, 0.466], [0.07, 0.466]]));
-  out.push(P('glass', [[-0.17, 0.594], [0.17, 0.594]]));
-  if (lv === 2) out.push(P('pod', [[-0.15, 0.665], [0.15, 0.665]]));
-  out.push(P('antenna', [[0, 0.754], [0, RT.tip]]));
+  // der Rand der Glasschale quer (das hellste Band der Kanzel), ab Stufe 2 auch die Oberseiten der beiden Teller
+  const [gx, gy] = lv === 2 ? RT.rims[0] : RT_POD_SIMPLE[1];
+  out.push(P('glass', [[-gx, gy], [gx, gy]]));
+  if (lv === 2) for (const [x, y] of RT.tops) out.push(P('pod', [[-x, y], [x, y]]));
+  out.push(P('antenna', [[0, RT.antenna], [0, RT.tip]]));
   if (lv) out.push(P('base', [[-0.18, y0], [0.18, y0]]));
-  // ab Stufe 1 die Lichtzeituhr: eine Reihe Lichter in der Mitte des Schafts (CLOCK in catalog-3d/wahrzeichen.js)
+  // ab Stufe 1 die Lichtzeituhr: eine Punktreihe in der Mitte des Schafts (CLOCK in catalog-3d/wahrzeichen.js)
   if (lv) out.push(P('clock', [[0, CLOCK.from], [0, CLOCK.to]]));
   return out;
 }
@@ -334,11 +351,11 @@ export function flat(key, n) {
 // ---------- Szenen ----------
 
 const BRICK = [235, 130, 90], STEEL = [150, 220, 160];
-const COLOURS = { shaft: WARM, base: WARM, sphere: DIAMOND, band: GOLD, korb: WARM, antenna: WARM, pod: WARM, glass: CYAN, clock: GOLD, column: WARM, beam: WARM, attic: WARM, ground: WARM, quadriga: GOLD, staff: GOLD, tower: WARM, gable: WARM, portal: GOLD, finial: GOLD, window: GOLD, roof: CYAN, brick: BRICK, glassline: WARM, brickline: BRICK, rail: WARM, truss: WARM, frame: STEEL, car: CYAN, hanger: WARM, bit: WARM, ring: WARM, bow: WARM, ornament: GOLD, skyline: WARM, river: CYAN, victoria: GOLD };
+const COLOURS = { wave: CYAN, shaft: WARM, base: WARM, sphere: DIAMOND, band: GOLD, korb: WARM, antenna: WARM, pod: WARM, glass: CYAN, clock: GOLD, column: WARM, beam: WARM, attic: WARM, ground: WARM, quadriga: GOLD, staff: GOLD, tower: WARM, gable: WARM, portal: GOLD, finial: GOLD, window: GOLD, roof: CYAN, brick: BRICK, glassline: WARM, brickline: BRICK, rail: WARM, truss: WARM, frame: STEEL, car: CYAN, hanger: WARM, bit: WARM, ring: WARM, bow: WARM, ornament: GOLD, skyline: WARM, river: CYAN, victoria: GOLD };
 /** Licht der 2D-Fassungen: dasselbe wie beim Körper, nur ohne Bewegung (Warnlicht, Lichtzeituhr, Glanz). */
 const LIGHT_2D = {
-  fernsehturm: (f, b, j, t, o) => { if (f.tag[j] === 'antenna' && b[1] > FT.tip - 0.02) o[3] = warning(t); else if (f.tag[j] === 'band') o[3] = glint(b[0], t, 3.2, 0.6, -0.15, 0.15); },
-  rheinturm: (f, b, j, t, o) => { if (f.tag[j] === 'antenna' && b[1] > RT.tip - 0.02) o[3] = warning(t); else if (f.tag[j] === 'clock') { const lit = clockLit((b[1] - CLOCK.from) / (CLOCK.to - CLOCK.from), t); o[3] = lit === null ? 0.2 : lit ? 1.35 : 0.3; } },
+  fernsehturm: (f, b, j, t, o) => { const tag = f.tag[j]; if (tag === 'antenna' && b[1] > FT.tip - 0.02) o[3] = warning(t); else if (tag === 'band') o[3] = glint(b[0], t, 3.2, 0.6, -0.2, 0.2); else if (tag === 'wave') o[3] = waveLight(Math.hypot(b[0] - FT.sphere[0], b[1] - FT.sphere[1]), t); },
+  rheinturm: (f, b, j, t, o) => { if (f.tag[j] === 'antenna' && b[1] > RT.tip - 0.02) o[3] = warning(t); else if (f.tag[j] === 'clock') o[3] = clockLight((b[1] - CLOCK.from) / (CLOCK.to - CLOCK.from), t); },
   tor: (f, b, j, t, o) => { o[3] = glint(b[0], t, 4, 0.4, -1.2, 1.2); },
   dom: (f, b, j, t, o) => { o[3] = f.tag[j] === 'finial' ? 1.3 : glint(b[1], t, 4.5, 0.4, -1.2, 1.2); },
   elphi: (f, b, j, t, o) => { if (f.tag[j] === 'roof') o[3] = glint(b[0], t, 4, 0.5, -1.1, 1.1); },

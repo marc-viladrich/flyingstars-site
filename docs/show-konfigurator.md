@@ -1248,3 +1248,22 @@ Ursache: Schmale, gebogene Striche, die als Loch einer Fläche entstehen (Spotif
 Änderung: `regularRibbons()` in `src/scripts/logo-rows.mjs` erkennt solche Bänder und legt dieselben Punkte neu auf ein sauberes Band (geglättete Mittellinie, konstante oder gleichmäßig verjüngte Breite, runde Enden, gleiche Abstände); `cleanRows()` = Bänder, dann die Glättung aus Runde 9. Punktzahl, Farben und Reihenfolge bleiben, damit Budget, Liniendichte und vorberechnete `density`-Werte gültig bleiben. Alle drei Wege in `logo-mode.js` nutzen `cleanRows`. Schutzregeln gegen Fehlgriffe (Sichel, Linse, Ring, Bosch-„S“, Puma-Schwanz) stehen am Code.
 
 Prüfen: `node --test src/scripts/logo-rows.test.mjs` (Unruhe-Maß über alle Logos und Stufen, Spotify live bei Dichte 4–9, Kunstformen, die unangetastet bleiben müssen).
+
+## Runde 10b · Logos mittig, Herz mit Initialen, Text-X (20.11.2026)
+
+- **Logos im Logo-Modus mittig** (Marc: „sehr nah am oberen Rand, zu viel White Space nach unten“). Ursache: `logoFrame`
+  verschob das Logo über einen unsichtbaren Hilfspunkt, gerechnet mit der Bühnen-Abbildung vor Runde 10, und die Minimap
+  rechts unten kürzte das Band auch dann, wenn das Logo gar nicht über ihr stand. Jetzt gibt `logoFrame`
+  (`logo-stage.mjs`) nur das Band an (`area`, Anteile der Bühne, Abdeckungen mit Breite), und die Bühne setzt das Logo
+  exakt mittig (`placeInArea` in `show-field.js`, gleiche Projektion wie beim Zeichnen). Überschneidet das fertige Logo eine
+  Abdeckung, gibt es drei Auswege, der größte gewinnt, mittige bei fast gleicher Größe bevorzugt: im Band darüber, so
+  verkleinert erneut mittig, oder schmaler seitlich vorbei. Gemessen über alle 15 Beispiel-Logos: 1440 × 900 vorher bis
+  71 px Unterschied zwischen Luft oben und unten (z. B. 26 / 90), jetzt mittig; 390 × 844 stieß Shell vorher oben an.
+  Wächter: `src/scripts/logo-stage.test.mjs` misst auf der echten Bühne, Spec „Runde 10b: im Logo-Modus …“.
+- **Hochzeit „Herz mit Initialen“**: kein Katalogmotiv mehr, sondern derselbe Weg wie der eigene Text im Stil Initialen
+  (`textSPARK`, Standard „A & T“, nur 2D wie zuvor, `flat`). Ab 150 Drohnen berührte der Schwung des A die Herzlinie;
+  `intoFrame` in `scenes/text.js` setzt Initialen im Herz kleiner und höher (gilt auch für den eigenen Text). Wächter:
+  `scripts/initials-heart.test.mjs` (jeder Buchstabenpunkt im Herz, Abstand zur Linie, 100–300 Drohnen).
+- **Text-X**: `#cfg-text-clear` im Feld rechts, gleiche Zeichnung wie das Logo-X, nur mit Text sichtbar, „Text entfernen“
+  (DE/EN/NL); ein Klick leert sofort und lässt den Fokus im Feld.
+

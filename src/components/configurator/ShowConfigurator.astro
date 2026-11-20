@@ -21,6 +21,7 @@ import { SHOW_EXTRAS } from '../../content/show-extras.mjs';
 import { durationValues as durations } from '../../content/show-duration.mjs';
 import { money as euro } from '../../lib/price.mjs';
 import Icon from '../Icon.astro';
+import { LOGO_EXAMPLES } from '../../scripts/logo-examples.mjs'; // Runde 10b, Agent L: Beispiel-Logos (eine Liste für Knöpfe, Daten, Tests)
 
 interface Props {
   /** Anker der Section (Sprungziel, z. B. /drohnenshow-preise/#konfigurator) */
@@ -98,7 +99,11 @@ const ticks = [DRONES_MIN, 300, 500, DRONES_MAX];
       <button type="button" class="cfg-hit" id="cfg-hit" aria-label={t('showconfigurator.pauseThePreview')} aria-pressed="false"></button>
       <span class="cfg-flash" id="cfg-flash" aria-hidden="true"><svg class="i-pause" viewBox="0 0 16 16"><rect x="4" y="3" width="2.6" height="10" rx="1"/><rect x="9.4" y="3" width="2.6" height="10" rx="1"/></svg><svg class="i-play" viewBox="0 0 16 16"><path d="M5 3.2v9.6a.6.6 0 0 0 .9.5l7.6-4.8a.6.6 0 0 0 0-1L5.9 2.7a.6.6 0 0 0-.9.5z"/></svg></span>
       <div class="cfg-caption"><em id="cfg-new" hidden>{STEPS[start].pkg}</em></div>
-      <div class="cfg-drop" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 16V4m0 0-5 5m5-5 5 5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg><span>{t('showconfigurator.dragYourLogoHere')}</span><small>{t('showconfigurator.svgPngOrJpg')}</small></div>
+      <div class="cfg-drop"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 16V4m0 0-5 5m5-5 5 5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg><span aria-hidden="true">{t('showconfigurator.dragYourLogoHere')}</span><small aria-hidden="true">{t('showconfigurator.svgPngOrJpg')}</small>
+        {/* Runde 10b (Marc 20.11.): im Logo-Modus von Anfang an, bis „Verstanden“ (die Sitzung merkt es sich); die Dropzone
+             bleibt dabei Ablageziel */}
+        <div class="cfg-notice" id="cfg-notice" role="note" hidden><p><svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.5v.01"/></svg><span>{t('logoMode.notice')}</span></p><button type="button" id="cfg-notice-ok">{t('logoMode.noticeOk')}</button></div>
+      </div>
       <span class="sr-only" id="cfg-scene">{firstCaption}</span>
       <p class="cfg-toast" id="cfg-toast" role="status"></p>
       {/* Runde 27: Anlass „Euer Logo“. Formen direkt auf der Bühne anklicken (cfg-pick liegt über dem Feld, nur mit eigenem
@@ -186,7 +191,12 @@ const ticks = [DRONES_MIN, 300, 500, DRONES_MAX];
       <fieldset class="cfg-block cfg-own">
         <legend>{t('showconfigurator.yourTextYourLogo')} <span class="cfg-opt">{t('showconfigurator.optional')}</span><button type="button" class="cfg-info" id="cfg-info" aria-label={t('showconfigurator.aboutLogoUploads')} aria-expanded="false" aria-controls="cfg-legal" aria-describedby="cfg-legal"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.5"/><path d="M8 7.2v4M8 4.9v.1"/></svg></button></legend>
         <div class="cfg-own-row">
-          <input class="cfg-text" id="cfg-text" name="text" type="text" maxlength="24" autocomplete="off" placeholder={t('showconfigurator.eGAnnaBen')} aria-label={t('showconfigurator.yourText')} />
+          {/* Runde 10b (Marc: „so ein X … am Ende des Inputfelds für Text, damit man mit einem Klick den Text rausnehmen kann“):
+               dasselbe Zeichen wie am Logo, im Feld rechts, nur mit Text sichtbar (show-configurator.js) */}
+          <span class="cfg-text-wrap">
+            <input class="cfg-text" id="cfg-text" name="text" type="text" maxlength="24" autocomplete="off" placeholder={t('showconfigurator.eGAnnaBen')} aria-label={t('showconfigurator.yourText')} />
+            <button type="button" class="cfg-text-clear" id="cfg-text-clear" aria-label={t('showconfigurator.clearText')} hidden><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
+          </span>
           <label class="cfg-upload" id="cfg-upload"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0-5 5m5-5 5 5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg><span>{t('showConfigurator.yourLogo')}</span><input id="cfg-file" type="file" accept="image/svg+xml,image/png,image/jpeg,image/webp" aria-describedby="cfg-legal" /></label>
           <button type="button" class="cfg-logo-off" id="cfg-logo-off" aria-label={t('showconfigurator.removeLogo')} hidden><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
         </div>
@@ -197,7 +207,7 @@ const ticks = [DRONES_MIN, 300, 500, DRONES_MAX];
         <div class="cfg-logo-tools" id="cfg-logo-tools" hidden>
           <div class="cfg-tool">
             <span class="cfg-tool-head">{t('logoMode.examples')}</span>
-            <div class="cfg-examples" id="cfg-examples">{[["mastercard", "Mastercard"], ["ikea", "IKEA"], ["dhl", "DHL"], ["firefox", "Firefox"], ["spotify", "Spotify"], ["nike", "Nike"], ["apple", "Apple"], ["mcdonalds", "McDonald’s"], ["adidas", "Adidas"], ["puma", "Puma"], ["cupra", "Cupra"], ["duolingo", "Duolingo"], ["lamborghini", "Lamborghini"], ["shell", "Shell"], ["target", "Target"]].map(([id, name]) => <button type="button" data-example={id}>{name}</button>)}</div>
+            <div class="cfg-examples" id="cfg-examples">{LOGO_EXAMPLES.map(([id, name]) => <button type="button" data-example={id}>{name}</button>)}</div>
           </div>
           <div class="cfg-logo-own" id="cfg-logo-own" hidden>
             <div class="cfg-tool">

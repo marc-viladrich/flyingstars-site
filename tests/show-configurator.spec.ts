@@ -1,5 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
-import { reach } from './helpers/reach';
+import { reach, tap } from './helpers/reach';
 
 // Runde 5 (18.11.2026): seit Moritz' Preistext gibt es keine Paketknöpfe mehr. Der Konfigurator startet als „Individuelles
 // Paket“; Drohnenzahl und Art der Show (2D · 3D · 3D+, Runde 6 als Pills mit Häkchen) bestimmen Vorschau und Preis, die drei Pakete sind
@@ -537,3 +537,64 @@ test('Runde 10: das Motiv steht im freien Teil der Bühne, über der Steuerleist
     await page.waitForTimeout(400);
   }
 });
+
+// ---------- Runde 10b (Marc 20.11.2026) ----------
+
+test('Runde 10b: ein X im Textfeld nimmt den eigenen Text mit einem Klick heraus, auch per Tastatur', async ({ page }) => {
+  await page.goto(`${CFG}#konfigurator`);
+  await expect.poll(async () => Number(await field(page).getAttribute('data-lit'))).toBeGreaterThan(0);
+  const input = page.locator('#cfg-text'), clear = page.locator('#cfg-text-clear');
+  await expect(clear).toBeHidden();
+  await reach(page, input); await input.fill('ANNA & BEN'); await input.press('Enter');
+  await expect(clear).toBeVisible();
+  await expect(clear).toHaveAccessibleName('Text entfernen');
+  await expect(page.locator('#cfg-styles')).toBeVisible();
+  await tap(page, clear);
+  await expect(input).toHaveValue('');
+  await expect(clear).toBeHidden();
+  await expect(page.locator('#cfg-styles')).toBeHidden(); // wie ein leeres Feld: Schriftwahl weg, Show ohne Text
+  await expect(input).toBeFocused();
+  // Tastatur: Tab vom Feld auf das X, Eingabe leert
+  await input.fill('LISA'); await expect(clear).toBeVisible();
+  await clear.focus(); await page.keyboard.press('Enter'); // Safari springt mit Tab standardmäßig nicht auf Knöpfe
+  await expect(input).toHaveValue('');
+  // das X steht im Feld, rechts innen, und der Text läuft nicht darunter
+  await input.fill('EIN LANGER NAME HIER');
+  const i = (await input.boundingBox())!, x = (await clear.boundingBox())!;
+  expect(x.x + x.width).toBeLessThanOrEqual(i.x + i.width + 0.5);
+  expect(x.x).toBeGreaterThan(i.x + i.width / 2);
+  expect(await input.evaluate((el) => parseFloat(getComputedStyle(el).paddingRight))).toBeGreaterThanOrEqual(x.width);
+});
+
+test('Runde 10b: „Herz mit Initialen“ in der Hochzeit kommt aus dem Text-Weg (Initialen im Herz, „A & T“)', async ({ page }) => {
+  await page.goto(`${CFG}?anlass=hochzeit&art=2d&drohnen=100&motiv=initialen#konfigurator`);
+  await expect(scene(page)).toHaveText('Ein Herz, eure Initialen darin');
+  await expect(field(page)).toHaveAttribute('data-points', '100'); // schon bei 100 Drohnen (Marc)
+});
+
+test('Runde 10b: im Logo-Modus steht jedes Beispiel-Logo mittig, Luft oben ≈ Luft unten', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto(`${CFG}#konfigurator`);
+  await expect.poll(async () => Number(await field(page).getAttribute('data-lit'))).toBeGreaterThan(0);
+  await page.locator('#cfg-occasion label[data-occasion="logo"] input').evaluate((i) => (i as HTMLInputElement).click());
+  for (const id of await page.locator('#cfg-examples [data-example]').evaluateAll((l) => l.map((x) => (x as HTMLElement).dataset.example!))) {
+    await page.locator(`#cfg-examples [data-example="${id}"]`).evaluate((b) => (b as HTMLButtonElement).click());
+    // bis das Logo gerechnet ist, steht die lebendige Wolke auf der Bühne
+    await expect(scene(page)).not.toHaveText(/berechnet/, { timeout: 15_000 });
+    await page.waitForTimeout(800);
+    const m = await page.evaluate(() => {
+      const c = document.querySelector<HTMLCanvasElement>('#cfg-field')!, s = document.querySelector('.cfg-stage')!.getBoundingClientRect(), k = c.width / c.getBoundingClientRect().width;
+      const d = c.getContext('2d')!.getImageData(0, 0, c.width, c.height).data;
+      let x0 = Infinity, x1 = -1, y0 = Infinity, y1 = -1;
+      for (let y = 0; y < c.height; y++) for (let x = 0; x < c.width; x++) { const o = (y * c.width + x) * 4; if (d[o] + d[o + 1] + d[o + 2] > 300) { x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y); } }
+      // mittig in der Bühne oder, wenn es einer Abdeckung (Hinweiskarte, Minimap) ausweicht, im Teil darüber
+      const floors = [s.height];
+      for (const sel of ['#cfg-over-card', '#cfg-minimap']) { const el = document.querySelector<HTMLElement>(sel); if (!el || el.hidden) continue; const r = el.getBoundingClientRect(); if (r.height && r.left - s.left < x1 / k && r.right - s.left > x0 / k && r.top - s.top > s.height * 0.45) floors.push(r.top - s.top); }
+      const top = y0 / k, gaps = floors.map((f) => f - y1 / k);
+      return { top, gaps, best: Math.min(...gaps.map((g) => Math.abs(top - g))), H: s.height };
+    });
+    // Lichthöfe zählen mit; die Abdeckung bekommt 4 % Abstand: Unterschied höchstens 8 % der Bühnenhöhe
+    expect(m.best, `${id}: oben ${m.top.toFixed(0)} px, unten ${m.gaps.map((g) => g.toFixed(0)).join(' / ')} px`).toBeLessThanOrEqual(0.08 * m.H);
+  }
+});
+

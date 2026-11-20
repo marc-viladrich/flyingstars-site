@@ -6,23 +6,56 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { decodePoints } from './logo-v10/prepared.mjs';
-import { logoFrame, logoScreenBox } from './logo-stage.mjs';
+import { logoFrame, LOGO_AREA } from './logo-stage.mjs';
+import { createField } from './show-field.js';
 import { SHOW_ARTS, stopAtLeast, artMin } from '../content/show-packages.ts';
 
 const dir = new URL('../../public/media/logo-modus/beispiele/', import.meta.url);
 const ids = JSON.parse(fs.readFileSync(new URL('sizes.json', dir))).map((x) => x.id);
-// gemessen 20.11.2026 im Konfigurator (Shell, Karte sichtbar): Bühne und Oberkante der Karte relativ zur Bühne
-const STAGES = [{ name: '1440', W: 844, H: 454, coverTop: 343 }, { name: '390', W: 390, H: 354, coverTop: 265 }, { name: '1440 ohne Karte', W: 844, H: 454, coverTop: null }];
+// gemessen im Konfigurator: Bühne, Hinweiskarte (über die Breite) und Minimap (rechts unten), CSS-Pixel relativ zur Bühne
+const STAGES = [
+  { name: '1440', W: 844, H: 454, covers: [] },
+  { name: '1440 Minimap', W: 844, H: 454, covers: [{ top: 396, left: 742, right: 830 }] },
+  { name: '1440 Karte', W: 844, H: 454, covers: [{ top: 343, left: 160, right: 684 }] },
+  { name: '390', W: 390, H: 422, covers: [] },
+  { name: '390 Minimap', W: 390, H: 422, covers: [{ top: 370, left: 318, right: 380 }] },
+  { name: '390 Karte', W: 390, H: 422, covers: [{ top: 300, left: 12, right: 378 }] },
+];
 const lit = (id, n) => { const d = JSON.parse(fs.readFileSync(new URL(`${id}.json`, dir))), f = d.formations[d.steps[n]], p = decodePoints(f.p), out = []; for (let i = 0; i < p.length; i += 5) out.push([p[i] / 1000, -p[i + 1] / 1000, 0, ...d.palette[p[i + 2]]]); return out; };
 
-for (const id of ids) test(`${id}: im Logo-Modus ganz sichtbar über der Karte`, () => {
+// Runde 10b: gemessen wird das gezeichnete Logo auf der echten Bühne (show-field.js, Logo-Modus: Steuerleiste
+// ausgeblendet, view oben 8 px), nicht eine Nachrechnung der Abbildung
+function screenBox(t, pts, st) {
+  const saved = new Map(), set = (k, v) => { saved.set(k, Object.getOwnPropertyDescriptor(globalThis, k)); Object.defineProperty(globalThis, k, { configurable: true, writable: true, value: v }); };
+  t.after(() => { for (const [k, d] of saved) { if (d) Object.defineProperty(globalThis, k, d); else delete globalThis[k]; } });
+  const ctx = { setTransform() {}, clearRect() {}, fillRect() {}, createRadialGradient: () => ({ addColorStop() {} }), drawImage() {} };
+  set('window', {}); set('devicePixelRatio', 1); set('matchMedia', () => ({ matches: false, addEventListener() {} }));
+  set('document', { hidden: false, documentElement: { classList: { contains: () => false } }, addEventListener() {}, createElement: () => ({ getContext: () => ctx }) });
+  set('IntersectionObserver', class { observe() {} }); set('requestAnimationFrame', () => 1); set('cancelAnimationFrame', () => {});
+  const field = createField({ dataset: {}, getContext: () => ctx, getBoundingClientRect: () => ({ width: st.W, height: st.H }) }, { view: () => ({ top: 8, bottom: 0 }), fitProjected: true });
+  // wie logoBeat: dunkle Reserve dahinter, live blendet sie aus
+  const reserve = Array.from({ length: 20 }, (_, i) => [pts[i % pts.length][0], pts[i % pts.length][1], -0.45, 0, 0, 0]);
+  const frame = logoFrame(pts, st);
+  field.show({ beats: [{ pts: [...pts, ...reserve], hold: Infinity, live: (_, j, __, o) => { if (j >= pts.length) o[3] = 0; }, ...frame }] }, pts.length + 20, 1, { instant: true });
+  const xy = field.screenOf().slice(0, pts.length), ys = xy.map((p) => p[1]), xs = xy.map((p) => p[0]);
+  return { frame, top: Math.min(...ys), bottom: Math.max(...ys), left: Math.min(...xs), right: Math.max(...xs) };
+}
+
+for (const id of ids) test(`${id}: im Logo-Modus mittig im freien Teil, über der Karte, nie an den Rand gedrückt`, (t) => {
   for (const n of [100, 150, 200]) for (const st of STAGES) {
-    const pts = lit(id, n), frame = logoFrame(pts, st), box = logoScreenBox(pts, frame, st);
-    assert.ok(box.top >= 0.05 * st.H - 1, `${id} ${n} ${st.name}: Oberkante ${box.top.toFixed(0)}`);
-    assert.ok(box.bottom <= (st.coverTop ?? st.H) - 0.03 * st.H + 1, `${id} ${n} ${st.name}: Unterkante ${box.bottom.toFixed(0)} unter der Karte`);
-    // so groß, wie die freie Fläche erlaubt: entweder fast ihre Höhe oder (breite Wortmarken) fast die Breite
-    assert.ok(box.bottom - box.top >= 0.8 * ((st.coverTop ?? st.H) - 0.1 * st.H) || box.width >= 0.85 * st.W, `${id} ${n} ${st.name}: Logo zu klein (${(box.bottom - box.top).toFixed(0)} × ${box.width.toFixed(0)} px)`);
-    assert.ok(frame.fitPts.slice(0, pts.length).every((p, i) => p === pts[i]), 'gezeichnete Punkte unverändert');
+    const pts = lit(id, n), b = screenBox(t, pts, st), tag = `${id} ${n} ${st.name}`;
+    // nie über einer Abdeckung; mittig im ganzen Band oder, wenn es ausweichen muss, im Band über der Abdeckung
+    for (const c of st.covers) assert.ok(!(c.left < b.right && c.right > b.left && b.bottom > c.top - 1), `${tag}: Logo über der Abdeckung`);
+    const top = LOGO_AREA.top * st.H, bands = [LOGO_AREA.bottom * st.H, ...st.covers.filter((c) => c.left < b.right && c.right > b.left).map((c) => c.top - LOGO_AREA.gap * st.H)];
+    assert.ok(b.top >= top - 1.5, `${tag}: Oberkante ${b.top.toFixed(0)} < ${top.toFixed(0)}`);
+    const off = Math.min(...bands.map((bottom) => Math.abs((b.top - top) - (bottom - b.bottom))));
+    assert.ok(off <= 0.02 * st.H + 1, `${tag}: nicht mittig (oben ${(b.top - top).toFixed(0)} px, unten ${bands.map((x) => (x - b.bottom).toFixed(0)).join(' / ')} px)`);
+    const bottom = Math.min(...bands);
+    // so groß, wie das Band erlaubt: fast seine Höhe, fast die erlaubte Breite oder die Obergrenze 1,6 × normal
+    const fill = Math.max((b.bottom - b.top) / (bottom - top), (b.right - b.left) / (LOGO_AREA.width * st.W));
+    assert.ok(fill >= 0.85, `${tag}: Logo zu klein (${(fill * 100).toFixed(0)} %)`);
+    assert.ok(b.left >= 0 && b.right <= st.W, `${tag}: seitlich in der Bühne`);
+    assert.ok(b.frame.fitPts.every((p, i) => p === pts[i]) && b.frame.fitPts.length === pts.length, 'gezeichnete Punkte unverändert, kein Hilfspunkt');
   }
 });
 
