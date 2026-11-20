@@ -153,14 +153,19 @@ wie auf der Startseite sehr gut passen.“ Dieselbe Technik, `createFolge(canvas
   erkennen“). Ursache: Die Kinder waren gefüllte SVG-Flächen, abgetastet wie ein Logo, mit fester Drohnenzahl je Teil statt
   nach Linienlänge. Jetzt `effects/chopper-play.js` nach der Methode der Katalogfiguren (`catalog-3d/kit.js`): nur Umrisse,
   Drohnen in gleichem Abstand entlang der Linien, verdeckte Linien fallen weg; Kopf als Kreis, Haare als Fläche, die dem Kopf
-  folgt (eine eigene Kappe las sich als Mütze), Augen und Lächeln als einzelne Lichter. Chopper ist in dieser Szene ebenfalls ein
-  Umriss aus seiner echten Geometrie (gleiche Ellipsen, Beine, Ohr, Schwanz, Mütze wie `chopper.js`); Danke-Seite und 404
-  behalten den gefüllten Hund. Größe: Die Szene setzt `sw.scale` je Frame aus ihrem über eine Schleife gemessenen Rahmen
+  folgt (eine eigene Kappe las sich als Mütze), Augen und Lächeln als einzelne Lichter. Chopper ist ein Umriss aus seiner echten
+  Geometrie (gleiche Ellipsen, Beine, Ohr, Schwanz, Mütze). Runde 10b (Marc: „Chopper kann ruhig auch in der 404-Seite und
+  woanders ohne filling dots erscheinen“): eine Quelle in `chopper.js` (`chopperParts`, 226 Drohnen) für 404, Danke-Seite, Team
+  und Spielszene; Standbilder `play.webp` und `happy.webp` neu. Abstand Kind ↔ Chopper (Runde 10b, Marc: „Die Kinder brauchen
+  nur etwas mehr Abstand zu Chopper“): Die Schwanzspitze schlug beim Wedeln in die Hand des wartenden Kindes, der Wurfarm reichte
+  an den Hund. Jetzt wedelt der Schwanz höher, Chopper steht mittig, die Arme der Kinder sind 10 % kürzer (Hand an der Hüfte)
+  und die Kinder stehen dafür weiter außen; kleinster Abstand über die Schleife 0,12 / 0,10 statt 0,064 / 0,033 Einheiten,
+  Rahmen und Größe unverändert. Größe: Die Szene setzt `sw.scale` je Frame aus ihrem über eine Schleife gemessenen Rahmen
   (`PLAY_BOX` 2,44 × 1,08 Einheiten, die breiteste Stelle ist der Jubelarm in der Waagerechten); bei 1440 px sind die Kinder
-  rund 260 statt 200 px hoch, bei 1920 px rund 355 px. Standbild ohne JavaScript neu aus dem Renderer:
+  rund 260 statt 200 px hoch, bei 1920 px rund 355 px. Standbilder ohne JavaScript neu aus dem Renderer:
   `node tools/chopper-standbild.mjs <basis-url>`. Wächter: `scripts/chopper-play.test.mjs` (Linienabstand je Körperteil ±30 %,
-  keine Füllung im Oberkörper, Gesicht mit zwei Augen und Mund und nichts Fremdem, Hund gleich dicht, jede Drohne über eine
-  ganze Schleife im Rahmen).
+  keine Füllung im Oberkörper, Gesicht mit zwei Augen und Mund und nichts Fremdem, Hund gleich dicht und ohne Füllung aus einer
+  Quelle, jede Drohne über eine ganze Schleife im Rahmen, Mindestabstand Kind ↔ Chopper 0,095).
 - **Start:** Modul lädt, wenn die Bühne näher als 300 px ist (`whenNear`); das erste Motiv entsteht in Leerlauf-Tasks; los geht es,
   wenn ein Drittel der Bühne im Bild ist: Die Drohnen steigen dunkel von unten auf und bilden das Herz. Pause-Taste und reduzierte
   Bewegung: das Herz steht. Ohne JavaScript bleibt die Bühne weg, der Text steht allein.

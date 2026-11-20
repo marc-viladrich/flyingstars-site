@@ -7,7 +7,7 @@
 // Koordinaten wie chopper.js (400 × 300 Rahmen). Bei reduzierter Bewegung (T = 0) zeigt jede Stimmung ein Standbild.
 import { gradientAt, hash } from './swarm.js';
 import { chopperParts, CHOPPER_COUNT } from './chopper.js';
-import { kidFigure, KID_DRONES, playDog, DOG_DRONES } from './chopper-play.js';
+import { kidFigure, KID_DRONES } from './chopper-play.js';
 
 const S = (420 - 6) / 400, RW = Math.round(400 * S) + 6, RH = Math.round(300 * S) + 6;
 const toN = (X, Y) => [(3 + X * S - RW / 2) * 2 / RW, (3 + Y * S - RH / 2) * 2 / RW];
@@ -38,8 +38,8 @@ export const PLAY_SCALE = 0.75;
 export const PLAY_BOX = { w: 2.44, h: 1.08 };
 /** Maßstab des Schwarms (Anteil der kürzeren Bühnenseite je Einheit), damit PLAY_BOX in eine Bühne w × h passt. */
 export const playScale = (w, h) => Math.min(w / PLAY_BOX.w, h / PLAY_BOX.h) / Math.min(w, h);
-// Spielszene: Chopper als Umriss (chopper-play.js), mit eigener Drohnenzahl; Danke-Seite: der gefüllte Hund
-const DOG = CHOPPER_COUNT, PLAY_DOG = DOG_DRONES.body + DOG_DRONES.ear + DOG_DRONES.tail + BLADE * 2;
+// Chopper ist in allen Stimmungen derselbe Umriss (chopper.js, Runde 10b)
+const DOG = CHOPPER_COUNT, PLAY_DOG = CHOPPER_COUNT;
 export const MOOD_COUNT = { happy: DOG, play: PLAY_DOG + kidCount('girl') + kidCount('boy') + BALL + DISC };
 
 const rot = (x, y, cx, cy, a) => { const c = Math.cos(a), s = Math.sin(a), dx = x - cx, dy = y - cy; return [cx + dx * c - dy * s, cy + dx * s + dy * c]; };
@@ -110,7 +110,7 @@ function happyPose(t) {
  * @param {'happy'|'play'} mood
  */
 export async function chopperMood(mood) {
-  const p = mood === 'play' ? playDog() : await chopperParts();
+  const p = await chopperParts();
   const mask = headMask(p.body);
   const count = MOOD_COUNT[mood];
   const colors = new Uint8Array(count * 3);
@@ -138,7 +138,12 @@ export async function chopperMood(mood) {
   // ---------- play: 12,4 s, erst wirft das Mädchen (Ball), dann der Junge (Frisbee) ----------
   const P = 12.4, H = P / 2, w = TAU / P;
   // K: Kinderhöhe in Einheiten (Figurrahmen 0…1 → Bühne); floor: Boden, so dass PLAY_BOX mittig steht
-  const K = 0.86, dogSize = 0.53, floor = 0.5, girlX = -0.8, boyX = 0.8; // ±0,76: Frisbee berührte die Schwanzspitze
+  // Abstand Kind ↔ Chopper (Runde 10b, Marc: „Die Kinder brauchen nur etwas mehr Abstand zu Chopper“): Chopper steht genau
+  // mittig, sein Schwanz wedelt höher (TAIL_UP, sonst schlug die Spitze in die Hand des wartenden Kindes), die Kinder
+  // stehen bei ±0,83 mit kürzeren Armen (chopper-play.js). Der Rahmen PLAY_BOX bleibt, die Szene also gleich groß.
+  // Wächter: scripts/chopper-play.test.mjs (Mindestabstand über die ganze Schleife).
+  const TAIL_UP = 0.3, TAIL_WAG = 0.3;
+  const K = 0.86, dogSize = 0.53, floor = 0.5, girlX = -0.84, boyX = 0.82, dogX = -0.01; // der Junge ist mit breiteren Schultern 0,02 weiter
   const kidY = floor, dogY = floor - (toN(0, 254)[1] - toN(0, 160)[1]) * dogSize;
   // Wurfarm: ausholen, nach vorn schwingen (Abwurf bei 0,85 s), zurück; Winkel für den Wurf nach rechts
   const throwAngle = (v) => v < 0.6 ? 0.9 * ease(v / 0.6) : v < 0.85 ? 0.9 - 3 * ease((v - 0.6) / 0.25) : v < 1.6 ? -2.1 * (1 - ease((v - 0.85) / 0.75)) : 0;
@@ -161,9 +166,9 @@ export async function chopperMood(mood) {
     const jk = span(v, 1.55, 2.65), jump = -0.3 * Math.sin(Math.PI * jk) ** 2;
     const excite = hill(v, 2.0, 4.0, 0.3);
     const dogPose = (f) => ({
-      x: 0.02, y: dogY + jump, size: dogSize, face: f,
+      x: dogX, y: dogY + jump, size: dogSize, face: f,
       spin: -0.32 * Math.sin(Math.PI * jk) ** 2, head: -0.22 * Math.sin(Math.PI * jk) ** 2 + 0.04 * Math.sin(4 * w * u),
-      tail: (0.4 + 0.18 * excite) * Math.sin(24 * w * u), ear: 0.18 * Math.sin(6 * w * u) - 0.45 * Math.sin(TAU * jk) * (jk > 0 && jk < 1 ? 1 : 0),
+      tail: TAIL_UP + (TAIL_WAG + 0.15 * excite) * Math.sin(24 * w * u), ear: 0.18 * Math.sin(6 * w * u) - 0.45 * Math.sin(TAU * jk) * (jk > 0 && jk < 1 ? 1 : 0),
       blade: (40 * Math.PI / P) * u,
     });
     // Wende zum anderen Kind am Ende jeder Hälfte als lebendige Wolke (wie die 404)
