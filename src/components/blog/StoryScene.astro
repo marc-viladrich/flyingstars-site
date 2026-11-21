@@ -1,0 +1,262 @@
+---
+// Scroll-Geschichte im Blogartikel (Labor, Runde 15, 21.11.2026): links der unveränderte Artikeltext in Schritten,
+// rechts klebt die isometrische Szene (story-scene.ts) und geht beim Lesen zum nächsten Schritt. Übergänge sind weiche
+// Morphs nur über transform und opacity: Ebenen fahren zusammen, schrumpfen zu einem Punkt, aus dem das Nächste wächst.
+// SEO und Barrierefreiheit (27-blog-bilder-2026-11-21/seo-interaktive-grafiken.md): Der Text steht vollständig im HTML,
+// die Szene ist Inline-SVG mit Endzustand im HTML (Live-Show, ohne JavaScript sichtbar), feste Seitenverhältnisse,
+// figcaption sichtbar. Reduzierte Bewegung und Pause: Schritte wechseln ohne Übergang. Hover auf eine Annotation hebt
+// ihr Teil hervor; die Schrittpunkte springen zum Abschnitt.
+import Icon from '../Icon.astro';
+import { storyScene, pathD, type Piece } from './story-scene';
+interface Block { html: string; step?: number; title?: string; group?: string }
+interface Props { blocks: Block[]; caption: string; label: string }
+const { blocks, caption, label } = Astro.props;
+const colors = ['#ff9e29', '#f58a5a', '#ec7f95', '#db64e8', '#b88bec', '#8aa9ee', '#6fc8ef', '#33edf2'];
+// Farben wie die Zonen der Standortzeichnung (LandingSite.astro), je Baustein eine
+const zone = { drone: '#ff9e29', software: '#c49bf2', sim: '#6fdc98', field: '#e8dccb', station: '#6aa8ff', idea: '#db64e8', warn: '#f5b43c', crowd: '#c49bf2' };
+const story = storyScene({ colors, zone });
+const LAST = story.steps - 1;
+// Lage eines Teils in einem Schritt (dieselbe Rechnung wie im Skript, hier für den Endzustand im HTML)
+const stateOf = (p: Piece, s: number) => {
+  if (p.steps.includes(s)) return { t: `translate(0px, ${p.shift?.[s] ?? 0}px)`, o: p.dim?.includes(s) ? 0.38 : 1 };
+  const h = (s > Math.max(...p.steps) && p.after) || p.hide || { s: [0.04, 0.04] as [number, number] };
+  return { t: `translate(0px, ${h.dy ?? 0}px) scale(${h.s[0]}, ${h.s[1]})`, o: 0 };
+};
+const steps = blocks.filter((b) => b.step !== undefined);
+// Der erste Zwischentitel vor dem ersten Schritt steht über Text und Szene (auf dem Handy vor der klebenden Szene)
+const head = blocks[0]?.step === undefined ? blocks[0] : undefined;
+const body = head ? blocks.slice(1) : blocks;
+---
+<section class="ss" aria-label={label} data-ss>
+  {head && <div class="ss-head post-body" set:html={head.html} />}
+  <div class="ss-text post-body">
+    {body.map((b) => b.step === undefined
+      ? <div class="ss-intro" set:html={b.html} />
+      : <div class="ss-step" data-step={b.step} set:html={b.html} />)}
+  </div>
+  <figure class="ss-fig">
+    <div class="ss-stage" data-stage data-step={LAST} style={`--ar: ${story.vb[2]} / ${story.vb[3]}`}>
+      <svg viewBox={story.vb.join(' ')} role="img" aria-label={caption}>
+        {story.pieces.map((p, li) => { const st = stateOf(p, LAST); return <g class="pc" data-key={p.key} data-steps={p.steps.join(' ')} data-dim={p.dim?.join(' ')} data-shift={p.shift ? JSON.stringify(p.shift) : undefined} data-hide={p.hide ? `${p.hide.s.join(' ')} ${p.hide.dy ?? 0}` : undefined} data-after={p.after ? `${p.after.s.join(' ')} ${p.after.dy ?? 0}` : undefined} aria-hidden="true" style={`--zc: ${p.zc}; --li: ${li}; transform-origin: ${p.origin[0]}px ${p.origin[1]}px; transform: ${st.t}; opacity: ${st.o}`}>
+          {p.shapes.map((s) => s.t === 'circle' ? <circle class={s.cls} cx={s.c[0]} cy={s.c[1]} r={s.r} /> : <path class={s.cls} d={pathD(s)} />)}
+        </g>; })}
+        <g class="ss-drones" aria-hidden="true">
+          {story.drones.map((d) => { const [x, y, a] = d.pos[LAST]; return <g class="sd" data-pos={d.pos.map((q) => q.join(',')).join(';')} style={`--c: ${d.c}; --k: ${d.k}; transform: translate(${x}px, ${y}px); opacity: ${a}`}><circle class="halo" r="5" /><circle class="core" r="2.2" /></g>; })}
+        </g>
+      </svg>
+      {story.notes.map((n) => <span class:list={['sn', `sn-${n.side}`, { on: n.steps.includes(LAST), 'sn-check': n.check }]} data-steps={n.steps.join(' ')} data-target={n.target} style={`--x: ${n.x}%; --y: ${n.y}%`} aria-hidden="true"><i class="sn-dot"></i><span class="sn-pill">{n.check && <Icon name="check" size={14} />}{n.text}</span></span>)}
+    </div>
+    <div class="ss-bar">
+      <p class="ss-now mono" aria-hidden="true" data-now>{steps.at(-1)?.group} · {steps.at(-1)?.title}</p>
+      <ol class="ss-dots" aria-label="Schritte der Grafik">
+        {steps.map((b, i) => <li><button type="button" data-goto={b.step} aria-label={`${b.group}: ${b.title}`} aria-current={i === steps.length - 1 ? 'step' : undefined}><span class:list={['ss-dot', { 'ss-gap': i > 0 && steps[i - 1].group !== b.group }]}></span></button></li>)}
+      </ol>
+    </div>
+    <figcaption>{caption}</figcaption>
+  </figure>
+</section>
+
+<script>
+  // Schritt wechseln: der Abschnitt in der Bildschirmmitte wählt den Schritt (wie die Scrollstory der Fallstudien).
+  document.querySelectorAll<HTMLElement>('[data-ss]').forEach((root) => {
+    const stage = root.querySelector<HTMLElement>('[data-stage]')!;
+    const pieces = [...stage.querySelectorAll<SVGGElement>('.pc')];
+    const drones = [...stage.querySelectorAll<SVGGElement>('.sd')];
+    const notes = [...stage.querySelectorAll<HTMLElement>('.sn')];
+    const blocks = [...root.querySelectorAll<HTMLElement>('.ss-step')];
+    const dots = [...root.querySelectorAll<HTMLButtonElement>('[data-goto]')];
+    const now = root.querySelector<HTMLElement>('[data-now]');
+    const nums = (v?: string) => (v ? v.split(' ').map(Number) : []);
+    const P = pieces.map((el) => ({
+      el, steps: nums(el.dataset.steps), dim: nums(el.dataset.dim),
+      shift: el.dataset.shift ? (JSON.parse(el.dataset.shift) as Record<string, number>) : {},
+      hide: nums(el.dataset.hide), after: nums(el.dataset.after),
+    }));
+    const D = drones.map((el) => ({ el, pos: el.dataset.pos!.split(';').map((q) => q.split(',').map(Number)) }));
+    const N = notes.map((el) => ({ el, steps: nums(el.dataset.steps) }));
+    let step = -1;
+    let fitLater = () => {};
+    const set = (s: number) => {
+      if (s === step) return;
+      const prev = step; step = s;
+      stage.dataset.step = String(s);
+      P.forEach((p) => {
+        const on = p.steps.includes(s), was = p.steps.includes(prev);
+        // was kommt, wartet, bis das Gehende kleiner geworden ist; Ebenen eines Stapels gestaffelt
+        p.el.style.transitionDelay = on && !was ? 'var(--ss-enter)' : '0s';
+        if (on) { p.el.style.transform = `translate(0px, ${p.shift[s] ?? 0}px)`; p.el.style.opacity = String(p.dim.includes(s) ? 0.38 : 1); return; }
+        const h = s > Math.max(...p.steps) && p.after.length ? p.after : p.hide.length ? p.hide : [0.04, 0.04, 0];
+        p.el.style.transform = `translate(0px, ${h[2] ?? 0}px) scale(${h[0]}, ${h[1]})`;
+        p.el.style.opacity = '0';
+      });
+      D.forEach((d) => { const [x, y, a] = d.pos[s]; d.el.style.transform = `translate(${x}px, ${y}px)`; d.el.style.opacity = String(a); });
+      N.forEach((n) => n.el.classList.toggle('on', n.steps.includes(s)));
+      fitLater();
+      blocks.forEach((b) => b.classList.toggle('on', Number(b.dataset.step) === s));
+      dots.forEach((d) => (Number(d.dataset.goto) === s ? d.setAttribute('aria-current', 'step') : d.removeAttribute('aria-current')));
+      const b = blocks.find((el) => Number(el.dataset.step) === s);
+      if (now && b) now.textContent = b.dataset.label ?? '';
+    };
+    blocks.forEach((b) => { b.dataset.label = `${dots.find((d) => d.dataset.goto === b.dataset.step)?.getAttribute('aria-label')?.replace(': ', ' · ') ?? ''}`; });
+    // Anfangszustand: erster Schritt, ohne Übergang (im HTML steht der Endzustand für Suche, Vorschau und ohne JavaScript)
+    stage.classList.add('is-reset');
+    set(0);
+    void stage.getBoundingClientRect();
+    stage.classList.remove('is-reset');
+    // Auslöser: Bildschirmmitte; auf dem Handy liegt die Szene oben über dem Text, dort zählt ein Band im unteren Drittel
+    if ('IntersectionObserver' in window) {
+      const narrow = matchMedia('(max-width: 60em)').matches;
+      const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) set(Number((e.target as HTMLElement).dataset.step)); }), { rootMargin: narrow ? '-66% 0px -28% 0px' : '-45% 0px -50% 0px' });
+      blocks.forEach((b) => io.observe(b));
+    }
+    // Annotationen, die über den Bildschirm hinausragen würden, stehen auf der anderen Seite ihres Punkts. Nur bei Bedarf
+    // neu messen (Schrittwechsel, Größe)
+    const fit = () => notes.forEach((n) => {
+      n.classList.remove('sn-flip'); // auch unsichtbare: sie zählen sonst zur Seitenbreite (seitliches Scrollen)
+      const r = n.querySelector('.sn-pill')!.getBoundingClientRect();
+      if (r.right > document.documentElement.clientWidth - 8 || r.left < 8) n.classList.add('sn-flip');
+    });
+    fitLater = () => requestAnimationFrame(fit);
+    fit();
+    addEventListener('resize', fit, { passive: true });
+    dots.forEach((d) => d.addEventListener('click', () => {
+      const b = blocks.find((el) => el.dataset.step === d.dataset.goto);
+      if (!b) return;
+      const r = b.getBoundingClientRect();
+      scrollTo({ top: scrollY + r.top + r.height / 2 - innerHeight / 2 });
+    }));
+    // Zeigen auf eine Annotation hebt ihr Teil hervor
+    notes.forEach((n) => {
+      const hit = () => pieces.filter((p) => p.dataset.key === n.dataset.target);
+      n.addEventListener('pointerenter', () => { if (n.classList.contains('on')) { stage.classList.add('has-hl'); hit().forEach((p) => p.classList.add('hl')); } });
+      n.addEventListener('pointerleave', () => { stage.classList.remove('has-hl'); hit().forEach((p) => p.classList.remove('hl')); });
+    });
+  });
+</script>
+
+<style>
+  .ss { --ss-enter: 0.38s; width: 100%; max-width: min(82rem, 100%); display: grid; grid-template-columns: minmax(0, 26rem) minmax(0, 1fr); gap: clamp(var(--space-8), 4vw, var(--space-16)); margin-block: clamp(var(--space-10), 5vw, var(--space-16)); }
+  .ss-text { max-width: none; padding-bottom: 30vh; }
+  .ss-head { grid-column: 1 / -1; max-width: var(--measure, 42rem); }
+  .ss-head :global(h2) { margin-top: 0; }
+  .ss-intro { padding-top: var(--space-6); }
+  .ss-intro :global(h2) { margin-top: 0; }
+  .ss-step { min-height: 62vh; display: flex; flex-direction: column; justify-content: center; padding-left: var(--space-5); border-left: 2px solid var(--line); transition: border-color var(--dur-fade) var(--ease-out); }
+  .ss-step.on { border-image: var(--grad) 1; }
+  .ss-step > :global(*) { margin-top: 0; }
+  .ss-step > :global(* + *) { margin-top: 0.9em; }
+  .ss-text > :global(* + *) { margin-top: 0; }
+
+  .ss-fig { margin: 0; position: sticky; top: calc(var(--nav-h) + var(--space-4)); height: calc(100svh - var(--nav-h) - var(--space-8)); display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto auto; gap: var(--space-3); align-self: start; }
+  .ss-stage { position: relative; align-self: center; justify-self: center; width: 100%; max-height: 100%; aspect-ratio: var(--ar); max-width: calc((100svh - var(--nav-h) - 9rem) * 1.18); }
+  .ss-stage svg { width: 100%; height: 100%; display: block; overflow: visible; }
+
+  /* Teile: weich wachsen und schrumpfen, nur transform und opacity */
+  .pc { transform-box: view-box; transition: transform 1.05s var(--ease-scene), opacity 0.7s var(--ease-out); }
+  .sd { transition: transform 1.25s var(--ease-scene) calc(var(--k) * 22ms), opacity 0.6s var(--ease-out) calc(var(--k) * 22ms); }
+  .is-reset, .is-reset * { transition: none !important; }
+
+  /* Zeichnung: Vokabular der Standortzeichnung */
+  .slab { fill: rgb(var(--rgb-head) / 3%); stroke: rgb(var(--rgb-head) / 13%); stroke-width: 0.8; }
+  .slab-side { fill: rgb(var(--rgb-head) / 6.5%); stroke: rgb(var(--rgb-head) / 11%); stroke-width: 0.6; }
+  .floor-line { fill: none; stroke: rgb(var(--rgb-head) / 5%); stroke-width: 0.6; }
+  .zplate { fill: color-mix(in srgb, var(--zc) 12%, var(--ground)); stroke: color-mix(in srgb, var(--zc) 70%, transparent); stroke-width: 1; }
+  .zplate-side, .zplate-edge { fill: color-mix(in srgb, var(--zc) 30%, var(--ground)); stroke: color-mix(in srgb, var(--zc) 55%, transparent); stroke-width: 0.6; }
+  .part { fill: color-mix(in srgb, var(--zc) 14%, var(--ground)); stroke: color-mix(in srgb, var(--zc) 80%, transparent); stroke-width: 1; }
+  .part-side { fill: color-mix(in srgb, var(--zc) 34%, var(--ground)); stroke: color-mix(in srgb, var(--zc) 60%, transparent); stroke-width: 0.6; }
+  .chip { fill: color-mix(in srgb, var(--zc) 45%, var(--ground)); }
+  .trace { fill: none; stroke: color-mix(in srgb, var(--zc) 50%, transparent); stroke-width: 0.8; stroke-dasharray: 2 2; }
+  .rotor { fill: color-mix(in srgb, var(--zc) 6%, transparent); stroke: color-mix(in srgb, var(--zc) 55%, transparent); stroke-width: 0.8; }
+  .arm { fill: none; stroke: color-mix(in srgb, var(--zc) 80%, transparent); stroke-width: 2.4; stroke-linecap: round; }
+  .hub { fill: var(--ground); stroke: var(--zc); stroke-width: 1; }
+  .led-base { fill: color-mix(in srgb, var(--zc) 22%, var(--ground)); stroke: var(--zc); stroke-width: 1; }
+  .led-glow { fill: var(--zc); opacity: 0.16; }
+  .led-core { fill: #fff3df; }
+  .bar { stroke: none; }
+  .bar-0 { fill: #ff9e29; } .bar-1 { fill: #f58a5a; } .bar-2 { fill: #ec7f95; } .bar-3 { fill: #db64e8; } .bar-4 { fill: #b88bec; } .bar-5 { fill: #8aa9ee; } .bar-6 { fill: #6fc8ef; } .bar-7 { fill: #33edf2; }
+  .track { fill: none; stroke: color-mix(in srgb, var(--zc) 45%, transparent); stroke-width: 0.8; }
+  .tick { fill: none; stroke: color-mix(in srgb, var(--zc) 16%, transparent); stroke-width: 0.6; }
+  .playhead { fill: none; stroke: var(--accent); stroke-width: 1.4; }
+  .route { fill: none; stroke: color-mix(in srgb, var(--zc) 75%, transparent); stroke-width: 0.9; }
+  .guide { fill: none; stroke: rgb(var(--rgb-head) / 22%); stroke-width: 0.8; stroke-dasharray: 1.5 3.5; }
+  .glass-floor, .glass-back { fill: color-mix(in srgb, var(--zc) 4%, transparent); }
+  .glass-hidden { fill: none; stroke: color-mix(in srgb, var(--zc) 32%, transparent); stroke-width: 0.8; stroke-dasharray: 3 4; }
+  .glass { fill: color-mix(in srgb, var(--zc) 5%, transparent); }
+  .glass-edge { fill: none; stroke: color-mix(in srgb, var(--zc) 70%, transparent); stroke-width: 1.1; }
+  .wind { fill: none; stroke: color-mix(in srgb, var(--zc) 70%, transparent); stroke-width: 1.2; stroke-dasharray: 5 4; stroke-linecap: round; }
+  .mast { fill: none; stroke: color-mix(in srgb, var(--zc) 75%, transparent); stroke-width: 1.4; }
+  .mast-glow { fill: var(--zc); opacity: 0.18; }
+  .mast-tip { fill: var(--zc); }
+  .wave { fill: none; stroke: color-mix(in srgb, var(--zc) 55%, transparent); stroke-width: 1; stroke-dasharray: 3 5; }
+  .link { fill: none; stroke: color-mix(in srgb, var(--zc) 45%, transparent); stroke-width: 0.9; stroke-dasharray: 2 4; }
+  .mesh-back { fill: none; stroke: color-mix(in srgb, var(--zc) 35%, transparent); stroke-width: 0.8; stroke-dasharray: 3 3; }
+  .mesh-edge { fill: none; stroke: color-mix(in srgb, var(--zc) 45%, transparent); stroke-width: 0.8; }
+  .mesh-front { fill: color-mix(in srgb, var(--zc) 9%, transparent); stroke: var(--zc); stroke-width: 1.3; stroke-linejoin: round; }
+  .seed { fill: none; stroke: rgb(var(--rgb-head) / 30%); stroke-width: 0.7; }
+  .path { fill: none; stroke: color-mix(in srgb, var(--zc) 30%, transparent); stroke-width: 0.8; stroke-dasharray: 2 3; }
+  .path-hot { fill: none; stroke: var(--zc); stroke-width: 1.3; }
+  .warn-ring { fill: color-mix(in srgb, var(--zc) 12%, transparent); stroke: var(--zc); stroke-width: 1.3; }
+  .file { fill: color-mix(in srgb, var(--zc) 16%, var(--ground)); stroke: var(--zc); stroke-width: 0.9; }
+  .file-side { fill: color-mix(in srgb, var(--zc) 34%, var(--ground)); }
+  .guest { fill: var(--zc); opacity: 0.85; }
+  .keepout { fill: none; stroke: var(--zc); stroke-width: 1.1; stroke-dasharray: 2 3; opacity: 0.8; }
+
+  /* Drohnen */
+  .sd .core { fill: var(--c); transition: fill var(--dur-slow) var(--ease-scene); }
+  .sd .halo { fill: var(--c); opacity: 0.18; }
+  [data-step="7"] .sd .core { fill: var(--head); }
+  [data-step="7"] .sd .halo { opacity: 0.08; }
+
+  /* Hervorheben über die Annotation: die anderen treten zurück, das Teil bekommt die laufende Kontur */
+  .has-hl .pc:not(.hl) { filter: opacity(0.45); }
+  .pc.hl :is(.zplate, .part, .glass-edge, .mesh-front, .file, .slab, .warn-ring, .wind, .route, .path) { stroke: var(--zc); stroke-width: 1.8; stroke-dasharray: 6 4; animation: ss-march 1.6s linear infinite; }
+  @keyframes ss-march { to { stroke-dashoffset: -20; } }
+
+  /* Annotationen: Punkt am Teil, Pille daneben (feste Größe, lesbar auf jeder Breite) */
+  .sn { position: absolute; left: var(--x); top: var(--y); width: 0; height: 0; opacity: 0; visibility: hidden; transition: opacity var(--dur-fade) var(--ease-out), visibility 0s var(--dur-fade); }
+  .sn.on { opacity: 1; visibility: visible; transition-delay: 0.7s, 0s; }
+  .sn-dot { position: absolute; left: -0.25rem; top: -0.25rem; width: 0.5rem; height: 0.5rem; border-radius: var(--radius-round); background: var(--head); box-shadow: 0 0 0 0.1875rem rgb(var(--rgb-head) / 18%); }
+  .sn-pill { position: absolute; top: 0; transform: translateY(-50%); display: inline-flex; align-items: center; gap: var(--space-1-5); white-space: nowrap; padding: var(--space-1) var(--space-2-5); border-radius: var(--radius-pill); background: var(--ground); border: 1px solid var(--line-strong); color: var(--head); font: 500 var(--text-xs)/1.2 var(--display); cursor: default; }
+  .sn-r .sn-pill { left: 1rem; }
+  .sn-l .sn-pill { right: 1rem; }
+  .sn-pill::before { content: ""; position: absolute; top: 50%; width: 0.75rem; border-top: 1px solid var(--line-strong); }
+  .sn-r .sn-pill::before { right: 100%; }
+  .sn-l .sn-pill::before { left: 100%; }
+  .sn-r.sn-flip .sn-pill { left: auto; right: 1rem; }
+  .sn-l.sn-flip .sn-pill { right: auto; left: 1rem; }
+  .sn-r.sn-flip .sn-pill::before { right: auto; left: 100%; }
+  .sn-l.sn-flip .sn-pill::before { left: auto; right: 100%; }
+  .sn-check .sn-pill { border-color: color-mix(in srgb, #6fdc98 60%, var(--line)); }
+  .sn-check .sn-pill :global(.ico) { color: #6fdc98; }
+
+  /* Fortschritt: welcher Schritt, Punkte zum Springen */
+  .ss-bar { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); border-top: 1px solid var(--line); padding-top: var(--space-3); }
+  .ss-now { margin: 0; color: var(--accent); font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.08em; }
+  .ss-dots { list-style: none; display: flex; align-items: center; margin: 0; padding: 0; }
+  .ss-dots button { width: 1.5rem; height: 2.75rem; border: 0; padding: 0; background: none; cursor: pointer; display: grid; place-items: center; }
+  .ss-dot { width: 0.4375rem; height: 0.4375rem; border-radius: var(--radius-round); background: rgb(var(--rgb-head) / 22%); transition: background var(--dur-control) var(--ease-default), transform var(--dur-control) var(--ease-default); }
+  .ss-gap { margin-left: var(--space-4); }
+  .ss-dots button:hover .ss-dot { background: rgb(var(--rgb-head) / 55%); }
+  .ss-dots button[aria-current] .ss-dot { background: var(--accent); transform: scale(1.35); }
+  .ss-dots button:focus-visible { outline: 2px solid var(--accent); outline-offset: -0.25rem; border-radius: var(--radius-4); }
+  .ss-fig figcaption { color: var(--faint); font-size: var(--text-sm); line-height: 1.5; }
+
+  @media (prefers-reduced-motion: reduce) { .pc, .sd, .sd *, .sn, .ss-step { transition: none !important; } .pc.hl * { animation: none !important; } }
+
+  /* Schmal: die Szene klebt oben unter dem Kopf, der Text läuft darunter durch */
+  @media (max-width: 60em) {
+    .ss { grid-template-columns: minmax(0, 1fr); gap: 0; }
+    .ss-fig { order: -1; z-index: 3; height: auto; top: var(--nav-h); grid-template-rows: auto auto; padding-block: var(--space-2) var(--space-1); background: var(--ground); box-shadow: 0 0 0 100vmax var(--ground); clip-path: inset(0 -100vmax -1.5rem -100vmax); }
+    .ss-stage { max-width: none; width: min(100%, calc(44svh * 1.2)); }
+    .ss-fig figcaption { display: none; }
+    .ss-bar { padding-top: var(--space-1); }
+    .ss-step { min-height: 72svh; justify-content: flex-start; padding-top: 8svh; }
+    .ss-text { padding-bottom: 20svh; }
+    .sn-pill { font-size: 0.6875rem; padding: 0.125rem var(--space-2); }
+    .ss-now { flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .ss-dots { flex: none; }
+    .ss-dots button { width: 1.125rem; }
+    .ss-gap { margin-left: var(--space-2); }
+    .ss-head { margin-bottom: var(--space-6); }
+  }
+</style>

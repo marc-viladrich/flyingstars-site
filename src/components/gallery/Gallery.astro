@@ -16,9 +16,13 @@ import GalleryTile from './GalleryTile.astro';
 import DotField from '../DotField.astro';
 import { GALLERY_LAYOUTS } from './layouts.mjs';
 import { manifestPhoto, ratio } from './manifest-photo';
-interface Props { set: keyof typeof GALLERY_LAYOUTS; class?: string; after?: 'text' | 'content' }
-const { set, class: cls, after = 'content' } = Astro.props;
-const layout = GALLERY_LAYOUTS[set];
+// photos (optional, Labor Blogartikel 21.11.2026): eigene Bilder statt eines Manifest-Satzes, z. B. vorgerechnete Lichtraster.
+// Ohne photos wie bisher über set.
+type OwnPhoto = { src: string; width: number; height: number; alt: string; caption?: string; webp?: string; avif?: string; pos?: string };
+interface Props { set?: keyof typeof GALLERY_LAYOUTS; photos?: OwnPhoto[]; ar?: string; class?: string; after?: 'text' | 'content' }
+const { set, photos: own, ar: ownAr = '1 / 1', class: cls, after = 'content' } = Astro.props;
+const name = set ?? 'eigen';
+const layout = own ? { ar: ownAr, items: own.map((p) => ({ slug: '', pos: p.pos })), field: { inset: '-10% 30% 26% 0%', m: '-12% 28% 30% -4%', focus: '60% 62%' } } : set && GALLERY_LAYOUTS[set];
 if (!layout) throw new Error(`Unbekannte Galerie „${set}“`);
 // drei Bilder = eine Leiter; sechs = zwei Leitern übereinander (Werbung, Marc Runde 7: „immer zwei Zeilen als Leiter“)
 if (layout.items.length !== 3 && layout.items.length !== 6) throw new Error(`Galerie „${set}“: eine Leiter hat drei Bilder, zwei Leitern haben sechs (sind ${layout.items.length})`);
@@ -29,14 +33,15 @@ const pct = (n: number) => `${+(n * 100).toFixed(3)}%`;
 // items zeilenweise: 0–2 obere Leiter, 3–5 untere. Je Spalte stehen die Bilder in einer Säule untereinander; die Säule
 // sitzt um ihre Stufe tiefer (links zwei Stufen, rechts keine), so steigen beide Zeilen gleich und nichts überlappt.
 const photos = await Promise.all(layout.items.map(async (item, i) => {
-  const p = await manifestPhoto(item.slug, Astro.url.pathname);
+  const o = own?.[i];
+  const p = o ? { slug: '', href: undefined, caption: o.caption ?? '', alt: o.alt, src: o.src, width: o.width, height: o.height, avif: o.avif ?? '', webp: o.webp ?? `${o.src} ${o.width}w` } : await manifestPhoto(item.slug, Astro.url.pathname);
   return { ...p, col: i % 3, style: `--ar:${layout.ar};--pos:${item.pos ?? '50% 50%'};--i:${(i % 3) + Math.floor(i / 3)}` };
 }));
 const columns = [0, 1, 2].map((c) => ({ rise: `--rise:${pct((2 - c) * STEP / r)};--rise-m:${pct((2 - c) * STEP_M / r)}`, items: photos.filter((p) => p.col === c) }));
 const f = layout.field;
 ---
 <div class:list={['gal-wrap', cls]}>
-  <div class:list={['gal', `gal-${set}`, { 'has-head': hasHead, 'after-text': after === 'text' && !hasHead, 'two-rows': layout.items.length === 6 }]}>
+  <div class:list={['gal', `gal-${name}`, { 'has-head': hasHead, 'after-text': after === 'text' && !hasHead, 'two-rows': layout.items.length === 6 }]}>
     {hasHead && <div class="g-head"><slot name="head" /></div>}
     <div class="g-copy"><slot /></div>
     <div class="g-ladder df-host">
