@@ -1,4 +1,4 @@
-// Runde 11 (große Motive): Wächter für scenes/gross/tintenfisch.js, den Tintenfisch zwischen Korallen im Stadtfest (3D
+// Runde 11 (große Motive): Wächter für scenes/gross/tintenfisch.js, den Tintenfisch im Stadtfest (seit Runde 11b ohne Korallen) (3D
 // und 3D+ ab 400). Genau n Drohnen bei jeder einstellbaren Zahl, keine Klumpen, keine verstreuten Punkte (außer den
 // Blasen), Bewegung in Drohnengrenzen, das Bild füllt die Bühne, die Arme rollen sich wirklich ein (von der Spitze her) und
 // öffnen sich nacheinander, der Rückstoß hebt ihn, mehr Drohnen bringen mehr Teile.
@@ -100,16 +100,17 @@ test('Bilder schließen aneinander an (starre Teile, keine Wolke), nur der Rück
   }
 });
 
-test('lesbar: acht Arme mit Saugnapf-Innenseite, Augen, Korallen; der Tintenfisch füllt das Bild', async () => {
+test('lesbar: acht Arme mit Saugnapf-Innenseite, Augen, keine Korallen (Marc 21.11.); der Tintenfisch füllt das Bild', async () => {
   for (const n of [400, 700, 1000]) {
     const m = octoModel(n), arms = new Set(m.slots.map((q) => q.k)), count = (t) => m.body.tags.filter((x) => x === t).length;
     assert.equal(arms.size, 8, `${n}: ${arms.size} Arme`);
     assert.ok(m.slots.every((q) => q.side === 1 || q.side === -1) && m.slots.filter((q) => q.side > 0).length > 0.4 * m.A, `${n}: Innenseite`);
-    for (const [t, min] of [['mantel', 34], ['auge', 6], ['koralle', 40], ['knospe', 6]]) assert.ok(count(t) >= min, `${n}: ${t} hat nur ${count(t)} Drohnen`);
-    assert.ok(m.A >= 0.5 * n, `${n}: nur ${m.A} Drohnen in den Armen`);
+    for (const [t, min] of [['mantel', 34], ['auge', 6]]) assert.ok(count(t) >= min, `${n}: ${t} hat nur ${count(t)} Drohnen`);
+    assert.equal(count('koralle') + count('knospe'), 0, `${n}: Korallen sind wieder da`);
+    assert.ok(m.A >= 0.75 * n, `${n}: nur ${m.A} Drohnen in den Armen`);
     // offen (3D bei t = 0, 3D+ nach dem Öffnen): der Tintenfisch nimmt mindestens 70 % der Bildbreite ein
     const { beats: [b3] } = await builders.octopus3d(n, ''), { beats } = await builders.octopusStory(n, '');
-    const body = (b, t) => frame(b, t, 0, m.A + m.Bd).filter((_, j) => j < m.A || !['koralle', 'knospe'].includes(m.body.tags[j - m.A]));
+    const body = (b, t) => frame(b, t, 0, m.A + m.Bd);
     assert.ok(extent(body(b3, 0), 0) >= 0.7 * extent(b3.fitPts, 0), `3D ${n}: ${(extent(body(b3, 0), 0) / extent(b3.fitPts, 0) * 100).toFixed(0)} % der Breite`);
     assert.ok(extent(body(beats[2], 0), 0) >= 0.7 * extent(beats[2].fitPts, 0), `3D+ ${n}: ${(extent(body(beats[2], 0), 0) / extent(beats[2].fitPts, 0) * 100).toFixed(0)} % der Breite`);
   }
@@ -137,10 +138,11 @@ test('mehr Drohnen bringen mehr Teile, nicht nur dichtere Linien', () => {
   assert.deepEqual([400, 599, 600, 849, 850, 1000].map(octoLevel), [0, 0, 1, 1, 2, 2]);
   const tags = (n) => { const m = octoModel(n); return m.body.tags.length + 0 && new Set(m.body.tags).size; };
   assert.ok(tags(700) > tags(400), `Teile ${tags(400)} → ${tags(700)}`);
-  const knospen = (n) => octoModel(n).body.tags.filter((t) => t === 'knospe').length;
-  assert.ok(knospen(1000) > knospen(700) && knospen(700) > knospen(400), `Korallenknospen ${[400, 700, 1000].map(knospen).join(' / ')}`);
+  const blasen = (n) => octoModel(n).bubbles.length;
+  assert.ok(blasen(1000) > blasen(700) && blasen(700) > blasen(400), `Blasen ${[400, 700, 1000].map(blasen).join(' / ')}`);
   const med = (n) => { const m = octoModel(n); return quantile(nearest(m.body.pts), 0.5); };
-  assert.ok(med(1000) >= 0.4 * med(400), `Abstand ${med(400).toFixed(3)} → ${med(1000).toFixed(3)}`);
+  // seit Runde 11b gehen die Korallendrohnen in den Kraken: der Körper wird mit mehr Drohnen etwas dichter (2,5-fache Zahl)
+  assert.ok(med(1000) >= 0.33 * med(400), `Abstand ${med(400).toFixed(3)} → ${med(1000).toFixed(3)}`);
 });
 
 test('Aufbau schnell genug für den Anlasswechsel (bester von drei)', async () => {

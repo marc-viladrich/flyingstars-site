@@ -1,26 +1,26 @@
 import { t as message } from '../../../i18n/ui.mjs';
-// Der Tintenfisch zwischen Korallen (Runde 11, große Motive, Anlass Stadtfest, ab 400 Drohnen). Kandidat FSK-053 der
+// Der Tintenfisch (Runde 11, große Motive, Anlass Stadtfest, ab 400 Drohnen). Kandidat FSK-053 der
 // Motiv-Shortlist (freelance/clients/flyingstars/25-motiv-shortlist-2026-11-20), Referenz „Detailed octopus with curling
 // tentacles · 400“ (dort ein gefüllter Kopf; hier nur Kontur, Marc mag keine gefüllten Punktflächen).
 // Das organische Gegenstück zum Satelliten: keine starren Teile, alles biegt sich. Lesbar an drei Zeichen: der gewölbte
 // Mantel mit zwei Augen, acht lange Arme, deren Spitzen sich einrollen, und die Saugnäpfe als Rhythmus auf der Innenseite
-// jedes Arms (die Kontur buchtet sich dort in gleichmäßigen, zur Spitze kleiner werdenden Bögen aus). Ein paar
-// Korallenäste unten geben den Ort.
+// jedes Arms (die Kontur buchtet sich dort in gleichmäßigen, zur Spitze kleiner werdenden Bögen aus). Runde 11b (Marc
+// 21.11.2026: „bei der Krake allerdings die Korallen wegnehmen, die brauchen wir nicht“): kein Riff mehr, alle Drohnen
+// gehen in den Kraken.
 // Jeder Arm ist eine Kurve, deren Krümmung zur Spitze wächst (so rollt sie sich wie ein echter Arm von der Spitze her ein);
 // gezeichnet als schmale Schleife um diese Mittellinie: Oberseite glatt, Innenseite mit Saugnäpfen, an der Spitze
 // zusammenlaufend. Jede Drohne kennt ihren Arm und ihre Stelle darauf; Einrollen, Welle und Rückstoß ändern nur die
 // Krümmung, also fliegt jede Drohne eine weiche Bahn. Die Welle läuft vom Ansatz zur Spitze und schwingt dort am
 // weitesten aus (Nachlauf wie beim Flügelschlag des Drachen). Die Arme liegen abwechselnd vor und hinter dem Körper, im
-// Schwenk zeigt sich die Tiefe. Mehr Drohnen bringen Schwimmhaut zwischen den Armen, den Trichter, Saugnapfpunkte, mehr
-// Korallen und Blasen.
+// Schwenk zeigt sich die Tiefe. Mehr Drohnen bringen den Trichter, größere Augen und mehr Blasen.
 //
-//   octopus3d (3D, ab 400): der Tintenfisch schwebt über den Korallen, Wellen laufen durch die Arme, die Arme rollen sich
+//   octopus3d (3D, ab 400): der Tintenfisch schwebt, Wellen laufen durch die Arme, die Arme rollen sich
 //     nacheinander ein und wieder aus, er schwenkt langsam.
-//   octopusStory (3D+, ab 400): im Riff zusammengerollt → die Arme öffnen sich nacheinander → sie rollen sich nacheinander
+//   octopusStory (3D+, ab 400): zusammengerollt → die Arme öffnen sich nacheinander → sie rollen sich nacheinander
 //     ein → Rückstoß: der Mantel zieht sich zusammen, die Arme legen sich nach hinten, er schießt in zwei Stößen nach oben,
-//     die Blasen aus dem Riff werden zu seiner Spur.
+//     die Blasen unter ihm werden zu seiner Spur.
 // Steht im Stadtfest direkt hinter dem Delfin (Meer). Wächter: scripts/tintenfisch.test.mjs.
-import { TAU, PINK, VIOLET, ORANGE, GOLD, WARM, CYAN, DIAMOND, RED, mix, smooth, yaw, pitch, part, act, hash, share } from '../../show-motion.js';
+import { TAU, PINK, VIOLET, GOLD, WARM, CYAN, DIAMOND, mix, smooth, yaw, pitch, part, act, hash, share } from '../../show-motion.js';
 import { ellipsoid, curves, spot, assemble } from '../catalog-3d/kit.js';
 
 const lerp = (a, b, u) => a + (b - a) * u;
@@ -88,25 +88,7 @@ function armSlots(counts) {
   return slots;
 }
 
-/** Korallen: verzweigte, leicht gebogene Äste mit runden Knospen an den Spitzen (Geweihkoralle); Meeresboden. */
-function coralLines(lv) {
-  const out = [], tips = [];
-  const branch = (x, y, a, len, depth, z, zs) => {
-    const bend = 0.18 * Math.sin(a * 3 + x * 5), m = [x + Math.cos(a + bend) * len * 0.55, y + Math.sin(a + bend) * len * 0.55], x1 = x + Math.cos(a) * len, y1 = y + Math.sin(a) * len;
-    out.push([[x, y, z], [m[0], m[1], z + zs * len * 0.5], [x1, y1, z + zs * len]]);
-    if (depth > 0) { const sp = 0.5 + 0.08 * depth; branch(x1, y1, a + sp, len * 0.7, depth - 1, z + zs * len, zs * 0.8 + 0.05); branch(x1, y1, a - sp * 0.85, len * 0.74, depth - 1, z + zs * len, zs * 0.8 - 0.05); }
-    else tips.push([x1 + Math.cos(a) * 0.03, y1 + Math.sin(a) * 0.03, z + zs * len]);
-  };
-  const D = 2;
-  branch(-0.98, -1.0, Math.PI / 2 + 0.16, 0.4, D, 0.05, -0.1);
-  branch(0.96, -1.0, Math.PI / 2 - 0.14, 0.44, D, -0.1, 0.12);
-  branch(0.46, -1.02, Math.PI / 2 - 0.3, 0.24, lv >= 2 ? 2 : 1, -0.3, -0.1);
-  if (lv >= 1) branch(-0.55, -1.02, Math.PI / 2 + 0.35, 0.24, 1, -0.7, -0.05); // weiter hinten: die Arme ziehen davor vorbei
-  out.push(Array.from({ length: 41 }, (_, i) => { const x = -1.1 + (2.2 * i) / 40; return [x, -1.02 - 0.05 * Math.cos(x * 1.6) + 0.012 * Math.sin(x * 9), -0.1]; }));
-  return { lines: out, tips };
-}
-
-/** Ruhelage aller festen Teile (Mantel, Augen, Trichter, Schwimmhaut, Korallen) für assemble(). */
+/** Ruhelage aller festen Teile (Mantel, Kopf, Augen, Trichter) für assemble(). */
 function bodyParts(lv) {
   const M = MANTLE, parts = [];
   parts.push({ ...ellipsoid('mantel', M.c, M.r, { roll: M.roll, lat: [-0.6], w: 1.1 }), solid: false });
@@ -115,10 +97,8 @@ function bodyParts(lv) {
   for (const s of [1, -1]) parts.push(spot('auge', [s * 0.2, 0.215, 0.12], lv >= 1 ? 7 : 6, 0.042, [s * 0.9, 0.1, 0.7]), spot('pupille', [s * 0.215, 0.215, 0.145], 1, 0.01, [s, 0, 0.7]));
   if (lv >= 1) {
     // Trichter (Sipho) an der Seite, Schwimmhaut als Bögen zwischen benachbarten Armansätzen
-    parts.push(curves('trichter', [[[0.2, 0.08, -0.08], [0.31, 0.02, -0.12], [0.36, 0.06, -0.14]]], { w: 1.0 }));
+    parts.push(curves('trichter', [[[0.22, 0.17, -0.12], [0.33, 0.13, -0.2], [0.39, 0.17, -0.24]]], { w: 1.0 }));
   }
-  const coral = coralLines(lv);
-  parts.push(curves('koralle', coral.lines, { w: 0.95 }), ...coral.tips.map((p) => spot('knospe', p, lv >= 1 ? 4 : 3, 0.026)));
   return parts;
 }
 const lineLen = (pts) => { let L = 0; for (let i = 1; i < pts.length; i++) L += Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1], (pts[i][2] || 0) - (pts[i - 1][2] || 0)); return L; };
@@ -132,7 +112,7 @@ export function octoModel(n) {
   const armCounts = share(Math.round((budget * armLen.reduce((a, b) => a + b, 0)) / total), armLen);
   const body = assemble(parts, budget - armCounts.reduce((a, b) => a + b, 0));
   const slots = armSlots(armCounts);
-  // Blasen: kleine Lichter über dem Riff
+  // Blasen: kleine Lichter unter dem Kraken
   const bubbles = Array.from({ length: BUB }, (_, i) => [lerp(-0.75, 0.7, hash(i + 3.1)), -0.75 + 0.55 * hash(i + 7.7), -0.55 - 0.15 * hash(i + 1.9)]); // hinter den Armen
   return { lv, slots, body, bubbles, A: slots.length, Bd: body.pts.length };
 }
@@ -143,7 +123,6 @@ export function octoModel(n) {
 const BODY_TAGS = new Set(['mantel', 'kopf', 'auge', 'pupille', 'trichter']);
 const colourOf = (tag, p) => ({
   mantel: mix(PINK, VIOLET, 0.15 + 0.4 * smooth((p[1] - 0.2) / 0.5)), kopf: PINK, auge: GOLD, pupille: WARM, trichter: mix(PINK, VIOLET, 0.4),
-  koralle: mix(ORANGE, RED, 0.2 + 0.35 * smooth((-p[1] - 0.6) / 0.4)), knospe: mix(GOLD, ORANGE, 0.3),
 }[tag] ?? PINK);
 const armColour = (k, s, side) => (side > 0 ? mix(mix(PINK, WARM, 0.35), VIOLET, 0.5 * s) : mix(PINK, VIOLET, 0.15 + 0.6 * s));
 
@@ -159,7 +138,6 @@ function scene(model, state) {
     else if (j < A + Bd) {
       const p = body.pts[j - A], tag = body.tags[j - A];
       o[0] = p[0]; o[1] = p[1]; o[2] = p[2];
-      if (tag === 'koralle' || tag === 'knospe') return o; // das Riff steht
       if (tag === 'mantel') { const c = MANTLE.c, k = st.squeeze; o[0] = c[0] + (o[0] - c[0]) * k; o[1] = c[1] + (o[1] - c[1]) * (1 + 0.6 * (1 - k)); o[2] = c[2] + (o[2] - c[2]) * k; } // Mantelpuls: schmaler und länger
     } else {
       const b = bubbles[j - A - Bd], i = j - A - Bd; o[0] = b[0]; o[1] = b[1]; o[2] = b[2];
@@ -189,10 +167,10 @@ const state3d = (T) => {
 };
 
 // ---------------------------------------------------------------------------------------------------------------------
-// 3D+: im Riff → öffnen → einrollen → Rückstoß
+// 3D+: eingerollt → öffnen → einrollen → Rückstoß
 // ---------------------------------------------------------------------------------------------------------------------
 const ACT = [0, 2.5, 8, 13.5, 21];
-const HIDE = { curl: 1.3, bend: 0.2, dy: -0.42, squeeze: 0.92 }; // im Riff: tief, Arme eingerollt
+const HIDE = { curl: 1.3, bend: 0.2, dy: -0.42, squeeze: 0.92 }; // eingerollt: tief, Arme eingerollt
 const OPEN0 = 2.6, OPEN_DUR = 1.9, OPEN_STEP = 0.45; // öffnen: je Arm 0,32 s später
 const CURL0 = 8.3, CURL_DUR = 2.0, CURL_STEP = 0.4;
 const JET = { t0: 14.0, pulses: [0, 3.2], rise: [0.42, 0.36], dur: 1.6 };
@@ -200,17 +178,20 @@ const JET = { t0: 14.0, pulses: [0, 3.2], rise: [0.42, 0.36], dur: 1.6 };
 const bump = (x, w) => (x <= 0 || x >= w ? 0 : Math.sin((Math.PI * x) / w) ** 2);
 function stateStory(T) {
   const arms = ARMS.map((arm, k) => {
-    const o = ease((T - OPEN0 - arm.ord * OPEN_STEP) / OPEN_DUR), c = ease((T - CURL0 - arm.ord * CURL_STEP) / CURL_DUR);
-    const st = openArm(k, T, 0.06 + 0.14 * o);
+    const t0 = OPEN0 + arm.ord * OPEN_STEP, t1 = CURL0 + arm.ord * CURL_STEP, o = ease((T - t0) / OPEN_DUR), c = ease((T - t1) / CURL_DUR);
+    // Finten-Wächter (Lead 21.11.: Ausholen/Überschwingen beim Öffnen und Einrollen bei 1000): die Welle eines Arms ruht,
+    // solange er selbst auf- oder einrollt; sonst lief eine kleine Gegenbewegung direkt vor oder nach der großen
+    const quiet = (a, b) => 1 - smooth((T - a + 0.9) / 0.7) * (1 - smooth((T - b - 0.2) / 0.7));
+    const st = openArm(k, T, (0.06 + 0.14 * o) * quiet(t0, t0 + OPEN_DUR) * quiet(t1, t1 + CURL_DUR) * (1 - smooth((T - JET.t0 + 0.9) / 0.7)));
     st.curl = lerp(HIDE.curl, 0.45, o); st.curl = lerp(st.curl, 1.05, c);
-    if (arm.ord === 1) st.curl -= 0.75 * bump(T - 0.2, 2.3); // im Riff: ein Arm lugt heraus und rollt sich wieder ein
+    if (arm.ord === 1) st.curl -= 0.75 * bump(T - 0.2, 2.3); // eingerollt: ein Arm lugt heraus und rollt sich wieder ein
     st.bend = lerp(HIDE.bend, 1, o);
     // Rückstoß: die Arme legen sich nach unten zusammen (Abgangsrichtung → senkrecht, mit Nachlauf: Grundkrümmung bleibt
     // kurz länger), entrollen sich und schwingen hinter dem Körper aus
-    // Schwimmrhythmus: zwischen den Stößen öffnen sich die Arme wieder halb (Ausholen), beim zweiten Stoß schließen sie
-    const j = ease((T - JET.t0 - 0.15) / 2.9) * (1 - 0.4 * bump(T - JET.t0 - 1.6, 3.0)), target = (-90 + (arm.a + 90) * 0.3) * DEG - arm.a * DEG;
+    // Runde 11b: die Arme legen sich in einem Zug zusammen; das halbe Wiederöffnen zwischen den Stößen und die angeregte
+    // Welle danach waren für den Finten-Wächter Überschwingen (Bewegung zurück direkt nach der großen)
+    const j = ease((T - JET.t0 - 0.15) / 2.9), target = (-90 + (arm.a + 90) * 0.3) * DEG - arm.a * DEG;
     st.head = j * target; st.curl = lerp(st.curl, 0.06, j); st.bend = lerp(st.bend, 0.15, ease((T - JET.t0) / 2)); st.dzK = lerp(1, 0.45, j);
-    st.wave += 0.16 * JET.pulses.reduce((a, p) => a + Math.max(0, Math.sin(Math.PI * Math.min(1, Math.max(0, (T - JET.t0 - p) / 1.8)))), 0);
     return st;
   });
   const lift = JET.pulses.reduce((a, p, i) => a + JET.rise[i] * ease((T - JET.t0 - p) / JET.dur), 0);
@@ -219,7 +200,7 @@ function stateStory(T) {
   return {
     arms, dx: 0, dy: lerp(HIDE.dy, 0.06, rise) + lift + 0.03 * Math.sin((T * TAU) / 6.5) * rise, dz: 0,
     squeeze: lerp(HIDE.squeeze, 1, rise) * sq, yaw: 0.22 * Math.sin((T * TAU) / 17) * rise,
-    bubbles: (i, b, o) => { // Blasen: treiben über dem Riff, beim Rückstoß reihen sie sich als Spur unter dem Trichter auf
+    bubbles: (i, b, o) => { // Blasen: treiben unter ihm, beim Rückstoß reihen sie sich als Spur unter dem Trichter auf
       const g = ease((T - JET.t0 - 0.2 - 0.12 * i) / 2.2), y0 = lerp(HIDE.dy, 0.06, rise) + lift;
       const tx = 0.34 + 0.05 * Math.sin(i * 2.4), ty = y0 + 0.02 - 0.12 * (i + 1), tz = -0.62; // hinter den Armen
       o[0] = lerp(b[0] + 0.03 * Math.sin(T * 0.7 + i * 1.3), tx, g); o[1] = lerp(b[1] + 0.04 * Math.sin(T * 0.5 + i * 2.1), ty, g); o[2] = lerp(b[2], tz, g);
@@ -235,11 +216,11 @@ function build(n, state, holdOf) {
   const at = (T) => Array.from({ length: n }, (_, j) => [...sc.pose(j, T, [0, 0, 0]), ...col[j]]);
   return { model, sc, col, tagOf, at, holdOf };
 }
-/** Licht: Glanz läuft die Arme entlang zur Spitze, Augen leuchten, Blasen funkeln, das Riff glimmt. */
+/** Licht: Glanz läuft die Arme entlang zur Spitze, Augen leuchten, Blasen funkeln. */
 function lightOf(model, j, T, extra = 0) {
   const { A, Bd, slots, body } = model;
   if (j < A) { const q = slots[j], u = q.s / ARMS[q.k].L; return 1 + 0.32 * Math.exp(-(((u - (((T + ARMS[q.k].ph) / 3.6) % 1.6) + 0.3) / 0.12) ** 2)) + extra; }
-  if (j < A + Bd) { const tag = body.tags[j - A]; return tag === 'auge' ? 1.2 + 0.25 * Math.sin(T * 1.3) : tag === 'pupille' ? 1.5 : tag === 'koralle' || tag === 'knospe' ? 0.95 + 0.15 * Math.sin(T * 0.8 + body.pts[j - A][0] * 3) : 1; }
+  if (j < A + Bd) { const tag = body.tags[j - A]; return tag === 'auge' ? 1.2 + 0.25 * Math.sin(T * 1.3) : tag === 'pupille' ? 1.5 : 1; }
   return 0.8 + 0.5 * (0.5 + 0.5 * Math.sin(T * 2.3 + j * 1.7));
 }
 const groupsOf = (model, pts) => [part('arme', pts.slice(0, model.A), { rigid: true }), part('koerper', pts.slice(model.A, model.A + model.Bd), { rigid: true }), part('blasen', pts.slice(model.A + model.Bd), { rigid: true })];
@@ -259,7 +240,7 @@ export const builders = {
     const caps = ['tintenfisch.inTheReef', 'tintenfisch.armsOpen', 'tintenfisch.armsCurl', 'tintenfisch.jet'];
     return { beats: caps.map((key, a) => ({ ...act(groupsOf(b.model, b.at(ACT[a])), { caption: message(key), hold: ACT[a + 1] - ACT[a], live: (p, j, t, o) => {
       const T = ACT[a] + t; b.sc.pose(j, T, o);
-      // im Riff: die Augen öffnen sich zuerst (es regt sich etwas)
+      // eingerollt: die Augen öffnen sich zuerst (es regt sich etwas)
       o[3] = lightOf(b.model, j, T) * (a === 0 && j < b.model.A ? 0.75 + 0.25 * smooth((T - 0.8) / 1.5) : 1);
     } }), ...(a === 3 ? { frame: 'aufstieg', fitPts: far } : { fitPts: near }) })) };
   },
