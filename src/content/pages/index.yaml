@@ -89,10 +89,10 @@ sections:
         cta: { label: Für Unternehmen }
         _key: k_b81c8aa30611eb91692a
       - occasion: agenturen
-        title: Wir fliegen, ihr glänzt
+        title: Wir fliegen, damit ihr glänzt
         text: Stecht bei eurem Pitch mit einer Werbemaßnahme hervor, die bisher kaum eine Agentur bieten kann – und fast garantiert in der Presse landet.
         image: { src: "https://flyingstars-relaunch.vercel.app/media/projekte/ford.jpg", alt: Ford-Schriftzug aus Drohnen über dem Werksgelände in Köln, width: 1600, height: 900 }
-        facts: [ {"_key":"k_dbe87518b0de611daea8","value":"20+ Referenzen als Anbieter im Hintergrund"}, {"_key":"k_1ed7d18fd84211270b81","value":"Großer Spielraum für Provisionen"}, {"_key":"k_472e026516f5c4ec5417","value":"NDA auf Wunsch möglich"} ]
+        facts: [ {"_key":"k_dbe87518b0de611daea8","value":"20+ Referenzen als Anbieter im Hintergrund"}, {"_key":"k_1ed7d18fd84211270b81","value":"Provisionen in vierstelliger Höhe möglich"}, {"_key":"k_472e026516f5c4ec5417","value":"Wir unterschreiben auf Wunsch NDAs"} ]
         cta: { label: Für Agenturen }
         _key: k_a03e52c907d2cd5b020d
       - occasion: gemeinden
@@ -237,15 +237,17 @@ sections:
       - { value: 1–2 Wochen, label: "#2 Planung", text: "Gemeinsam entwickeln wir Storyline, Motive und Musik. Ihr seid so viel eingebunden, wie ihr möchtet. Mit Zustimmung der Grundstückseigentümer:innen holen wir alle Genehmigungen ein.", "_key": "k_8712fd69e4210fc7f3f1" }
       - { value: "3,5 h", label: "#3 Showtag", text: "Wir organisieren Sicherheit, Aufbau und Abbau ab rund dreieinhalb Stunden vor der Show. Das Spektakel dauert bis zu {{duration.outdoor.max}} Minuten. Ihr genießt mit euren Gästen.", "_key": "k_002bb2a1e4204dd1d7d4" }
       - { value: "bis {{duration.outdoor.max}} Min", label: "Show, dann Applaus", "_key": "k_3c30dd0af9bfae6075dc" }
-    # Zahlenreihe darunter wie auf main („Ablauf in Zahlen“), nur mit Moritz' Zahlen (Referenzen, „Warum Drohnen“)
+    # Zahlenreihe darunter wie auf main („Ablauf in Zahlen“), nur mit Moritz' Zahlen (Referenzen, „Warum Drohnen“); größte Show
+    # seit November 2026: 700 Drohnen in der Karibik (Moritz, 21.11.2026), vorher Bokkenrijders mit 600
     facts:
       - { value: 150+ Shows, label: Erfahrung, text: "Seit 2021, jährlich über 30", "_key": "k_b579ad8ba169056a0009" }
-      - { value: 600 Drohnen, label: Größte Show, text: "Bokkenrijders in Maastricht, 20 Musicals", "_key": "k_b930bc25babc12d85414" }
+      - { value: 700 Drohnen, label: Größte Show, text: "In der Karibik, unser bisher weitester Auftrag", "_key": "k_b930bc25babc12d85414" }
       - { value: 100–1000+, label: Leuchtpixel, text: "Daraus bauen wir fast jedes Motiv", "_key": "k_1fdf5b88627e30e8650f" }
     _key: k_22cad4004e6677e22092
 
-  # Preise wie im Prototyp: der selbstlaufende Konfigurator-Teaser und darunter die Paketkarten in ihren Farben, beides
-  # unter Moritz' Kopf in #preise (der Himmel bindet sich an die Paketkarten, [data-pick-paket]).
+  # Preise: der selbstlaufende Konfigurator-Teaser unter Moritz' Kopf in #preise. Paketkarten seit Runde 14 nur noch auf
+  # der Preisseite (Moritz, 21.11.2026: Fokus auf den Konfigurator, Seite knackiger); ohne Preise auf der Seite entfällt
+  # auch „Alle Preise netto zzgl. Anfahrt“, der Link zur Preisseite bleibt.
   - type: landingTeaser
     id: preise
     kicker: Preise
@@ -254,11 +256,6 @@ sections:
     href: "/drohnenshow-preise/#konfigurator"
     cta: Show planen
     loop: start
-    packages:
-      - { name: SPARK, label: Klassisch in 2D, "_key": "k_78ff5c91db9f274ba535" }
-      - { name: HORIZON, label: 3D in Bewegung, badge: Bestseller, highlight: true, "_key": "k_703112fe18cc7e56257b" }
-      - { name: ODYSSEY, label: Erzählte 3D-Show, "_key": "k_66a45070285e9c202f30" }
-    note: Alle Preise netto zzgl. Anfahrt
     more: { label: Alle Leistungen und Preise, href: /drohnenshow-preise/ }
     todo: FlyingStars muss die Motive, Drohnenzahlen und Freischaltstufen anhand von docs/show-motive-inventar.md fachlich bestätigen. Die Vorschau ist kein Flugplan. Paketgrenzen und Preisstruktur 2027 sind noch offen.
     _key: k_bb613fb3a85d23de53b1

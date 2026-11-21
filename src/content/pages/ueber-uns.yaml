@@ -8,7 +8,8 @@ title: "Über FlyingStars: Team, Mission und Meilensteine"
 description: "Lernt unsere Vision und die Menschen dahinter kennen ✓ 150+ Drohnenshows in aller Welt ☎︎ {{contact.phone.international}}"
 image: https://flyingstars.art/wp-content/uploads/2025/10/Extraschicht_Duisburg.jpg
 sections:
-  # Eckdaten aus Moritz' Text (seit 2021, über 150 Shows) und aus seinen Meilensteinen (600 Drohnen, 2026).
+  # Eckdaten aus Moritz' Text (seit 2021, über 150 Shows); größte Show seit November 2026 mit 700 Drohnen in der Karibik
+  # (Moritz, 21.11.2026), vorher 600 (Musical Bokkenrijders).
   - type: landingHero
     kicker: Über FlyingStars
     headline: Wir *verzaubern* Gäste mit eurer Geschichte
@@ -23,7 +24,7 @@ sections:
     facts:
       - { value: "2021", label: gegründet, "_key": "k_07f319e4f08e855ed3c2" }
       - { value: "150+", label: Drohnenshows, "_key": "k_61cf80d1d9046e824f10" }
-      - { value: "600", label: Drohnen in der größten Show, "_key": "k_1ad8788ba42c8951f048" }
+      - { value: "700", label: Drohnen in der größten Show, "_key": "k_1ad8788ba42c8951f048" }
     todo: "FlyingStars muss ein freigegebenes Teamfoto liefern (Moritz' Platzhalter #Teamfoto); bis dahin läuft hier das Showreel."
     _key: k_b7135e5f4ccf1ef0e1c1
 
@@ -38,6 +39,9 @@ sections:
     cta: { label: Zur Nachhaltigkeit, href: /nachhaltigkeit/ }
     _key: k_0fa41045b869c8273b40
 
+  # Drei Werte über die volle Breite. „Nachhaltigkeit“ ist seit Runde 14 kein Wert mehr (Moritz, 21.11.2026: als Wert
+  # wirkt es wie ein unzulässiger Green Claim, FlyingStars bezeichnet die Shows nicht als „nachhaltig“); vorher seit
+  # Runde 5 der vierte Wert auf Marcs Wunsch. Die Nachhaltigkeit steht weiter als eigene Section darüber.
   - type: steps
     id: haltung
     kicker: Unsere Haltung
@@ -59,13 +63,6 @@ sections:
         subtitle: Jedes Detail zählt
         text: Damit ihr die märchenhafte Atmosphäre gemeinsam mit euren Gästen aufsaugen könnt, planen wir jeden Schritt sorgfältig. Dank der Erfahrung aus über 150 Veranstaltungen in aller Welt sind wir auf wohl jede Eventualität vorbereitet.
         _key: k_4cbe7266c56990c2d263
-      # Runde 5 (Marc: „Nachhaltigkeit ist eigentlich der vierte Wert, der auf jeden Fall immer mitfliegt“); Unterzeile und
-      # Text aus Moritz' Nachhaltigkeits-Text verdichtet
-      - icon: leaf
-        title: Nachhaltigkeit
-        subtitle: Kein Knall. Kein Müll. Kein Rauch.
-        text: Großes Spektakel geht auch leise, lokal emissionsfrei und aufgeräumt. Unsere Drohnen sind wiederverwendbar, wir laden sie mit 100 % Ökostrom von naturstrom immer wieder auf.
-        _key: k_7e2a41c9d05b38f6a1c4
     _key: k_5f577f27ee53584bc075
 
   # Reihenfolge und Kurzvorstellungen nach Moritz; Rollen und Bios gelten nur auf dieser Seite (memberTexts), damit die
@@ -104,7 +101,7 @@ sections:
       - { when: "2023", title: 42 Aufführungen, text: "2023 fliegen wir schon 42 Aufführungen. Unter anderem für die Deutsche Umwelthilfe, um die Kampagne #BÖLLERCIAO zu unterstützen. Außerdem ziehen wir ins Triple Z in Essen ein.", "_key": "k_53114f06e4c47ca208dc" }
       - { when: "2024", title: 400 Drohnen für VW, text: "Mit 400 Drohnen setzen wir für VW in Österreich einen Meilenstein. Wir fliegen insgesamt 45 Shows und verfeinern unsere Prozesse.", "_key": "k_73251c0c3357108c15e8" }
       - { when: "2025", title: Die erste Indoor-Show, text: "Im März fliegen wir unsere erste Indoor-Show für Siemens auf der Hannover-Messe. Mit Kein Bock auf Nazis dürfen wir seit dem August 2025 regelmäßig ein Zeichen setzen.", "_key": "k_41fdee284e0f1ec28380" }
-      - { when: "2026", title: Rekordjahr, text: "Rekordjahr: Unsere größte Show mit 600 Drohnen fliegen wir für ein niederländisches Musical – gleich 20 Nächte hintereinander! Unser bisher weitester Auftrag führt uns in die Karibik.", "_key": "k_72e4446870d686464b34" }
+      - { when: "2026", title: Rekordjahr, text: "Rekordjahr: Für ein niederländisches Musical fliegen wir mit 600 Drohnen gleich 20 Nächte hintereinander! Im November folgt unsere bisher größte Show mit 700 Drohnen in der Karibik, zugleich unser weitester Auftrag.", "_key": "k_72e4446870d686464b34" }
     cta: { label: Alle Referenzen, href: /referenzen/ }
     todo: "Moritz' Zahlen weichen vom Bestand ab: VW Golf 350 oder 400 Drohnen (Fragebogen 350), Showzahlen je Jahr (Bestand: 178 Shows bis 21.10.2026). Titel je Jahr sind ein Entwurf."
     _key: k_65625cffa99167129c8b

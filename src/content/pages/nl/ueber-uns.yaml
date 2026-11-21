@@ -24,7 +24,7 @@ sections:
       - value: 150+
         label: droneshows
         _key: k_61cf80d1d9046e824f10
-      - value: "600"
+      - value: "700"
         label: drones in onze grootste show
         _key: k_1ad8788ba42c8951f048
     _key: k_b7135e5f4ccf1ef0e1c1
@@ -58,11 +58,6 @@ sections:
         text: Zodat jullie samen met jullie gasten de sprookjesachtige sfeer kunnen opsnuiven, plannen we elke stap zorgvuldig. Dankzij de ervaring van meer dan 150 evenementen over de hele wereld zijn we op vrijwel elke situatie voorbereid.
         icon: list-checks
         _key: k_4cbe7266c56990c2d263
-      - title: Duurzaamheid
-        subtitle: Geen knal. Geen afval. Geen rook.
-        text: Groot spektakel kan ook stil, lokaal emissievrij en opgeruimd. Onze drones zijn herbruikbaar en we laden ze steeds opnieuw op met 100 % groene stroom van naturstrom.
-        icon: leaf
-        _key: k_7e2a41c9d05b38f6a1c4
     surface: alt
     ownNumbers: false
     _key: k_5f577f27ee53584bc075
@@ -133,7 +128,7 @@ sections:
         _key: k_41fdee284e0f1ec28380
       - when: "2026"
         title: Recordjaar
-        text: "Recordjaar: onze grootste show, met 600 drones, vliegen we voor een Nederlandse musical – twintig nachten achter elkaar! Onze verste opdracht tot nu toe brengt ons naar het Caribisch gebied."
+        text: "Recordjaar: voor een Nederlandse musical vliegen we met 600 drones twintig nachten achter elkaar! In november volgt onze grootste show tot nu toe, met 700 drones in het Caribisch gebied, meteen ook onze verste opdracht."
         _key: k_72e4446870d686464b34
     cta:
       label: Alle referenties
@@ -181,12 +176,12 @@ sections:
       - ueber-uns-moritz
     _key: k_89bce7cd130ab4ebbd41
 translationContractVersion: 2
-translationSourceHash: 51650fc759b47afc9a10eab3f1f83d723c85aa28d917d2d09fa7f90f736671ce
+translationSourceHash: 70835027e86f5480da4da5a7efc47fa2bcc0fffd34b17aac67c7d49ec027e41e
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: nl
-  sourceFingerprint: 51650fc759b47afc9a10eab3f1f83d723c85aa28d917d2d09fa7f90f736671ce
+  sourceFingerprint: 70835027e86f5480da4da5a7efc47fa2bcc0fffd34b17aac67c7d49ec027e41e
   fields:
     - address: /description
       sourceFingerprint: 170376af780860559d405e4e8cb119c166697240e6d83e3c845b4ebcc291be93
@@ -336,22 +331,6 @@ translationEvidence:
       sourceFingerprint: 96700cd6503bfc52b597e7cec498ee26deceddf343ea12cfacf00863c1a73355
       targetFingerprint: 2e0e31b5840f5a287f9f79149fa3a8f2753bebfbd9b3d8767535ac76453dbdaf
       status: adopted-existing
-    - address: /sections/@k_5f577f27ee53584bc075/steps/@k_7e2a41c9d05b38f6a1c4/duration
-      sourceFingerprint: 953ab107ec698540f5096a4947dfcfa0acfffb21e4621b25ccd8524de6ed5b81
-      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
-      status: adopted-existing
-    - address: /sections/@k_5f577f27ee53584bc075/steps/@k_7e2a41c9d05b38f6a1c4/subtitle
-      sourceFingerprint: e4337a8479448875d257e4ee8dbf8069f624fcfaf46c41fa852ca3be6b742da6
-      targetFingerprint: 210a6576420008e667a199239e01b5603c0692432a8dd868f5f0df39b3aa351e
-      status: adopted-existing
-    - address: /sections/@k_5f577f27ee53584bc075/steps/@k_7e2a41c9d05b38f6a1c4/text
-      sourceFingerprint: 83fffd8986460f5396e55ce6c8701b6bdf99cea9f244c7fc2718761e139ef36d
-      targetFingerprint: eea674e52881f47dcb96c860c978df08570b3287713cfc4eebc2e99d62c1783a
-      status: adopted-existing
-    - address: /sections/@k_5f577f27ee53584bc075/steps/@k_7e2a41c9d05b38f6a1c4/title
-      sourceFingerprint: 1288fa80b1429cb79c4572e7f415e341ae88f764a311aa4edb9f0324227c73c0
-      targetFingerprint: 0aa8b8a947a26573c24f96736d15eac5dd4cb046f5d8af1b5c7a721ca2ae991c
-      status: adopted-existing
     - address: /sections/@k_5f577f27ee53584bc075/steps/@k_f25977eef0b3c3073f86/duration
       sourceFingerprint: 31d93eb4808a3fa60b304534e9e47fd88be792beed92720427f9424287e05107
       targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
@@ -417,8 +396,8 @@ translationEvidence:
       targetFingerprint: 3107b11bc5bc6ac59fb6e3f674c4dfe3b61d410fb717cd9f096131ce193d7877
       status: adopted-existing
     - address: /sections/@k_65625cffa99167129c8b/items/@k_72e4446870d686464b34/text
-      sourceFingerprint: 22fd12a708b7d382ec1ff725e06c699986617f5b771c5800f3df131bc5b756bc
-      targetFingerprint: ec6ec481fad3fa2686e8e59d0a5f53c7002edd14954f3c853d709d87a34cadf2
+      sourceFingerprint: 6e87559c6a95df559681f5faad0fb5fb8abd67ca17a88ac0dab75a286d02bb25
+      targetFingerprint: 43c21645787c1567e9ff0f272a04d8249fa8d9ecc05aa1c694c2c6f6782bf5c4
       status: adopted-existing
     - address: /sections/@k_65625cffa99167129c8b/items/@k_72e4446870d686464b34/title
       sourceFingerprint: e8276d2750aec7979552b0efdeeb200325d4181390eda3f81cfe4f177a35a311
@@ -501,8 +480,8 @@ translationEvidence:
       targetFingerprint: 89036187bebac005e49f20f553b21c062fdd47a7bdec5ecd7233ad84afabdda4
       status: adopted-existing
     - address: /sections/@k_b7135e5f4ccf1ef0e1c1/facts/@k_1ad8788ba42c8951f048/value
-      sourceFingerprint: 13c78bafa8fe194707ba8ba93c6aab3ef4edd7d748d8a46aaf4e5505c7448804
-      targetFingerprint: 8f573023b4dc07bf08d367f60e77b9844f23f15a74dfa0deda16c2c8751bbfad
+      sourceFingerprint: 60d159f015b5af6d3ad7842979791d696ccdd96632986e0f072705e4210d31de
+      targetFingerprint: c51d672029413ba5c88ec0f09a4ac7721d94e3eb52cc5e661105c6d972ed232f
       status: adopted-existing
     - address: /sections/@k_b7135e5f4ccf1ef0e1c1/facts/@k_61cf80d1d9046e824f10/label
       sourceFingerprint: a378c1d7d56714ac051d6d541ac88742b9a0179f8271ea345feb1d52d2688015

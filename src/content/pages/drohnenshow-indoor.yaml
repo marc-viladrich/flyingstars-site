@@ -111,46 +111,8 @@ sections:
     cta: { label: Show anfragen, href: "#anfrage" }
     _key: k_c030e32b9a3f99dac46e
 
-  # Vergleich Drohnenshow/Feuerwerk/Laser (Marc, 18.11.2026: wieder auf die Indoor-Seite, das Entfernen am 17.11. war ein
-  # Missverständnis). Zeilen wie im Prototyp, auf das beschränkt, was auch drinnen gilt; Feuerwerk ohne „Verbote bei Trockenheit“
-  - type: comparison
-    id: vergleich
-    kicker: Vergleich
-    headline: Drohne, *Feuerwerk* oder Laser?
-    rowHeader: Kriterium
-    columns: [ {"_key":"k_35fe1e9bdcb35ca70a40","value":"Drohnenshow"}, {"_key":"k_8a5793729caf7ee7bb24","value":"Feuerwerk"}, {"_key":"k_1348f142b68b9a4f7dec","value":"Lasershow"} ]
-    rows:
-      - label: Logos und Schriftzüge im Raum
-        values: [ {"_key":"k_4e20011953c10abc050d","value":"Ja, auch in 3D"}, {"_key":"k_0c7303d47e59ca436045","value":"Nein"}, {"_key":"k_c89afa5926ba3d943a64","value":"Teilweise, nur auf Flächen oder Dunst"} ]
-        cells:
-          - { label: Ja, text: auch in 3D, tone: y, "_key": "k_47b9b5b5261e69a115d5" }
-          - { label: Nein, text: "", tone: n, "_key": "k_fc487fc59fd960d1928d" }
-          - { label: Teilweise, text: nur auf Flächen oder Dunst, tone: p, "_key": "k_c8549edec154ca598860" }
-        _key: k_832f851d4228bc7b635c
-      - label: Lautstärke
-        values: [ {"_key":"k_23c94aafe60c3db818be","value":"Leise, Musik nach Wahl"}, {"_key":"k_34f3061f02f4783d2bcd","value":"Sehr laut"}, {"_key":"k_4ce91fd2da007514a0c8","value":"Leise"} ]
-        cells:
-          - { label: Leise, text: Musik nach Wahl, tone: y, "_key": "k_8c7fc056c0e8c4889751" }
-          - { label: Sehr laut, text: "", tone: n, "_key": "k_7a91eeceac4f9ba38f9d" }
-          - { label: Leise, text: "", tone: y, "_key": "k_bc839abc217de9f2cb10" }
-        _key: k_ccbc8181493982d85be6
-      - label: Rauch, Feinstaub, Müll vor Ort
-        values: [ {"_key":"k_25db6102f99916845e78","value":"Keine"}, {"_key":"k_d66d6e5146a806d685ec","value":"Viel"}, {"_key":"k_bebbb013f1b9a8760c6d","value":"Dunst für sichtbare Strahlen nötig"} ]
-        cells:
-          - { label: Keine, text: "", tone: y, "_key": "k_715f746a641bd26d2e9b" }
-          - { label: Viel, text: "", tone: n, "_key": "k_75099aa0524ac5661485" }
-          - { label: Dunst, text: für sichtbare Strahlen nötig, tone: p, "_key": "k_eae712d0bb9edf3fae70" }
-        _key: k_d6c122d68757ae0de7b7
-      - label: Brandgefahr
-        values: [ {"_key":"k_4fdf93f596e48ed9c82b","value":"Keine"}, {"_key":"k_80b9b7607ee8d5f3d7fc","value":"Ja"}, {"_key":"k_273861c12cef59a766b4","value":"Keine"} ]
-        cells:
-          - { label: Keine, text: "", tone: y, "_key": "k_d2f3d2eee631c726274c" }
-          - { label: Ja, text: "", tone: n, "_key": "k_192172d42ff044ee3d97" }
-          - { label: Keine, text: "", tone: y, "_key": "k_1f636ff0cddb84d5ad79" }
-        _key: k_a4610cf4e6b52b972490
-    cta: { label: Show anfragen, href: "#anfrage" }
-    todo: FlyingStars muss den Vergleich fachlich prüfen, insbesondere pauschale Aussagen zu Brandgefahr, Lautstärke und Umweltwirkung, und ob Feuerwerk drinnen überhaupt Vergleichsmaßstab sein soll.
-    _key: k_91272f4ee4d8d7dd6ef3
+  # Vergleich Drohnenshow/Feuerwerk/Laser seit Runde 14 entfernt (Moritz, 21.11.2026: Feuerwerk ist drinnen keine Option,
+  # Logos im Raum erst ab 50 Drohnen, „keine Brandgefahr“ rechtlich heikel). Stand davor in der Git-Historie.
 
   # Moritz' sieben Punkte als Icon-Raster, der Link füllt die achte Zelle
   - type: steps

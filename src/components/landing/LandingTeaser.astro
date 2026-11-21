@@ -4,6 +4,9 @@
 // (src/components/configurator/ConfiguratorTeaser.astro) gehört dem Konfigurator; hier nur die Props id, href, cta.
 // Optional darunter die Paketkarten in Paketfarbe (15.11.2026, Moritz' „Stellt eure Show zusammen“ unter #preise:
 // Teaser und Pakete wie im Prototyp, jetzt in einer Section; der Himmel bindet sich an [data-pick-paket]).
+// Runde 14 (Moritz, 21.11.2026): Startseite und Anlass-Seiten zeigen keine Paketkarten mehr, der Fokus liegt auf dem
+// Konfigurator; Paketkarten gibt es nur noch auf der Preisseite. Ohne Pakete steht der Textlink (`more`) allein unter
+// dem Teaser. Ohne Paketkarten fehlt dem Schwarm in #preise nichts: dort zeigt der Teaser die Formation (schwarm.ts, priceRoom).
 import type { Section } from '../../content.config';
 import TeaserSection from '../TeaserSection.astro';
 import ConfiguratorTeaser from '../configurator/ConfiguratorTeaser.astro';
@@ -21,6 +24,7 @@ const C = index === 0 ? 'h2' : 'h3';
     <div class="packs">{packages.map((p) => <PackageCard packageId={p.name} variant="summary" headingId={`${id}-${p.name}`} level={C} highlight={p.highlight} badge={p.badge} label={p.label} sky={p.sky} pointsOverride={p.points?.map(item => item.value)} />)}</div>
     {(note || more) && <div class="pack-note">{note && <span class="mono">{note}</span>}{more && <a class="link" href={localHref(more.href)}>{more.label} <span aria-hidden="true">→</span></a>}</div>}
   </div>}
+  {!packages?.length && (note || more) && <div class="pack-note lt-more">{note && <span class="mono">{note}</span>}{more && <a class="link" href={localHref(more.href)}>{more.label} <span aria-hidden="true">→</span></a>}</div>}
 </TeaserSection>
 <style>
   .lt-packs { margin-top: clamp(var(--space-12), 6vw, var(--space-20)); }
