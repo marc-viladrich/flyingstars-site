@@ -393,12 +393,12 @@ sections:
       - werbung-moritz
     _key: k_92cbd2df611f3954dfc2
 translationContractVersion: 2
-translationSourceHash: da411b421c33f68232a9720a541603950c22ff08a819a126565b3b5ab2c426ca
+translationSourceHash: 6c8904992629bb26e8cd4b9e3bbf9f5cf974d7a70c79199d6c9e9e5e4946713f
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: nl
-  sourceFingerprint: da411b421c33f68232a9720a541603950c22ff08a819a126565b3b5ab2c426ca
+  sourceFingerprint: 6c8904992629bb26e8cd4b9e3bbf9f5cf974d7a70c79199d6c9e9e5e4946713f
   fields:
     - address: /description
       sourceFingerprint: 0abe44f52a942a8d87aff554dd026c8040c67b45ca10f19445a5b29b6701dd73
@@ -1161,8 +1161,8 @@ translationEvidence:
       targetFingerprint: d565d5bf27bfc6003a71f0677e9449fbefea929baa8c3ade457cd15c9fdedc66
       status: adopted-existing
     - address: /sections/@k_cabb99b46c806fc432fa/text
-      sourceFingerprint: 8cc31336b5ae6f3a4bf9cabe3f5e2c4461c4f1fb4c1358b46f265ceccb359401
-      targetFingerprint: 1911f3a4ba9f0be1d3f761ff1767820d135906d9edf5b31109f0130521fa45b4
+      sourceFingerprint: 0c5ada4fdb9fa8589a80cec9b38e861a76dc48852e2d858793e5dedfc05a177a
+      targetFingerprint: 475d005f2d362d00ba2cf08e5c8a093f7cd59c43ff67056731f40a8198a47e8c
       status: adopted-existing
     - address: /sections/@k_cabb99b46c806fc432fa/videoLabel
       sourceFingerprint: db306b34b1194dcc4a2ee9fdde616512bbbe644967ee02e18ba6012e408c456f
