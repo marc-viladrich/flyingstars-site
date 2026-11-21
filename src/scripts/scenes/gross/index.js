@@ -33,6 +33,7 @@ export const GROSS = {
   conveyorStory: () => import('./foerderband.js'),
   robotArm3d: () => import('./robotergreifer.js'),
   robotArmStory: () => import('./robotergreifer.js'),
+  robotGripperStory: () => import('./robotergreifer.js'),
   headquarters3d: () => import('./firmensitz.js'),
   headquartersStory: () => import('./firmensitz.js'),
   potteryWheel3d: () => import('./toepferscheibe.js'),

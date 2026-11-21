@@ -93,10 +93,12 @@ test('Freischalten: auch ein Paketwechsel meldet alle neuen Motive, in der Reihe
   assert.deepEqual(ids(freshMotifs(wedding, { pkg: 'SPARK', drones: 140 }, { pkg: 'SPARK', drones: 150 })), ['amor', 'blueten', 'lotusblume', 'glocke', 'sektflasche', 'falter']);
   assert.deepEqual(ids(freshMotifs(wedding, { pkg: 'SPARK', drones: 100 }, { pkg: 'HORIZON', drones: 200 })), []);
   assert.deepEqual(ids(freshMotifs(wedding, { pkg: 'HORIZON', drones: 240 }, { pkg: 'HORIZON', drones: 250 })), ['glocke', 'sektflasche']); // Zugaben (Marc: die 3D-Körper bleiben bei 200)
-  assert.deepEqual(ids(freshMotifs(wedding, { pkg: 'HORIZON', drones: 290 }, { pkg: 'ODYSSEY', drones: 300 })), ['antrag', 'herz-szene', 'herz', 'taube', 'lotusblume']);
-  // Runde 11b: die Pralinenschachtel schaltet ab 600 frei (hinter der Torte), das Spalier erst ab 700
-  assert.deepEqual(ids(freshMotifs(wedding, { pkg: 'HORIZON', drones: 200 }, { pkg: 'ODYSSEY', drones: 600 })), ['antrag', 'erstertanz', 'pralinen', 'herz-szene', 'herz', 'taube', 'lotusblume', 'glocke', 'sektflasche', 'falter-szene', 'falter', 'lotus-szene', 'lotus']);
-  assert.deepEqual(ids(freshMotifs(wedding, { pkg: 'ODYSSEY', drones: 300 }, { pkg: 'ODYSSEY', drones: 400 })), ['falter-szene', 'falter', 'lotus-szene', 'lotus']);
+  // Runde 11c: der Erste Tanz spielt in 3D und 3D+ schon ab 300 (Marc: „nicht alles in 500+ reinforcen“)
+  assert.deepEqual(ids(freshMotifs(wedding, { pkg: 'HORIZON', drones: 290 }, { pkg: 'ODYSSEY', drones: 300 })), ['antrag', 'erstertanz', 'herz-szene', 'herz', 'taube', 'lotusblume']);
+  // Runde 11c: Spalier (hinter dem Tor) ab 500, Pralinenschachtel (hinter der Torte) ab 400
+  assert.deepEqual(ids(freshMotifs(wedding, { pkg: 'HORIZON', drones: 200 }, { pkg: 'ODYSSEY', drones: 600 })), ['antrag', 'erstertanz', 'spalier', 'pralinen', 'herz-szene', 'herz', 'taube', 'lotusblume', 'glocke', 'sektflasche', 'falter-szene', 'falter', 'lotus-szene', 'lotus']);
+  // Runde 11c: die Pralinenschachtel schaltet mit 3D+ 400 frei
+  assert.deepEqual(ids(freshMotifs(wedding, { pkg: 'ODYSSEY', drones: 300 }, { pkg: 'ODYSSEY', drones: 400 })), ['pralinen', 'falter-szene', 'falter', 'lotus-szene', 'lotus']);
   // Runde 11: der Erste Tanz (3D+ ab 500) folgt auf den Antrag
   // Runde 10: nur die Zahl, keine Namen
   assert.equal(unlockNote([{ label: 'Ring' }]), '1 neues Motiv freigeschaltet');

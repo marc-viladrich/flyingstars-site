@@ -2310,19 +2310,19 @@
     "nl": "Aftellen"
   },
   "showConfigurator.countdown.caption3d": {
-    "de": "Ein Countdown von 10 bis 0 in 3D, jede Ziffer entsteht aus der vorigen",
-    "en": "A countdown from 10 to 0 in 3D, each digit grows out of the one before",
-    "nl": "Aftellen van 10 tot 0 in 3D, elk cijfer ontstaat uit het vorige"
+    "de": "Ein Countdown 3, 2, 1, 0 in 3D, jede Ziffer entsteht aus der vorigen",
+    "en": "A countdown 3, 2, 1, 0 in 3D, each digit grows out of the one before",
+    "nl": "Aftellen 3, 2, 1, 0 in 3D, elk cijfer ontstaat uit het vorige"
   },
   "showConfigurator.countdown.captionStory": {
-    "de": "Countdown von 10 bis 0: die letzten Ziffern drehen sich durch die Tiefe, die Null zerspringt zum Feuerwerk",
-    "en": "Countdown from 10 to 0: the last digits turn through the depth, the zero bursts into fireworks",
-    "nl": "Aftellen van 10 tot 0: de laatste cijfers draaien door de diepte, de nul spat uiteen in vuurwerk"
+    "de": "Countdown 3, 2, 1: die Ziffern drehen sich durch die Tiefe, die Null zerspringt zum Feuerwerk",
+    "en": "Countdown 3, 2, 1: the digits turn through the depth, the zero bursts into fireworks",
+    "nl": "Aftellen 3, 2, 1: de cijfers draaien door de diepte, de nul spat uiteen in vuurwerk"
   },
   "showConfigurator.countdown.storyCount": {
-    "de": "Zehn Sekunden: jede Ziffer entsteht aus der vorigen, die letzten drehen sich durch die Tiefe",
-    "en": "Ten seconds: each digit grows out of the one before, the last ones turn through the depth",
-    "nl": "Tien seconden: elk cijfer ontstaat uit het vorige, de laatste draaien door de diepte"
+    "de": "Drei, zwei, eins: jede Ziffer dreht sich durch die Tiefe",
+    "en": "Three, two, one: each digit turns through the depth",
+    "nl": "Drie, twee, één: elk cijfer draait door de diepte"
   },
   "showConfigurator.countdown.storyZero": {
     "de": "Null! Sie faltet sich zur Kugel und zerspringt zum Feuerwerk",
@@ -2939,20 +2939,15 @@
     "en": "A cyclist sprints through the finish arch, throws his arms up, sparks fly",
     "nl": "Een wielrenner sprint door de finishboog, gooit zijn armen omhoog, vonken spatten"
   },
-  "radfahrer.theArchStandsARiderApproaches": {
-    "de": "Der Zielbogen steht, ein Fahrer kommt angerollt",
-    "en": "The finish arch stands, a rider rolls in",
-    "nl": "De finishboog staat, een renner komt aanrollen"
+  "radfahrer.aRiderInFullFlow": {
+    "de": "Ein Radfahrer im vollen Tritt",
+    "en": "A cyclist pedalling hard",
+    "nl": "Een wielrenner trapt stevig door"
   },
-  "radfahrer.sprintThroughTheArch": {
-    "de": "Sprint durch den Bogen, die Ziellinie leuchtet",
-    "en": "A sprint through the arch, the finish line lights up",
-    "nl": "Sprint door de boog, de finishlijn licht op"
-  },
-  "radfahrer.armsUpSparksFly": {
-    "de": "Arme hoch, aus dem Banner sprühen Funken",
-    "en": "Arms up, sparks fly from the banner",
-    "nl": "Armen omhoog, uit het spandoek spatten vonken"
+  "radfahrer.inOneGoThroughTheArch": {
+    "de": "In einem Zug durch den Zielbogen, die Ziellinie leuchtet, Arme hoch",
+    "en": "Straight through the finish arch in one go, the line lights up, arms up",
+    "nl": "In één ruk door de finishboog, de finishlijn licht op, armen omhoog"
   },
   "showConfigurator.eislaeufer.label": {
     "de": "Eisläuferpaar",
@@ -3083,6 +3078,21 @@
     "de": "Fertig: euer Produkt hebt ab",
     "en": "Done: your product lifts off",
     "nl": "Klaar: jullie product stijgt op"
+  },
+  "robotergreifer.becomesArm": {
+    "de": "Aus dem kleinen Roboter wird ein großer Greifarm",
+    "en": "The little robot becomes a big robot arm",
+    "nl": "De kleine robot wordt een grote robotarm"
+  },
+  "robotergreifer.gripsAndTurns": {
+    "de": "Der Greifarm nimmt das Modul und schwenkt zur Aufnahme",
+    "en": "The robot arm picks up the module and swings to the socket",
+    "nl": "De robotarm pakt de module en zwenkt naar de houder"
+  },
+  "robotergreifer.alignsAndClicks": {
+    "de": "richtet es aus und setzt es ein: Klick",
+    "en": "aligns it and slots it in: click",
+    "nl": "lijnt hem uit en zet hem erin: klik"
   },
   "robotergreifer.grips": {
     "de": "Der Arm greift das Modul",
@@ -5097,9 +5107,9 @@
     "nl": "De zweefspoorbaan in 3D, licht loopt over de ramen"
   },
   "showConfigurator.wahrzeichen.schwebebahnPlus": {
-    "de": "Die Schwebebahn fährt ein und hält",
-    "en": "The suspension railway pulls in and stops",
-    "nl": "De zweefspoorbaan rijdt binnen en stopt"
+    "de": "Die Schwebebahn fährt durch beide Stützen",
+    "en": "The suspension railway runs through both supports",
+    "nl": "De zweefspoorbaan rijdt door beide steunen"
   },
   "showConfigurator.wahrzeichen.jahre": {
     "de": "Jahreszahl",
@@ -5112,14 +5122,14 @@
     "nl": "Jullie getal, met JAAR eronder"
   },
   "showConfigurator.wahrzeichen.jahre3d": {
-    "de": "Eure Zahl in 3D, ein Lichtkranz umkreist sie",
-    "en": "Your number in 3D, circled by a ring of light",
-    "nl": "Jullie getal in 3D, omcirkeld door een lichtkrans"
+    "de": "Eure Zahl in 3D, Konfetti tanzt um sie herum",
+    "en": "Your number in 3D, confetti dancing around it",
+    "nl": "Jullie getal in 3D, met dansende confetti eromheen"
   },
   "showConfigurator.wahrzeichen.jahrePlus": {
-    "de": "Licht schreibt eure Zahl, zwei Lichtkränze umkreisen sie",
-    "en": "Light writes your number, two rings of light circle it",
-    "nl": "Licht schrijft jullie getal, twee lichtkransen omcirkelen het"
+    "de": "Licht schreibt eure Zahl, dann tanzt Konfetti um sie herum",
+    "en": "Light writes your number, then confetti dances around it",
+    "nl": "Licht schrijft jullie getal, daarna dansen er confetti omheen"
   },
   "wahrzeichen.lightDrawsTheKey": {
     "de": "Licht zeichnet den Bremer Schlüssel",
@@ -5312,24 +5322,24 @@
     "nl": "Een campus in 3D rond de oude fabriekshal, de ramen gaan een voor een aan"
   },
   "showConfigurator.factoryCampusStoryCaption": {
-    "de": "Aus der alten Werkhalle baut ein Lichtstrom euren Zukunftscampus auf",
-    "en": "From the old factory hall a stream of light builds your campus of the future",
-    "nl": "Vanuit de oude fabriekshal bouwt een lichtstroom jullie campus van de toekomst"
+    "de": "Der Rauch der alten Werkhalle wird ein Lichtstrom, der euren Zukunftscampus Haus für Haus aufbaut",
+    "en": "The smoke of the old factory hall becomes a stream of light that builds your campus of the future house by house",
+    "nl": "De rook van de oude fabriekshal wordt een lichtstroom die jullie campus van de toekomst huis voor huis opbouwt"
   },
   "werkhalle.hall": {
-    "de": "Die alte Werkhalle mit ihrem Schornstein",
-    "en": "The old factory hall with its chimney",
-    "nl": "De oude fabriekshal met zijn schoorsteen"
+    "de": "Die alte Werkhalle raucht",
+    "en": "The old factory hall is smoking",
+    "nl": "De oude fabriekshal rookt"
   },
   "werkhalle.gate": {
-    "de": "Am Werktor beginnt ein Lichtstrom",
-    "en": "A stream of light begins at the factory gate",
-    "nl": "Bij de fabriekspoort begint een lichtstroom"
+    "de": "Der Rauch wird Licht und strömt aus dem Tor",
+    "en": "The smoke turns to light and streams out of the gate",
+    "nl": "De rook wordt licht en stroomt de poort uit"
   },
   "werkhalle.rise": {
-    "de": "Entlang des Platzes wachsen die Neubauten",
-    "en": "The new buildings rise along the square",
-    "nl": "Langs het plein verrijzen de nieuwbouwen"
+    "de": "Der Lichtstrom baut Haus für Haus",
+    "en": "The stream of light builds house after house",
+    "nl": "De lichtstroom bouwt huis na huis"
   },
   "werkhalle.campus": {
     "de": "Euer Zukunftscampus leuchtet",
