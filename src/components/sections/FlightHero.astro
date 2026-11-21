@@ -38,7 +38,7 @@ const sources = video === videos.showreel ? heroVideoSources() : undefined;
     {/* Keyword-Zeile (Moritz, 15.11.2026: „H1: Drohnenshow buchen / Gestalte dein Stück Himmel“) gehört zur h1 */}
     <h1 id="hero-h">{eyebrow && <><span class="kicker mono">{eyebrow}</span>{' '}</>}<Accent text={headline} />{words && words.length > 0 && <> <span class="word" data-rotate={words.map(word => word.value).join('|')}>{words[0].value}</span></>}</h1>
     <p class="lead">{text}</p>
-    <div class="actions"><a class="btn primary" href={localHref(cta.href)}>{fact(cta.label)}</a>{secondary && (tel ? <span class="call"><a class="btn" href={localHref(secondary.href)} aria-describedby="call-people">{fact(secondary.label)}</a><CallFaces id="call-people" /></span> : <a class="btn" href={localHref(secondary.href)}>{fact(secondary.label)}</a>)}</div>
+    <div class="actions"><a class="btn primary" href={localHref(cta.href)}>{fact(cta.label)}</a>{secondary && (tel ? <span class="call"><a class="btn" href={localHref(secondary.href)} aria-describedby="call-people"><Icon name="phone" size={16} class="call-ico" />{fact(secondary.label).replace(/^\u260E\uFE0E?\s*/, '')}</a><CallFaces id="call-people" /></span> : <a class="btn" href={localHref(secondary.href)}>{fact(secondary.label)}</a>)}</div>
   </div>
   {stats && stats.length > 0 && <FactList items={stats} variant="spec" label={t('flighthero.keyFacts')} />}
 </section>

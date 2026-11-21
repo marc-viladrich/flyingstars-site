@@ -34,7 +34,7 @@ const showLabels = { hochzeitHero: t('landinghero.weddingShowLabel') };
   <div class="lh-copy">
     <h1 id="hero-h">{kicker && <><span class="kicker mono">{kicker}</span>{' '}</>}<Accent text={headline} /></h1>
     <p class="lead">{text}</p>
-    <div class="actions"><a class="btn primary" href={localHref(cta.href)}>{fact(cta.label)}</a>{secondary && (tel ? <span class="call"><a class="btn" href={localHref(secondary.href)} aria-describedby="call-people">{fact(secondary.label)}</a><CallFaces id="call-people" /></span> : <a class="btn" href={localHref(secondary.href)}>{fact(secondary.label)}</a>)}</div>
+    <div class="actions"><a class="btn primary" href={localHref(cta.href)}>{fact(cta.label)}</a>{secondary && (tel ? <span class="call"><a class="btn" href={localHref(secondary.href)} aria-describedby="call-people"><Icon name="phone" size={16} class="call-ico" />{fact(secondary.label).replace(/^\u260E\uFE0E?\s*/, '')}</a><CallFaces id="call-people" /></span> : <a class="btn" href={localHref(secondary.href)}>{fact(secondary.label)}</a>)}</div>
     {facts.length > 0 && <FactList items={facts} variant="hero" />}
   </div>
   {show ? <MediaFrame class="lh-media lh-show" corners="inset" data-lh-show={show} data-lh-label={showLabels[show]}>
