@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="80 20 730 760"><title>Bremer Schlüssel</title><desc>Vereinfachte Zeichnung nach dem Bremer Wappen (Schlüssel ohne Schild und Krone), für den Logo-Modus</desc>
-<g fill="#2f3a44">
-<line x1="120" y1="178" x2="465" y2="527" stroke="#2f3a44" stroke-width="11.0" stroke-linecap="round"/>
-<g transform="translate(120,178) rotate(45)"><path fill-rule="evenodd" d="M45,-235 H285 V5.5 H45 ZM56.0,-224.0 H159.5 V-123.0 H56.0 ZM170.5,-224.0 H274.0 V-123.0 H170.5 ZM56.0,-112.0 H159.5 V-5.5 H56.0 ZM170.5,-112.0 H274.0 V-5.5 H170.5 Z"/></g>
-<path d="M465,527 Q566.0,547.0 667,527 Q647.0,623.0 667,719 Q566.0,699.0 465,719 Q485.0,623.0 465,527 Z" fill="none" stroke="#2f3a44" stroke-width="11.0" stroke-linejoin="round"/>
-<circle cx="465" cy="527" r="34.0"/><circle cx="667" cy="527" r="34.0"/><circle cx="465" cy="719" r="34.0"/><circle cx="667" cy="719" r="34.0"/>
-</g></svg>

@@ -351,7 +351,8 @@ export function flat(key, n) {
 // ---------- Szenen ----------
 
 const BRICK = [235, 130, 90], STEEL = [150, 220, 160];
-const COLOURS = { wave: CYAN, shaft: WARM, base: WARM, sphere: DIAMOND, band: GOLD, korb: WARM, antenna: WARM, pod: WARM, glass: CYAN, clock: GOLD, column: WARM, beam: WARM, attic: WARM, ground: WARM, quadriga: GOLD, staff: GOLD, tower: WARM, gable: WARM, portal: GOLD, finial: GOLD, window: GOLD, roof: CYAN, brick: BRICK, glassline: WARM, brickline: BRICK, rail: WARM, truss: WARM, frame: STEEL, car: CYAN, hanger: WARM, bit: WARM, ring: WARM, bow: WARM, ornament: GOLD, skyline: WARM, river: CYAN, victoria: GOLD };
+// (exportiert für den Logo-Modus: das Beispiel Bremen zeigt den Schlüssel in denselben Farben, logo-landmark.mjs)
+export const COLOURS = { wave: CYAN, shaft: WARM, base: WARM, sphere: DIAMOND, band: GOLD, korb: WARM, antenna: WARM, pod: WARM, glass: CYAN, clock: GOLD, column: WARM, beam: WARM, attic: WARM, ground: WARM, quadriga: GOLD, staff: GOLD, tower: WARM, gable: WARM, portal: GOLD, finial: GOLD, window: GOLD, roof: CYAN, brick: BRICK, glassline: WARM, brickline: BRICK, rail: WARM, truss: WARM, frame: STEEL, car: CYAN, hanger: WARM, bit: WARM, ring: WARM, bow: WARM, ornament: GOLD, skyline: WARM, river: CYAN, victoria: GOLD };
 /** Licht der 2D-Fassungen: dasselbe wie beim Körper, nur ohne Bewegung (Warnlicht, Lichtzeituhr, Glanz). */
 const LIGHT_2D = {
   fernsehturm: (f, b, j, t, o) => { const tag = f.tag[j]; if (tag === 'antenna' && b[1] > FT.tip - 0.02) o[3] = warning(t); else if (tag === 'band') o[3] = glint(b[0], t, 3.2, 0.6, -0.2, 0.2); else if (tag === 'wave') o[3] = waveLight(Math.hypot(b[0] - FT.sphere[0], b[1] - FT.sphere[1]), t); },

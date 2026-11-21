@@ -28,5 +28,17 @@ export const LOGO_EXAMPLES = [
   ["mastercard", "Mastercard"], ["ikea", "IKEA"], ["dhl", "DHL"], ["firefox", "Firefox"], ["nike", "Nike"], ["apple", "Apple"],
   ["mcdonalds", "McDonald’s"], ["adidas", "Adidas"], ["puma", "Puma"], ["cupra", "Cupra"], ["duolingo", "Duolingo"],
 ];
+// Runde 14 (Marc 21.11.2026: Bremen im Logo-Modus „janky“, im Stadtfest „mega clean“; „Lass uns das doch einfach
+// nehmen.“): Bremen ist keine eigene Zeichnung mehr, sondern der Bremer Schlüssel des Stadtfests (scenes/wahrzeichen.js,
+// schluessel) mit dessen Punkten bei jeder Drohnenzahl, ohne den Logo-Konverter (logo-landmark.mjs). Dafür gibt es keine
+// vorberechneten Daten unter public/media/logo-modus/beispiele/; das Bild der Minimap entsteht aus denselben Linien.
+/** Beispiele, die ein Wahrzeichen aus scenes/wahrzeichen.js sind. shape: Schlüssel in SHAPES; max: höchste gewünschte
+ * Drohnenzahl, die das Motiv bestimmt (der Schlüssel hat ab 280 seine volle Zeichnung, 2D geht im Stadtfest bis 300);
+ * apart: Teile, die ein eigenes Element sind (nicht mit dem Rest verbunden); ink: Farben im Bild der Minimap. */
+export const LANDMARK_EXAMPLES = {
+  bremen: { shape: "schluessel", max: 300, apart: ["ornament"], title: "Bremer Schlüssel", ink: { default: "#2f3a44", ornament: "#b07a12" } },
+};
+/** Beispiele, die der Logo-Konverter vorberechnet hat (SVG, Daten und Raster unter public/media/logo-modus/beispiele/) */
+export const CONVERTER_EXAMPLES = LOGO_EXAMPLES.map(([id]) => id).filter((id) => !Object.hasOwn(LANDMARK_EXAMPLES, id));
 /** Echte FlyingStars-Kund*innen unter den Beispielen (Wächter: public/brand/logos/kunde-<id>-weiss.svg muss existieren) */
 export const CUSTOMER_EXAMPLES = ["ford", "eon", "lamborghini", "spotify"];
