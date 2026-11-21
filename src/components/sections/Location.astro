@@ -227,7 +227,7 @@ const withAddress = pins.some((pin) => pin.lines);
     mask-image: url(/media/standort-nrw-maske.svg), radial-gradient(circle 8.5rem at var(--sx) var(--sy), #000 30%, transparent);
     -webkit-mask-size: 100% 100%, 100% 100%; mask-size: 100% 100%, 100% 100%; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
     -webkit-mask-composite: source-in; mask-composite: intersect;
-    transition: opacity var(--dur-standard) var(--ease-default), --sx 0.16s var(--ease-out), --sy 0.16s var(--ease-out); }
+    transition: opacity var(--dur-standard) var(--ease-default), --sx var(--dur-follow) var(--ease-out), --sy var(--dur-follow) var(--ease-out); }
   @media (prefers-reduced-motion: no-preference) {
     :global(html:not(.motion-paused)) .loc-stage { touch-action: pan-y pinch-zoom; }
     :global(html:not(.motion-paused)) .loc-lit { display: block; }

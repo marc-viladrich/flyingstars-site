@@ -120,5 +120,5 @@ html.reveal:not(.motion-paused) :is(h1, h2, h3) .grad.st-bereit:not(.st-an) .st-
 /* Runde 14 (Marc 21.11.2026, Kurve aus seinem DialKit-Labor, freelance/clients/flyingstars/25-schrift-animation-dial):
    easeInExpo über 960 ms; Runde 15: ausgelöst, sobald das Wort ganz im Bild ist, nach 0,9 s Verzögerung. Das Wort verharrt dünn und schnappt dann zu („clean und springy“ statt des
    weichen Ankommens). Endstärke bleibt die der Überschrift (Marc: „es soll schon alles die gleiche Dicke 500 haben“). */
-html.reveal :is(h1, h2, h3) .grad.st-an .st-v { transition: font-weight var(--dur-weight-fill) cubic-bezier(0.7, 0, 0.84, 0) 0.9s; }
+html.reveal :is(h1, h2, h3) .grad.st-an .st-v { transition: font-weight var(--dur-weight-fill) cubic-bezier(0.7, 0, 0.84, 0) var(--dur-weight-delay); }
 html.motion-paused :is(h1, h2, h3) .grad .st-v { transition: none; }
