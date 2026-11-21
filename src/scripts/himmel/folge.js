@@ -113,7 +113,7 @@ const ECO = Object.fromEntries(ECO_ROW.map(([k, hold]) => [k, { kind: "eco", tag
 const VARIANTS = {
   himmel: { n: N, pieces: PIECES, first: FIRST, opening: OPENING, mixed: true, fill: 0.9, light: 1, cloud: { cloudTime: 0.45, cloudSpread: 0.55 } },
   indoor: { n: NI, pieces: INDOOR, first: Object.keys(INDOOR), opening: null, mixed: false, fill: 0.9, light: 1.6, cloud: { cloudTime: 0.4, cloudSpread: 0.45 } },
-  eco: { n: NE, pieces: ECO, first: Object.keys(ECO), opening: null, mixed: false, fill: 0.85, light: 1.3, cloud: { cloudTime: 0.45, cloudSpread: 0.5 } },
+  eco: { n: NE, pieces: ECO, first: Object.keys(ECO), opening: null, mixed: false, fill: 0.9, light: 1.3, cloud: { cloudTime: 0.45, cloudSpread: 0.5 } },
 };
 /** Varianten mit eigener Bühne (ohne Schwarm, Canvas per CSS in der Bühne): data-folge an der Bühne. */
 const STAGED = new Set(["indoor", "eco"]);
@@ -290,7 +290,9 @@ export function createFolge(canvas, { burst = [], rnd = Math.random, variant = "
       hw = Math.max(hw, 1e-6); hh = Math.max(hh, 1e-6);
       const fw = Math.max((x1 - x0) / 2, 1e-6), fh = Math.max((y1 - y0) / 2, 1e-6);
       // gewünschte Pixel je Einheit, und was das Feld ohne Zoom gäbe (fit() in show-field.js)
-      const want = V.fill * Math.min(box.w / 2 / hw, box.h / 2 / hh), live = list.some((b) => b.live) ? 0.9 : 1;
+      // eigenes fill eines Motivs (scenes/eco.js: Blitz) geht vor dem der Variante
+      const fill = list.find((b) => b.fill)?.fill ?? V.fill;
+      const want = fill * Math.min(box.w / 2 / hw, box.h / 2 / hh), live = list.some((b) => b.live) ? 0.9 : 1;
       const base = (live / Math.max(fw / 1.15, fh / 0.75)) * size * S;
       for (const b of list) b.zoom = want / base;
     }

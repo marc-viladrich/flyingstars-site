@@ -40,6 +40,9 @@ const crew = await Promise.all(members.map(async item => {const member=teamMembe
       <span {...field({collection:"people",id:member.personId},["name"])} class="tc-name">{member.name}</span>
     </li>)}</ul>
   </div>
+  {/* Vergleich (Marc, Runde 15): ?team=leiter zeigt die Porträts ohne Überlappung als Treppe wie die Bildleiter auf
+       Werbung (Gallery.astro); Standard bleibt die Collage. Kein sichtbarer Schalter; läuft vor dem ersten Bild. */}
+  <script is:inline>if (new URLSearchParams(location.search).get('team') === 'leiter') document.currentScript?.parentElement?.classList.add('is-leiter');</script>
 </section> : <section class="team-sec" id={id} aria-labelledby={headingId}>
   <SectionHead kicker={kicker} headline={headline} text={text} id={headingId} level={H} />
   <ul class="crew" style={`--cols:${cols}`} aria-labelledby={headingId} data-crew>{crew.map((member,i) => <li class="member" style={`--i:${i}`} data-dot-host>
@@ -98,28 +101,65 @@ const crew = await Promise.all(members.map(async item => {const member=teamMembe
   }
   @media (prefers-reduced-motion: reduce) { .member { transition: none; } }
 
-  /* Collage (Startseite, Runde 14): Text links, rechts drei kleinere Porträts, die mittlere tiefer und leicht vor den
-     anderen (ohne Ring: der Porträtrahmen schneidet per clip-path jeden Schatten ab), darunter die Leuchtpunkt-Unterlage (DotField) wie bei den Bildleitern; wirkt wie ein Gruppenbild statt wie
-     eine Kartenreihe. Ab breitem Desktop zwei Spalten (5 : 7 wie die Bühnen der Nachhaltigkeit), schmal untereinander. */
+  /* Collage (Startseite, Runde 14): Text links, rechts drei Porträts, die mittlere tiefer und leicht vor den anderen (ohne
+     Ring: der Porträtrahmen schneidet per clip-path jeden Schatten ab), darunter die Leuchtpunkt-Unterlage (DotField) wie bei
+     den Bildleitern; wirkt wie ein Gruppenbild statt wie eine Kartenreihe. Ab breitem Desktop zwei Spalten (5 : 7 wie die
+     Bühnen der Nachhaltigkeit), schmal untereinander. Runde 15 (Marc): Bilder größer, Namen im Bild, sanftes Schweben;
+     Variante „Leiter“ (?team=leiter) ohne Überlappung. */
   .team-collage { display: grid; gap: clamp(var(--space-10), 5vw, var(--space-20)); align-items: center; }
   .tc-copy :global(.section-head) { margin-bottom: 0; }
   .tc-note { margin: var(--head-gap-text) 0 0; color: var(--muted); }
   .tc-links { display: flex; flex-wrap: wrap; gap: var(--space-3-5) var(--space-7); margin: var(--head-gap-cta) 0 0; }
   .tc-stage { padding-bottom: var(--tc-drop); --tc-drop: clamp(2.5rem, 5vw, 4.5rem); --tc-over: clamp(0.75rem, 1.6vw, 1.75rem); }
-  .tc-crew { list-style: none; margin: 0 auto; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: clamp(34rem, 40vw, 48rem); }
-  .tc-crew .member { gap: var(--space-2); min-width: 0; }
+  .tc-crew { list-style: none; margin: 0 auto; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: start; max-width: clamp(38rem, 46vw, 56rem); }
+  .tc-crew .member { position: relative; gap: 0; min-width: 0; --tx: 0rem; --ty: 0rem; translate: var(--tx) var(--ty); }
   /* die äußeren rücken unter die mittlere (Überlappung nur am Bildrand), die mittlere steht tiefer und davor; der Name
      rechts steht rechtsbündig, sonst läge sein Anfang hinter dem mittleren Porträt */
-  .tc-crew .member:nth-child(1) { translate: var(--tc-over) 0; }
-  .tc-crew .member:nth-child(2) { translate: 0 var(--tc-drop); z-index: 1; }
-  .tc-crew .member:nth-child(3) { translate: calc(-1 * var(--tc-over)) calc(var(--tc-drop) * 0.35); text-align: end; }
+  .tc-crew .member:nth-child(1) { --tx: var(--tc-over); }
+  .tc-crew .member:nth-child(2) { --ty: var(--tc-drop); z-index: 1; }
+  .tc-crew .member:nth-child(3) { --tx: calc(-1 * var(--tc-over)); --ty: calc(var(--tc-drop) * 0.35); }
+  .tc-crew .member:nth-child(3) .tc-name { text-align: end; }
   .tc-crew .portrait { margin: 0; }
-  .tc-name { font-size: var(--text-sm); color: var(--muted); }
+  /* Name im Bild (Runde 15: „Namen müssen lesbar sein“): unten auf einem dunklen, weich auslaufenden Verlauf, darunter ist
+     das Foto zusätzlich weichgezeichnet (Maske läuft nach oben aus). Der Verlauf liegt im Porträt (::after), damit der
+     Vorhang und die gerundeten Ecken ihn mitschneiden; ein Geschwister-Element ließ unten eine helle Bildkante stehen.
+     --text auf mindestens 50–80 % Schwarz über dem Foto, dazu Textschatten. Der Name erscheint erst mit dem Vorhang; Zeiger gehen durch zum
+     Lichtpunkt-Hover des Porträts. */
+  .tc-crew .portrait::before, .tc-crew .portrait::after { content: ""; position: absolute; inset: auto 0 0; height: 45%; z-index: 1; pointer-events: none; }
+  /* Weichzeichnung und Verlauf getrennt: WebKit verwirft sonst mit der Maske auch den Verlauf */
+  .tc-crew .portrait::before { -webkit-backdrop-filter: blur(0.75rem); backdrop-filter: blur(0.75rem);
+    -webkit-mask-image: linear-gradient(to bottom, transparent, #000 60%); mask-image: linear-gradient(to bottom, transparent, #000 60%); }
+  .tc-crew .portrait::after { background: linear-gradient(to bottom, rgb(var(--rgb-black) / 0), rgb(var(--rgb-black) / 0.5) 45%, rgb(var(--rgb-black) / 0.8)); }
+  .tc-name { position: absolute; z-index: 2; inset-inline: 0; bottom: 0; padding: 0 var(--space-3-5) var(--space-3);
+    font-size: var(--text-sm); font-weight: 500; line-height: 1.25; color: var(--text); text-shadow: 0 0.0625rem 0.5rem var(--shadow-ink); pointer-events: none; }
+  :global(.reveal) .tc-crew .member:not(.is-in) .tc-name { opacity: 0; }
+  .tc-crew .member .tc-name { transition: opacity var(--dur-fade) var(--ease-default), transform var(--dur-reveal) var(--ease-curtain); transition-delay: calc(var(--i, 0) * var(--dur-stagger) + var(--dur-reveal) * 0.6); }
+  .tc-crew .member.shown .tc-name { transition-delay: 0s; }
+  /* Schweben (Runde 15: „wie Drohnen, die sanft in der Luft stehen“): wenige Pixel, langsam, versetzte Phasen; nur translate
+     (die Lage der Collage steckt in --tx/--ty). Aus bei reduzierter Bewegung und globaler Pause. */
+  @keyframes tc-float { 0%, 100% { translate: var(--tx) var(--ty); } 50% { translate: var(--tx) calc(var(--ty) - 0.375rem); } }
+  .tc-crew .member { animation: tc-float 7.5s var(--ease-ambient) infinite; }
+  .tc-crew .member:nth-child(2) { animation-duration: 8.6s; animation-delay: -3.1s; }
+  .tc-crew .member:nth-child(3) { animation-duration: 6.8s; animation-delay: -5.4s; }
+  :global(html.motion-paused) .tc-crew .member { animation: none; }
+  @media (prefers-reduced-motion: reduce) { .tc-crew .member { animation: none; } }
+  /* Leiter (?team=leiter): gleiche Bilder ohne Überlappung, von links unten nach rechts oben wie die Bildleiter auf Werbung
+     (Gallery.astro: Versatz je Stufe 0,42 Bildhöhe, schmal 0,26; Abstand --g-gap). margin-top in % bezieht sich auf die
+     Spaltenbreite: 0,42 · 5/4 = 52,5 %. Die Punkte schauen wie dort aus der freien Fläche über der Treppe. */
+  .team-collage.is-leiter .tc-stage { --tc-over: 0rem; --tc-drop: 0rem; }
+  .team-collage.is-leiter .tc-crew { column-gap: clamp(0.875rem, 1.4vw, 1.5rem); }
+  .team-collage.is-leiter .tc-crew .member { --tx: 0rem; --ty: 0rem; margin-top: calc((2 - var(--i)) * 52.5%); }
+  .team-collage.is-leiter .tc-crew .member:nth-child(3) .tc-name { text-align: start; }
+  .team-collage.is-leiter :global(.dot-field) { inset: -10% 30% 26% 0%; }
   /* Handy: ohne Überlappung, sonst verdeckt das mittlere Porträt den Namen links; Namen dürfen umbrechen */
   @media (--compact) {
     .tc-stage { --tc-over: 0rem; --tc-drop: 2rem; }
     .tc-crew { column-gap: var(--space-2-5); }
-    .tc-name { font-size: var(--text-xs); text-wrap: balance; }
+    .tc-name { font-size: var(--text-xs); text-wrap: balance; padding: 0 var(--space-2) var(--space-2); }
+  }
+  @media (--grid-stacked) {
+    .team-collage.is-leiter .tc-crew .member { margin-top: calc((2 - var(--i)) * 32.5%); }
+    .team-collage.is-leiter :global(.dot-field) { inset: -12% 28% 30% -4%; }
   }
   @media (--grid-expanded) {
     .team-collage { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }

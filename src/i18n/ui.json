@@ -304,6 +304,11 @@
     "en": "Wedding drone formations: a heart in 2D that becomes a 3D tunnel of hearts, a ring gliding onto the ring finger, a champagne bottle popping its cork, a wedding cake in 2D and 3D, a box of chocolates whose pralines become a heart, a couple's first dance, champagne glasses in 2D and 3D and a sphere of light with a golden heart",
     "nl": "Droneformaties voor een bruiloft: een hart in 2D dat een hartentunnel in 3D wordt, een ring die om de ringvinger glijdt, een champagnefles waarvan de kurk knalt, een bruidstaart in 2D en 3D, een bonbondoos waarvan de bonbons een hart worden, een paar bij de eerste dans, champagneglazen in 2D en 3D en een lichtbol met een gouden hart"
   },
+  "hero.callPeople": {
+    "de": "Am Telefon: {names}",
+    "en": "On the phone: {names}",
+    "nl": "Aan de telefoon: {names}"
+  },
   "landingprice.excludingVatForValueDronesPlusTravel": {
     "de": "netto für {v0} Drohnen, zzgl. Anfahrt",
     "en": "excluding VAT for {v0} drones, plus travel",

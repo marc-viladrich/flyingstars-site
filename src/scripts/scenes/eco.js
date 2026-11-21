@@ -44,7 +44,9 @@ function flotte(n) {
 function blitz(n) {
   const outline = { pts: [[-0.05, 1], [0.45, 1], [0.1, 0.15], [0.5, 0.15], [-0.25, -1], [0, -0.1], [-0.45, -0.1]].map(([x, y]) => [x * 1.05, y * 1.05]) };
   const pts = sampleOutline([outline], n).map(([x, y]) => [x, y, 0, ...across(x, -0.5, 0.55)]);
-  return { pts, live: (b, j, t, o) => { o[3] = glint(-b[1], t, 1.8, 0.7, -1.4, 1.4); } };
+  // fill: der schmale Blitz füllt die Bühnenhöhe fast ganz (Marc, Runde 15: „ein ganzes Stück größer“); die breiten Figuren
+  // bleiben beim fill der Variante (folge.js), sonst stoßen sie seitlich an
+  return { pts, fill: 0.98, live: (b, j, t, o) => { o[3] = glint(-b[1], t, 1.8, 0.7, -1.4, 1.4); } };
 }
 
 const MAKERS = { schall, flotte, blitz };
@@ -55,7 +57,7 @@ export const ECO_MOTIFS = Object.keys(MAKERS);
 export function ecoScene(key, n) {
   const make = MAKERS[key];
   if (!make) throw new Error(`Nachhaltigkeits-Figur ${key} fehlt`);
-  const { pts, live } = make(n);
+  const { pts, live, fill } = make(n);
   if (pts.length > n || pts.length < n * 0.8) throw new Error(`Nachhaltigkeits-Figur ${key}: ${pts.length} Punkte bei ${n}`);
-  return { beats: [{ pts, live }] };
+  return { beats: [{ pts, live, ...(fill ? { fill } : {}) }] };
 }

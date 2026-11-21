@@ -464,6 +464,10 @@ Hersteller an). Marc: eine kompakte Section.
 - Überschrift: jeder Satz eine Zeile, „Kein Müll.“ als Kontur, „Kein Rauch.“ im Verlauf wie bisher, aber in der normalen
   Größe einer Section-Überschrift (das Riesenformat gehörte zur Scrollstory). Gilt für jede Bühnen-Section mit einem Kopf
   aus mehreren Sätzen (`stagedLines` in `Sustainability.astro`).
+  Runde 15 (Marc: „deutlich größer … wir brauchen diesen Impact“): auf der Startseite wieder fast im Riesenformat
+  (`.eco-head-xl`, bis 7,5 rem, dieselbe benannte Ausnahme in `layout-audit.mjs` head-size); die linke Spalte ist so breit
+  wie der Kopf (`max-content`), die Bühne nimmt den Rest und ist höher (bis 40 rem), der Blitz füllt die Höhe (`fill: 0.98`
+  in `scenes/eco.js`). Gestapelt 5 : 3 statt 2 : 1.
 - Bühne: dieselbe Engine wie die Show-Folge und die Indoor-Reihe (`createFolge(canvas, { variant: "eco" })`, `folge.js`),
   keine eigene Render-Engine. Figuren aus der Scrollstory in `src/scripts/scenes/eco.js`, 120 Drohnen im Logoverlauf von links
   nach rechts, feste Runde: ruhige Schallwelle (3,2 s, Hauptaussage „Kein Knall“), geparkte Flotte in Reihen von schräg oben
@@ -489,6 +493,12 @@ rechts neben dem Text; ein Teamfoto gibt es noch nicht. Marc: die Lösung aus ei
   und Vorstellungen stehen auf „Über uns“. Vorhang-Reveal und Lichtpunkt-Hover wie bei den großen Team-Karten (`.member`,
   `.portrait`). Handy: Collage unter dem Text, ohne Überlappung (sonst verdeckt das mittlere Porträt den Namen links).
 - Bilder 480 px breit, `loading="lazy"`, feste Maße, alt-Texte aus `imageAlt` der Person.
+- Runde 15 (Marc): Collage größer (bis 56 rem), Namen unten im Bild auf dunklem, weichgezeichnetem Verlauf (`.portrait::before/
+  ::after`), sanftes Schweben (wenige px, versetzte Phasen, nur `translate`; aus bei reduzierter Bewegung und globaler Pause).
+  Vergleichsvariante ohne Überlappung als Leiter wie auf Werbung (`Gallery.astro`): `?team=leiter`, kein sichtbarer Schalter.
+- Seitenköpfe mit Telefon-Knopf (`FlightHero`, `LandingHero`; Startseite, Hochzeit, Werbung, Indoor): daneben Ronja, Erwin
+  und Florian als kleiner Porträtstapel (`CallFaces.astro`), Bilder dekorativ, der Knopf verweist per `aria-describedby` auf
+  „Am Telefon: …“ (`hero.callPeople`). Knopf und Porträts brechen nie getrennt um (`.call`).
 - Alle anderen Team-Sections (Werbung, Hochzeit, Indoor, Über uns) bleiben große Karten.
 - Der Himmel findet neben der Collage keinen freien Platz mehr (`free()`); das lachende Gesicht bei `#ueber` entfällt damit,
   es bleibt ein Bild in der Section (siehe `docs/himmel.md`).

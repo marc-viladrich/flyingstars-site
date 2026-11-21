@@ -87,7 +87,7 @@ const factItems = await Promise.all(facts.map(async (fact) => {
   </div></Gallery>}
   {staged && <div class="eco-staged">
     {stagedLines
-      ? <SectionHead class="eco-head-std eco-staged-head" titleClass="eco-lines" next="text" kicker={kicker} headline={plain(headline)} id={headingId} level={H}>
+      ? <SectionHead class:list={['eco-head-std eco-staged-head', { 'eco-head-xl': home }]} titleClass="eco-lines" next="text" kicker={kicker} headline={plain(headline)} id={headingId} level={H}>
           <Fragment slot="title">{lines.map((line, i) => <span class:list={lineClass(line, i)}>{whole(line) ? plain(line) : accentParts(line).map((p) => p.g ? <span class="grad">{p.t}</span> : p.t)} </span>)}</Fragment>
         </SectionHead>
       : <SectionHead class="eco-head-std eco-staged-head" next="text" kicker={kicker} headline={headline} id={headingId} level={H} />}
@@ -179,6 +179,11 @@ const factItems = await Promise.all(facts.map(async (fact) => {
   /* Kopf aus Sätzen neben der Bühne (Startseite): jeder Satz eine Zeile, die mittlere als Kontur, die letzte im Verlauf */
   .eco-staged :global(.eco-lines .head-line > span) { display: block; width: fit-content; }
   .eco-staged :global(.eco-lines .o) { color: transparent; -webkit-text-stroke: 1.25px var(--ink-bright); }
+  /* Startseite (Marc, Runde 15: „deutlich größer … wir brauchen diesen Impact“): fast das Riesenformat der früheren
+     Scrollstory (.eco-head-xl .eco-title bis 8,5rem), etwas kleiner, damit „Kein Rauch.“ neben der Bühne in seiner Spalte
+     bleibt. Dieselbe benannte Ausnahme im Wächter layout-audit.mjs head-size (.eco-head-xl), keine neue. */
+  .eco-staged :global(.eco-head-xl .eco-lines) { font-size: clamp(3rem, 6.6vw, 7.5rem); line-height: 0.92; letter-spacing: -0.045em; }
+  .eco-staged :global(.eco-head-xl .eco-lines .o) { -webkit-text-stroke-width: 1.5px; }
   /* Die vier Punkte stehen direkt unter Kopf und Bühne; den Abstand gibt die Bühne vor */
   .eco-staged + :global(.eco-pillars) { margin-top: 0; }
   .eco-staged > :global(.eco-staged-head) { grid-area: head; }
@@ -189,9 +194,15 @@ const factItems = await Promise.all(facts.map(async (fact) => {
   /* Nachhaltigkeit der Startseite (show: eco): die Figuren sind flach (Schallwelle, Flotte) oder schmal (Blitz), die Bühne
      ist deshalb niedriger als die der Indoor-Reihe, gestapelt im Querformat 2 : 1 */
   .eco-show[data-folge="eco"] { --stage-min: clamp(18rem, 26vw, 28rem); }
+  /* Startseite mit großem Kopf (Runde 15): die Bühne wächst mit, damit Kopf und Formation gleich schwer stehen; der Blitz
+     füllt die Höhe (fill in scenes/eco.js) und wird damit „ein ganzes Stück größer“ */
+  @media (--grid-expanded) { .eco-staged:has(.eco-head-xl) .eco-show[data-folge="eco"] { --stage-min: clamp(22rem, 36vw, 40rem); } }
   .eco-show canvas { position: absolute; left: 0; width: 100%; top: calc(-1 * var(--stage-bleed)); height: calc(100% + 2 * var(--stage-bleed)); pointer-events: none; }
   @media (--grid-expanded) {
     :global(html:is(.reveal, .motion-paused)) .eco-staged { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); grid-template-rows: auto 1fr; grid-template-areas: "head stage" "copy stage"; }
+    /* großer Kopf: die linke Spalte ist so breit wie „Kein Rauch.“ bzw. die Einleitung (max-content, die Einleitung ist auf 44ch begrenzt),
+       die Bühne bekommt den ganzen Rest; mit 5 : 7 bräche der Kopf um oder die Formation würde schmaler als vorher */
+    :global(html:is(.reveal, .motion-paused)) .eco-staged:has(.eco-head-xl) { grid-template-columns: max-content minmax(0, 1fr); column-gap: clamp(var(--space-10), 5vw, var(--space-20)); }
     .eco-stage { align-self: center; }
   }
   /* Gestapelt: die Show-Bühne nimmt ihre Höhe aus der Spaltenbreite (3 : 2, 15–32rem) statt einer festen Höhe bis 22rem
@@ -200,4 +211,7 @@ const factItems = await Promise.all(facts.map(async (fact) => {
      Mindestbreite (390 px: 360 statt 350 px, der Text ragte 10 px über die Kante; layout-audit contain) */
   @media (--grid-stacked) { .eco-lead.has-img { grid-template-columns: 1fr; } .eco-staged { --stage-min: 15rem; grid-template-columns: minmax(0, 1fr); } .eco-show { aspect-ratio: 3 / 2; max-height: 32rem; } }
   @media (--grid-stacked) { .eco-show[data-folge="eco"] { aspect-ratio: 2 / 1; --stage-min: 11rem; } }
+  /* gestapelt mit großem Kopf (Startseite): etwas höher als 2 : 1, damit auch der Blitz größer steht; nur über das
+     Seitenverhältnis, eine Mindesthöhe ergäbe mit ihm eine Mindestbreite (390 px: 704 px breit, seitliches Scrollen) */
+  @media (--grid-stacked) { .eco-staged:has(.eco-head-xl) .eco-show[data-folge="eco"] { aspect-ratio: 5 / 3; } }
 </style>
