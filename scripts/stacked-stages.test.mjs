@@ -2,7 +2,7 @@
 // feste Höhe hatten (Show-Folge #warum-drohnen bis 20rem, Indoor-Reihe bis 22rem) und die Folge ihre Motive in diese Höhe
 // einpasst (folge.js: min(Breite / 2,3, Höhe / 1,5)). Beide Bühnen nehmen ihre Höhe jetzt aus der Spaltenbreite (3 : 2).
 // Dazu: Scrollstory-Kopf in der Hero-Stufe (gemessener Wächter: layout-audit.mjs head-size) und der Lichtkegel der
-// NRW-Karte nur mit Maus und ohne reduzierte Bewegung.
+// NRW-Karte mit Maus und Touch, wenn Bewegung erlaubt ist.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
@@ -29,11 +29,11 @@ test('Scrollstory-Kopf in der Hero-Stufe, Startseite mit benanntem Riesenformat 
   assert.match(read('scripts/layout-audit.mjs'), /const EXEMPT = '\.eco-head-xl';/);
 });
 
-test('Lichtkegel der NRW-Karte: nur Maus, ohne reduzierte Bewegung, Maske vorhanden', () => {
+test('Lichtkegel der NRW-Karte: feste Punktmaske und nur bei erlaubter Bewegung', () => {
   const src = read('src/components/sections/Location.astro');
-  assert.match(src, /\.loc-lit, \.loc-hit \{ display: none; \}/);
-  assert.match(src, /@media \(hover: hover\) and \(pointer: fine\) and \(prefers-reduced-motion: no-preference\)/);
-  assert.match(src, /html:not\(\.motion-paused\)\)? \.loc-lit/);
-  for (let i = 0; i < 12; i++) assert.ok(src.includes(`.hc${i}:hover`) && src.includes(`.hr${i}:hover`), `Zeigezelle ${i}`);
+  assert.match(src, /\.loc-lit \{ display: none;/);
+  assert.match(src, /@media \(prefers-reduced-motion: no-preference\) \{[^}]+\}\s*:global\(html:not\(\.motion-paused\)\) \.loc-lit \{ display: block;/);
+  assert.match(src, /mask: url\(\/media\/standort-nrw-maske\.svg\)/);
+  assert.doesNotMatch(src, /\bmask-composite:|class="loc-hit"/);
   assert.ok(existsSync(new URL('../public/media/standort-nrw-maske.svg', import.meta.url)));
 });
