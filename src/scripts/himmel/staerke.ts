@@ -5,7 +5,9 @@
 // Begründungen und Maße: himmel.css; Wächter: scripts/staerke-glow.test.mjs. Im Editor-Build (data-afe) wird nichts umgebaut.
 
 const SEL = ':is(h1, h2, h3) .grad';
-const LATE = '0% 0% -42% 0%'; // auslösen, wenn das Wort über 58 % der Fensterhöhe steht
+// Runde 15 (Marc: „setzt zu spät ein … sobald ein Heading im Bild ist, dann mit einem Delay von einer Sekunde“): auslösen,
+// sobald das ganze Wort im Fenster steht (knapp über dem unteren Rand); die Verzögerung trägt die Transition (himmel.css)
+const LATE = '0% 0% -6% 0%';
 
 function stack(el: HTMLElement): void {
   if (el.classList.contains('st-bereit')) return;
@@ -78,7 +80,7 @@ export function staerke(): void {
   if (!pending.size) return;
   const visible = new Set<Element>();
   const fill = (el: Element) => { el.classList.add('st-an'); pending.delete(el as HTMLElement); late.unobserve(el); seen.unobserve(el); visible.delete(el); };
-  const late = new IntersectionObserver((entries) => { for (const e of entries) if (e.isIntersecting) fill(e.target); }, { rootMargin: LATE });
+  const late = new IntersectionObserver((entries) => { for (const e of entries) if (e.isIntersecting) fill(e.target); }, { rootMargin: LATE, threshold: 1 });
   // Seitenende: was nie über 58 % kommt, füllt sich sichtbar am Ende
   const atEnd = () => {
     if (!pending.size || innerHeight + scrollY < document.documentElement.scrollHeight - 2) return;

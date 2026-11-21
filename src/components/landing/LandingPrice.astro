@@ -62,7 +62,8 @@ const scale = p && Number.isFinite(p.max) ? t('landingprice.upToValueDronesValue
         <p>{closing.text}</p>
         <div class="lp-actions">
           <a class="btn primary" href={localHref(closing.button.href)}>{closing.button.label}</a>
-          {download && <a class="link lp-sheet-dl" href={localHref(download.href)} download><Icon name="file-text" size={18} />{download.label}</a>}
+          {/* Runde 15 (Marc): das Datenblatt öffnet im Browser statt herunterzuladen, wie in LandingSite und den Anlass-Karten */}
+          {download && <a class="link lp-sheet-dl" href={localHref(download.href)} type="application/pdf" target="_blank" rel="noopener"><Icon name="file-text" size={18} />{download.label}</a>}
         </div>
       </div>
     </div>

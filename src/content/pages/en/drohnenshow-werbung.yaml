@@ -27,7 +27,7 @@ sections:
       - value: 700 drones
         label: biggest show
         _key: k_9b3d5f7a1c2e4b6d8f21
-      - value: up to {{duration.outdoor.max}} min
+      - value: "{{duration.outdoor.typical}}–{{duration.outdoor.max}} min"
         label: show length
         _key: k_2e6a8c0b4d1f3a5c7e32
     _key: k_cabb99b46c806fc432fa
@@ -393,12 +393,12 @@ sections:
       - werbung-moritz
     _key: k_92cbd2df611f3954dfc2
 translationContractVersion: 2
-translationSourceHash: 6c8904992629bb26e8cd4b9e3bbf9f5cf974d7a70c79199d6c9e9e5e4946713f
+translationSourceHash: 8900ba3c3d190b0f6e7cb916960cb4ab7c9971f0ce45dc7f2fd5d240c51f04c3
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: en
-  sourceFingerprint: 6c8904992629bb26e8cd4b9e3bbf9f5cf974d7a70c79199d6c9e9e5e4946713f
+  sourceFingerprint: 8900ba3c3d190b0f6e7cb916960cb4ab7c9971f0ce45dc7f2fd5d240c51f04c3
   fields:
     - address: /description
       sourceFingerprint: 0abe44f52a942a8d87aff554dd026c8040c67b45ca10f19445a5b29b6701dd73
@@ -1125,8 +1125,8 @@ translationEvidence:
       targetFingerprint: 50a43317844cb34565b87671d2787bd41194a08a784b47ec44fa7214e26b4cb0
       status: adopted-existing
     - address: /sections/@k_cabb99b46c806fc432fa/facts/@k_2e6a8c0b4d1f3a5c7e32/value
-      sourceFingerprint: dca10225f0b1116633b1893016a553d941b4ccde43601dc639a4312f88847363
-      targetFingerprint: ddd6347c5fb820957d0714638c4f91407ea0ad8d145c630d3eb9f2583a0cbdf3
+      sourceFingerprint: 1e5e9542a066f0978f09caadf56f99080d3b2fda74f506afa6d6966c9c5de3da
+      targetFingerprint: 7d8849f936bba71ff6c0805ccd6d840b691b768834a85013a256354b07a424b8
       status: adopted-existing
     - address: /sections/@k_cabb99b46c806fc432fa/facts/@k_4c1e8a2f7b9d3e5a6c10/label
       sourceFingerprint: aec7df4c58835b804ee0a125d73cbfe5afe4780fb59dfcbb69c11cb3c582fc46

@@ -27,7 +27,7 @@ sections:
     facts:
       - { value: "150+", label: Drohnenshows, "_key": "k_4c1e8a2f7b9d3e5a6c10" }
       - { value: 700 Drohnen, label: größte Show, "_key": "k_9b3d5f7a1c2e4b6d8f21" }
-      - { value: "bis {{duration.outdoor.max}} Min", label: Showdauer, "_key": "k_2e6a8c0b4d1f3a5c7e32" }
+      - { value: "{{duration.outdoor.typical}}–{{duration.outdoor.max}} Min", label: Showdauer, "_key": "k_2e6a8c0b4d1f3a5c7e32" }
     _key: k_cabb99b46c806fc432fa
 
   - type: logoBar
