@@ -44,8 +44,8 @@ Leistungsvergleich) gelten nur, wenn dieser Abschnitt sie nennt.
     QR-Code, dann „Scan me“; `qrStory` bleibt als Baustein), Marketing `drehzahl` → `tachoCarStory` (Drehzahlmesser →
     Sportwagen), Jubiläum neues Motiv `jubeltorte` „Torte und Jahreszahl“ (2D/3D Katalogtorte, 3D+ `cakeNumberStory`:
     Torte zerlegt sich zur Zahl mit Konfetti, Wert aus `version.value`, sonst 50), Kultur `teufel` →
-    `bokkenrijdersStory` (Maske → Totenkopf mit Zylinder, lüftet den Hut, lacht → Maske; `scenes/bokkenrijders.js`). Der
-    Totenkopf ist nachgebaut: im Material liegt von der Show nur die Maske als Punkte vor.
+    `bokkenrijdersStory` (Maske → Totenkopf mit Zylinder → Maske; `scenes/bokkenrijders.js`, seit Runde 17 neu, siehe
+    unten). Der Totenkopf ist nachgebaut: im Material liegt von der Show nur die Maske als Punkte vor.
   - `start`: Logo 100 → 600, 2D-Herz, Torte 2D → 3D → 3D+ (wird zur 50), Bremer Schlüssel 2D → 3D, QR-Geschichte,
     Elbphilharmonie 3D, Drehzahlmesser → Sportwagen, Fernsehturm 3D+, Roboter → Greifarm → Förderband, Bokkenrijders
     (Maske ↔ Totenkopf, 600). Show-Uhr rund 198 s statt 90 s (real rund 60 s), Tempo je Bild unverändert. Mit Pill-Wahl:
@@ -53,6 +53,43 @@ Leistungsvergleich) gelten nur, wenn dieser Abschnitt sie nennt.
   - `marke`: Drehzahlmesser 3D → 3D+ als eine Geschichte statt zweier Einträge mit direktem Flug.
   - Pills: ein zweiter Klick auf die gewählte Art hebt die Wahl auf, der gemischte Ablauf läuft ab dem gezeigten Motiv weiter.
   - Wächter: `scripts/umbau.test.mjs` (Drohnenzahl je Bild, Anschluss ohne Sprung, gerade Bahnen, alle Plätze besetzt).
+- Runde 17 (Marc, 21.11.2026: der Totenkopf „krass 2D und schlecht“, er muss die räumliche Tiefe der echten 3D-Maske haben
+  und dem Motiv aus der Show entsprechen; die Übergänge auf dem Niveau von Logo → QR und Torte → 50):
+  - **Vorbild:** das Foto der Fallstudie (01.jpg) und drei öffentliche Aufnahmen des Musicals vom Juni 2026 (YouTube
+    `YH9XVV1PSTA` aus der Luft, `spEaIilm57Q` und `Qt1Y1PBdyOA` aus dem Publikum; nur zur Analyse, nicht im Repo, Frames in
+    `/tmp/fs-r17-totenkopf/vorbild/`). Befunde: Totenkopf eisblau bis weiß, Zylinder aus senkrechten Säulen (rund elf von
+    vorn), Krempe seitlich hochgerollt (von unten gesehen zwei Schlaufen), der Hut sitzt tief, große Augenhöhlen mit je
+    einem Licht, die obere Zahnreihe als Grinsen nach oben gebogen, Unterkiefer weit offen. Er weint Blut (rote Streifen
+    über Wangen und Kiefer), glüht dann von unten nach oben auf (Weiß → Gold → Orange → Rot) und zerfällt in Glut. Von der
+    Seite gefilmt ist er ein Kopf, keine Fläche; gedreht wird er in der Show nicht. Die Maske erscheint erst als Grinsen
+    (Zähne und Augen), das Gesicht baut sich von der Stirn abwärts auf, die Hörner wachsen; am Ende verlöschen Hörner und
+    Gesicht, das Grinsen bleibt.
+  - **Körper** `src/scripts/scenes/totenkopf.js`: Drohnen gleichmäßig auf Oberflächen wie bei der echten Maske, keine
+    Linienzeichnung. Schädelschale aus Querschnitten (Superellipsen), Augenhöhlen und Nasenloch als Löcher mit Rand,
+    Zahnbögen, offener Unterkiefer, Zylinder als Säulengitter, Krempe als zwei Ringe, Tränenstreifen, dazu die Schädeldecke
+    unter dem Hut (5,5 % der Drohnen, dunkel, bis er den Hut lüftet). Freie Flächen per Farthest-Point-Auswahl; der
+    Punktabstand wird aus Fläche und Linienlängen gelöst, so stehen Schale, Hut und Kiefer bei 400–600 Drohnen gleich dicht
+    (kein Paar näher als 0,7 Abstände). Tiefe/Breite 0,82 (Maske 0,59), Punktabstand/Höhe wie die Maske (±35 %). Das
+    Publikum sieht ihn von unten wie die Maske (ihre Showdaten sind „von unten, 53°“ gespeichert): Kippung −0,5 rad,
+    Bewegungen laufen im Kopf vor der Kippung.
+  - **Geschichte** `scenes/bokkenrijders.js`, rund 35 s Show-Uhr: Maske (Grinsen → Gesicht → Hörner wachsen) → Umbau, aus
+    den Hörnern wird der Zylinder, die Drohnen wechseln unterwegs von Rot zu Eisweiß → Totenkopf (schwenkt ±0,27 rad, lüftet
+    den Zylinder über der Schädeldecke, Bluttränen, Glühen von unten nach oben, flackernde Glut) → Umbau, der glühende
+    Zylinder teilt sich in die Hörner, das Grinsen kommt zuletzt → Maske, bis nur ihr Grinsen bleibt. Das Standbild bei
+    reduzierter Bewegung zeigt die ganze Maske. Die Maskenteile (Hörner, Grinsen, Gesicht) sind aus den ungetönten Farben
+    der Showdatei bestimmt, die 600 Originalpunkte bleiben unverändert.
+  - **Baustein** `scenes/umbau.js`: Die Farbe wechselt jetzt unterwegs, zur Mitte des Flugs hin (gilt für alle
+    Umbau-Geschichten: Torte → 50, Logo → QR, Drehzahlmesser → Sportwagen); die Zielfarbe wird erst beim Abspielen aus dem
+    Bild gelesen, damit gilt auch die Paketfarbe fast weißer Drohnen. Neu: `leaveOrder` (in welcher Reihenfolge das alte
+    Bild losfliegt, z. B. von oben, wenn das neue sich von oben aufbaut) und `seamless`. `chain()` übergibt dem Umbau das
+    Bild, das wirklich in der Geschichte steht.
+  - **Engine** `show-field.js`: `live` darf eine Farbe setzen (`o[4..6]`, sonst gilt die des Punkts). Ein Bild mit
+    `seamless` wartet nicht die Mindestflugzeit ab (1,8 s plus Staffel), wenn jede Drohne schon an ihrem Platz steht und
+    keine hinausfliegt; das nutzt bisher nur Bokkenrijders (sonst stand die Maske vor jedem Umbau rund 3 s still).
+  - Wächter: `scripts/totenkopf.test.mjs` (Körper gegen die echte Maske, Farbwechsel im Flug ohne Sprung mit und ohne
+    Paketfarbe, Hut/Schädeldecke/Tränen/Glühen, Grinsen am Anfang und Ende, Drohnengrenzen, Farb- und Nahtlos-Haken der
+    Engine), dazu `scripts/umbau.test.mjs` und `scripts/show-counts.test.mjs`. Kontaktbögen: `/tmp/fs-r17-totenkopf/`
+    (`geschichte.png` aus der Engine, `kontaktbogen-browser.png` aus dem Konfigurator im Browser).
 
 ## Aufbau
 

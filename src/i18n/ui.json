@@ -5472,24 +5472,24 @@
     "nl": "Het masker uit onze show Bokkenrijders, een echte 3D-formatie"
   },
   "bokkenrijders.maskBecomesSkull": {
-    "de": "Die Maske zerlegt sich, ein Totenkopf mit Zylinder setzt sich zusammen",
-    "en": "The mask comes apart and a skull in a top hat assembles",
-    "nl": "Het masker valt uiteen en er vormt zich een doodshoofd met hoge hoed"
+    "de": "Die Maske zerlegt sich zum Totenkopf, aus den Hörnern wird sein Zylinder",
+    "en": "The mask comes apart into a skull, its horns become the top hat",
+    "nl": "Het masker valt uiteen tot een doodshoofd, de hoorns worden zijn hoge hoed"
   },
   "bokkenrijders.skullTipsHat": {
-    "de": "Der Totenkopf lüftet seinen Zylinder und lacht",
-    "en": "The skull tips its top hat and laughs",
-    "nl": "Het doodshoofd tilt zijn hoge hoed op en lacht"
+    "de": "Der Totenkopf lüftet seinen Zylinder, weint Blut und glüht auf",
+    "en": "The skull tips its top hat, weeps blood and starts to glow",
+    "nl": "Het doodshoofd tilt zijn hoge hoed op, huilt bloed en begint te gloeien"
   },
   "bokkenrijders.skullBecomesMask": {
-    "de": "Er zerlegt sich wieder, die Maske kehrt zurück",
-    "en": "It comes apart again and the mask returns",
-    "nl": "Hij valt weer uiteen en het masker keert terug"
+    "de": "Glühend zerlegt er sich, aus dem Zylinder werden die Hörner der Maske",
+    "en": "Glowing, it comes apart and the top hat turns into the mask’s horns",
+    "nl": "Gloeiend valt hij uiteen en de hoge hoed wordt de hoorns van het masker"
   },
   "bokkenrijders.maskAgain": {
-    "de": "Die Maske, ihre Augen glühen",
-    "en": "The mask, its eyes glowing",
-    "nl": "Het masker, met gloeiende ogen"
+    "de": "Die Maske, bis nur ihr Grinsen bleibt",
+    "en": "The mask, until only its grin remains",
+    "nl": "Het masker, tot alleen de grijns overblijft"
   },
   "showConfigurator.qrLogoStoryCaption": {
     "de": "Euer Logo zerlegt sich zu Handy und QR-Code, dann heißt es „Scan me“",
