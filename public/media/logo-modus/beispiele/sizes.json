@@ -83,10 +83,5 @@
     "id": "berlin",
     "bytes": 31998,
     "gzip": 5941
-  },
-  {
-    "id": "bremen",
-    "bytes": 39321,
-    "gzip": 8578
   }
 ]

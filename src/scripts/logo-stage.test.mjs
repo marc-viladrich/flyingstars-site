@@ -9,9 +9,13 @@ import { decodePoints } from './logo-v10/prepared.mjs';
 import { logoFrame, LOGO_AREA } from './logo-stage.mjs';
 import { createField } from './show-field.js';
 import { SHOW_ARTS, stopAtLeast, artMin } from '../content/show-packages.ts';
+import { LANDMARK_EXAMPLES } from './logo-examples.mjs';
+import { landmarkFormation } from './logo-landmark.mjs';
 
 const dir = new URL('../../public/media/logo-modus/beispiele/', import.meta.url);
-const ids = JSON.parse(fs.readFileSync(new URL('sizes.json', dir))).map((x) => x.id);
+// Runde 14: dazu die Wahrzeichen-Beispiele (Bremen = Stadtfest-Schlüssel, ohne vorberechnete Daten, bis 300 Drohnen)
+const ids = [...JSON.parse(fs.readFileSync(new URL('sizes.json', dir))).map((x) => x.id), ...Object.keys(LANDMARK_EXAMPLES)];
+const counts = (id) => (LANDMARK_EXAMPLES[id] ? [100, 150, 200, LANDMARK_EXAMPLES[id].max] : [100, 150, 200]);
 // gemessen im Konfigurator: Bühne, Hinweiskarte (über die Breite) und Minimap (rechts unten), CSS-Pixel relativ zur Bühne
 const STAGES = [
   { name: '1440', W: 844, H: 454, covers: [] },
@@ -21,7 +25,7 @@ const STAGES = [
   { name: '390 Minimap', W: 390, H: 422, covers: [{ top: 370, left: 318, right: 380 }] },
   { name: '390 Karte', W: 390, H: 422, covers: [{ top: 300, left: 12, right: 378 }] },
 ];
-const lit = (id, n) => { const d = JSON.parse(fs.readFileSync(new URL(`${id}.json`, dir))), f = d.formations[d.steps[n]], p = decodePoints(f.p), out = []; for (let i = 0; i < p.length; i += 5) out.push([p[i] / 1000, -p[i + 1] / 1000, 0, ...d.palette[p[i + 2]]]); return out; };
+const lit = (id, n) => { if (LANDMARK_EXAMPLES[id]) return landmarkFormation(id, n).map((q) => [q.x, -q.y, 0, ...q.c]); const d = JSON.parse(fs.readFileSync(new URL(`${id}.json`, dir))), f = d.formations[d.steps[n]], p = decodePoints(f.p), out = []; for (let i = 0; i < p.length; i += 5) out.push([p[i] / 1000, -p[i + 1] / 1000, 0, ...d.palette[p[i + 2]]]); return out; };
 
 // Runde 10b: gemessen wird das gezeichnete Logo auf der echten Bühne (show-field.js, Logo-Modus: Steuerleiste
 // ausgeblendet, view oben 8 px), nicht eine Nachrechnung der Abbildung
@@ -42,7 +46,7 @@ function screenBox(t, pts, st) {
 }
 
 for (const id of ids) test(`${id}: im Logo-Modus mittig im freien Teil, über der Karte, nie an den Rand gedrückt`, (t) => {
-  for (const n of [100, 150, 200]) for (const st of STAGES) {
+  for (const n of counts(id)) for (const st of STAGES) {
     const pts = lit(id, n), b = screenBox(t, pts, st), tag = `${id} ${n} ${st.name}`;
     // nie über einer Abdeckung; mittig im ganzen Band oder, wenn es ausweichen muss, im Band über der Abdeckung
     for (const c of st.covers) assert.ok(!(c.left < b.right && c.right > b.left && b.bottom > c.top - 1), `${tag}: Logo über der Abdeckung`);

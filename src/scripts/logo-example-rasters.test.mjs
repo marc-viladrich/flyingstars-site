@@ -2,11 +2,11 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {createHash} from 'node:crypto';
-import {LOGO_EXAMPLES} from './logo-examples.mjs';
+import {CONVERTER_EXAMPLES} from './logo-examples.mjs';
 const dir=new URL('../../public/media/logo-modus/beispiele/',import.meta.url);
 test('canonical example rasters match their source hashes and RGBA dimensions',()=>{
  const index=JSON.parse(fs.readFileSync(new URL('rasters-index.json',dir)));
- assert.equal(Object.keys(index).length,LOGO_EXAMPLES.length); // Runde 10b: so viele wie Beispiel-Knöpfe
+ assert.deepEqual(Object.values(index).sort(),[...CONVERTER_EXAMPLES].sort()); // Runde 10b/14: die Beispiel-Knöpfe ohne Wahrzeichen (Bremen)
  for(const [hash,id] of Object.entries(index)){
   assert.equal(createHash('sha256').update(fs.readFileSync(new URL(id+'.svg',dir))).digest('hex'),hash);
   const rasters=JSON.parse(fs.readFileSync(new URL(id+'.raster.json',dir)));assert.ok(rasters[512]);

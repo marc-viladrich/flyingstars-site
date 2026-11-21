@@ -45,6 +45,7 @@ import { SHOW_PACKAGES, DRONES_MIN, DRONES_MAX, DRONE_STEP, PACKAGE_NAMES, SHOW_
 import { DENSITIES, RISKY } from "./logo-density.mjs";
 import { logoAdvice } from "./logo-advice.mjs";
 import { logoFrame } from "./logo-stage.mjs";
+import { LANDMARK_EXAMPLES } from "./logo-examples.mjs";
 import { SHOW_EXTRAS } from "../content/show-extras.mjs";
 import { money } from "../lib/price.mjs";
 // Preisseite nach Moritz (17.11.2026): keine Paketwahl mehr. Zwei Zustände:
@@ -334,7 +335,8 @@ if (form) {
   // Applying the recommendation or changing the show package must never feed back into it.
   const LOGO_ANCHOR_MAX = 200;
   let logoWanted = null, sessionAnchor = null;
-  const logoAnchor = () => Math.max(DRONES_MIN, Math.min(logoWanted ?? drones, LOGO_ANCHOR_MAX));
+  // Runde 14: ein Wahrzeichen-Beispiel (Bremen) folgt der gewünschten Zahl bis zu seiner vollen Zeichnung (300), wie im Stadtfest
+  const logoAnchor = () => Math.max(DRONES_MIN, Math.min(logoWanted ?? drones, LANDMARK_EXAMPLES[logo?.example]?.max ?? LOGO_ANCHOR_MAX));
   const recommendation = (source) => memo(`logo-recommendation|${logoId}|${logoAnchor()}|${logoVer}`, () => logoPoints(source, logoAnchor()));
   const logoPoints = async (source, n) => {
     const mod = await logoModule();
@@ -980,8 +982,7 @@ if (form) {
     const request = ++exampleRequest;
     try {
       const mod = await logoModule(); await mod.loadExample(id);
-      const r = await fetch(`/media/logo-modus/beispiele/${id}.svg`); if (!r.ok || request !== exampleRequest) return;
-      const f = new File([await r.blob()], `${id}.svg`, { type: "image/svg+xml" });
+      const f = await mod.exampleFile(id); // Runde 14: Bremen aus den Linien des Stadtfest-Schlüssels, sonst die SVG-Datei
       if (request !== exampleRequest) return;
       detailAuto.setAttribute("aria-pressed", "true"); takeFile(f, id);
     } catch { $("#cfg-logo-status").textContent = message('showConfigurator.weCouldnTReadThisFile'); }

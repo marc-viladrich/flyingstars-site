@@ -13,6 +13,18 @@ import { nearestHit, rectUnits } from "./logo-v10/pick.mjs";
 import { bindRubberBand } from "./logo-v10/rubber-band.mjs";
 import { cleanRows } from "./logo-rows.mjs";
 import { DENSITIES, searchDensityIndex } from "./logo-density.mjs";
+import { isLandmark, landmarkFormation, landmarkSession, landmarkDensity, landmarkSvg } from "./logo-landmark.mjs";
+
+// Runde 14: Beispiele, die ein Wahrzeichen sind (Bremen = Bremer Schlüssel des Stadtfests), rechnen nicht im Konverter.
+// Ihre Datei kommt aus exampleFile() und ist hier vermerkt; logoSession() erkennt sie daran (eine hochgeladene Datei mit
+// demselben Inhalt ist ein anderes Objekt und läuft durch den Konverter).
+const landmarkFiles = new WeakMap();
+/** Die Datei eines Beispiels (für Sitzung und Minimap): sonst das SVG aus public/media/logo-modus/beispiele/. */
+export async function exampleFile(id) {
+  if (isLandmark(id)) { const f = new File([landmarkSvg(id)], `${id}.svg`, { type: "image/svg+xml" }); landmarkFiles.set(f, id); return f; }
+  const r = await fetch(`/media/logo-modus/beispiele/${id}.svg`); if (!r.ok) throw new Error(`Beispiel ${id}: ${r.status}`);
+  return new File([await r.blob()], `${id}.svg`, { type: "image/svg+xml" });
+}
 
 let examples = null;
 /** Die Kundenlogos für n Drohnen: [{ name, pts: [[x, y], …] (y nach unten, lange Seite in [-1, 1]), n }]. */
@@ -42,6 +54,7 @@ export async function customerLogos(n) {
  * formation(n) → Punkte [{ x, y, c: [r, g, b] }] mit meta { n, wanted, over, … } (Farben schon für den Nachthimmel).
  */
 export function logoSession(file, init = {}) {
+  if (landmarkFiles.has(file)) return landmarkSession(landmarkFiles.get(file), init);
   const raster = exampleRaster(file);
   let defaultOptions, disposed = false;
   const defaults = () => defaultOptions ??= exampleOptions(file);
@@ -176,12 +189,16 @@ export const cloudLive = (p, j, t, o) => { o[0] += 0.05 * Math.sin(t * 0.8 + j *
 
 const preparedExamples = new Map();
 export function loadExample(id) {
+  if (isLandmark(id)) return Promise.resolve({ landmark: id });
   if (!preparedExamples.has(id)) preparedExamples.set(id, fetch(`/media/logo-modus/beispiele/${id}.json`).then(r => {
     if (!r.ok) throw new Error(`Beispiel ${id}: ${r.status}`); return r.json();
   }).catch(error => { preparedExamples.delete(id); throw error; }));
   return preparedExamples.get(id);
 }
 export async function exampleFormation(id, n, showBudget) {
+  // Runde 14: ein Wahrzeichen zeigt bei jeder Zahl die Punkte des Katalogmotivs (die knappere Show-Fassung = das Motiv bei
+  // der Show-Zahl), ohne cleanRows: die Punkte stehen schon gleichmäßig auf den Linien
+  if (isLandmark(id)) return landmarkFormation(id, showBudget ?? n, { n: showBudget ?? n });
   const data = await loadExample(id);
   const ref = showBudget == null ? data.steps[n] : data.strict?.[n]?.[showBudget];
   const step = typeof ref === "string" ? data.formations?.[ref] : ref;
@@ -195,6 +212,7 @@ export async function exampleFormation(id, n, showBudget) {
 /** Runde 9: die gemessene Reglerstufe des automatischen Beispielbilds bei n Drohnen (tools/v10/configurator-density.mjs
  * im Ordner 23 misst sie mit effectiveDensity, gespeichert in beispiele/<id>.json unter density[n]). */
 export async function preparedDensity(id, n) {
+  if (isLandmark(id)) return landmarkDensity(id, n);
   const data = await loadExample(id);
   return data.density?.[n]?.index ?? null;
 }
