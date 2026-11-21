@@ -13,7 +13,6 @@ const { t, localHref, fact } = forPath(Astro.url.pathname);
 import type { Section } from '../../content.config';
 import Accent from '../Accent.astro';
 import Icon from '../Icon.astro';
-import CallFaces from '../CallFaces.astro';
 import { optimizedImage } from '../../lib/media';
 import { videos, videoPath } from '../../lib/videos';
 type Props = Extract<Section, { type: 'landingHero' }> & { index: number };
@@ -26,7 +25,7 @@ if (Boolean(video) === Boolean(show)) throw new Error('landingHero braucht genau
 const still = await optimizedImage(poster.src, 960);
 const src = video && videoPath(videos[video], 'preview');
 const small = video && videoPath(videos[video], 'mobile');
-// Telefon-Knopf mit den drei Porträts daneben (Runde 15, CallFaces.astro)
+// Telefon-Knopf mit Lucide-Telefon (Runde 16, Marc: Porträts im Seitenkopf „passen so nicht“)
 const tel = Boolean(secondary && localHref(secondary.href).startsWith('tel:'));
 const showLabels = { hochzeitHero: t('landinghero.weddingShowLabel') };
 ---
@@ -34,7 +33,7 @@ const showLabels = { hochzeitHero: t('landinghero.weddingShowLabel') };
   <div class="lh-copy">
     <h1 id="hero-h">{kicker && <><span class="kicker mono">{kicker}</span>{' '}</>}<Accent text={headline} /></h1>
     <p class="lead">{text}</p>
-    <div class="actions"><a class="btn primary" href={localHref(cta.href)}>{fact(cta.label)}</a>{secondary && (tel ? <a class="btn" href={localHref(secondary.href)} aria-describedby="call-people"><CallFaces id="call-people" />{fact(secondary.label).replace(/^\u260E\uFE0E?\s*/, '')}</a> : <a class="btn" href={localHref(secondary.href)}>{fact(secondary.label)}</a>)}</div>
+    <div class="actions"><a class="btn primary" href={localHref(cta.href)}>{fact(cta.label)}</a>{secondary && (tel ? <a class="btn" href={localHref(secondary.href)}><Icon name="phone" size={16} class="call-ico" />{fact(secondary.label).replace(/^\u260E\uFE0E?\s*/, '')}</a> : <a class="btn" href={localHref(secondary.href)}>{fact(secondary.label)}</a>)}</div>
     {facts.length > 0 && <FactList items={facts} variant="hero" />}
   </div>
   {show ? <MediaFrame class="lh-media lh-show" corners="inset" data-lh-show={show} data-lh-label={showLabels[show]}>

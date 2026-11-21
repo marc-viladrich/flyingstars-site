@@ -496,13 +496,12 @@ rechts neben dem Text; ein Teamfoto gibt es noch nicht. Marc: die Lösung aus ei
 - Runde 15 (Marc): Collage größer (bis 56 rem), Namen unten im Bild auf dunklem, weichgezeichnetem Verlauf (`.portrait::before/
   ::after`), sanftes Schweben (wenige px, versetzte Phasen, nur `translate`; aus bei reduzierter Bewegung und globaler Pause).
   Vergleichsvariante ohne Überlappung als Leiter wie auf Werbung (`Gallery.astro`): `?team=leiter`, kein sichtbarer Schalter.
-- Seitenköpfe mit Telefon-Knopf (`FlightHero`, `LandingHero`; Startseite, Hochzeit, Werbung, Indoor): daneben Ronja, Erwin
-  und Florian als kleiner Porträtstapel (`CallFaces.astro`), Bilder dekorativ, der Knopf verweist per `aria-describedby` auf
-  „Am Telefon: …“ (`hero.callPeople`). Knopf und Porträts brechen nie getrennt um (`.call`).
+- Seitenköpfe mit Telefon-Knopf (`FlightHero`, `LandingHero`): Lucide-Icon `phone` im Knopf. Porträts am Knopf wurden in
+  Runde 15/16 probiert und verworfen (zu voll bzw. passt nicht in den Seitenkopf).
 - Alle anderen Team-Sections (Werbung, Hochzeit, Indoor, Über uns) bleiben große Karten.
 - Der Himmel findet neben der Collage keinen freien Platz mehr (`free()`); das lachende Gesicht bei `#ueber` entfällt damit,
   es bleibt ein Bild in der Section (siehe `docs/himmel.md`).
 
 
 
-**Telefon-Knopf im Seitenkopf (Runde 16, Marc 21.11.2026):** Statt drei Porträts neben dem Knopf („zu voll“) steht Ronjas rundes Porträt IM Knopf an der Stelle des Telefon-Icons (`CallFaces.astro`), ein Element weniger. Team-Collage der Startseite: Namen unter dem Bild, fett, auf einem weichen dunklen Hof; kein Verlauf und keine Unschärfe im Foto.
+**Telefon-Knopf im Seitenkopf (Runde 16, Marc 21.11.2026):** Porträts am Knopf sind verworfen (drei daneben „zu voll“, eins im Knopf „passt so nicht“); es bleibt das Lucide-Icon `phone`. Team-Collage der Startseite: Namen unter dem Bild, fett, auf einem weichen dunklen Hof; kein Verlauf und keine Unschärfe im Foto.

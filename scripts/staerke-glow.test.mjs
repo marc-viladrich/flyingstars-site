@@ -61,14 +61,14 @@ test('Verlaufsworte: später auslösen, dünn verharren, dann zuschnappen ohne �
   const tok = (name) => Number(read('src/styles/global.css').match(new RegExp(`${name}: ([\\d.]+)s;`))?.[1]);
   const [dur, curve, delay] = [tok(m[1]), m[2].split(',').map(Number), tok(m[3])];
   assert.ok(dur >= 0.6 && dur <= 1.2, `Dauer ${dur}s`);
-  assert.ok(delay >= 0.5 && delay <= 1.2, `Verzögerung ${delay}s`); // Runde 15: sichtbar, dann etwa 1 s
+  assert.ok(delay >= 0.2 && delay <= 0.6, `Verzögerung ${delay}s`); // Runde 16: sichtbar, dann kurz (0,4 s)
   assert.ok(curve[1] >= 0 && curve[1] <= 1 && curve[3] >= 0 && curve[3] <= 1, 'Kurve schwingt über das Zielgewicht');
   assert.ok(curve[0] >= 0.5 && curve[2] >= 0.5, 'Kurve soll dünn verharren und dann beschleunigen (ease-in)');
   // Endstärke = Stärke der Überschrift (Marc, Runde 14: „alles die gleiche Dicke 500“), keine eigene Stärke am Verlaufswort
   assert.doesNotMatch(css, /:is\(h1, h2, h3\) \.grad \{ font-weight:/);
-  const late = Number(ts.match(/const LATE = '0% 0% (-\d+)% 0%'/)?.[1]);
-  assert.ok(late <= 0 && late >= -15, `Auslösung bei ${late} %`); // Runde 15: sobald das Wort im Bild ist
-  assert.match(ts, /rootMargin: LATE, threshold: 1/);
+  const late = Number(ts.match(/const LATE = '0% 0% (-?\d+)% 0%'/)?.[1]);
+  assert.equal(late, 0, `Auslösung bei ${late} %`); // Runde 16: beim ersten sichtbaren Pixel
+  assert.match(ts, /rootMargin: LATE, threshold: 0 \}/);
   assert.match(ts, /scrollHeight - 2/, 'Wörter am Seitenende füllen sich trotzdem');
 });
 
