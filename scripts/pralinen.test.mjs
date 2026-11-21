@@ -13,7 +13,7 @@ const { LIMITS } = await import('../src/scripts/show-flight.js');
 const { droneStops } = await import('../src/content/show-packages.ts');
 const { OCCASIONS } = await import('../src/content/show-configurator.js');
 
-const from600 = (art) => droneStops(art).filter((n) => n >= 600);
+const from400 = (art) => droneStops(art).filter((n) => n >= 400);
 const nearest = (pts) => pts.map((p, i) => { let m = Infinity; for (let j = 0; j < pts.length; j++) if (j !== i) { const d = Math.hypot(p[0] - pts[j][0], p[1] - pts[j][1], p[2] - pts[j][2]); if (d < m) m = d; } return m; });
 const quantile = (a, q) => { const s = [...a].sort((x, y) => x - y); return s[Math.min(s.length - 1, Math.floor(q * s.length))]; };
 const frame = (b, t, dark = false) => b.pts.map((p, j) => { const o = [p[0], p[1], p[2] || 0, 1]; b.live?.(p, j, t, o); return o; }).filter((o) => dark || o[3] > 0.05);
@@ -37,17 +37,17 @@ function motion(b, s, every = 1) {
   return { v, a, jump };
 }
 
-test('im Konfigurator: Hochzeit, 3D und 3D+ ab 600, nachgeladen', async () => {
+test('im Konfigurator: Hochzeit, 3D und 3D+ ab 400 (Runde 11c, vorher 600), nachgeladen', async () => {
   const h = OCCASIONS.find((o) => o.id === 'hochzeit'), m = h.motifs.find((x) => x.id === 'pralinen');
   assert.ok(m, 'Pralinenschachtel fehlt in der Hochzeit');
   assert.deepEqual(Object.keys(m.tiers), ['HORIZON', 'ODYSSEY']);
-  assert.equal(m.tiers.HORIZON.build, 'pralinen3d'); assert.equal(m.tiers.HORIZON.minDrones, 600);
-  assert.equal(m.tiers.ODYSSEY.build, 'pralinenStory'); assert.equal(m.tiers.ODYSSEY.minDrones, 600);
+  assert.equal(m.tiers.HORIZON.build, 'pralinen3d'); assert.equal(m.tiers.HORIZON.minDrones, 400);
+  assert.equal(m.tiers.ODYSSEY.build, 'pralinenStory'); assert.equal(m.tiers.ODYSSEY.minDrones, 400);
   for (const b of ['pralinen3d', 'pralinenStory']) assert.equal((await GROSS[b]()).builders[b], builders[b]);
 });
 
-test('genau n Drohnen in jedem Bild bei jeder einstellbaren Zahl ab 600, Punkte gültig, Teile vollständig', async () => {
-  for (const [name, stops] of [['pralinen3d', from600('3d')], ['pralinenStory', from600('story')]]) for (const n of stops) {
+test('genau n Drohnen in jedem Bild bei jeder einstellbaren Zahl ab 400, Punkte gültig, Teile vollständig', async () => {
+  for (const [name, stops] of [['pralinen3d', from400('3d')], ['pralinenStory', from400('story')]]) for (const n of stops) {
     const { beats } = await builders[name](n, '');
     for (const [k, b] of beats.entries()) {
       assert.equal(b.pts.length, n, `${name} ${n} Bild ${k}`);
@@ -58,7 +58,7 @@ test('genau n Drohnen in jedem Bild bei jeder einstellbaren Zahl ab 600, Punkte 
 });
 
 test('keine zwei Drohnen aufeinander, keine verstreuten Punkte (jede halbe Sekunde jedes Bildes)', async () => {
-  for (const [name, ns] of [['pralinen3d', [600, 800, 1000]], ['pralinenStory', [600, 800, 1000]]]) for (const n of ns) {
+  for (const [name, ns] of [['pralinen3d', [400, 550, 800, 1000]], ['pralinenStory', [400, 500, 800, 1000]]]) for (const n of ns) {
     const { beats } = await builders[name](n, '');
     for (const [k, b] of beats.entries()) for (const t of [...Array.from({ length: Math.floor(b.hold / 0.5) + 1 }, (_, i) => i * 0.5), b.hold]) {
       const pts = frame(b, t, true), nn = nearest(pts), med = quantile(nn, 0.5);
@@ -69,7 +69,7 @@ test('keine zwei Drohnen aufeinander, keine verstreuten Punkte (jede halbe Sekun
 });
 
 test('Eigenbewegung in Drohnengrenzen und ohne Sprung bei t = 0', async () => {
-  for (const [name, n] of [['pralinen3d', 600], ['pralinen3d', 1000], ['pralinenStory', 600], ['pralinenStory', 1000]]) {
+  for (const [name, n] of [['pralinen3d', 400], ['pralinen3d', 1000], ['pralinenStory', 400], ['pralinenStory', 1000]]) {
     const { beats } = await builders[name](n, ''), s = scaleOf(beats).k * Math.min(1, Math.sqrt(n / 300));
     for (const [k, b] of beats.entries()) {
       const m = motion(b, s, 2);
@@ -81,7 +81,7 @@ test('Eigenbewegung in Drohnengrenzen und ohne Sprung bei t = 0', async () => {
 });
 
 test('Geschichte mit denselben Drohnen: jedes Bild beginnt, wo das vorige endet; keine Wolke mitten im Motiv', async () => {
-  for (const n of [600, 1000]) {
+  for (const n of [400, 1000]) {
     const { beats } = await builders.pralinenStory(n, '');
     assert.equal(beats.length, 4);
     for (const [k, b] of beats.entries()) {
@@ -97,7 +97,7 @@ test('Geschichte mit denselben Drohnen: jedes Bild beginnt, wo das vorige endet;
 });
 
 test('das Bild füllt die Bühne: breit, Schachtel und Deckel nebeneinander; im Höhepunkt liegen die Pralinen im Deckelherz', async () => {
-  for (const [name, n] of [['pralinen3d', 600], ['pralinen3d', 1000], ['pralinenStory', 600], ['pralinenStory', 1000]]) {
+  for (const [name, n] of [['pralinen3d', 400], ['pralinen3d', 1000], ['pralinenStory', 400], ['pralinenStory', 1000]]) {
     const { beats } = await builders[name](n, ''), fit = scaleOf(beats);
     assert.ok(fit.w / fit.h >= 0.7 * (1.15 / 0.75), `${name} ${n}: Seitenverhältnis ${(fit.w / fit.h).toFixed(2)}`);
     const b = beats[beats.length - 1], f = frame(b, b.hold, true);
@@ -105,7 +105,7 @@ test('das Bild füllt die Bühne: breit, Schachtel und Deckel nebeneinander; im 
   }
   // Höhepunkt: am Ende liegen alle Pralinen im Rechteck um den Deckel (sie schweben ein Stück vor ihm, in der Ansicht von
   // oben rücken sie dadurch etwas nach unten: 0,15 Spielraum)
-  for (const n of [600, 1000]) {
+  for (const n of [400, 1000]) {
     const M = model(n), { beats } = await builders.pralinenStory(n, ''), b = beats[3], f = frame(b, b.hold, true), P0 = M.nb + M.nl + M.nc;
     const lid = f.slice(M.nb, M.nb + M.nl), pr = f.slice(P0), lo = (k) => Math.min(...lid.map((p) => p[k])), hi = (k) => Math.max(...lid.map((p) => p[k]));
     const out = pr.filter((p) => p[0] < lo(0) - 0.15 || p[0] > hi(0) + 0.15 || p[1] < lo(1) - 0.15 || p[1] > hi(1) + 0.15);
@@ -114,7 +114,7 @@ test('das Bild füllt die Bühne: breit, Schachtel und Deckel nebeneinander; im 
 });
 
 test('unterscheidbar: vier Pralinenformen, jede Praline eine eigene Form mit genug Drohnen, Fächer dazu', () => {
-  for (const n of [600, 800, 1000]) {
+  for (const n of [400, 600, 800, 1000]) {
     const M = model(n), per = new Map();
     M.owner.forEach((o) => { if (o >= 0) per.set(o, (per.get(o) ?? 0) + 1); });
     assert.equal(per.size, M.prl.length, `${n}: Pralinen ohne Drohnen`);
@@ -127,8 +127,9 @@ test('unterscheidbar: vier Pralinenformen, jede Praline eine eigene Form mit gen
 test('mehr Drohnen bringen mehr Pralinen und Teile, nicht nur dichtere Linien', () => {
   assert.deepEqual([600, 749, 750, 899, 900, 1000].map(level), [0, 0, 1, 1, 2, 2]);
   const count = (n) => model(n).prl.length;
-  assert.ok(count(600) >= 14 && count(600) < count(800) && count(800) < count(1000), `Pralinen ${[600, 800, 1000].map(count).join(' / ')}`);
+  assert.ok(count(400) >= 10 && count(400) < count(600) && count(600) < count(800) && count(800) < count(1000), `Pralinen ${[400, 600, 800, 1000].map(count).join(' / ')}`);
   const med = (n) => { const M = model(n); return quantile(nearest(M.pts.slice(0, M.nb)), 0.5); };
+  // ab der früheren Schwelle 600 (darunter trägt die Schachtel weniger Drohnen, ihre Linien sind lockerer)
   assert.ok(med(1000) >= 0.5 * med(600), `Schachtel: Abstand ${med(600).toFixed(3)} → ${med(1000).toFixed(3)}`);
 });
 

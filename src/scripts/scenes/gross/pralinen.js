@@ -1,5 +1,5 @@
 import { t as message } from '../../../i18n/ui.mjs';
-// Die geöffnete Pralinenschachtel (Runde 11b, große Motive, Anlass Hochzeit, ab 600 Drohnen). Kandidat FSK-074 der
+// Die geöffnete Pralinenschachtel (Runde 11b, große Motive, Anlass Hochzeit, ab 400 Drohnen; Runde 11c: vorher ab 600). Kandidat FSK-074 der
 // Motiv-Shortlist (freelance/clients/flyingstars/25-motiv-shortlist-2026-11-20), Referenz „Chocolate box opening to reveal
 // treats · 400“ (dort zwei flache, gefüllte Herzen).
 // Eine herzförmige Schachtel als räumlicher Körper aus Kanten, nichts gefüllt: der Boden und der obere Rand als
@@ -9,13 +9,13 @@ import { t as message } from '../../../i18n/ui.mjs';
 // Kanten), Kegel (Grundring und Spitze). So bleibt jede Praline neben Rahmen, Deckel und Fach unterscheidbar.
 // Jede Drohne kennt ihr Teil (Schachtel, Deckel, Fach, Praline i) und ihre Stelle darin; Deckel und Pralinen bewegen
 // sich als starre Körper (Scharnier hinten oben, Flugbahn jeder Praline), die Engine lässt jede Drohne an ihrem Platz.
-// Mehr Drohnen bringen mehr Pralinen (ein dichteres Fachraster, nicht dichtere Linien), ab 750 eine Schleife auf dem
+// Mehr Drohnen bringen mehr Pralinen (unter 600 zwölf, dann ein dichteres Fachraster, nicht dichtere Linien), ab 750 eine Schleife auf dem
 // Deckel, ab 900 eine Spitzenborte (Bögen) am Innenrand.
 //
-//   pralinen3d (3D, ab 600): die Schachtel steht offen, der Deckel lehnt hinten am Scharnier und atmet kaum merklich mit,
+//   pralinen3d (3D, ab 400): die Schachtel steht offen, der Deckel lehnt hinten am Scharnier und atmet kaum merklich mit,
 //     die Schachtel schwenkt langsam; eine Lichtreihe läuft Fachreihe für Fachreihe von der Spitze nach hinten über die
 //     gefüllten Fächer.
-//   pralinenStory (3D+, ab 600): vier Akte mit denselben Drohnen. Die geschlossene Schachtel mit Band schwenkt herein,
+//   pralinenStory (3D+, ab 400): vier Akte mit denselben Drohnen. Die geschlossene Schachtel mit Band schwenkt herein,
 //     der Deckel hebt sich und klappt nach hinten, eine Lichtreihe läuft über die Fächer, dann steigen die Pralinen
 //     nacheinander aus ihren Fächern auf und reihen sich über der Schachtel zu einem großen Herzen, das pulsiert. Die
 //     leeren Fächer bleiben zurück und glühen nach.
@@ -62,8 +62,8 @@ function inside(x, z) {
 }
 const distToEdge = (x, z) => Math.min(...OUTLINE.map(([a, b]) => Math.hypot(a - x, b - z)));
 /** Fächer: Raster versetzter Reihen im Herz, mit Abstand zum Rand. */
-function cells(lv) {
-  const g = GRID[lv], out = [];
+function cells(g) {
+  const out = [];
   for (let r = -8; r <= 8; r++) for (let c = -8; c <= 8; c++) {
     const x = (c + (r % 2 ? 0.5 : 0)) * g, z = r * g * 0.88 + 0.12;
     if (inside(x, z) && distToEdge(x, z) > 0.62 * g) out.push([x, z]);
@@ -71,6 +71,8 @@ function cells(lv) {
   return out;
 }
 const GRID = [0.46, 0.41, 0.395]; // 18, 20, 22 Pralinen: so viele passen im Höhepunkt mit Abstand ins Deckelherz
+/** Rasterweite je Drohnenzahl: unter 600 ein weiteres Raster (weniger, gleich große Pralinen statt dünnerer Linien). */
+export const gridOf = (n) => (n < 600 ? 0.48 : GRID[level(n)]); // 12 Pralinen unter 600
 const KINDS = ['trueffel', 'herz', 'wuerfel', 'kegel'];
 /** Eine Praline als Linien um ihren Mittelpunkt (Grundfläche bei y = 0), Größe s. */
 function pralineLines(kind, s) {
@@ -85,7 +87,7 @@ const KIND_COLOUR = { trueffel: mix(GOLD, ORANGE, 0.35), herz: mix(RED, PINK, 0.
 
 /** Modell: Drohnen in vier Gruppen (Schachtel | Deckel | Fächer | Pralinen), je Drohne die Stelle im eigenen Rahmen. */
 export function model(n) {
-  const lv = level(n), C = cells(lv), g = GRID[lv], s = 0.3 * g;
+  const lv = level(n), g = gridOf(n), C = cells(g), s = 0.3 * Math.min(g, 0.46);
   // Schachtel: Boden, oberer Rand, senkrechte Kanten an Spitze, Bauch und Schultern (Kanten im Profil sichtbar)
   const top = flatHeart(H), bottom = flatHeart(0), K = top.length, vAt = [0, 0.18, 0.32, 0.5, 0.68, 0.82].map((u) => Math.round(u * K) % K);
   const boxLines = [{ pts: bottom, closed: true }, { pts: top, closed: true }, ...vAt.map((i) => ({ pts: [bottom[i], top[i]] }))];
@@ -105,7 +107,7 @@ export function model(n) {
   const prl = C.map(([x, z], i) => ({ c: [x, 0.07, z], kind: KINDS[(i * 3 + Math.abs(Math.round(x * 7))) % 4] }));
   // Anteile je Gruppe nach Linienlänge (Schachtel und Deckel dürfen etwas dünner, die Pralinen brauchen ihre Form)
   const len = (lines) => lines.reduce((a, l) => { const p = l.closed ? [...l.pts, l.pts[0]] : l.pts; let L = 0; for (let i = 1; i < p.length; i++) L += Math.hypot(...sub(p[i], p[i - 1])); return a + L; }, 0);
-  const prLines = prl.map((p) => pralineLines(p.kind, s).map((l) => ({ ...l, pts: l.pts.map((q) => add(q, p.c)) }))), w = [len(boxLines) * 0.55, len(lidLines) * 0.5, len(cupLines) * 0.8, prLines.reduce((a, l) => a + len(l), 0) * 1.3];
+  const prLines = prl.map((p) => pralineLines(p.kind, s).map((l) => ({ ...l, pts: l.pts.map((q) => add(q, p.c)) }))), w = [len(boxLines) * 0.55, len(lidLines) * 0.5, len(cupLines) * 0.8, prLines.reduce((a, l) => a + len(l), 0) * (n < 600 ? 1.1 : 1.3)];
   const tot = w.reduce((a, b) => a + b, 0), cnt = w.map((x) => Math.floor((n * x) / tot)); cnt[3] += n - cnt.reduce((a, b) => a + b, 0);
   const box = assemble([curves('box', boxLines)], cnt[0]), lid = assemble([curves('lid', lidLines)], cnt[1]), cups = assemble([curves('cup', cupLines)], cnt[2]);
   // Pralinen: jede Praline bekommt Drohnen nach ihrer Linienlänge (mindestens 8), aufgebaut um ihren eigenen Mittelpunkt

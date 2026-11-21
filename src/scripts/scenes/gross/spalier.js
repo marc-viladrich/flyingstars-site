@@ -1,5 +1,5 @@
 import { t as message } from '../../../i18n/ui.mjs';
-// Das Blütenspalier mit Lichterweg (Runde 11b, große Motive, Anlass Hochzeit, ab 700 Drohnen). Kandidat FSK-075 der
+// Das Blütenspalier mit Lichterweg (Runde 11b, große Motive, Anlass Hochzeit, ab 500 Drohnen; Runde 11c: vorher ab 700). Kandidat FSK-075 der
 // Motiv-Shortlist (freelance/clients/flyingstars/25-motiv-shortlist-2026-11-20), Referenz „Meditative landscape with
 // butterflies · 400“ (dort ein flacher Weg zwischen gefüllten Blütenflächen).
 // Ein Weg führt vom Publikum in die Tiefe, durch einen Tunnel aus Rosenbögen. Jeder Bogen hat zwei durchbrochene
@@ -12,11 +12,11 @@ import { t as message } from '../../../i18n/ui.mjs';
 // sich die Blüte als Bewegung. Blüten öffnen sich paarweise, vom vordersten Bogen zum hintersten: der Blick wandert zur
 // Mitte. Verworfen (Runde 11b, Iteration 2): Rankenwände als Kulissen links und rechts des Wegs; sie lasen sich als
 // Kisten mit Blumen obendrauf, der Weg ging zwischen ihnen verloren.
-// Mehr Drohnen bringen mehr Teile: ab 800 ein fünfter Bogen und eine zweite Blüte je Cluster, ab 900 ein sechster Bogen.
+// Mehr Drohnen bringen mehr Teile: unter 600 drei Bögen, ab 600 ein vierter, ab 800 ein fünfter Bogen und eine zweite Blüte je Cluster, ab 900 ein sechster Bogen.
 //
-//   spalier3d (3D, ab 700): der Bogentunnel schwenkt langsam (die Tiefe zeigt sich), die Blüten öffnen sich paarweise
+//   spalier3d (3D, ab 500): der Bogentunnel schwenkt langsam (die Tiefe zeigt sich), die Blüten öffnen sich paarweise
 //     von vorn nach hinten, danach laufen Lichter über den Weg zur Mitte, die Blütenpaare leuchten mit.
-//   spalierStory (3D+, ab 700): vier Akte mit denselben Drohnen. Weg und Bögen zeichnen sich, die Blüten öffnen sich
+//   spalierStory (3D+, ab 500): vier Akte mit denselben Drohnen. Weg und Bögen zeichnen sich, die Blüten öffnen sich
 //     paarweise, die Lichter führen zur Mitte, dann steigen die Lichter des Wegs auf und werden am Ende des Wegs zu zwei
 //     ineinander verschlungenen Ringen.
 // Wächter: scripts/spalier.test.mjs.
@@ -35,8 +35,10 @@ const ease = (u) => (u <= 0 ? 0 : u >= 1 ? 1 : u * u * u * (u * (u * 6 - 15) + 1
 export const level = (n) => (n >= 900 ? 2 : n >= 800 ? 1 : 0);
 const Z_NEAR = 2.0, Z_FAR = -2.6;
 /** Bögen vorn nach hinten: z, halbe lichte Weite a, Höhe der Holme p, Breite der Spalierseite b. */
-function arches(lv) {
-  const k = [4, 5, 6][lv], out = [];
+/** Zahl der Bögen: unter 600 drei (weniger Bögen statt dünnerer Linien), dann 4, 5, 6 je Detailstufe. */
+export const archCount = (n) => (n < 600 ? 3 : [4, 5, 6][level(n)]);
+function arches(lv, n) {
+  const k = archCount(n), out = [];
   for (let i = 0; i < k; i++) {
     const u = i / (k - 1), s = lerp(1, 0.5, u);
     out.push({ i, z: lerp(1.45, -2.05, u), a: 1.15 * s, p: 1.15 * s, b: 0.17 * s, s });
@@ -58,9 +60,9 @@ function archLines(A) {
   return lines;
 }
 /** Blüten: je Bogen an beiden Schultern ein Cluster (ab 800 zwei Blüten). Paar = Bogen. */
-function flowers(lv) {
+function flowers(lv, n) {
   const out = [];
-  for (const A of arches(lv)) {
+  for (const A of arches(lv, n)) {
     const rr = A.a + A.b / 2, at = (ang, r, dz = 0.1) => [rr * Math.cos(ang), A.p + rr * Math.sin(ang), A.z + dz];
     for (const sg of [-1, 1]) {
       const base = sg > 0 ? 0 : Math.PI, dir = sg > 0 ? 1 : -1;
@@ -95,9 +97,9 @@ function pathLights(count) {
 
 /** Modell: Bögen (statisch) | Blüten | Lichterweg; je Drohne die Stelle im eigenen Teil. */
 export function model(n) {
-  const lv = level(n), A = arches(lv), F = flowers(lv), K = 5;
+  const lv = level(n), A = arches(lv, n), F = flowers(lv, n), K = 5;
   const al = A.flatMap(archLines);
-  const nl = Math.max(40, Math.round(n * 0.08)) & ~1, perFlower = (f) => Math.max(K * 3, Math.round((f.r / 0.2) * K * 2.7));
+  const nl = (n < 600 ? 56 : Math.max(40, Math.round(n * 0.08))) & ~1, perFlower = (f) => Math.max(K * 3, Math.round((f.r / 0.2) * K * 2.7));
   const nf = Math.min(F.reduce((a, f) => a + perFlower(f), 0), Math.round(n * 0.45)), nw = n - nl - nf;
   const walls = assemble([curves('bogen', al)], nw);
   // Blüten: je Blüte Drohnen nach Größe, gleichmäßig auf die Blätter verteilt
@@ -162,9 +164,10 @@ function spalierStory(n) {
   }
   const flat = (list) => Float64Array.from(list.flatMap((q) => [q[0], q[1], q[2]]));
   const toL = assignScalable(flat(ringPts), flat(m.lights)), goal = new Array(m.nl); ringPts.forEach((q, r) => { goal[toL[r]] = q; });
-  // hinten zuerst: die Lichter nahe am Ende steigen zuerst auf, die vorderen folgen über den Weg
+  // hinten zuerst: die Lichter nahe am Ende steigen zuerst auf, die vorderen folgen über den Weg, in einem Bogen
+  const LIFT = 0.3;
   const lightPose = (k, T, o) => {
-    const p = m.lights[k], g = goal[k], u = ease((T - RINGS.at - (1 - depth(p[2])) * RINGS.spread) / RINGS.dur), lift = 0.3 * Math.sin(Math.PI * u);
+    const p = m.lights[k], g = goal[k], u = ease((T - RINGS.at - (1 - depth(p[2])) * RINGS.spread) / RINGS.dur), lift = LIFT * Math.sin(Math.PI * u);
     o[0] = lerp(p[0], g[0], u); o[1] = lerp(p[1], g[1], u) + lift; o[2] = lerp(p[2], g[2], u); return o;
   };
   const open = (T) => (p) => openOf(p, T, S_OPEN.at, S_OPEN.step, S_OPEN.dur);

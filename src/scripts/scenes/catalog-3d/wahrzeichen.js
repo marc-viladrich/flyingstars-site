@@ -172,13 +172,16 @@ export function elphi(n, stufe = '3D') {
 }
 
 // ---------- Schwebebahn ----------
+/** Fahrt in 3D+: Versatz des Wagens von from nach to, Start at, Dauer dur (Sekunden). */
+export const SB_DRIVE = { from: -0.75, to: 0.75, at: 0.6, dur: 6.6 };
 export function schwebebahn(n, stufe = '3D') {
-  // 3D+: die Böcke stehen weiter auseinander (±1,15 statt ±0,85), damit der Wagen links neben der Mitte warten und zur
-  // Mitte einfahren kann, ohne dass er beim Start im Bock steht; vier Beine quer zur Fahrt, der Wagen fährt zwischen ihnen
+  // 3D+: die Böcke stehen weiter auseinander (±1,15 statt ±0,85); vier Beine quer zur Fahrt, weit gespreizt, damit der
+  // Wagen zwischen ihnen hindurchfährt (Runde 11c, Marc: „einen minimal längeren travel weg … damit es nach einer
+  // natürlichen Fahrt aussieht“): er fährt fast die ganze Strecke, von links außen nach rechts außen
   const plus = stufe === '3D+', { top: T, bottom: B, ground: g, car: [x0, x1, y0, y1], hang } = SB, X = plus ? 1.5 : 1.2, FX = plus ? 1.15 : 0.85, Z = 0.12;
   const rail = [line3([-X, T, Z], [X, T, Z]), line3([-X, T, -Z], [X, T, -Z]), line3([-X, B, 0], [X, B, 0])];
   if (plus) { const k = 12; for (let i = 0; i < k; i++) { const xa = -X + (2 * X * i) / k, xb = -X + (2 * X * (i + 1)) / k; rail.push(line3([xa, T, (i % 2 ? -1 : 1) * Z], [xb, B, 0])); } }
-  const frames = [-FX, FX].flatMap((cx) => (plus ? [[-1, 1], [1, 1], [-1, -1], [1, -1]].map(([u, v]) => line3([cx, B, 0], [cx + u * 0.3, g, v * 0.42])) : [line3([cx - 0.3, g, 0.2], [cx, B, 0], [cx + 0.3, g, -0.2])]));
+  const frames = [-FX, FX].flatMap((cx) => (plus ? [[-1, 1], [1, 1], [-1, -1], [1, -1]].map(([u, v]) => line3([cx, B, 0], [cx + u * 0.3, g, v * (plus ? 0.6 : 0.42)])) : [line3([cx - 0.3, g, 0.2], [cx, B, 0], [cx + 0.3, g, -0.2])]));
   const yc = (y0 + y1) / 2, rc = (y1 - y0) / 2;
   const parts = [curves('rail', rail), curves('frame', frames), tube('car', [[x0 + rc, yc, 0], [x1 - rc, yc, 0]], rc, { depth: 0.7, hoops: plus ? 3 : 1 }), curves('hanger', hang.map((x) => line3([x, y1, 0], [x + 0.06, (y1 + B) / 2, 0], [x, B, 0])))];
   if (plus) parts.push(curves('window', [line3([x0 + 0.1, y1 - 0.09, rc * 0.7], [x1 - 0.1, y1 - 0.09, rc * 0.7])]));
@@ -186,8 +189,9 @@ export function schwebebahn(n, stufe = '3D') {
   const pts = colour(shape, { rail: WARM, frame: STEEL, car: CYAN, hanger: WARM, window: GOLD }, WARM);
   const moves = (tag) => tag === 'car' || tag === 'hanger' || tag === 'window';
   return { pts, tags, live: (b, j, t, o) => {
-    // 3D+: der Wagen fährt von links zur Mitte und hält; 3D: er steht, Licht läuft über ihn
-    if (moves(tags[j])) { if (plus) { o[0] -= 0.5 * (1 - glide(t, 0.5, 4.5)); o[3] = glint(b[0], t, 3.5, 0.5, -0.6, 0.6); } else o[3] = glint(b[0], t, 3.5, 0.5, -0.6, 0.6); }
+    // 3D+: der Wagen fährt von links außen durch beide Böcke nach rechts außen, sanft anfahren und bremsen (SB_DRIVE);
+    // 3D: er steht, Licht läuft über ihn
+    if (moves(tags[j])) { if (plus) { o[0] += SB_DRIVE.from + (SB_DRIVE.to - SB_DRIVE.from) * glide(t, SB_DRIVE.at, SB_DRIVE.dur); o[3] = glint(b[0], t, 3.5, 0.5, -0.6, 0.6); } else o[3] = glint(b[0], t, 3.5, 0.5, -0.6, 0.6); }
     turn(o, t, VIEW, 0.28, 14);
   } };
 }

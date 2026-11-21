@@ -14,7 +14,7 @@ const { LIMITS } = await import('../src/scripts/show-flight.js');
 const { droneStops } = await import('../src/content/show-packages.ts');
 const { OCCASIONS } = await import('../src/content/show-configurator.js');
 
-const from700 = (art) => droneStops(art).filter((n) => n >= 700);
+const from500 = (art) => droneStops(art).filter((n) => n >= 500);
 const nearest = (pts) => pts.map((p, i) => { let m = Infinity; for (let j = 0; j < pts.length; j++) if (j !== i) { const d = Math.hypot(p[0] - pts[j][0], p[1] - pts[j][1], p[2] - pts[j][2]); if (d < m) m = d; } return m; });
 const quantile = (a, q) => { const s = [...a].sort((x, y) => x - y); return s[Math.min(s.length - 1, Math.floor(q * s.length))]; };
 const frame = (b, t, dark = false) => b.pts.map((p, j) => { const o = [p[0], p[1], p[2] || 0, 1]; b.live?.(p, j, t, o); return o; }).filter((o) => dark || o[3] > 0.05);
@@ -38,18 +38,18 @@ function motion(b, s, every = 1) {
   return { v, a, jump };
 }
 
-test('im Konfigurator: Hochzeit, 3D und 3D+ ab 700, direkt nach dem Tor, nachgeladen', async () => {
+test('im Konfigurator: Hochzeit, 3D und 3D+ ab 500 (Runde 11c, vorher 700), direkt nach dem Tor, nachgeladen', async () => {
   const h = OCCASIONS.find((o) => o.id === 'hochzeit'), i = h.motifs.findIndex((x) => x.id === 'spalier'), m = h.motifs[i];
   assert.ok(m, 'Blütenspalier fehlt in der Hochzeit');
   assert.equal(h.motifs[i - 1].id, 'tor', 'nicht direkt nach dem Tor');
   assert.deepEqual(Object.keys(m.tiers), ['HORIZON', 'ODYSSEY']);
-  assert.equal(m.tiers.HORIZON.build, 'spalier3d'); assert.equal(m.tiers.HORIZON.minDrones, 700);
-  assert.equal(m.tiers.ODYSSEY.build, 'spalierStory'); assert.equal(m.tiers.ODYSSEY.minDrones, 700);
+  assert.equal(m.tiers.HORIZON.build, 'spalier3d'); assert.equal(m.tiers.HORIZON.minDrones, 500);
+  assert.equal(m.tiers.ODYSSEY.build, 'spalierStory'); assert.equal(m.tiers.ODYSSEY.minDrones, 500);
   for (const b of ['spalier3d', 'spalierStory']) assert.equal((await GROSS[b]()).builders[b], builders[b]);
 });
 
-test('genau n Drohnen in jedem Bild bei jeder einstellbaren Zahl ab 700, Punkte gültig, Teile vollständig', async () => {
-  for (const [name, stops] of [['spalier3d', from700('3d')], ['spalierStory', from700('story')]]) for (const n of stops) {
+test('genau n Drohnen in jedem Bild bei jeder einstellbaren Zahl ab 500, Punkte gültig, Teile vollständig', async () => {
+  for (const [name, stops] of [['spalier3d', from500('3d')], ['spalierStory', from500('story')]]) for (const n of stops) {
     const { beats } = await builders[name](n, '');
     for (const [k, b] of beats.entries()) {
       assert.equal(b.pts.length, n, `${name} ${n} Bild ${k}`);
@@ -60,7 +60,7 @@ test('genau n Drohnen in jedem Bild bei jeder einstellbaren Zahl ab 700, Punkte 
 });
 
 test('keine zwei Drohnen aufeinander, keine verstreuten Punkte (jede halbe Sekunde jedes Bildes)', async () => {
-  for (const [name, ns] of [['spalier3d', [700, 850, 1000]], ['spalierStory', [700, 800, 1000]]]) for (const n of ns) {
+  for (const [name, ns] of [['spalier3d', [500, 650, 850, 1000]], ['spalierStory', [500, 600, 800, 1000]]]) for (const n of ns) {
     const { beats } = await builders[name](n, '');
     for (const [k, b] of beats.entries()) for (const t of [...Array.from({ length: Math.floor(b.hold / 0.5) + 1 }, (_, i) => i * 0.5), b.hold]) {
       const pts = frame(b, t, true), nn = nearest(pts), med = quantile(nn, 0.5);
@@ -71,7 +71,7 @@ test('keine zwei Drohnen aufeinander, keine verstreuten Punkte (jede halbe Sekun
 });
 
 test('Eigenbewegung in Drohnengrenzen und ohne Sprung bei t = 0', async () => {
-  for (const [name, n] of [['spalier3d', 700], ['spalier3d', 1000], ['spalierStory', 700], ['spalierStory', 1000]]) {
+  for (const [name, n] of [['spalier3d', 500], ['spalier3d', 1000], ['spalierStory', 500], ['spalierStory', 1000]]) {
     const { beats } = await builders[name](n, ''), s = scaleOf(beats).k;
     for (const [k, b] of beats.entries()) {
       const m = motion(b, s, 2);
@@ -83,7 +83,7 @@ test('Eigenbewegung in Drohnengrenzen und ohne Sprung bei t = 0', async () => {
 });
 
 test('Geschichte mit denselben Drohnen: jedes Bild beginnt, wo das vorige endet; keine Wolke mitten im Motiv', async () => {
-  for (const n of [700, 1000]) {
+  for (const n of [500, 1000]) {
     const { beats } = await builders.spalierStory(n, '');
     assert.equal(beats.length, 4);
     for (const [k, b] of beats.entries()) {
@@ -99,13 +99,13 @@ test('Geschichte mit denselben Drohnen: jedes Bild beginnt, wo das vorige endet;
 });
 
 test('das Bild füllt die Bühne; der Weg führt in die Tiefe; am Ende stehen zwei Ringe im Tunnel', async () => {
-  for (const [name, n] of [['spalier3d', 700], ['spalier3d', 1000], ['spalierStory', 700], ['spalierStory', 1000]]) {
+  for (const [name, n] of [['spalier3d', 500], ['spalier3d', 1000], ['spalierStory', 500], ['spalierStory', 1000]]) {
     const { beats } = await builders[name](n, ''), fit = scaleOf(beats);
     assert.ok(fit.w / fit.h >= 0.55 * (1.15 / 0.75), `${name} ${n}: Seitenverhältnis ${(fit.w / fit.h).toFixed(2)}`);
     const b = beats[0], f = frame(b, b.hold, true);
     assert.ok(extent(f, 0) >= 0.7 * fit.w && extent(f, 1) >= 0.8 * fit.h, `${name} ${n}: füllt den Ausschnitt nicht`);
   }
-  for (const n of [700, 1000]) {
+  for (const n of [500, 1000]) {
     const M = model(n), zs = M.lights.map((p) => p[2]);
     assert.ok(Math.max(...zs) - Math.min(...zs) >= 4, `${n}: Weg zu kurz`);
     // der Weg wird nach hinten schmaler (die Tiefe), die Bögen werden kleiner
@@ -120,7 +120,7 @@ test('das Bild füllt die Bühne; der Weg führt in die Tiefe; am Ende stehen zw
 });
 
 test('Blüten öffnen sich paarweise von vorn nach hinten (links und rechts zugleich)', async () => {
-  for (const n of [700, 1000]) {
+  for (const n of [500, 1000]) {
     const M = model(n), { beats } = await builders.spalier3d(n, ''), b = beats[0];
     // Öffnung einer Blüte: wie weit ihre Drohnen nach vorn (z) über den Mittelpunkt hinaus stehen (Kelch → flach)
     const cup = (t, fi) => { const js = M.slot.map((q, k) => (q.fi === fi ? M.nw + k : -1)).filter((j) => j >= 0); return js.length; };
@@ -133,10 +133,10 @@ test('Blüten öffnen sich paarweise von vorn nach hinten (links und rechts zugl
 
 test('mehr Drohnen bringen mehr Bögen und Blüten, nicht nur dichtere Linien', () => {
   assert.deepEqual([700, 799, 800, 899, 900, 1000].map(level), [0, 0, 1, 1, 2, 2]);
-  assert.deepEqual([700, 800, 900].map((n) => model(n).A.length), [4, 5, 6]);
-  assert.ok(model(700).F.length < model(800).F.length && model(800).F.length < model(900).F.length, 'Blüten');
+  assert.deepEqual([500, 700, 800, 900].map((n) => model(n).A.length), [3, 4, 5, 6]);
+  assert.ok(model(500).F.length < model(700).F.length && model(700).F.length < model(800).F.length && model(800).F.length < model(900).F.length, 'Blüten');
   const med = (n) => { const M = model(n); return quantile(nearest(M.walls), 0.5); };
-  assert.ok(med(1000) >= 0.5 * med(700), `Bögen: Abstand ${med(700).toFixed(3)} → ${med(1000).toFixed(3)}`);
+  assert.ok(med(1000) >= 0.5 * med(500), `Bögen: Abstand ${med(500).toFixed(3)} → ${med(1000).toFixed(3)}`);
 });
 
 test('Aufbau schnell genug für den Anlasswechsel (erster Aufbau einer neuen Zahl)', async () => {

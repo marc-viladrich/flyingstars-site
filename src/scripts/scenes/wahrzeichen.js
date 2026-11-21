@@ -7,7 +7,7 @@
 // eng an der nächsten stünde.
 import { prepareLines, stageSample, DOT_MAX } from './catalog-resample.js';
 import { t as message } from '../../i18n/ui.mjs';
-import { WARM, GOLD, CYAN, RED, BLUE, DIAMOND, mix, glint, chase, sway, trace, reveal, lightRank, share, part, act, sparkle } from '../show-motion.js';
+import { TAU as TAU_M, WARM, GOLD, CYAN, RED, BLUE, DIAMOND, PINK, VIOLET, mix, glint, chase, sway, trace, reveal, lightRank, share, part, act, sparkle, hash } from '../show-motion.js';
 import { WAHRZEICHEN_3D, warning, clockLight, CLOCK } from './catalog-3d/wahrzeichen.js';
 import { textFormationAsync } from '../text-formation.js';
 import { sampleOutline } from '../show-geometry.js';
@@ -393,9 +393,11 @@ function bodyScene(key, n, stufe, caption, drawCaption) {
   const order = lightRank(pts);
   return { beats: [
     { ...beat, caption: drawCaption, hold: 2.4, live: (b, j, t, o) => { live(b, j, 0, o); o[3] *= trace(order[j], t, 2.2); } },
-    { ...beat, caption },
+    { ...beat, caption, ...(PLUS_HOLD[key] ? { hold: PLUS_HOLD[key] } : {}) },
   ] };
 }
+/** 3D+: Haltezeit des zweiten Bildes, wo die eigene Bewegung länger braucht (die Schwebebahn fährt die ganze Strecke). */
+const PLUS_HOLD = { schwebebahn: 8 };
 const DRAW = { schluessel: 'wahrzeichen.lightDrawsTheKey', skyline: 'wahrzeichen.lightDrawsTheSkyline', siegessaeule: 'wahrzeichen.lightDrawsTheVictoryColumn', fernsehturm: 'wahrzeichen.lightDrawsTheTvTower', rheinturm: 'wahrzeichen.lightDrawsTheRheinturm', tor: 'wahrzeichen.lightDrawsTheGate', dom: 'wahrzeichen.lightDrawsTheCathedral', elphi: 'wahrzeichen.lightDrawsTheElbphilharmonie', schwebebahn: 'wahrzeichen.lightDrawsTheSchwebebahn' };
 
 // ---------- Jahreszahl ----------
@@ -418,34 +420,52 @@ async function jahreFormation(value, k) {
   return word ? [...paintAll(num, GOLD), ...paintAll(await lettering(message('wahrzeichen.years'), word, 0.62, 0, low - 0.3), WARM)] : paintAll(num, GOLD);
 }
 const paintAll = (pts, c) => pts.map(([x, y, z]) => [x, y, z, ...c]);
-/** Lichtkranz in 3D: ein gekippter Ring um die Zahl, die Drohnen laufen auf ihm um. */
-const ringAt = (k, R, tilt, phase = 0) => Array.from({ length: k }, (_, i) => { const a = (i / k) * TAU + phase; return [Math.cos(a) * R, Math.sin(a) * R * Math.sin(tilt), Math.sin(a) * R * Math.cos(tilt)]; });
-function ringTurn(o, b, R, tilt, w) {
-  // Punkt auf dem Ring um w weiterdrehen (in der Ringebene)
-  const st = Math.sin(tilt), ct = Math.cos(tilt), a = Math.atan2(b[1] / st, b[0]) + w;
-  o[0] = Math.cos(a) * R; o[1] = Math.sin(a) * R * st; o[2] = Math.sin(a) * R * ct;
+// Runde 11c (Marc: „die beiden Ringe irgendwie unnötig, es kann gerne eher so ne Art Konfetti um die Zahl drum herum
+// sein“): statt zweier Lichtkränze tanzt Konfetti in einem lockeren Band um Zahl und Wort, im Raum verteilt, jedes Stück
+// flattert auf seiner eigenen kleinen Bahn und funkelt in seiner Farbe.
+const CONFETTI_COL = [GOLD, CYAN, PINK, VIOLET, WARM, mix(GOLD, RED, 0.4)];
+/** k Konfettiplätze um die Zahl: in einem Band zwischen dem Rechteck der Zahl (mit Rand) und einer Ellipse außen,
+ * in der Tiefe verteilt; Plätze halten Abstand voneinander (Ziehen mit Verwerfen, deterministisch). */
+function confettiAt(k, num) {
+  const xs = num.map((p) => p[0]), ys = num.map((p) => p[1]), x0 = Math.min(...xs) - 0.16, x1 = Math.max(...xs) + 0.16, y0 = Math.min(...ys) - 0.14, y1 = Math.max(...ys) + 0.14;
+  const cx = (x0 + x1) / 2, cy = (y0 + y1) / 2, RX = (x1 - x0) / 2 + 0.5, RY = (y1 - y0) / 2 + 0.42, out = [];
+  let gap = 0.34;
+  for (let q = 0; out.length < k && q < 40000; q++) {
+    if (q % 4000 === 3999) gap *= 0.85; // zu eng: Abstand lockern statt Plätze zu verlieren
+    const a = hash(q * 1.31 + 0.17) * TAU_M, r = Math.sqrt(hash(q * 2.71 + 0.53)), x = cx + Math.cos(a) * RX * r, y = cy + Math.sin(a) * RY * r, z = (hash(q * 3.93 + 0.29) - 0.5) * 1.0;
+    if (x > x0 && x < x1 && y > y0 && y < y1) continue;
+    if (out.some((p) => Math.hypot(p[0] - x, p[1] - y, p[2] - z) < gap)) continue;
+    out.push([x, y, z, ...CONFETTI_COL[out.length % CONFETTI_COL.length]]);
+  }
+  return out;
+}
+/** Flattern eines Konfettistücks um seinen Platz (eigene Phase und Tempo, gleich lange Hin- und Rückwege). */
+function flutter(o, j, t, on = 1) {
+  const h1 = hash(j + 0.11) * TAU_M, h2 = hash(j + 0.37) * TAU_M, w = 0.8 + 0.6 * hash(j + 0.73);
+  // um den Platz bei t = 0 (kein Sprung): jede Bahn beginnt dort, wo das Stück steht
+  const d = (f, ph) => Math.sin(t * f + ph) - Math.sin(ph);
+  o[0] += on * 0.06 * d(w * 1.3, h1); o[1] += on * 0.08 * d(w, h2); o[2] += on * 0.05 * d(w * 0.9, h1 + h2);
 }
 async function jahre2d(n, caption, version) {
   const pts = await jahreFormation(version?.value ?? JAHRE_STANDARD, n);
   return { beats: [{ pts, caption, live: (b, j, t, o) => { o[3] = glint(b[0], t, 3.6, 0.5, -1.2, 1.2); } }] };
 }
 async function jahre3d(n, caption, version) {
-  const R = 1.4, TILT = 0.28, k = Math.min(n, BODY_MAX), [nk, rk] = share(k, [3, 1]), num = await jahreFormation(version?.value ?? JAHRE_STANDARD, nk), ring = paintAll(ringAt(rk, R, TILT), CYAN);
-  return { beats: [{ pts: [...num, ...ring], caption, ...(n > k ? { offstageDrones: n - k } : {}), live: (b, j, t, o) => {
-    if (j >= nk) { ringTurn(o, b, R, TILT, t * 0.25); o[3] = 1; } else { o[3] = glint(b[0], t, 3.6, 0.5, -1.2, 1.2); sway(o, t, 0.35, 12); }
+  const k = Math.min(n, BODY_MAX), [nk, ck] = share(k, [3, 1]), num = await jahreFormation(version?.value ?? JAHRE_STANDARD, nk), conf = confettiAt(ck, num);
+  const off = n > nk + conf.length ? { offstageDrones: n - nk - conf.length } : {};
+  return { beats: [{ pts: [...num, ...conf], caption, ...off, live: (b, j, t, o) => {
+    if (j >= nk) { flutter(o, j, t); o[3] = sparkle(j, t, 0.75, 1.35); } else { o[3] = glint(b[0], t, 3.6, 0.5, -1.2, 1.2); sway(o, t, 0.35, 12); }
   } }] };
 }
 async function jahrePlus(n, caption, version) {
-  // Licht schreibt die Zahl, dann umkreisen sie zwei Lichtkränze in entgegengesetzter Richtung (wie eine Armillarsphäre)
-  const R = 1.35, k = Math.min(n, BODY_MAX), [nk, ra, rb] = share(k, [3.2, 1, 1]), num = await jahreFormation(version?.value ?? JAHRE_STANDARD, nk);
-  const A = paintAll(ringAt(ra, R, 0.35), CYAN), B = paintAll(ringAt(rb, R * 0.92, -0.35, 0.3), GOLD), order = num.map((p) => (p[0] + 1.2) / 2.4);
-  const off = n > k ? { offstageDrones: n - k } : {};
+  // Licht schreibt die Zahl, dann fliegt das Konfetti hinter ihr hervor und tanzt um sie herum
+  const k = Math.min(n, BODY_MAX), [nk, ck] = share(k, [3.2, 2]), num = await jahreFormation(version?.value ?? JAHRE_STANDARD, nk), conf = confettiAt(ck, num);
+  const order = num.map((p) => (p[0] + 1.2) / 2.4), off = n > nk + conf.length ? { offstageDrones: n - nk - conf.length } : {};
   return { beats: [
-    // die Kränze warten dunkel hinter der Zahl (offstage: nicht im Bildausschnitt)
-    { ...act([part('number', num), part('ring', [...A, ...B].map(([x, y, z, ...c]) => [x * 0.3, y * 0.3, z - 0.6, ...c]), { offstage: true })]), ...off, caption: message('wahrzeichen.lightWritesYourNumber'), hold: 2.6, live: (b, j, t, o) => { o[3] = j < nk ? reveal(order[j], t, 2.0) : 0; } },
-    { ...act([part('number', num), part('ring', [...A, ...B])]), ...off, caption, live: (b, j, t, o) => {
-      if (j >= nk + ra) { ringTurn(o, b, R * 0.92, -0.35, -t * 0.22); o[3] = sparkle(j, t, 0.9, 1.2); }
-      else if (j >= nk) { ringTurn(o, b, R, 0.35, t * 0.22); o[3] = 1; }
+    // das Konfetti wartet dunkel hinter der Zahl (offstage: nicht im Bildausschnitt)
+    { ...act([part('number', num), part('konfetti', conf.map(([x, y, z, ...c]) => [x * 0.3, y * 0.3, z * 0.3 - 0.6, ...c]), { offstage: true })]), ...off, caption: message('wahrzeichen.lightWritesYourNumber'), hold: 2.6, live: (b, j, t, o) => { o[3] = j < nk ? reveal(order[j], t, 2.0) : 0; } },
+    { ...act([part('number', num), part('konfetti', conf)]), ...off, caption, live: (b, j, t, o) => {
+      if (j >= nk) { const u = Math.min(1, t / 2.5); flutter(o, j, t, u * u * u * (u * (u * 6 - 15) + 10)); o[3] = sparkle(j, t, 0.75, 1.4); }
       else { o[3] = glint(b[0], t, 3.6, 0.5, -1.2, 1.2); sway(o, t, 0.3, 12); }
     } },
   ] };
