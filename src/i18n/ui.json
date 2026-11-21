@@ -80,19 +80,19 @@
     "nl": "Naar de showconfigurator"
   },
   "configuratorteaser.theFlyingstarsLogoBecomingSharperWithMoreDronesAHeart": {
-    "de": "das FlyingStars-Logo, das mit mehr Drohnen schärfer wird, ein Herz in 2D, als Tunnel und in 3D, ein QR-Code, eine Rakete, die auf dem Mond landet, und eine große 3D-Maske",
-    "en": "the FlyingStars logo becoming sharper with more drones, a heart in 2D, as a tunnel and in 3D, a QR code, a rocket landing on the moon and a large 3D mask",
-    "nl": "het FlyingStars-logo dat scherper wordt met meer drones, een hart in 2D, als tunnel en in 3D, een QR-code, een raket die op de maan landt en een groot 3D-masker"
+    "de": "das FlyingStars-Logo, das mit mehr Drohnen schärfer wird, eine 50 in 2D, in 3D und in 3D+ mit Konfetti, eine Hochzeitstorte in 2D und 3D, der Berliner Fernsehturm, ein kleiner Roboter, der zum Greifarm wird und ein Produkt aufs Förderband setzt, und eine große 3D-Maske",
+    "en": "the FlyingStars logo becoming sharper with more drones, a 50 in 2D, 3D and 3D+ with confetti, a wedding cake in 2D and 3D, the Berlin TV tower, a little robot turning into a gripper arm that puts a product on a conveyor belt, and a large 3D mask",
+    "nl": "het FlyingStars-logo dat scherper wordt met meer drones, een 50 in 2D, 3D en 3D+ met confetti, een bruidstaart in 2D en 3D, de Berlijnse tv-toren, een kleine robot die een grijparm wordt en een product op de lopende band zet, en een groot 3D-masker"
   },
   "configuratorteaser.aLogoBecomingSharperWithMoreDronesALightBulb": {
-    "de": "ein Logo, das mit mehr Drohnen schärfer wird, Glühbirne, Spirale, ein QR-Code und eine Rakete, die auf dem Mond landet",
-    "en": "a logo becoming sharper with more drones, a light bulb, a spiral, a QR code and a rocket landing on the moon",
-    "nl": "een logo dat scherper wordt met meer drones, een gloeilamp, een spiraal, een QR-code en een raket die op de maan landt"
+    "de": "ein Logo, das mit mehr Drohnen schärfer wird, ein Drehzahlmesser, aus dem ein Sportwagen wird, eine Glühbirne in 2D und 3D, ein QR-Code und ein Satellit, der einen Lichtimpuls zur Erde sendet",
+    "en": "a logo becoming sharper with more drones, a rev counter that turns into a sports car, a light bulb in 2D and 3D, a QR code and a satellite sending a pulse of light to Earth",
+    "nl": "een logo dat scherper wordt met meer drones, een toerenteller die een sportwagen wordt, een gloeilamp in 2D en 3D, een QR-code en een satelliet die een lichtpuls naar de aarde stuurt"
   },
   "configuratorteaser.initialsInsideAHeartAHeartIn2dAsA": {
-    "de": "Initialen im Herz, die mit mehr Drohnen schärfer werden, ein Unendlich-Zeichen in 2D und 3D, eine Sektflasche mit Korken und ein Blütenspalier",
-    "en": "initials inside a heart becoming sharper with more drones, an infinity sign in 2D and 3D, a champagne bottle with its cork and an arch of blossoms",
-    "nl": "initialen in een hart die scherper worden met meer drones, een oneindigheidsteken in 2D en 3D, een champagnefles met kurk en een bloemenboog"
+    "de": "Initialen, die mit mehr Drohnen schärfer werden, ein Unendlich-Zeichen in 2D und 3D, ein Schmetterling, der auf einer Blüte landet, und ein Weg durch Rosenbögen zu zwei Ringen",
+    "en": "initials becoming sharper with more drones, an infinity sign in 2D and 3D, a butterfly landing on a flower and a path through rose arches to two rings",
+    "nl": "initialen die scherper worden met meer drones, een oneindigheidsteken in 2D en 3D, een vlinder die op een bloem landt en een pad door rozenbogen naar twee ringen"
   },
   "configuratorteaser.sampleDroneShowPreviewValue": {
     "de": "Beispiel-Vorschau einer Drohnenshow: {v0}",
@@ -300,9 +300,9 @@
     "nl": "Video pauzeren"
   },
   "landinghero.weddingShowLabel": {
-    "de": "Drohnenformationen zur Hochzeit: ein Herz in 2D, das zum Herztunnel in 3D wird, ein Ring, der auf den Ringfinger gleitet, eine Hochzeitstorte in 2D und 3D, ein Paar beim ersten Tanz, Sektgläser in 2D und 3D und eine Lichtkugel mit goldenem Herz",
-    "en": "Wedding drone formations: a heart in 2D that becomes a 3D tunnel of hearts, a ring gliding onto the ring finger, a wedding cake in 2D and 3D, a couple's first dance, champagne glasses in 2D and 3D and a sphere of light with a golden heart",
-    "nl": "Droneformaties voor een bruiloft: een hart in 2D dat een hartentunnel in 3D wordt, een ring die om de ringvinger glijdt, een bruidstaart in 2D en 3D, een paar bij de eerste dans, champagneglazen in 2D en 3D en een lichtbol met een gouden hart"
+    "de": "Drohnenformationen zur Hochzeit: ein Herz in 2D, das zum Herztunnel in 3D wird, ein Ring, der auf den Ringfinger gleitet, eine Sektflasche, deren Korken knallt, eine Hochzeitstorte in 2D und 3D, eine Pralinenschachtel, deren Pralinen zu einem Herz werden, ein Paar beim ersten Tanz, Sektgläser in 2D und 3D und eine Lichtkugel mit goldenem Herz",
+    "en": "Wedding drone formations: a heart in 2D that becomes a 3D tunnel of hearts, a ring gliding onto the ring finger, a champagne bottle popping its cork, a wedding cake in 2D and 3D, a box of chocolates whose pralines become a heart, a couple's first dance, champagne glasses in 2D and 3D and a sphere of light with a golden heart",
+    "nl": "Droneformaties voor een bruiloft: een hart in 2D dat een hartentunnel in 3D wordt, een ring die om de ringvinger glijdt, een champagnefles waarvan de kurk knalt, een bruidstaart in 2D en 3D, een bonbondoos waarvan de bonbons een hart worden, een paar bij de eerste dans, champagneglazen in 2D en 3D en een lichtbol met een gouden hart"
   },
   "landingprice.excludingVatForValueDronesPlusTravel": {
     "de": "netto für {v0} Drohnen, zzgl. Anfahrt",

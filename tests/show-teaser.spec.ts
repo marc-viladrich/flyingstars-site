@@ -2,8 +2,8 @@ import { test, expect, type Page } from '@playwright/test';
 
 // Teaser des Show-Konfigurators (ConfiguratorTeaser.astro, src/scripts/show-teaser.js), Runde 9: ein Showreel, das sich
 // selbst abspielt, in drei Abläufen (start, marke, hochzeit). Daneben ein Regler mit „N Drohnen“ und acht Euro-Stufen. Das Logo bzw. die Initialen stehen am Anfang und werden mit mehr Drohnen
-// schärfer; die Bühne ist ein Link ohne eigenen Tab-Stopp, der Knopf bleibt der Weg per Tastatur. Keine
-// Formularelemente. Lädt erst in der Nähe des Viewports, zeichnet außerhalb nicht, steht bei reduzierter Bewegung.
+// schärfer; die Bühne ist ein Link ohne eigenen Tab-Stopp, der Knopf bleibt der Weg per Tastatur. Einzige
+// Formularelemente: die Wahl „Art der Show“ (Runde 15). Lädt erst in der Nähe des Viewports, zeichnet außerhalb nicht, steht bei reduzierter Bewegung.
 // TEASER_PATH stellt die Seite ein (Standard: Startseite). Die Prüfseite /poc/konfigurator-teaser/ ist seit Runde 20
 // gelöscht (Marc, 04.11.2026); die Abläufe „marke“ und „hochzeit“ stehen auf ihren Landingpages.
 const PAGE = process.env.TEASER_PATH ?? '/';
@@ -19,10 +19,13 @@ test('Der Teaser lädt erst in der Nähe des Viewports', async ({ page }) => {
   await reach(page);
 });
 
-test('Dekorative Regler und genau ein erreichbarer Link zu Show planen', async ({ page }) => {
+// Runde 15: einzige Bedienung im Wireframe ist die Wahl „Art der Show“ (drei Radioknöpfe in einer benannten Gruppe)
+test('Dekorative Regler, Wahl der Show-Art und genau ein erreichbarer Link zu Show planen', async ({ page }) => {
   await page.goto(PAGE);
   const r = root(page);
-  await expect(r.locator('input, button, select, textarea')).toHaveCount(0);
+  await expect(r.locator('button, select, textarea, input:not([type=radio])')).toHaveCount(0);
+  await expect(r.getByRole('radiogroup', { name: 'Art der Show' }).getByRole('radio')).toHaveCount(3);
+  await expect(r.getByRole('radio', { name: '3D+' })).toBeVisible();
   await expect(r.locator('.cft-pill')).toHaveCount(0); // Runde 9: Anlass-Pills ersatzlos raus
   await expect(r.locator('[data-cft=pkg]').filter({ visible: true })).toHaveCount(0);
   await expect(r.locator('[data-cft=thumb]')).toBeVisible();
@@ -34,11 +37,12 @@ test('Dekorative Regler und genau ein erreichbarer Link zu Show planen', async (
   await expect(r.locator('a.cft-cta')).toHaveAttribute('href', '/drohnenshow-preise/#konfigurator');
   await expect(r.locator('a.cft-hit')).toHaveAttribute('href', '/drohnenshow-preise/#konfigurator');
   await expect(r.locator('a.cft-hit')).toHaveAttribute('aria-hidden', 'true');
-  await expect(r.locator('.cft-mock')).toHaveAttribute('aria-hidden', 'true');
+  await expect(r.locator('.cft-drones')).toHaveAttribute('aria-hidden', 'true');
+  await expect(r.locator('.cft-price')).toHaveAttribute('aria-hidden', 'true');
   await expect(r.locator('[role=img]')).toHaveAttribute('aria-label', /Drohnenshow/);
 });
 
-test('Logo und Herz wechseln die sichtbare Drohnenzahl und Preisindikation', async ({ page, isMobile }) => {
+test('Logo, Jubiläumszahl und Roboter wechseln die sichtbare Drohnenzahl und Preisindikation', async ({ page, isMobile }) => {
   test.skip(isMobile, 'Die Euro-Skala gehört zum Desktop-Wireframe.');
   test.setTimeout(90_000);
   const errors: string[] = [];
@@ -58,16 +62,16 @@ test('Logo und Herz wechseln die sichtbare Drohnenzahl und Preisindikation', asy
   await expect(note).toHaveText('Platz für euer Logo');
   await expect(count).toHaveText('300', { timeout: 15_000 });
   await expect(count).toHaveText('600', { timeout: 15_000 });
-  await expect(note).toHaveCSS('opacity', '0', { timeout: 15_000 }); // Logo wechselt zur Herzensfolge
-  await expect(count).toHaveText('200', { timeout: 10_000 }); // der Herztunnel
-  await expect(count).toHaveText('300', { timeout: 10_000 }); // Amors Pfeil und QR-Code
-  await expect(count).toHaveText('450', { timeout: 20_000 }); // Rakete und Mondlandung
+  await expect(note).toHaveCSS('opacity', '0', { timeout: 15_000 }); // Logo wechselt zur Jubiläumszahl (Runde 15)
+  await expect(count).toHaveText('200', { timeout: 10_000 }); // die 50 in 3D
+  await expect(count).toHaveText('300', { timeout: 10_000 }); // die 50 in 3D+
+  await expect(count).toHaveText('400', { timeout: 25_000 }); // Roboter und Förderband
   await expect(count).toHaveText('600', { timeout: 20_000 }); // Bokkenrijders
   const steps = await page.evaluate(() => (window as unknown as { __steps: [string, number][] }).__steps);
   const level = new Map<number, Set<number>>();
   for (const [n, e] of steps) if (e) { if (!level.has(+n)) level.set(+n, new Set()); level.get(+n)!.add(e); }
   const sorted = [...level.keys()].sort((a, b) => a - b), euro = sorted.map((n) => Math.max(...level.get(n)!));
-  expect(sorted).toEqual([100, 200, 300, 450, 600]);
+  expect(sorted).toEqual([100, 200, 300, 400, 450, 600]);
   for (let i = 1; i < euro.length; i++) expect(euro[i], `${sorted[i]} Drohnen`).toBeGreaterThan(euro[i - 1]);
   expect(euro.at(-1)).toBe(8);
   expect(errors).toEqual([]);
@@ -88,6 +92,24 @@ test('Beim Zeigen auf die Bühne erscheint „Eigene Show zusammenstellen“, ei
   await expect(hit).toHaveCSS('opacity', '1');
   await root(page).locator('.cft-stage').click();
   await expect(page).toHaveURL(/\/drohnenshow-preise\/#konfigurator$/);
+});
+
+// Runde 15: die Wahl schaltet den Ablauf auf die Art um; Drohnenzahl folgt den Grenzen (2D bis 300, 3D+ ab 300)
+test('Die Wahl der Show-Art spielt den Ablauf in dieser Art weiter', async ({ page }) => {
+  test.setTimeout(60_000);
+  await page.goto(PAGE);
+  await reach(page);
+  const r = root(page), count = r.locator('[data-cft=count]');
+  await r.getByText('3D+', { exact: true }).click();
+  await expect(r.getByRole('radio', { name: '3D+' })).toBeChecked();
+  await page.evaluate(() => { const c = document.querySelector('[data-cft-root] [data-cft=count]')!, w = window as unknown as { __n: number[] }; w.__n = []; new MutationObserver(() => w.__n.push(Number(c.textContent))).observe(c, { childList: true, characterData: true, subtree: true }); });
+  await expect.poll(() => page.evaluate(() => (window as unknown as { __n: number[] }).__n.length), { timeout: 20_000 }).toBeGreaterThan(1);
+  expect(Math.min(...await page.evaluate(() => (window as unknown as { __n: number[] }).__n))).toBeGreaterThanOrEqual(300);
+  await r.getByText('2D', { exact: true }).click();
+  await page.evaluate(() => { (window as unknown as { __n: number[] }).__n = []; });
+  await expect.poll(() => page.evaluate(() => (window as unknown as { __n: number[] }).__n.length), { timeout: 20_000 }).toBeGreaterThan(1);
+  expect(Math.max(...await page.evaluate(() => (window as unknown as { __n: number[] }).__n))).toBeLessThanOrEqual(300);
+  await expect(r.locator('label.is-now')).toHaveCount(0);
 });
 
 test('Abläufe für die Landingpages: „marke“ beginnt mit dem Logo, „hochzeit“ mit Initialen im Herz', async ({ page }) => {

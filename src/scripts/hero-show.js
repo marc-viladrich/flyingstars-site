@@ -11,6 +11,8 @@ import { buildReel, REELS, REEL_CLOUD } from "./show-teaser.js";
 
 /** Tempo gegenüber der Konfigurator-Vorschau: ruhiger als der Teaser (3,4×), ein Hochzeits-Seitenkopf erzählt, er zählt nicht auf. */
 export const HERO_RATE = 2.2;
+/** Runde 15 (Marc: „zu klein“): das Motiv füllt den Rahmen weiter als im Teaser (0,82), Rand bleibt für Eigenbewegung. */
+export const HERO_ZOOM = 0.94;
 /** Art der Show je Fassung, dieselben Wörter wie die Pills „Art der Show“ im Konfigurator. */
 const ART = { SPARK: "preise.art.2d", HORIZON: "preise.art.3d", ODYSSEY: "preise.art.story" };
 
@@ -38,7 +40,7 @@ export async function initHeroShow(root) {
   const rem = () => parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
   const field = createField(canvas, { onTick, ...REEL_CLOUD, fitProjected: true, view: () => ({ top: rem() * 1.5, bottom: rem() * 0.5 }) });
   field.setRate(HERO_RATE);
-  const scene = await buildReel(reel);
+  const scene = await buildReel(reel, { zoom: HERO_ZOOM });
   field.show(scene, 300, 1, { at: 0, cloud: true });
   label(scene.beats[0]);
   // erst jetzt über das Standbild blenden: die ersten Drohnen fliegen schon ein

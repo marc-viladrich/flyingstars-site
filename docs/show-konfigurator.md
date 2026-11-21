@@ -19,6 +19,22 @@ Leistungsvergleich) gelten nur, wenn dieser Abschnitt sie nennt.
   eines Ablaufs können mit `tier` die Fassung unabhängig von der Drohnenzahl wählen (erster Tanz in 3D bei 300). Folge und
   Begründung: docs/DESIGN.md, „Formationen im Rahmen“. Der Teaser-Ablauf `hochzeit` zeigt seitdem Initialen, Unendlich-Zeichen
   (2D → 3D), Sektflasche mit Korken und Blütenspalier statt Herz, Gläsern, Ringen und Antrag.
+- Runde 15 (Marc, 21.11.2026), Abläufe in `REELS` (show-teaser.js):
+  - `start`: Logo 100 → 600, Jubiläumszahl „50“ 2D → 3D → 3D+ mit Konfetti, Hochzeitstorte 2D → 3D, Fernsehturm 3D+,
+    kleiner Roboter wird lebendig und zum Greifarm, im direkten Flug ans Förderband, Bokkenrijders. Rakete, Mondlandung,
+    Amors Pfeil und QR-Code sind raus. Show-Uhr 90 s statt 84 s (Tempo unverändert).
+  - `marke`: Logo, Drehzahlmesser 3D → Sportwagen 3D+ (direkter Flug), Glühbirne 2D → 3D, QR-Geschichte, Satellit 3D+.
+  - `hochzeit`: Initialen, Unendlich-Zeichen, Schmetterling 2D → 3D+, Blütenspalier (Anfang und Ringe); die Sektflasche ist
+    raus, weil der Seitenkopf jetzt den Sektkorken zeigt.
+  - `hochzeitHero`: dazu Sektkorkenknall (3D+) und Pralinenschachtel (3D+), rund 47 s statt 35 s, Motive größer
+    (`HERO_ZOOM` 0,94 statt 0,82). Kein Motiv doppelt mit dem Teaser darunter.
+  - Lange Geschichten spielen nur ihre stärksten Bilder (`beats`); ein Eintrag mit `value` setzt den Wert der Fassung (die
+    Zahl der Jahreszahl).
+  - Teaser-Wireframe mit der Wahl „Art der Show“ 2D / 3D / 3D+ (Pills wie auf der Preisseite, echte Radioknöpfe). Ohne Wahl
+    zeigt die Pill die Art des laufenden Bildes; eine Wahl baut den Ablauf in dieser Art (`buildReel(reel, { art })`,
+    `lockItem`): jeder Eintrag in deren Fassung, Drohnenzahlen in deren Bereich (2D 100–300, 3D ab 200, 3D+ ab 300, nie
+    unter der Schwelle der Fassung), Einträge ohne Fassung fallen weg. Die Wahl setzt beim gerade gezeigten Motiv ein, der
+    Ablauf läuft danach in dieser Art weiter in Schleife. Gebaut wird je Art erst bei der Wahl.
 
 ## Aufbau
 
