@@ -9,7 +9,7 @@ sections:
     kicker: Drohnenshow für Werbung und Marketing
     # weicher Trennstrich: das Wort ist breiter als die Textspalte des Heros (1440 px); „Himmel“ im Logoverlauf
     headline: "Macht den *Himmel* zu eurem Produkt­botschafter"
-    text: "An eurem Logo kommt niemand vorbei: Mit der Erfahrung von über 100 Drohnenshows für Start-ups, KMUs und Weltkonzerne bauen wir Choreografien, die Herzen und Konto füllen."
+    text: "An eurem Logo kommt niemand vorbei: Mit der Erfahrung von über 150 Drohnenshows für Start-ups, KMUs und Weltkonzerne bauen wir Choreografien, die Herzen und Konto füllen."
     cta: { label: Show anfragen, href: "#anfrage" }
     secondary: { label: "☎︎ {{contact.phone.international}}", href: "{{contact.phone.href}}" }
     video: ford

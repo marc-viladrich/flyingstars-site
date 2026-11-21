@@ -35,7 +35,7 @@
       "title": "Bokkenrijders: {{project.bokkenrijders-musical-2026.drones}} drones in de musical in Maastricht",
       "description": "{{project.musikalischer-teaser-bokkenrijders.drones}} drones voor de openluchtmusical Bokkenrijders van Toneelgroep Maastricht: als teaser in 2025 en tijdens 20 voorstellingen in juni 2026."
     },
-    "cardTitle": "Bokkenrijders: onze grootste show tot nu toe",
+    "cardTitle": "Bokkenrijders: 20 avonden met 600 drones",
     "category": "Musical · Maastricht",
     "kicker": "Musical · Maastricht · 2025/26",
     "titleLines": [
