@@ -1,4 +1,8 @@
 // Isometrische Scroll-Szene für den Artikel „Wie programmiert man eine Drohnenshow?“ (Labor, Runde 15, 21.11.2026).
+// Prototyp 2 (Marc, 21.11. abends): einspaltig, die Szene klebt oben über der Lesespalte. Jeder Schritt hat einen eigenen
+// Bildausschnitt (frames), die Kamera fährt dorthin, so füllt jedes Motiv die Bühne. Höheres Abstraktionsniveau, wenige
+// Annotationen; die Drohne erst zusammengesetzt, dann explodiert (asm); in der Simulation zeichnen sich Windlinien
+// (streams) selbst und stoßen den Stern an (gust je Drohne).
 // Marc: „interaktive, annotierte Darstellungen wie die bestehenden auf Indoor/Startseite … beim Scrollen geht die Szene zum
 // nächsten Schritt; Übergänge als saubere, weiche Morphs: eine Ebene wird minimiert und expandiert zu etwas Neuem.“
 //
@@ -22,11 +26,23 @@ export type Piece = {
    *  Boden des Glasquaders) */
   hide?: { s: [number, number]; dy?: number };
   after?: { s: [number, number]; dy?: number };
+  /** Lage (y) im zusammengesetzten Zustand des ersten Schritts: die Drohne steht erst zusammen, dann fährt sie auseinander */
+  asm?: number;
   shapes: Shape[];
 };
-export type StoryDrone = { pos: [number, number, number][]; c: string; k: number };
-export type Note = { text: string; steps: number[]; x: number; y: number; side: 'l' | 'r'; target?: string; check?: boolean; minor?: boolean };
-export type Story = { vb: [number, number, number, number]; pieces: Piece[]; drones: StoryDrone[]; notes: Note[]; steps: number };
+/** w: Lage der Drohne entlang der Windrichtung (0 = Luv, 1 = Lee), für den Zeitpunkt, an dem die Böe sie trifft */
+export type StoryDrone = { pos: [number, number, number][]; c: string; k: number; w: number };
+/** x/y in Zeichnungseinheiten; row: Zeile einer Liste am selben Punkt (Prüfhäkchen der Live-Show) */
+export type Note = { text: string; steps: number[]; x: number; y: number; side: 'l' | 'r'; target?: string; check?: boolean; row?: number };
+/** frames: Bildausschnitt je Schritt [x, y, b, h]; wind: Windrichtung auf dem Bildschirm (Einheitsvektor); sweep: Weg des
+ *  Abspielkopfs der Zeitleiste (Verschiebung vom gezeichneten Platz zum Anfang und zum Ende) */
+export type Story = { vb: [number, number, number, number]; pieces: Piece[]; drones: StoryDrone[]; notes: Note[]; steps: number; frames: [number, number, number, number][]; wind: P2; sweep: [P2, P2] };
+
+/** Kamera einer Bühne W × H für einen Ausschnitt: Maßstab und Verschiebung (gleiche Rechnung im Skript der Komponente) */
+export const frameCam = ([x, y, w, h]: [number, number, number, number], W: number, H: number) => {
+  const k = Math.min(W / w, H / h);
+  return { k: r1(k * 1000) / 1000, tx: r1(W / 2 - (x + w / 2) * k), ty: r1(H / 2 - (y + h / 2) * k) };
+};
 
 const STEPS = 9;
 const ALL = Array.from({ length: STEPS }, (_, i) => i);
@@ -69,7 +85,7 @@ export function storyScene(o: { colors: string[]; zone: Record<string, string> }
   const turn = (-24 * Math.PI) / 180, SC: V3 = [0, 1, 14], R = 7.5, Ri = 3.1;
   const inSky = ([u, v]: [number, number], d = 0): V3 => [SC[0] + u * Math.cos(turn) - d * Math.sin(turn), SC[1] + u * Math.sin(turn) + d * Math.cos(turn), SC[2] + v];
   const N = 40;
-  const starSky = starOutline(N, R, Ri).map((p) => inSky(p));
+  const starUV = starOutline(N, R, Ri), starSky = starUV.map((p) => inSky(p));
   // Startraster 8 × 5 im 2,4-m-Abstand
   const seeds: V3[] = Array.from({ length: N }, (_, i) => [-8.4 + (i % 8) * 2.4, -3.8 + Math.floor(i / 8) * 2.4, 0]);
   const pairs = pair(seeds, starSky); // nach x sortiert: Bahnen kreuzen sich kaum
@@ -80,7 +96,7 @@ export function storyScene(o: { colors: string[]; zone: Record<string, string> }
   const K = 1.75, dz = { bat: 2.5, frame: 7, board: 11.5, gps: 15.5, led: 19.5 }, az = { bat: 8.4, frame: 9.2, board: 9.9, gps: 10.5, led: 11.1 };
   const DC: V3 = [0, K, 0];
   const droneCenter = P([DC[0], DC[1], 10]);
-  const layer = (key: string, z: number, shapes: Shape[]) => add({ key, zc: o.zone.drone, steps: [0], origin: P([DC[0], DC[1], z]), shift: { 0: 0 }, hide: { s: [0.04, 0.04], dy: dyBetween([DC[0], DC[1], z], [DC[0], DC[1], az[key as keyof typeof az]]) }, shapes });
+  const layer = (key: string, z: number, shapes: Shape[]) => { const asm = dyBetween([DC[0], DC[1], z], [DC[0], DC[1], az[key as keyof typeof az]]); return add({ key, zc: o.zone.drone, steps: [0], origin: P([DC[0], DC[1], z]), shift: { 0: 0 }, asm, hide: { s: [0.04, 0.04], dy: asm }, shapes }); };
   layer('bat', dz.bat, [
     face([[-1.6 * K, 0 * K, dz.bat - 1], [1.6 * K, 0 * K, dz.bat - 1], [1.6 * K, 0 * K, dz.bat], [-1.6 * K, 0 * K, dz.bat]], 'part-side'),
     face([[-1.6 * K, 0 * K, dz.bat - 1], [-1.6 * K, 2 * K, dz.bat - 1], [-1.6 * K, 2 * K, dz.bat], [-1.6 * K, 0 * K, dz.bat]], 'part-side'),
@@ -111,7 +127,7 @@ export function storyScene(o: { colors: string[]; zone: Record<string, string> }
     { t: 'circle', c: P([0 * K, 1.3 * K, dz.led + 0.4]), r: 22, cls: 'led-glow' },
     { t: 'circle', c: P([0 * K, 1.3 * K, dz.led + 0.4]), r: 7, cls: 'led-core' },
   ]);
-  add({ key: 'drone-axis', zc: o.zone.drone, steps: [0], origin: droneCenter, hide: { s: [1, 0.02] }, shapes: [seg([[0, 1.3 * K, dz.bat - 1.5], [0, 1.3 * K, dz.led + 2.4]], 'guide')] });
+  add({ key: 'drone-axis', zc: o.zone.drone, steps: [0], origin: droneCenter, asm: 0, hide: { s: [1, 0.02] }, shapes: [seg([[0, 1.3 * K, dz.bat - 1.5], [0, 1.3 * K, dz.led + 2.4]], 'guide')] });
 
   // ---------- 1 · Software als drei gestapelte Ebenen ----------
   const sw = { x0: -8, x1: 8, y0: -4.5, y1: 6.5 };
@@ -127,6 +143,8 @@ export function storyScene(o: { colors: string[]; zone: Record<string, string> }
     ...Array.from({ length: 13 }, (_, i) => seg([[sw.x0 + 1 + i * 1.165, sw.y0 + 0.8, swz.time], [sw.x0 + 1 + i * 1.165, sw.y1 - 0.8, swz.time]], 'tick')),
     seg([[1.2, sw.y0 + 0.4, swz.time], [1.2, sw.y1 - 0.4, swz.time]], 'playhead'),
   ]);
+  const ph0 = P([1.2, sw.y0 + 0.4, swz.time]), phA = P([sw.x0 + 1, sw.y0 + 0.4, swz.time]), phB = P([sw.x1 - 1, sw.y0 + 0.4, swz.time]);
+  const sweep: [P2, P2] = [[r1(phA[0] - ph0[0]), r1(phA[1] - ph0[1])], [r1(phB[0] - ph0[0]), r1(phB[1] - ph0[1])]];
   // Flugrouten: von einer Startreihe vorn zu den Punkten eines Sterns in der Draufsicht
   const planStar = starOutline(N, 4.4, 1.85).map(([u, v]): V3 => [u, 1.6 + v * 0.95, swz.route]);
   const planStart: V3[] = Array.from({ length: N }, (_, i) => [sw.x0 + 1 + (i * (sw.x1 - sw.x0 - 2)) / (N - 1), sw.y0 + 0.7, swz.route]);
@@ -157,11 +175,17 @@ export function storyScene(o: { colors: string[]; zone: Record<string, string> }
       [[x0, y0, z1], [x1, y0, z1]], [[x1, y0, z1], [x1, y1, z1]], [[x1, y1, z1], [x0, y1, z1]], [[x0, y1, z1], [x0, y0, z1]],
     ] as [V3, V3][]).map(([a, b]) => seg([a, b], 'glass-edge')),
   ] });
-  // Wind von links
-  add({ key: 'wind', zc: o.zone.sim, steps: [2], origin: P([x0 - 3, 1, 13]), hide: { s: [0.2, 0.2] }, shapes: [8, 13, 18].flatMap((z, i) => {
-    const a: V3 = [x0 - 8 + i, 1, z], b: V3 = [x0 - 2.5, 1, z + 0.6], pb = P(b), pa = P(a), ang = Math.atan2(pb[1] - pa[1], pb[0] - pa[0]), h = 5;
-    return [{ t: 'line', pts: [pa, pb], cls: 'wind' } as Shape, { t: 'line', pts: [[pb[0] - h * Math.cos(ang - 0.5), pb[1] - h * Math.sin(ang - 0.5)], pb, [pb[0] - h * Math.cos(ang + 0.5), pb[1] - h * Math.sin(ang + 0.5)]], cls: 'wind' } as Shape];
-  }) });
+  // Wind als Stromlinien wie aus einer Windsimulation (Marc: „durchgehende, sich selbst zeichnende Windlinien“): Umströmung
+  // eines Zylinders um die Sternmitte (Stromfunktion ψ = v · (1 − a² / r²)), in Ebenen knapp vor, in und hinter dem Stern,
+  // leicht gewellt. Das Skript lässt sie von Luv nach Lee zeichnen und wieder auslaufen.
+  const U0 = -13, U1 = 13, A2 = 2.6 * 2.6;
+  const streamV = (u: number, psi: number) => { let v = psi + Math.sign(psi || 1) * 2.6; for (let i = 0; i < 40; i++) { const r2 = u * u + v * v, f = v * (1 - A2 / r2) - psi, df = 1 - A2 / r2 + (2 * A2 * v * v) / (r2 * r2); v -= f / df; } return v; };
+  const streams = ([[-8.6, 1.4], [-6.1, -1.2], [-3.9, 0.8], [-1.6, -0.6], [1.6, 0.6], [3.9, -0.8], [6.1, 1.2], [8.4, -1.4]] as [number, number][]).map(([psi, d], i): Shape => ({ t: 'line', cls: 'stream', pts: Array.from({ length: 48 }, (_, j) => {
+    const u = U0 + ((U1 - U0) * j) / 47; return P(inSky([u, streamV(u, psi) + Math.sin(u * 0.45 + i) * 0.35], d));
+  }) }));
+  add({ key: 'wind', zc: o.zone.sim, steps: [2], origin: P(inSky([U0, 0])), hide: { s: [0.04, 1] }, shapes: [...streams.map((st) => ({ ...st, cls: 'stream-base' })), ...streams] });
+  const w0 = P(inSky([0, 0])), w1 = P(inSky([1, 0])), wl = Math.hypot(w1[0] - w0[0], w1[1] - w0[1]);
+  const wind: P2 = [r1(((w1[0] - w0[0]) / wl) * 1000) / 1000, r1(((w1[1] - w0[1]) / wl) * 1000) / 1000];
 
   // ---------- 3 · Bodenstation: das Feld breitet sich aus, die Station funkt zum Schwarm ----------
   const fieldCenter = P([0, 0, 0]);
@@ -235,32 +259,28 @@ export function storyScene(o: { colors: string[]; zone: Record<string, string> }
       at([start[0], start[1], testLift.has(k) ? 4.5 : 0.35]), // 7: am Boden, vier im Testflug
       at(motif), // 8: Live-Show
     ];
-    return { pos, c: colorAt(motif[0] - SC[0]), k };
+    const m = starSky.indexOf(motif), u = m >= 0 ? starUV[m][0] : 0;
+    return { pos, c: colorAt(motif[0] - SC[0]), k, w: r1(((u + R) / (2 * R)) * 100) / 100 };
   });
 
-  // ---------- Annotationen ----------
-  const notes: { text: string; steps: number[]; p: P2; side: 'l' | 'r'; target?: string; check?: boolean; minor?: boolean }[] = [
-    { text: 'Leuchtstarke LEDs', steps: [0], p: P([1.7 * K, 1.3 * K, dz.led]), side: 'r', target: 'led' },
-    { text: 'GPS und RTK', steps: [0], p: P([-1.3 * K, 1.3 * K, dz.gps]), side: 'l', target: 'gps' },
-    { text: 'Gyroskop und Höhenmesser', steps: [0], p: P([2.4 * K, 1 * K, dz.board]), side: 'r', target: 'board' },
-    { text: 'Kleiner und leichter', steps: [0], p: P([-4.2 * K, -3.2 * K, dz.frame]), side: 'l', target: 'frame' },
+  // ---------- Annotationen (wenige: Marc „höheres Abstraktionsniveau, weniger Annotationen“) ----------
+  const notes: { text: string; steps: number[]; p: P2; side: 'l' | 'r'; target?: string; check?: boolean; row?: number }[] = [
+    { text: 'Leuchtstarke LED', steps: [0], p: P([1.7 * K, 1.3 * K, dz.led]), side: 'r', target: 'led' },
+    { text: 'GPS und Gyroskop', steps: [0], p: P([-1.3 * K, 1.3 * K, dz.gps]), side: 'l', target: 'gps' },
+    { text: 'Leichter Rahmen', steps: [0], p: P([4.2 * K, -3.2 * K, dz.frame]), side: 'r', target: 'frame' },
     { text: 'Flugroute', steps: [1], p: P([sw.x1, 1, swz.route]), side: 'r', target: 'sw-route' },
     { text: 'Timing', steps: [1], p: P([sw.x0, 3, swz.time]), side: 'l', target: 'sw-time' },
     { text: 'Lichtsequenz', steps: [1], p: P([sw.x1, 1, swz.light]), side: 'r', target: 'sw-light' },
-    { text: 'Wind', steps: [2], p: P([x0 - 8, 1, 18]), side: 'l', target: 'wind', check: true },
-    { text: 'Fluggeschwindigkeit', steps: [2], p: P([x1, y0, 17]), side: 'r', target: 'box', check: true },
-    { text: 'Startpunkte', steps: [2], p: P([x1, y0, z0]), side: 'r', target: 'box-back', check: true },
-    { text: 'Bodenstation', steps: [3, 7], p: P([ST[0] - 1.6, ST[1], 1]), side: 'l', target: 'station' },
-    { text: 'Verbindung zu jeder Drohne', steps: [3], p: P(sky3[N - 1]), side: 'r', target: 'radio' },
+    { text: 'Wind', steps: [2], p: P(inSky([U0 + 1.5, -6.1 + Math.sin((U0 + 1.5) * 0.45 + 7) * 0.35], 1.2)), side: 'l', target: 'wind' },
+    { text: 'Bodenstation', steps: [3], p: P([ST[0] - 1.6, ST[1], 1]), side: 'l', target: 'station' },
     { text: '3D-Modell', steps: [4], p: P(inSky(corners[2], -1)), side: 'l', target: 'mesh' },
     { text: 'Ein Punkt, eine Drohne', steps: [5], p: P(starSky[Math.round(N * 0.15)]), side: 'r' },
-    { text: 'Flugbahn', steps: [5], p: P(paths[2][9]), side: 'l', target: 'paths' },
-    { text: 'Zu nah? Hier korrigieren', steps: [6], p: [near.at[0] + 9, near.at[1]], side: 'r', target: 'warn' },
+    { text: 'Zu nah: korrigieren', steps: [6], p: [near.at[0] + 9, near.at[1]], side: 'r', target: 'warn' },
     { text: 'Showdatei', steps: [7], p: P([ST[0] - 2.2, ST[1], fileZ[1]]), side: 'l', target: 'file-1' },
     { text: 'Testflug', steps: [7], p: P([seeds[13][0], seeds[13][1], 4.5]), side: 'r' },
-    { text: 'GPS-Signal', steps: [8], p: P([ST[0] - 1.6, ST[1], 4]), side: 'l', target: 'station', check: true },
-    { text: 'Wetter', steps: [8], p: P([ST[0] - 1.6, ST[1], 1.4]), side: 'l', target: 'station', check: true },
-    { text: 'Flugverbotszonen', steps: [8], p: P([ST[0] - 1.6, ST[1], -1.2]), side: 'l', target: 'field', check: true },
+    { text: 'GPS-Signal', steps: [8], p: P([ST[0] - 1.6, ST[1], 1]), side: 'l', target: 'station', check: true, row: -1 },
+    { text: 'Wetter', steps: [8], p: P([ST[0] - 1.6, ST[1], 1]), side: 'l', target: 'station', check: true, row: 0 },
+    { text: 'Flugverbotszonen', steps: [8], p: P([ST[0] - 1.6, ST[1], 1]), side: 'l', target: 'field', check: true, row: 1 },
   ];
 
   // ---------- Bildausschnitt aus allem, auf (0, 0) verschoben ----------
@@ -276,10 +296,27 @@ export function storyScene(o: { colors: string[]; zone: Record<string, string> }
   });
   drones.forEach((d) => { d.pos = d.pos.map(([x, y, a]) => [r1(x - X0), r1(y - Y0), a]); });
   void boxFront;
-  return {
-    vb: [0, 0, r1(W), r1(H)], pieces, drones, steps: STEPS,
-    notes: notes.map((n) => { const [x, y] = sh(n.p); return { text: n.text, steps: n.steps, side: n.side, target: n.target, check: n.check, minor: n.minor, x: r1((x / W) * 1000) / 10, y: r1((y / H) * 1000) / 10 }; }),
-  };
+  const outNotes = notes.map((n) => { const [x, y] = sh(n.p); return { text: n.text, steps: n.steps, side: n.side, target: n.target, check: n.check, row: n.row, x, y }; });
+
+  // ---------- Bildausschnitt je Schritt: was in dem Schritt sichtbar und nicht gedämpft ist, ohne das Feld (Boden darf
+  // über den Rand laufen), mit den Ankern der Annotationen; Rand 9 %, mindestens so breit, dass nichts zu groß wird ----------
+  const frames = Array.from({ length: STEPS }, (_, st): [number, number, number, number] => {
+    const q: P2[] = [];
+    pieces.forEach((pc) => {
+      if (!pc.steps.includes(st) || pc.dim?.includes(st) || pc.key === 'field') return;
+      const dy = pc.shift?.[st] ?? 0;
+      pc.shapes.forEach((s) => { if (s.t === 'circle') q.push([s.c[0] - s.r, s.c[1] - s.r + dy], [s.c[0] + s.r, s.c[1] + s.r + dy]); else s.pts.forEach((p) => q.push([p[0], p[1] + dy])); });
+    });
+    drones.forEach((d) => { const [x, y, a] = d.pos[st]; if (a > 0) q.push([x, y]); });
+    outNotes.forEach((n) => { if (n.steps.includes(st)) q.push([n.x, n.y]); });
+    const fx0 = Math.min(...q.map((p) => p[0])), fx1 = Math.max(...q.map((p) => p[0])), fy0 = Math.min(...q.map((p) => p[1])), fy1 = Math.max(...q.map((p) => p[1]));
+    let w = fx1 - fx0, h = fy1 - fy0;
+    const minW = W * 0.42; if (w < minW) w = minW; if (h < minW * 0.6) h = minW * 0.6;
+    const cx = (fx0 + fx1) / 2, cy = (fy0 + fy1) / 2;
+    w *= 1.18; h *= 1.18;
+    return [r1(cx - w / 2), r1(cy - h / 2), r1(w), r1(h)];
+  });
+  return { vb: [0, 0, r1(W), r1(H)], pieces, drones, steps: STEPS, notes: outNotes, frames, wind, sweep };
 }
 
 /** Pfad eines Teils als SVG-d */

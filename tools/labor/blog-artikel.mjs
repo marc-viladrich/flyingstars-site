@@ -30,6 +30,7 @@ const PHOTOS = {
   '006': '1VwRRfSEX5IShrCoDSZwbmXiJuhmJ7PnP', // Zwei Personen am Stativ, Gegenlicht
   '018': '1XGQ_NPDn4PD2utmT1SDyDZ5unTMbdTCw', // Blüte über Nieheim
   '034': '1VgjG974Mh0dgrp9Ujfj3d5lHqQZOQ5uS', // Doppelherz über Nieheim
+  '030': '1WQr3zoWXZXfXkGI1QvIyQyP0LIVpO0yq', // Schriftzug NIEHEIM, Nacht
 };
 async function photo(n) {
   const file = join(CACHE, `${n}.jpg`);
@@ -52,6 +53,12 @@ async function lichtraster(n, name, { width = 1600, height = 1000, position = 'a
   console.log('Lichtraster', name, `${width}×${height}`);
 }
 
+/** Normales Foto (Bilder im Text, Runde 15 Prototyp 2: Marc „normale Fotos, gern mit Punktraster-Hintergrund als Bühne“) */
+async function plain(n, name, { width, height, position = 'attention' }) {
+  await sharp(await photo(n)).resize(width, height, { fit: 'cover', position }).webp({ quality: 78 }).toFile(new URL(`${name}.webp`, OUT).pathname);
+  console.log('Foto', name, `${width}×${height}`);
+}
+
 /** Punkt-Reveal: das Foto in seinen Farben, nur durch die Kreise des Rasters sichtbar, auf dem Seitengrund. */
 async function reveal(n, name, { width = 1600, height = 1000, position = 'attention', ...opts } = {}) {
   const values = { ...DEFAULTS, ...opts };
@@ -62,16 +69,16 @@ async function reveal(n, name, { width = 1600, height = 1000, position = 'attent
   console.log('Punkt-Reveal', name, `${width}×${height}`);
 }
 
-// Titelbild: Nachtfoto, Lichtraster. Format 1600 × 1000 wie im Labor (Kopf 2:1 und Karte 16:9 schneiden per object-fit).
-// Gamma höher als im Rezept-Standard: der Nebel um die Lampe würde sonst die ganze Fläche füllen, die Person verschwinden
-await lichtraster('058', 'titel-058', { gamma: 2.2, peakMix: 0.3 });
-// Erstes Bild im Text: Tagbild mit vielen Mitteltönen → Punkt-Reveal
-await reveal('012', 'reveal-012', { cellSize: 11, pointSize: 0.98 });
-// Bildleiter (quadratisch): vom Stativ am Tag zu zwei fertigen Formationen. Das Startraster bei Nacht (#010) fällt weg: im
-// quadratischen Ausschnitt bleibt vom Feld nur ein schmales Band
-await lichtraster('006', 'leiter-006', { width: 1000, height: 1000, cellSize: 11 });
-await lichtraster('018', 'leiter-018', { width: 1000, height: 1000, cellSize: 11, position: 'centre' });
-await lichtraster('034', 'leiter-034', { width: 1000, height: 1000, cellSize: 11, position: 'north' });
+// Titelbild (Prototyp 2, Marc: „aktuell ist nicht erkennbar, was es zeigt“): Nachtformation statt Arbeitsszene. Der
+// Schriftzug NIEHEIM ist im Lichtraster klar lesbar und zeigt, was Programmierung am Ende ergibt. Gamma und Schwelle höher
+// als im Rezept-Standard, damit der Himmel ruhig bleibt und nur Schrift und Horizont leuchten. 2 : 1 wie der Titelkopf.
+await lichtraster('030', 'titel-030', { width: 1600, height: 800, gamma: 1.8, threshold: 0.08, position: 'centre' });
+// Bilder im Text: normale Fotos (kein Lichtraster mehr, Marc: „zu viel“)
+await plain('012', 'foto-012', { width: 1600, height: 1000 });
+await plain('006', 'foto-006', { width: 960, height: 1200 });
+await plain('018', 'foto-018', { width: 960, height: 1200, position: 'centre' });
+await plain('034', 'foto-034', { width: 960, height: 1200, position: 'centre' });
+void reveal; // Punkt-Reveal bleibt als Rezept für andere Artikel verfügbar
 
 // ---------- Logo-Formation ----------
 const { logoPoints } = await import('../../src/scripts/show-teaser.js');
@@ -93,15 +100,16 @@ const aspect = r4((Math.max(...xs) - Math.min(...xs)) / (Math.max(...ys) - Math.
 writeFileSync(new URL('flyingstars-formation.json', OUT), JSON.stringify({ source: 'show', name: 'FlyingStars-Logo mit Schriftzug', drones: dots.length, aspect, dots }));
 console.log('Formation', dots.length, 'Drohnen, Seitenverhältnis', aspect);
 
-// Poster 1600 × 900: die fertige Formation, rechts der Mitte wie im breiten Layout (Text links darüber)
+// Poster 1200 × 600 (Prototyp 2: ruhige Formation im Textfluss): fertige Formation, zentriert und eingepasst wie die Engine
+// auf einer nicht absolut liegenden Fläche (formation-play.js: 86 % × 80 %), durchsichtiger Grund, damit kein Kasten entsteht
 {
-  const W = 1600, H = 900, s = Math.min(W * 0.5 / (Math.max(...xs) - Math.min(...xs)), H * 0.7 / (Math.max(...ys) - Math.min(...ys)));
-  const ox = W * 0.66, oy = H * 0.46, core = Math.max(2.4, s * 0.0105);
-  const glow = dots.map(([x, y, r, g, b]) => `<circle cx="${(ox + x * s).toFixed(1)}" cy="${(oy - y * s).toFixed(1)}" r="${(core * 4.5).toFixed(1)}" fill="url(#g${r}-${g}-${b})"/>`);
+  const W = 1200, H = 600, bw = Math.max(...xs) - Math.min(...xs), bh = Math.max(...ys) - Math.min(...ys), s = Math.min(W * 0.86 / bw, H * 0.8 / bh);
+  const ox = W / 2 - ((Math.max(...xs) + Math.min(...xs)) / 2) * s, oy = H / 2 + ((Math.max(...ys) + Math.min(...ys)) / 2) * s, core = Math.max(1.6, s * 0.0105);
+  const glow = dots.map(([x, y, r, g, b]) => `<circle cx="${(ox + x * s).toFixed(1)}" cy="${(oy - y * s).toFixed(1)}" r="${(core * 5 + 3).toFixed(1)}" fill="url(#g${r}-${g}-${b})"/>`);
   const ids = [...new Set(dots.map(([, , r, g, b]) => `${r}-${g}-${b}`))];
-  const defs = ids.map((id) => { const c = id.split('-').join(','); return `<radialGradient id="g${id}"><stop offset="0" stop-color="rgb(${c})" stop-opacity="0.22"/><stop offset="0.35" stop-color="rgb(${c})" stop-opacity="0.07"/><stop offset="1" stop-color="rgb(${c})" stop-opacity="0"/></radialGradient>`; });
+  const defs = ids.map((id) => { const c = id.split('-').join(','); return `<radialGradient id="g${id}"><stop offset="0" stop-color="rgb(${c})" stop-opacity="0.2"/><stop offset="0.35" stop-color="rgb(${c})" stop-opacity="0.06"/><stop offset="1" stop-color="rgb(${c})" stop-opacity="0"/></radialGradient>`; });
   const cores = dots.map(([x, y, r, g, b]) => `<circle cx="${(ox + x * s).toFixed(1)}" cy="${(oy - y * s).toFixed(1)}" r="${core.toFixed(2)}" fill="rgb(${Math.min(255, r + 25)},${Math.min(255, g + 25)},${Math.min(255, b + 25)})"/>`);
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}"><defs><radialGradient id="sky" cx="50%" cy="40%" r="75%"><stop offset="0" stop-color="#13100e"/><stop offset="0.7" stop-color="#0a0807"/></radialGradient>${defs.join('')}</defs><rect width="100%" height="100%" fill="url(#sky)"/>${glow.join('')}${cores.join('')}</svg>`;
-  await sharp(Buffer.from(svg)).webp({ quality: 80 }).toFile(new URL('flyingstars-formation.webp', OUT).pathname);
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}"><defs>${defs.join('')}</defs>${glow.join('')}${cores.join('')}</svg>`;
+  await sharp(Buffer.from(svg)).webp({ quality: 82, alphaQuality: 90 }).toFile(new URL('flyingstars-formation.webp', OUT).pathname);
   console.log('Poster flyingstars-formation.webp');
 }

@@ -1,47 +1,34 @@
 ---
-// Logo-Finale unter Blogartikeln (Labor, Runde 15, 21.11.2026): das FlyingStars-Logo mit Schriftzug als interaktive
-// Drohnenformation, mit derselben Engine wie die Formation der Fallstudien (Bokkenrijders, NFL; scripts/formation-play.js).
-// Die Drohnen heben beim Hineinscrollen ab, weichen dem Zeiger bzw. Finger aus, „Noch mal starten“ und Pause wie dort.
-// Wiederverwendbar: ohne Inhalt steht der Standardtext, mit Inhalt (Slot) der Schlussabschnitt des Artikels.
-// SEO (27-blog-bilder-2026-11-21/seo-interaktive-grafiken.md): Das Standbild ist ein echtes <img> im HTML (Poster,
-// zur Build-Zeit gerechnet, tools/labor/blog-artikel.mjs), feste Seitenverhältnisse, die Engine lädt erst kurz vor der
-// Sichtbarkeit per import(); ohne JavaScript und bei Ladefehler bleibt das Standbild. Reduzierte Bewegung: fertiges Bild.
+// Logo-Formation am Schluss eines Blogartikels (Labor, Runde 15). Prototyp 2 (Marc, 21.11.2026: „zu grob, in your face“):
+// klein und ruhig im Textfluss, im Stil der eingestreuten Drohnen-Elemente der Seite (Himmel: Motiv mit Luft, ohne
+// Beschriftung). Keine Knöpfe, kein Zähler, kein Kasten; die Drohnen heben einmal ab und stehen dann mit leiser Eigen-
+// bewegung, die globale Pause in der Kopfzeile hält sie an. Darunter der Schlussabschnitt des Artikels (Slot) oder ein
+// Standardtext, danach ein Link in den Konfigurator. Engine: scripts/formation-play.js (wie die Fallstudien).
+// SEO (27-blog-bilder-2026-11-21/seo-interaktive-grafiken.md): Standbild als echtes <img> (Poster, gleicher Ausschnitt wie die
+// Engine, tools/labor/blog-artikel.mjs), festes Seitenverhältnis, Engine per import() kurz vor der Sichtbarkeit; ohne
+// JavaScript, bei Ladefehler und bei reduzierter Bewegung bleibt das Standbild bzw. die fertige Formation.
 import { forPath } from '../../i18n/server';
-interface Props { src?: string; poster?: string; alt?: string; id?: string }
-const { src = '/media/labor/artikel/flyingstars-formation.json', poster = '/media/labor/artikel/flyingstars-formation.webp', alt = 'Das FlyingStars-Logo mit Schriftzug aus 600 Drohnen am Nachthimmel', id = 'finale' } = Astro.props;
-const { t, localHref } = forPath(Astro.url.pathname);
+interface Props { src?: string; poster?: string; alt?: string; id?: string; more?: { label: string; href: string } | false }
+const { src = '/media/labor/artikel/flyingstars-formation.json', poster = '/media/labor/artikel/flyingstars-formation.webp', alt = 'Das FlyingStars-Logo mit Schriftzug, aus Drohnen geformt', id = 'finale', more = { label: 'Euer Logo im Konfigurator', href: '/drohnenshow-preise/#konfigurator' } } = Astro.props;
+const { localHref } = forPath(Astro.url.pathname);
 const own = Astro.slots.has('default');
 ---
 <section class="ff" aria-labelledby={own ? undefined : `${id}-h`} data-ff>
-  <figure class="ff-stage">
-    <div class="ff-media">
-      <img class="ff-poster" src={poster} width="1600" height="900" alt={alt} loading="lazy" decoding="async" />
-      <canvas data-ff-canvas data-formation={src} aria-hidden="true"></canvas>
-    </div>
-    <div class="ff-copy">
-      {own ? <div class="ff-text"><slot /></div> : <div class="ff-text">
-        <h2 id={`${id}-h`}>Drohnenshows von <span class="grad">FlyingStars</span>.</h2>
-        <p>Unser Logo, Drohne für Drohne. Wie euer Logo am Himmel aussieht, zeigt der Konfigurator.</p>
-      </div>}
-      <figcaption class="ff-cap">
-        <span class="ff-hint" data-input="mouse">{t('case.hintMouse')}</span><span class="ff-hint" data-input="touch">{t('case.hintTouch')}</span>
-      </figcaption>
-      <div class="ff-row">
-        <button class="btn small" type="button" data-ff-replay disabled>{t('casestudy.startAgain')}</button>
-        <button class="btn small" type="button" data-ff-pause aria-pressed="false">{t('casestudy.pauseAnimation')}</button>
-        <span class="mono ff-tally" data-ff-tally role="status"></span>
-      </div>
-      <a class="link ff-more" href={localHref('/drohnenshow-preise/#konfigurator')}>Euer Logo im Konfigurator <span aria-hidden="true">→</span></a>
-    </div>
+  <figure class="ff-sky">
+    <img class="ff-poster" src={poster} width="1200" height="600" alt={alt} loading="lazy" decoding="async" />
+    <canvas data-ff-canvas data-formation={src} aria-hidden="true"></canvas>
   </figure>
+  <div class="ff-text post-body">
+    {own ? <slot /> : <>
+      <h2 id={`${id}-h`}>Drohnenshows von FlyingStars</h2>
+      <p>Unser Logo, Drohne für Drohne. Wie euer Logo am Himmel aussieht, zeigt der Konfigurator.</p>
+    </>}
+    {more && <p><a class="ff-more" href={localHref(more.href)}>{more.label} <span aria-hidden="true">→</span></a></p>}
+  </div>
 </section>
 
 <script>
-  // Engine erst kurz vor der Sichtbarkeit laden (eigenes Bündel per import()); das Standbild weicht erst, wenn die
-  // Formation geladen ist und die Drohnen am Boden stehen
-  import { t } from '../../i18n/ui.mjs';
-  import { localeFromPath, localeFormat } from '../../i18n/routing.mjs';
-  const formatLocale = localeFormat(localeFromPath(location.pathname));
+  // Engine erst kurz vor der Sichtbarkeit laden; das Standbild weicht erst, wenn die Formation geladen ist
   document.querySelectorAll<HTMLElement>('[data-ff]').forEach((root) => {
     const cv = root.querySelector<HTMLCanvasElement>('[data-ff-canvas]');
     if (!cv || !('IntersectionObserver' in window)) return;
@@ -49,43 +36,21 @@ const own = Astro.slots.has('default');
       if (!es.some((e) => e.isIntersecting)) return;
       io.disconnect();
       const { mountFormation } = await import('../../scripts/formation-play.js');
-      mountFormation(cv, {
-        tally: root.querySelector('[data-ff-tally]'), replay: root.querySelector('[data-ff-replay]'), pause: root.querySelector('[data-ff-pause]'),
-        copy: root.querySelector('.ff-copy'),
-        tallyText: (n: number) => t('projectcard.valueDrones', { v0: n.toLocaleString(formatLocale) }),
-        onReady: () => requestAnimationFrame(() => root.classList.add('is-live')),
-        flat: true,
-      });
+      mountFormation(cv, { onReady: () => requestAnimationFrame(() => root.classList.add('is-live')), flat: true });
     }, { rootMargin: '400px 0px' });
     io.observe(cv);
   });
 </script>
 
 <style>
-  .ff { width: 100%; max-width: min(82rem, 100%); margin-block: clamp(var(--space-10), 5vw, var(--space-16)) 0; }
-  .ff-stage { position: relative; margin: 0; aspect-ratio: 16 / 9; max-height: 52rem; border: 1px solid var(--line); border-radius: var(--radius-18); overflow: hidden; background: radial-gradient(90% 70% at 50% 40%, #13100e 0%, var(--night) 70%); }
-  .ff-media { position: absolute; inset: 0; }
-  .ff-poster { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 70% 50%; transition: opacity var(--dur-fade) var(--ease-out); }
+  .ff { width: 100%; max-width: var(--measure, 42rem); margin-top: clamp(var(--space-14), 8vw, var(--space-20, 5rem)); }
+  /* Die Formation: eine ruhige Fläche über dem Schlussabschnitt, ohne Rahmen, links an der Lesespalte */
+  .ff-sky { position: relative; margin: 0 0 var(--space-4); width: min(100%, 22rem); aspect-ratio: 2 / 1; }
+  .ff-poster, .ff canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .ff-poster { object-fit: contain; transition: opacity var(--dur-fade) var(--ease-out); }
   .is-live .ff-poster { opacity: 0; }
-  .ff canvas { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: pan-y; }
-  .ff-copy { position: absolute; left: clamp(1.25rem, 3vw, 2.5rem); bottom: clamp(1.5rem, 5vh, 3rem); z-index: 2; display: grid; gap: var(--space-4); max-width: clamp(20rem, 30vw, 28.75rem); pointer-events: none; }
-  .ff-copy > * { pointer-events: auto; }
-  .ff-text :global(h2) { font-size: clamp(1.75rem, 3vw, 2.75rem); line-height: 1.08; margin: 0 0 var(--head-gap-text); }
-  .ff-text :global(p) { color: var(--muted); margin: 0; line-height: 1.6; }
-  .ff-text :global(p + p) { margin-top: 0.8em; }
-  .ff-text :global(a) { color: var(--accent); border-bottom: 1px solid var(--accent-line); }
-  .ff-cap { color: var(--faint); font-size: var(--text-sm); }
-  .ff-row { display: flex; gap: var(--space-3-5); align-items: center; flex-wrap: wrap; }
-  .ff-tally { color: var(--accent); }
-  .ff-more { width: fit-content; }
-  @media (hover: hover) and (pointer: fine) { .ff-hint[data-input="touch"] { display: none; } }
-  @media (hover: none), (pointer: coarse) { .ff-hint[data-input="mouse"] { display: none; } }
-  /* Schmal: Formation oben in eigener Fläche, Text darunter (wie die Fallstudie) */
-  @media (max-width: 60em) {
-    .ff-stage { aspect-ratio: auto; max-height: none; display: grid; }
-    .ff-media { position: relative; inset: auto; aspect-ratio: 4 / 3; }
-    .ff-poster { object-position: 72% 50%; }
-    .ff canvas { position: relative; inset: auto; display: block; } /* die Engine zentriert die Formation, wenn die Fläche nicht absolut liegt */
-    .ff-copy { position: relative; left: auto; bottom: auto; max-width: 36rem; padding: 0 clamp(1.25rem, 3vw, 2.5rem) clamp(1.5rem, 5vh, 3rem); }
-  }
+  .ff canvas { touch-action: pan-y; }
+  .ff-text > :global(h2) { margin-top: 0; }
+  .ff-more { color: var(--accent); border-bottom: 1px solid var(--accent-line); }
+  @media (max-width: 45em) { .ff-sky { width: min(100%, 17rem); } }
 </style>

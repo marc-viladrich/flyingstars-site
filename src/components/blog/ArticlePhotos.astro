@@ -1,0 +1,43 @@
+---
+// Fotos im Blogartikel (Labor, Runde 15, Prototyp 2). Marc, 21.11.2026: „normale Fotos, gern mit unserem Punktraster-
+// Hintergrund als Rahmung/Bühne“, die Galerie nicht als Zwei-Spalten-Element neben dem Text, auf dem Handy als Slider.
+// Ein Baustein für jeden Artikel (auch normale ohne Szene): ein Foto über die Artikelbreite oder eine Reihe aus zwei bis
+// vier Fotos; darunter schaut die Leuchtpunkt-Unterlage (DotField) hervor. Schmal wird die Reihe zum Wisch-Slider mit
+// den Pfeilen der Seite (SliderNav). Echte <img> mit Breite, Höhe und Alternativtext, ab dem zweiten Bild lazy.
+import DotField from '../DotField.astro';
+import SliderNav from '../SliderNav.astro';
+type Photo = { src: string; width: number; height: number; alt: string };
+interface Props { photos: Photo[]; caption?: string; focus?: string }
+const { photos, caption, focus } = Astro.props;
+const row = photos.length > 1;
+---
+<figure class:list={['ap', { 'ap-row': row }]}>
+  <div class="ap-host df-host">
+    <DotField inset={row ? '42% -2.5% -6% 52%' : '34% -3.5% -7% 44%'} insetM={row ? '46% -1rem -0.75rem 36%' : '40% -1rem -0.75rem 34%'} focus={focus ?? '78% 80%'} />
+    <div class="ap-track" tabindex={row ? 0 : undefined} role={row ? 'group' : undefined} aria-label={row ? caption : undefined}>
+      {photos.map((p) => <div class="ap-item">
+        <img src={p.src} width={p.width} height={p.height} alt={p.alt} loading="lazy" decoding="async" style={`aspect-ratio: ${p.width} / ${p.height}`} />
+      </div>)}
+    </div>
+    {row && <SliderNav class="ap-nav" />}
+  </div>
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>
+
+<style>
+  .ap { width: 100%; max-width: min(56rem, 100%); margin: clamp(var(--space-10), 5vw, var(--space-14)) 0; }
+  .ap-row { max-width: min(64rem, 100%); }
+  .ap-track { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: clamp(var(--space-3), 1.6vw, var(--space-5)); }
+  .ap-item { display: grid; gap: var(--space-2-5); align-content: start; }
+  .ap img { width: 100%; height: auto; display: block; object-fit: cover; border-radius: var(--radius-14); background: var(--media-ground); }
+  .ap figcaption { margin-top: var(--space-4); color: var(--faint); font-size: var(--text-sm); max-width: 42rem; }
+  .ap :global(.ap-nav) { display: none; }
+  @media (max-width: 45em) {
+    .ap img { border-radius: var(--radius-12); }
+    /* Reihe als Slider: das nächste Bild schaut hervor, Einrasten je Bild, volle Breite des Inhalts */
+    .ap-row .ap-track { grid-auto-columns: 78%; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; }
+    .ap-row .ap-track::-webkit-scrollbar { display: none; }
+    .ap-row .ap-item { scroll-snap-align: start; }
+    .ap-row :global(.ap-nav) { display: flex; margin-top: var(--space-3); }
+  }
+</style>
