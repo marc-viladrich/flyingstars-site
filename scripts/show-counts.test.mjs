@@ -36,7 +36,8 @@ test('Eigener Text hat in jeder Schrift an den Bereichsgrenzen genau die Drohnen
 
 // Source-limited formations keep their complete original figure, with an explicit offstage budget.
 test('Bokkenrijders bleibt bei 600 Originalpunkten, zusätzliche Drohnen sind ausdrücklich offstage', async () => {
-  const motif = OCCASIONS.find(o => o.id === 'kultur').motifs.find(m => m.tiers.ODYSSEY?.build === 'devilStory');
+  // Runde 16: die Bokkenrijders-Geschichte (Maske ↔ Totenkopf, scenes/bokkenrijders.js) beginnt mit der Originalmaske
+  const motif = OCCASIONS.find(o => o.id === 'kultur').motifs.find(m => m.tiers.ODYSSEY?.build === 'bokkenrijdersStory');
   for (const n of [650, 800, 1000]) {
     const [b] = (await buildSequence([motif], 'ODYSSEY', n, undefined, 'kultur')).beats;
     assert.equal(b.pts.length, 600);
