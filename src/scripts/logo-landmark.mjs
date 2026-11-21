@@ -85,6 +85,6 @@ export function landmarkSvg(id) {
   const w = Math.max(...all.map((p) => p[0])) - x0 + W * 2, h = Math.max(...all.map((p) => p[1])) - y0 + W * 2;
   const ink = (tag) => (def.ink?.[tag] ?? def.ink?.default ?? '#2f3a44');
   const path = (p) => `<path d="M${p.pts.map(xy).map(([x, y]) => `${x.toFixed(1)} ${y.toFixed(1)}`).join('L')}${p.closed ? 'Z' : ''}" stroke="${ink(p.tag)}"/>`;
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${x0.toFixed(1)} ${y0.toFixed(1)} ${w.toFixed(1)} ${h.toFixed(1)}"><title>${def.title}</title>`
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${x0.toFixed(1)} ${y0.toFixed(1)} ${w.toFixed(1)} ${h.toFixed(1)}">`
     + `<g fill="none" stroke-width="${W}" stroke-linecap="round" stroke-linejoin="round">${polys.map(path).join('')}</g></svg>`;
 }
