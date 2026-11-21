@@ -15,7 +15,7 @@ const { droneStops, TWO_D_LIMIT } = await import('../src/content/show-packages.t
 const { OCCASIONS } = await import('../src/content/show-configurator.js');
 const { BUILDERS } = await import('../src/scripts/scenes/index.js');
 
-const MIN = { SPARK: 200, HORIZON: 250, ODYSSEY: 300 }; // Runde 11b: lockerer, mit weniger Drohnen
+const MIN = { SPARK: 150, HORIZON: 200, ODYSSEY: 300 }; // Runde 11c // Runde 11b: lockerer, mit weniger Drohnen
 const STOPS = { flat: droneStops('2d').filter((n) => n >= MIN.SPARK && n < TWO_D_LIMIT), s3: droneStops('3d').filter((n) => n >= MIN.HORIZON), plus: droneStops('story').filter((n) => n >= MIN.ODYSSEY) };
 const nearest = (pts) => pts.map((p, i) => { let m = Infinity; for (let j = 0; j < pts.length; j++) if (j !== i) m = Math.min(m, Math.hypot(p[0] - pts[j][0], p[1] - pts[j][1], (p[2] || 0) - (pts[j][2] || 0))); return m; });
 const quantile = (a, q) => { const s = [...a].sort((x, y) => x - y); return s[Math.min(s.length - 1, Math.floor(q * s.length))]; };
@@ -38,7 +38,7 @@ function motion(b, every = 1) {
 }
 const ALL = [['adventskranz2d', STOPS.flat], ['adventskranz3d', STOPS.s3], ['adventskranzStory', STOPS.plus]];
 
-test('im Konfigurator: Winter & Silvester, nach dem Lichterbaum, 2D ab 200, 3D ab 250, 3D+ ab 300, nachgeladen', () => {
+test('im Konfigurator: Winter & Silvester, nach dem Lichterbaum, 2D ab 150, 3D ab 200, 3D+ ab 300, nachgeladen', () => {
   const o = OCCASIONS.find((x) => x.id === 'silvester'), i = o.motifs.findIndex((m) => m.id === 'adventskranz'), m = o.motifs[i];
   assert.ok(m, 'Adventskranz fehlt');
   assert.equal(o.motifs[i - 1].id, 'schnee', 'Adventskranz steht nicht direkt nach dem Lichterbaum');
@@ -61,7 +61,7 @@ test('genau n Drohnen bei jeder einstellbaren Zahl, Punkte gültig, kein Sprung 
 });
 
 test('keine zwei Drohnen aufeinander, keine verstreuten Punkte (Ruhe, Mitte, Ende; 3D+ alle 0,1 s)', async () => {
-  for (const [name, ns] of [['adventskranz2d', [200, 300, 390]], ['adventskranz3d', [250, 300, 500, 750, 1000]], ['adventskranzStory', [300, 600, 1000]]]) for (const n of ns) {
+  for (const [name, ns] of [['adventskranz2d', [150, 200, 390]], ['adventskranz3d', [200, 250, 500, 750, 1000]], ['adventskranzStory', [300, 600, 1000]]]) for (const n of ns) {
     const { beats } = await builders[name](n, ''), b = beats[0], hold = b.hold ?? 6, med0 = quantile(nearest(lit(frame(b, 0))), 0.5);
     const times = name === 'adventskranzStory' ? Array.from({ length: Math.floor(hold / 0.1) + 1 }, (_, i) => i * 0.1) : [0, hold / 2, hold];
     for (const t of times) {
@@ -73,7 +73,7 @@ test('keine zwei Drohnen aufeinander, keine verstreuten Punkte (Ruhe, Mitte, End
 });
 
 test('Eigenbewegung in Drohnengrenzen', async () => {
-  for (const [name, ns] of [['adventskranz2d', [200]], ['adventskranz3d', [250, 1000]], ['adventskranzStory', [300, 600, 1000]]]) for (const n of ns) {
+  for (const [name, ns] of [['adventskranz2d', [150]], ['adventskranz3d', [200, 1000]], ['adventskranzStory', [300, 600, 1000]]]) for (const n of ns) {
     const { beats } = await builders[name](n, ''), m = motion(beats[0], n > 500 ? 2 : 1);
     assert.ok(m.v < LIMITS.speed * 0.8, `${name} ${n}: ${m.v.toFixed(2)} Einheiten/s`);
     assert.ok(m.a < LIMITS.accel, `${name} ${n}: Beschleunigung ${m.a.toFixed(2)}`);
@@ -81,13 +81,13 @@ test('Eigenbewegung in Drohnengrenzen', async () => {
 });
 
 test('lesbar: vier Kerzen mit Flammen, der Kranz trägt das Bild, das Bild füllt die Bühne', async () => {
-  for (const n of [250, 1000]) {
+  for (const n of [200, 1000]) {
     const m = wreathModel(n), count = (pre) => m.tags.filter((t) => t.startsWith(pre)).length;
     for (let c = 0; c < 4; c++) { assert.ok(count(`kerze${c}`) >= 10, `${n}: Kerze ${c} hat ${count(`kerze${c}`)} Drohnen`); assert.ok(count(`flamme${c}`) >= 8, `${n}: Flamme ${c}`); }
     assert.ok(count('zweig') + count('spitze') >= 0.4 * n, `${n}: der Kranz trägt weniger als 40 % der Drohnen`);
   }
   // Breite und Höhe: der Kranz füllt mindestens 85 % des Bildausschnitts in der Breite (Bühne 16:10)
-  for (const [name, n] of [['adventskranz2d', 200], ['adventskranz3d', 250], ['adventskranzStory', 600]]) {
+  for (const [name, n] of [['adventskranz2d', 150], ['adventskranz3d', 200], ['adventskranzStory', 600]]) {
     const bb = (await builders[name](n, '')).beats[0], f = lit(frame(bb, bb.hold ?? 3)), fit = bb.fitPts ?? bb.pts;
     assert.ok(extent(f, 0) >= 0.85 * extent(fit, 0), `${name} ${n}: ${(extent(f, 0) / extent(fit, 0) * 100).toFixed(0)} % der Breite`);
     assert.ok(extent(fit, 0) / extent(fit, 1) > 1.05, `${name} ${n}: hochkant (${(extent(fit, 0) / extent(fit, 1)).toFixed(2)}), die Bühne ist breit`);

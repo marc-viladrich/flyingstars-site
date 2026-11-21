@@ -1,11 +1,11 @@
 // Adventskranz mit vier Kerzen (Runde 11, Kandidat FSK-001 der Motiv-Shortlist), Anlass Winter & Silvester. Runde 11b (Marc:
-// „könnte auch mit deutlich weniger Drohnen auskommen“): 2D ab 200, 3D ab 250, 3D+ ab 300, lockere Linie. Ein liegender Kranz, wie er auf dem Tisch steht (kein Türkranz mit Schleife): Er liegt flach und wird
+// „könnte auch mit deutlich weniger Drohnen auskommen“): 2D ab 200, 3D ab 250, 3D+ ab 300, lockere Linie; Runde 11c: 2D ab 150, 3D ab 200. Ein liegender Kranz, wie er auf dem Tisch steht (kein Türkranz mit Schleife): Er liegt flach und wird
 // leicht von oben gesehen, die vier roten Kerzen stehen senkrecht darauf.
 //
-//   adventskranz2d (2D, 200–390): Vorderansicht als Zeichnung in Linien. Der Kranz ist ein Band aus zwei Ellipsen mit
+//   adventskranz2d (2D, 150–390): Vorderansicht als Zeichnung in Linien. Der Kranz ist ein Band aus zwei Ellipsen mit
 //     Zweigspitzen nach außen, die Kerzen stehen versetzt darauf (vier verschiedene Höhen und Lagen, keine verdeckt eine
 //     andere). Ein warmer Schein wandert die Zweige entlang, die Flammen flackern in Licht.
-//   adventskranz3d (3D, 250–1000): der Kranz als Körper: ein Zweigstrang windet sich als Schraube um den Ring (ab 500 ein
+//   adventskranz3d (3D, 200–1000): der Kranz als Körper: ein Zweigstrang windet sich als Schraube um den Ring (ab 500 ein
 //     zweiter, versetzt, ab 750 ein goldenes Band und Zweigspitzen), Kerzen als Zylinder aus Mantellinien und oberem Rand,
 //     Flammen aus zwei gekreuzten Tropfen (aus jeder Richtung eine Flamme). Er dreht sich langsam wie auf einem Drehteller.
 //   adventskranzStory (3D+, 300–1000): die Kerzen sind dunkel, vorn auf dem Kranz wartet eine warme Lichtspur. Sie läuft

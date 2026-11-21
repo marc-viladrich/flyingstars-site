@@ -76,7 +76,7 @@ const PIECES = {
   // tintenfisch.js, erst beim Bauen nachgeladen); die 100 zusätzlichen Drohnen steigen dunkel von unten auf (joinLate)
   krake: { kind: "story", tags: ["tier", "wasser"], steps: [O("octopusStory", { n: 400, story: 10 })] },
   // Runde 11 (Marc 21.11.2026: „auf der Startseite nicht übertreiben und maximal 400 Drohnen“): aus den neuen Motiven alles,
-  // was mit höchstens 400 Drohnen geht. Countdown 10 → 0 mit Feuerwerk (gross/countdown.js, 3D+ ab 400) und der aztekische
+  // was mit höchstens 400 Drohnen geht. Countdown 3 → 0 mit Feuerwerk (gross/countdown.js, 3D+ ab 300) und der aztekische
   // Drachenkopf (catalog-3d/drache.js, 3D+ ab 300). Wächter: scripts/himmel-folge-drohnen.test.mjs
   countdown: { kind: "story", tags: ["zeichen", "feuer"], steps: [O("countdownStory", { n: 400, story: 10 })] },
   drache: { kind: "story", tags: ["tier", "gesicht"], steps: [O("dragonHead", { story: 8 })] },

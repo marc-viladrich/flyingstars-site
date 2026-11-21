@@ -14,7 +14,7 @@ const { droneStops } = await import('../src/content/show-packages.ts');
 const { OCCASIONS } = await import('../src/content/show-configurator.js');
 const { BUILDERS } = await import('../src/scripts/scenes/index.js');
 
-const MIN = 500, STOPS = { s3: droneStops('3d').filter((n) => n >= MIN), plus: droneStops('story').filter((n) => n >= MIN) };
+const MIN = 400, STOPS = { s3: droneStops('3d').filter((n) => n >= MIN), plus: droneStops('story').filter((n) => n >= MIN) };
 function nearest(pts) {
   const cell = 0.08, g = new Map(), key = (a, b, c) => `${a},${b},${c}`;
   pts.forEach((p, i) => { const k = key(...p.slice(0, 3).map((v) => Math.floor(v / cell))); if (!g.has(k)) g.set(k, []); g.get(k).push(i); });
@@ -33,7 +33,7 @@ function motion(b, every = 1) {
   return { v, a };
 }
 
-test('im Konfigurator: Winter & Silvester, 3D und 3D+ ab 500, nachgeladen', () => {
+test('im Konfigurator: Winter & Silvester, 3D und 3D+ ab 400, nachgeladen', () => {
   const o = OCCASIONS.find((x) => x.id === 'silvester'), m = o.motifs.find((x) => x.id === 'schlitten');
   assert.ok(m, 'Schlitten fehlt');
   assert.deepEqual(Object.keys(m.tiers), ['HORIZON', 'ODYSSEY']);
@@ -52,7 +52,7 @@ test('genau n Drohnen bei jeder einstellbaren Zahl, Punkte gültig, kein Sprung 
 });
 
 test('keine Begegnung (alle 0,1 s), keine verstreuten Punkte außer den Sternen', async () => {
-  for (const [name, ns] of [['sleigh3d', [500, 700, 1000]], ['sleighStory', [500, 1000]]]) for (const n of ns) {
+  for (const [name, ns] of [['sleigh3d', [400, 700, 1000]], ['sleighStory', [400, 1000]]]) for (const n of ns) {
     const b = (await builders[name](n, '')).beats[0], m = sleighModel(n), med0 = quantile(nearest(frame(b, 0)), 0.5);
     for (let t = 0; t <= b.hold; t += 0.1) { const nn = nearest(frame(b, t)); assert.ok(Math.min(...nn) >= 0.25 * med0, `${name} ${n} t ${t.toFixed(1)}: ${Math.min(...nn).toFixed(4)} bei Median ${med0.toFixed(4)}`); }
     for (const t of [0, b.hold / 2, b.hold]) {
@@ -64,7 +64,7 @@ test('keine Begegnung (alle 0,1 s), keine verstreuten Punkte außer den Sternen'
 });
 
 test('Eigenbewegung in Drohnengrenzen', async () => {
-  for (const [name, n] of [['sleigh3d', 500], ['sleigh3d', 1000], ['sleighStory', 500], ['sleighStory', 1000]]) {
+  for (const [name, n] of [['sleigh3d', 400], ['sleigh3d', 1000], ['sleighStory', 400], ['sleighStory', 1000]]) {
     const m = motion((await builders[name](n, '')).beats[0], n > 600 ? 2 : 1);
     assert.ok(m.v < LIMITS.speed * 0.8, `${name} ${n}: ${m.v.toFixed(2)} Einheiten/s`);
     assert.ok(m.a < LIMITS.accel, `${name} ${n}: Beschleunigung ${m.a.toFixed(2)}`);
@@ -82,7 +82,7 @@ test('lockere Linie: der Abstand bleibt von 500 bis 1000 gleich, mehr Drohnen br
 });
 
 test('3D gleitet auf dem Kamm von links nach rechts, 3D+ hebt ab, wendet und lässt Lichtbahnen am Himmel', async () => {
-  for (const n of [500, 1000]) {
+  for (const n of [400, 1000]) {
     const m = sleighModel(n), body = m.pts.map((_, j) => j).filter((j) => m.body[j]);
     const centre = (b, t) => { const f = frame(b, t); return [0, 1].map((k) => body.reduce((s, j) => s + f[j][k], 0) / body.length); };
     const a = (await builders.sleigh3d(n, '')).beats[0], s = (await builders.sleighStory(n, '')).beats[0];

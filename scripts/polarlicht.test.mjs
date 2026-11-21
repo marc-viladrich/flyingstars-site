@@ -14,7 +14,7 @@ const { droneStops } = await import('../src/content/show-packages.ts');
 const { OCCASIONS } = await import('../src/content/show-configurator.js');
 const { BUILDERS } = await import('../src/scripts/scenes/index.js');
 
-const MIN = 800, STOPS = { s3: droneStops('3d').filter((n) => n >= MIN), plus: droneStops('story').filter((n) => n >= MIN) };
+const MIN = 600, STOPS = { s3: droneStops('3d').filter((n) => n >= MIN), plus: droneStops('story').filter((n) => n >= MIN) };
 function nearest(pts) {
   const cell = 0.08, g = new Map(), key = (a, b, c) => `${a},${b},${c}`;
   pts.forEach((p, i) => { const k = key(...p.slice(0, 3).map((v) => Math.floor(v / cell))); if (!g.has(k)) g.set(k, []); g.get(k).push(i); });
@@ -32,7 +32,7 @@ function motion(b, every = 1) {
   return { v, a };
 }
 
-test('im Konfigurator: Winter & Silvester, 3D und 3D+ ab 800, nachgeladen', () => {
+test('im Konfigurator: Winter & Silvester, 3D und 3D+ ab 600, nachgeladen', () => {
   const o = OCCASIONS.find((x) => x.id === 'silvester'), m = o.motifs.find((x) => x.id === 'polarlicht');
   assert.ok(m, 'Polarlicht fehlt');
   assert.deepEqual(Object.keys(m.tiers), ['HORIZON', 'ODYSSEY']);
@@ -52,7 +52,7 @@ test('genau n Drohnen bei jeder einstellbaren Zahl, Punkte gültig, kein Sprung 
 });
 
 test('keine Begegnung (alle 0,2 s), keine verstreuten Punkte außer den Sternen', async () => {
-  for (const [name, ns] of [['aurora3d', [800, 1000]], ['auroraStory', [800, 1000]]]) for (const n of ns) {
+  for (const [name, ns] of [['aurora3d', [600, 1000]], ['auroraStory', [600, 1000]]]) for (const n of ns) {
     const b = (await builders[name](n, '')).beats[0], m = auroraModel(n), med0 = quantile(nearest(frame(b, 0)), 0.5);
     for (let t = 0; t <= b.hold; t += 0.2) { const nn = nearest(frame(b, t)); assert.ok(Math.min(...nn) >= 0.25 * med0, `${name} ${n} t ${t.toFixed(1)}: ${Math.min(...nn).toFixed(4)} bei Median ${med0.toFixed(4)}`); }
     for (const t of [0, b.hold / 2, b.hold]) { const nn = nearest(frame(b, t)), med = quantile(nn, 0.5); assert.ok(Math.min(...nn) >= 0.3 * med, `${name} ${n} t ${t.toFixed(1)}: knappster Abstand`); assert.ok(quantile(nn.filter((_, j) => m.kind[j] !== 'stern' && m.kind[j] !== 'spiegel'), 0.995) <= 4.5 * med, `${name} ${n} t ${t.toFixed(1)}: Drohnen stehen allein`); }
@@ -60,7 +60,7 @@ test('keine Begegnung (alle 0,2 s), keine verstreuten Punkte außer den Sternen'
 });
 
 test('Eigenbewegung in Drohnengrenzen', async () => {
-  for (const [name, n] of [['aurora3d', 800], ['aurora3d', 1000], ['auroraStory', 800], ['auroraStory', 1000]]) {
+  for (const [name, n] of [['aurora3d', 600], ['aurora3d', 1000], ['auroraStory', 600], ['auroraStory', 1000]]) {
     const m = motion((await builders[name](n, '')).beats[0], 2);
     assert.ok(m.v < LIMITS.speed * 0.8, `${name} ${n}: ${m.v.toFixed(2)} Einheiten/s`);
     assert.ok(m.a < LIMITS.accel, `${name} ${n}: Beschleunigung ${m.a.toFixed(2)}`);
@@ -68,7 +68,7 @@ test('Eigenbewegung in Drohnengrenzen', async () => {
 });
 
 test('lockere Strahlen statt Raster, mehr Drohnen bringen Teile (Tannen), die Felslinien bleiben locker', () => {
-  for (const n of [800, 900, 1000]) {
+  for (const n of [600, 800, 900, 1000]) {
     const m = auroraModel(n);
     // Strahlen eines Vorhangs mindestens 0,15 auseinander (Kontaktbogen 2: 0,08 las sich als Punktfläche)
     for (let c = 0; c < m.rays.length; c++) { const xs = [...new Set(m.pts.filter((_, j) => m.kind[j] === 'strahl' && m.meta[j].c === c && !m.meta[j].edge).map((p) => p[0].toFixed(4)))].map(Number).sort((a, b) => a - b); const gap = Math.min(...xs.slice(1).map((x, i) => x - xs[i])); assert.ok(gap >= 0.12, `${n} Vorhang ${c}: Strahlen ${gap.toFixed(3)} auseinander`); }
@@ -80,7 +80,7 @@ test('lockere Strahlen statt Raster, mehr Drohnen bringen Teile (Tannen), die Fe
 });
 
 test('3D+: dunkel, dann entfalten sich die Vorhänge nacheinander; die Spiegelung folgt verzögert', async () => {
-  const n = 800, b = (await builders.auroraStory(n, '')).beats[0], m = auroraModel(n);
+  const n = 600, b = (await builders.auroraStory(n, '')).beats[0], m = auroraModel(n);
   const lit = (t, c) => frame(b, t).filter((o, j) => m.kind[j] === 'strahl' && m.meta[j].c === c && o[3] > 0.3).length;
   assert.equal(lit(0.5, 0), 0, 'am Anfang leuchten schon Vorhänge');
   const T1 = ACTS.dark;

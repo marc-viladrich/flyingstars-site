@@ -1,14 +1,14 @@
-// Schlitten über einer Hügelkette (Runde 11b, Kandidat FSK-006 der Motiv-Shortlist), Anlass Winter & Silvester, ab 500
-// Drohnen in 3D und 3D+. Referenz „Santa's sleigh in 3D volume · 500“ (nur als Anregung). Gebaut wie Satellit und Fahrzeuge:
+// Schlitten über einer Hügelkette (Runde 11b, Kandidat FSK-006 der Motiv-Shortlist), Anlass Winter & Silvester, ab 400
+// Drohnen in 3D und 3D+ (Runde 11c, vorher 500). Referenz „Santa's sleigh in 3D volume · 500“ (nur als Anregung). Gebaut wie Satellit und Fahrzeuge:
 // ein Körper aus wenigen klaren Teilen, jede Seitenwand zweimal (links und rechts), Querstücke an den markanten Stellen,
 // keine Füllung, lockere Linie. Lesbar an drei Zeichen: zwei Kufen, die vorn zur Schnecke einrollen, die Seitenwand mit
 // Schwanenhals vorn und hoher Rückenlehne, die gewölbte Sitzbank quer dazwischen. Darunter zwei Schneekämme: der vordere
 // trägt die beiden Spuren der Kufen, der hintere steht als Bergkette dahinter. Mehr Drohnen kaufen Teile, nicht Dichte:
 // ab 700 Mondsichel und Sterne, ab 900 drei Tannen auf dem hinteren Kamm.
 //
-//   sleigh3d (3D, ab 500): der leere Schlitten gleitet von links über die Kämme nach rechts und kommt dort zum Stehen; er
+//   sleigh3d (3D, ab 400): der leere Schlitten gleitet von links über die Kämme nach rechts und kommt dort zum Stehen; er
 //     neigt sich mit dem Hang, hinter ihm leuchten die beiden Spuren im Schnee auf.
-//   sleighStory (3D+, ab 500): Er gleitet über die Kämme, die Spuren leuchten hinter ihm auf. Am letzten Kamm hebt er ab und
+//   sleighStory (3D+, ab 400): Er gleitet über die Kämme, die Spuren leuchten hinter ihm auf. Am letzten Kamm hebt er ab und
 //     steigt in einem Bogen in den Himmel; die Spuren lösen sich wie ein Reißverschluss vom Schnee und ziehen als zwei
 //     Lichtbahnen hinter ihm her. Oben steht er vor der Mondsichel, die Lichtbahnen funkeln aus. Dieselben Drohnen, keine Wolke.
 // Wächter: scripts/schlitten.test.mjs.

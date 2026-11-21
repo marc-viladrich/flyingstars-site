@@ -1,24 +1,21 @@
 import { t as message } from '../../../i18n/ui.mjs';
-// Countdown von 10 bis 0 (Runde 11, Marc 20.11.2026 ausdrücklich gewünscht), Stufe 400 (Runde 11b, vorher 900), Anlass Winter & Silvester. Steigerung
-// der Uhr: Das Motiv steht in der Motivliste direkt hinter `uhr`; aus dem Zifferblatt mit zwölf Strichen wird ein Sekundenring
-// mit zehn Strichen, aus den Zeigern die „10“. Die Engine ordnet die Drohnen dabei nach Nähe zu, der Rand bleibt Rand.
+// Countdown 3 → 2 → 1 → 0 (Runde 11, Marc 20.11.2026 ausdrücklich gewünscht; Runde 11c: nur noch von 3, „von 10 ist es zu
+// predictable und langweilig“), Anlass Winter & Silvester. Steigerung der Uhr: Das Motiv steht in der Motivliste direkt hinter
+// `uhr`; aus dem Zifferblatt wird ein Sekundenring mit zwölf Strichen, aus den Zeigern die „3“. Die Engine ordnet die Drohnen
+// dabei nach Nähe zu, der Rand bleibt Rand.
 //
 // Bauweise wie Fahrzeuge und Drache (catalog-3d/): jede Linie liegt zweimal, vorn und hinten (im Profil eine saubere Linie, im
 // Schwenk ein Körper), keine Füllung. Die Ziffern sind FlyingStars' eigene Einstrich-Schrift „FS Einstrich“
 // (formwerk/font.js, Ziffern hier abgeschrieben, damit dieses Modul den Textplaner nicht nachlädt).
 //
-//   countdown3d (3D, ab 400): Sekundenring mit zehn Strichen, darin die Ziffer als Körper. Jede Ziffer entsteht aus der
-//     vorigen: Die Linie fließt in die neue Form und taucht dabei kurz in die Tiefe (die Drohnen folgen der Linie in
-//     Schreibreihenfolge, Nachbarn bleiben Nachbarn, keine Wolke). Braucht die neue Ziffer mehr Linie, fließt Licht aus dem
-//     Ring hinein, braucht sie weniger, geht es dorthin zurück. Ein Lichtkopf läuft den Ring ab wie ein Sekundenzeiger und
-//     lässt die verstrichene Zeit gedimmt zurück. Bei 0 läuft das Licht einmal festlich um den Ring.
-//   countdownStory (3D+, ab 400): zwei Akte ohne Wolke, dieselben Drohnen. Akt 1 wie 3D bis zur 3; die letzten drei Wechsel
-//     drehen die Ziffer um ihre Hochachse durch die Tiefe (die neue Form entsteht, während die Ziffer auf der Kante steht),
-//     die Ziffern werden heller und heißer, der Ring pulsiert mit jeder Sekunde. Akt 2: Die Null steht, die Kamera tritt
-//     zurück, Null und Ring falten sich zu einer Feuerwerkskugel aus Meridianen (wie die Schneeflocke, die sich räumlich
-//     auffaltet), die Kugel dreht sich, zündet und zerspringt zu einem Lichtschirm, dessen Funken als Goldregen sinken.
-// Tempo: eine Sekunde Countdown ≈ 1,3 s Show (ein Wechsel braucht in den Drohnengrenzen knapp eine Sekunde, dazu der Halt,
-// in dem die Ziffer lesbar steht); die Drehungen der letzten drei Sekunden dauern länger, das ist die Steigerung.
+//   countdown3d (3D): Sekundenring, darin die Ziffer als Körper. Jede Ziffer entsteht aus der vorigen: die Drohnen fließen
+//     optimal zugeordnet in die neue Form und tauchen dabei kurz in die Tiefe (keine Wolke). Braucht die neue Ziffer mehr
+//     Linie, fließt Licht aus dem Ring hinein, braucht sie weniger, geht es dorthin zurück. Ein Lichtkopf läuft den Ring ab
+//     wie ein Sekundenzeiger und lässt die verstrichene Zeit gedimmt zurück. Bei 0 läuft das Licht einmal festlich um den Ring.
+//   countdownStory (3D+): zwei Akte ohne Wolke, dieselben Drohnen. Akt 1: jeder Wechsel dreht die Ziffer um ihre Hochachse
+//     durch die Tiefe (die neue Form entsteht, während die Ziffer auf der Kante steht), die Ziffern werden heller und heißer,
+//     der Ring pulsiert mit jeder Sekunde. Akt 2: Die Null steht, die Kamera tritt zurück, Null und Ring falten sich zu einer
+//     Feuerwerkskugel aus Meridianen, die zündet und zu einem Lichtschirm zerspringt, dessen Funken als Goldregen sinken.
 // Wächter: scripts/countdown.test.mjs.
 import { TAU, GOLD, ORANGE, WARM, mix, smooth, hash, yaw, pitch, part, act } from '../../show-motion.js';
 import { assign } from '../../show-flight.js';
@@ -69,10 +66,10 @@ function pointAt(st, d) {
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
-// Bühne: Ring (Radius 1) mit zehn Strichen außen, Ziffer innen. Zwei Ebenen: vorn z = +D, hinten −D (Ring ±DR).
+// Bühne: Ring (Radius 1) mit zwölf Strichen außen, Ziffer innen. Zwei Ebenen: vorn z = +D, hinten −D (Ring ±DR).
 export const CAP = 1.4, RING = 1, TICK = [0.045, 0.105], DEPTH = 0.15, DR = 0.1, BEZEL = 1.16;
 /** Runde 11b (Marc 21.11.2026: „kann mit viiiiiel viel weniger Drohnen auch schon super funktionieren, einfach deutlich
- * geringere Liniendichte“): ab 400 Drohnen, lockere Linie. Mehr Drohnen kaufen ein Teil (ab 600 eine Lünette außen um die
+ * geringere Liniendichte“): lockere Linie, seit Runde 11c (nur noch 3 → 0) ab 300 Drohnen. Mehr Drohnen kaufen ein Teil (ab 600 eine Lünette außen um die
  * Sekundenstriche, im 3D+-Feuerwerk mehr Meridiane und Strahlen), nicht dichtere Linien: der Abstand bleibt von 400 bis
  * 1000 etwa gleich (Wächter). */
 export const level = (n) => (n >= 800 ? 2 : n >= 600 ? 1 : 0);
@@ -82,7 +79,10 @@ export const RAYS = 60, RAY_R = [BEZEL + 0.05, BEZEL + 0.13];
  * bei 0,15 begannen Drohnen nahe der Achse die Drehung sichtbar in der Gegenrichtung (Finten-Wächter), bei 0,08 bleibt das
  * unter der Schwelle, die Ziffer ist auf der Kante noch als Platte zu sehen. */
 export const D_PLUS = 0.08;
-export const LABELS = ['10', '9', '8', '7', '6', '5', '4', '3', '2', '1', '0'];
+/** Runde 11c (Marc 21.11.2026: „nur von 3 runterzählen, nicht von 10. Von 10 ist es zu predictable und langweilig und bei 3
+ * entsteht der gleiche Effekt und den Rest kann man sich einfach dazudenken“): 3 → 2 → 1 → 0. */
+export const LABELS = ['3', '2', '1', '0'];
+const STEPS = LABELS.length - 1; // Sekunden, die der Ring abläuft
 /** Striche einer Zahl in Szeneneinheiten, mittig; die „10“ etwas kleiner, damit sie in den Ring passt. */
 function numberStrokes(label) {
   const g = CAP / 6, gap = 0.6, glyphs = [...label].map((c) => GLYPH[c]), k = label.length > 1 ? 0.78 : 1;
@@ -122,8 +122,8 @@ function dedupe(list, sigma) {
   }
   return out;
 }
-const TICK_N = 2; // Drohnen je Sekundenstrich
-const tickPts = () => Array.from({ length: 10 }, (_, m) => { const a = Math.PI / 2 - ((m + 0.5) / 10) * TAU; /* Strich m erlischt, wenn seine Sekunde verstrichen ist */ return Array.from({ length: TICK_N }, (_, i) => { const r = RING + TICK[0] + ((TICK[1] - TICK[0]) * i) / (TICK_N - 1); return [Math.cos(a) * r, Math.sin(a) * r]; }); }).flat();
+const TICK_N = 2, TICKS = 12; // Drohnen je Strich; zwölf Striche wie das Zifferblatt der Uhr, aus der der Countdown kommt
+const tickPts = () => Array.from({ length: TICKS }, (_, m) => { const a = Math.PI / 2 - ((m + 0.5) / TICKS) * TAU; /* Strich m erlischt, wenn der Lichtkopf ihn passiert */ return Array.from({ length: TICK_N }, (_, i) => { const r = RING + TICK[0] + ((TICK[1] - TICK[0]) * i) / (TICK_N - 1); return [Math.cos(a) * r, Math.sin(a) * r]; }); }).flat();
 const RING_L = TAU * RING;
 
 /**
@@ -231,14 +231,15 @@ export function timeline(model) {
   }
   return { start, land, end: land.at(-1) + LAST };
 }
-const STORY_FLIPS = new Set([8, 9, 10]); // 3 → 2, 2 → 1, 1 → 0
+const STORY_FLIPS = new Set([1, 2, 3]); // 3 → 2, 2 → 1, 1 → 0: in 3D+ dreht sich jeder Wechsel durch die Tiefe
 const DIGIT = mix(WARM, GOLD, 0.55), RINGC = mix(WARM, GOLD, 0.22), TICKC = GOLD, BEZELC = mix(GOLD, ORANGE, 0.25);
 
 /** Gedimmter Anteil des Rings (0 … 1, im Uhrzeigersinn ab zwölf Uhr): stückweise linear zwischen den Landungen. */
 function drained(tl, t) {
-  const { land } = tl;
+  // der Ring beginnt abzulaufen, wenn die erste Ziffer sich verwandelt (vorher steht die „3“ mit vollem Ring)
+  const land = [tl.start[1], ...tl.land.slice(1)];
   if (t <= land[0]) return 0;
-  for (let k = 1; k < land.length; k++) if (t <= land[k]) return (k - 1 + (t - land[k - 1]) / (land[k] - land[k - 1])) / 10;
+  for (let k = 1; k < land.length; k++) if (t <= land[k]) return (k - 1 + (t - land[k - 1]) / (land[k] - land[k - 1])) / STEPS;
   return 1;
 }
 /** Licht einer Ring- oder Strichdrohne an Winkelstelle f (0 … 1 ab zwölf Uhr im Uhrzeigersinn). */
@@ -287,13 +288,13 @@ function makePose(model, tl, plus) {
     const dr = drained(tl, t);
     if (role >= 1) {
       o[3] = role === 3 ? 1 : ringLight(clockFrac(X[kk][j], Y[kk][j]), dr); // die Lünette läuft nicht ab
-      // 3D+: ab der Drei pulsiert der ganze Ring mit jeder Sekunde (auch der schon verstrichene Teil leuchtet kurz auf)
-      if (plus) { const last = phase ? k - 1 : k; if (last >= 7) o[3] += (0.35 + 0.25 * (last - 7)) * Math.exp(-Math.max(0, t - tl.land[last]) / 0.4); }
+      // 3D+: der ganze Ring pulsiert mit jeder Sekunde (auch der schon verstrichene Teil leuchtet kurz auf)
+      if (plus) { const last = phase ? k - 1 : k; o[3] += (0.35 + 0.25 * last) * Math.exp(-Math.max(0, t - tl.land[last]) / 0.4); }
     }
     else {
       const since = t - tl.land[phase ? k - 1 : k];
       let a = 1.05 + 0.4 * Math.exp(-Math.max(0, since) / 0.35); // jede Zahl landet mit einem Aufleuchten
-      if (plus) { const heat = Math.max(0, (k - 6) / 4); a += 0.25 * heat; }
+      if (plus) { const heat = k / STEPS; a += 0.25 * heat; }
       o[3] = a;
     }
     if (role > 0 && role < 1) o[3] = 1.05 * (1 - role) + ringLight(clockFrac(o[0], o[1]), dr) * role;
@@ -356,9 +357,9 @@ function rayPts(count, sign) {
 }
 /** Zuordnung in Blöcken: beide Mengen nach Winkel um die Mitte geordnet, je Block von 72 optimal (statt einer Zuordnung
  * über 500 Drohnen, die beim Aufbau zu lange rechnet). Kugel und Schirm sind beide strahlenförmig um die Mitte. */
-function blocks(from, to, flat3) {
+function blocks(from, to, flat3, size = 72) {
   const ang = (p) => Math.atan2(p[1], p[0]) + 0.001 * Math.hypot(p[0], p[1]), fi = from.map((_, i) => i).sort((p, q) => ang(from[p]) - ang(from[q])), ti = to.map((_, i) => i).sort((p, q) => ang(to[p]) - ang(to[q]));
-  const out = new Int32Array(from.length), nb = Math.ceil(from.length / 72);
+  const out = new Int32Array(from.length), nb = Math.ceil(from.length / size);
   for (let b = 0; b < nb; b++) {
     const r0 = Math.floor((b * from.length) / nb), r1 = Math.floor(((b + 1) * from.length) / nb), a = assign(flat3(fi.slice(r0, r1).map((i) => from[i])), flat3(ti.slice(r0, r1).map((i) => to[i])));
     for (let q = 0; q < r1 - r0; q++) out[fi[r0 + q]] = ti[r0 + a[q]];
@@ -371,7 +372,9 @@ function finaleBeat(n, caption, startPts) {
   startPts.forEach((p, j) => groups[p[2] >= 0 ? 0 : 1].push(j));
   for (const [L, ids] of groups.entries()) {
     const g = globePts(ids.length, L ? -1 : 1), r = rayPts(ids.length, L ? -1 : 1), flat3 = (l) => Float64Array.from(l.flatMap((p) => [p[0], p[1], p[2]]));
-    const a = blocks(ids.map((j) => startPts[j]), g, flat3); ids.forEach((j, q) => { globe[j] = g[a[q]]; });
+    // Null und Ring → Kugel in großen Blöcken (Runde 11c: mit 72er-Blöcken begegneten sich bei 1000 zwei Drohnen; ganz
+    // optimal kostete der Aufbau 330 ms)
+    const a = blocks(ids.map((j) => startPts[j]), g, flat3, 170); ids.forEach((j, q) => { globe[j] = g[a[q]]; });
     const b = blocks(ids.map((j) => globe[j]), r, flat3); ids.forEach((j, q) => { ray[j] = r[b[q]]; });
   }
   const T1 = FOLD[0] + FOLD[1], T2 = T1 + FUSE, T3 = T2 + BLAST;

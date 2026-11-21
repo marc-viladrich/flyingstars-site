@@ -1,14 +1,14 @@
-// Polarlicht über einem Fjord (Runde 11b, Kandidat FSK-013 der Motiv-Shortlist), Anlass Winter & Silvester, ab 800 Drohnen in
-// 3D und 3D+. Referenz „Large aurora borealis display · 900“ (nur als Anregung). Was erst ab 800 geht: mehrere breite
+// Polarlicht über einem Fjord (Runde 11b, Kandidat FSK-013 der Motiv-Shortlist), Anlass Winter & Silvester, ab 600 Drohnen in
+// 3D und 3D+ (Runde 11c, vorher 800; bei 600 tragen die Vorhänge weniger Strahlen). Referenz „Large aurora borealis display · 900“ (nur als Anregung). Was erst mit vielen Drohnen geht: mehrere breite
 // Lichtvorhänge zugleich, gestaffelt in der Tiefe, über einer Landschaft mit Spiegelung. Gebaut aus Linien wie alle großen
 // Motive: jeder Vorhang ist eine Reihe senkrechter Strahlen über einer gewellten Unterkante (wie echtes Polarlicht, das aus
 // Strahlen besteht), unten hellgrün, oben violett ausgehend; keine Füllung. Der Fjord: zwei Felswände als Kantenlinien
 // (Vorder- und Hinterkante, dazwischen die Grate), die Wasserlinie am Ende des Fjords, auf dem Wasser die Spiegelung als kurze
 // Strahlenstümpfe. Mehr Drohnen kaufen mehr und etwas höhere Strahlen, die Felslinien bleiben locker.
 //
-//   aurora3d (3D, ab 800): drei Vorhänge wogen; Wellen laufen an ihnen entlang (Fuß und Spitze gegeneinander versetzt, so
+//   aurora3d (3D, ab 600): drei Vorhänge wogen; Wellen laufen an ihnen entlang (Fuß und Spitze gegeneinander versetzt, so
 //     falten sie sich in der Tiefe), Licht steigt die Strahlen hinauf, die Spiegelung zittert auf dem Wasser.
-//   auroraStory (3D+, ab 800): vier Akte ohne Bildwechsel. Dunkler Fjord mit Sternen; die Vorhänge entfalten sich nacheinander
+//   auroraStory (3D+, ab 600): vier Akte ohne Bildwechsel. Dunkler Fjord mit Sternen; die Vorhänge entfalten sich nacheinander
 //     (das Licht steigt die Strahlen hinauf), dann wandern die Bögen seitlich über den Fjord, die Spiegelung folgt verzögert;
 //     Höhepunkt: ein Lichtsturm, die Falten werden tiefer, helle Wellen jagen die Vorhänge entlang und färben sie violett;
 //     danach beruhigt sich alles.
