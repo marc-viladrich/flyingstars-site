@@ -18,7 +18,11 @@ const { t, localHref } = forPath(Astro.url.pathname);
 // solange die Bühne sichtbar ist; bei globaler Pause oder reduzierter Bewegung steht ein Motiv in Ruhe.
 // Runde 11 (Marc): Knopf „Zum Show-Konfigurator“; der Paketrahmen gleitet wie im Konfigurator zum neuen Paket
 // (.cft-ind, reines CSS über .is-on, das show-teaser.js setzt).
-import { SHOW_PACKAGES, DRONES_MIN, DRONES_MAX } from '../../content/show-packages';
+// Runde 15 (Marc, 21.11.2026: „damit klar wird: das sind die Haupthebel“): über dem Regler die Wahl „Art der Show“ 2D / 3D /
+// 3D+ in denselben Pills wie auf der Preisseite (.chips.chips-quiet, Wörter preise.art.*). Als einziger Teil des Wireframes
+// bedienbar (echte Radioknöpfe, eigene Gruppe mit Namen); solange niemand wählt, zeigt die Pill die Art des laufenden Bildes
+// (.is-now). Eine Wahl spielt den Ablauf in dieser Art weiter, ab dem gerade gezeigten Motiv (show-teaser.js).
+import { SHOW_PACKAGES, DRONES_MIN, DRONES_MAX, SHOW_ARTS } from '../../content/show-packages';
 
 interface Props {
   /** Präfix für die IDs */
@@ -64,22 +68,28 @@ const labels = {
 
   <div class="cft-side">
     {/* Wireframe des Konfigurators: reine Dekoration, folgt der Bühne (show-teaser.js) */}
-    <div class="cft-mock" aria-hidden="true">
-      <div class="cft-group">
+    <div class="cft-mock">
+      <div class="cft-group" aria-hidden="true">
         <p class="cft-label">{t('configuratorteaser.package')}</p>
         <div class="cft-pkgs" style={(Object.keys(SHOW_PACKAGES) as Pkg[]).map((k, i) => `--c${i}: ${rgb(k)}`).join('; ')}>
           {(Object.keys(SHOW_PACKAGES) as Pkg[]).map((k) => <span class:list={['cft-pkg', { 'is-on': k === start.pkg }]} data-cft="pkg" data-id={k} style={`--c: ${rgb(k)}`}>{k}</span>)}
           <span class="cft-ind"></span>
         </div>
       </div>
-      <div class="cft-drones">
+      <div class="cft-group cft-art" role="radiogroup" aria-labelledby={`${id}-art`}>
+        <p class="cft-label" id={`${id}-art`}>{t('preise.art')}</p>
+        <div class="chips chips-quiet cft-arts">
+          {SHOW_ARTS.map((a, i) => <label class:list={{ 'is-now': i === 0 }}><input type="radio" name={`${id}-art`} value={a} data-cft="art" /><span>{t(`preise.art.${a}`)}</span></label>)}
+        </div>
+      </div>
+      <div class="cft-drones" aria-hidden="true">
         <p class="cft-count"><b data-cft="count">{start.drones}</b> {t('configuratorteaser.drones')}</p>
         <div class="cft-slider">
           <span class="cft-fill" data-cft="fill" style={`--at: ${at(start.drones) / 100}`}></span>
           <span class="cft-thumb" data-cft="thumb" style={`--at: ${at(start.drones) / 100}`}></span>
         </div>
       </div>
-      <p class="cft-price">{[1, 2, 3, 4, 5, 6, 7, 8].map((k) => <span class:list={['cft-euro', { 'is-on': k <= 1 }]} data-cft="euro">€</span>)}</p>
+      <p class="cft-price" aria-hidden="true">{[1, 2, 3, 4, 5, 6, 7, 8].map((k) => <span class:list={['cft-euro', { 'is-on': k <= 1 }]} data-cft="euro">€</span>)}</p>
     </div>
     <a class="btn primary cft-cta" href={localHref(href)}>{cta}</a>
   </div>

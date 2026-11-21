@@ -70,3 +70,8 @@
    Paketknöpfe, Griff in Orange. Ablauf und Bühne bleiben (show-teaser.js). */
 .cft .cft-group:first-child { display: none; }
 .cft .cft-thumb { border-color: var(--accent); box-shadow: 0 0 0 0.25rem var(--overlay-heavy), 0 0 1rem 2px rgb(var(--rgb-amber) / 0.45); }
+/* Runde 15: Art der Show 2D / 3D / 3D+ wie auf der Preisseite (.chips.chips-quiet), der einzige bedienbare Teil des
+   Wireframes. Solange niemand gewählt hat, trägt die Pill der laufenden Art (.is-now) die Optik der gewählten. */
+.cft .cft-art { pointer-events: auto; user-select: auto; }
+.cft .cft-arts { flex-wrap: nowrap; }
+.cft .cft-arts label.is-now input:not(:checked) + span { color: var(--chip-selected-color, var(--ground)); background: var(--chip-selected-bg, var(--text)); border-color: var(--text); }
