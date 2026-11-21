@@ -222,7 +222,8 @@ export function indoorScene(o: { colors: string[]; vertical: string; horizontal:
 }
 
 /** Draußen: Lageplan als Grund (Häuser, Park, Straße), darüber die Zonen als gestaffelte Platten, Drohnenlinie am Himmel. */
-export function outdoorScene(o: { colors: string[]; horizontal: string; detail: string }): Scene {
+/** motif (additiv, Labor Blogbilder 21.11.2026): 'heart' formt am Himmel ein Herz statt der Drohnenlinie; ohne Angabe wie bisher. */
+export function outdoorScene(o: { colors: string[]; horizontal: string; detail: string; motif?: 'line' | 'heart' }): Scene {
   const cam = camera([0, -4, 8], -36, 29, 560);
   // Lageplan-Koordinaten der bisherigen Draufsicht (0–400) in Meter umgerechnet: 0,5 m je Einheit, Mitte bei (204, 172)
   const W = (pts: number[][]) => pts.map(([x, y]) => [(x - 204) * 0.5, (172 - y) * 0.5]);
@@ -283,7 +284,8 @@ export function outdoorScene(o: { colors: string[]; horizontal: string; detail: 
   const seeds: V3[] = Array.from({ length: 21 }, (_, i) => [sp.x0 + 2.4 + (i % 7) * 2.5, sp.y0 + 1.8 + Math.floor(i / 7) * 2.4, 0]);
   const start: ZoneGroup = { zone: 'start', items: [...plate([[sp.x0, sp.y0], [sp.x1, sp.y0], [sp.x1, sp.y1], [sp.x0, sp.y1]], 2, S[3], 'pad', 2)] };
   const line60 = Array.from({ length: 21 }, (_, i): V3 => { const u = i / 20; return [-30 + u * 60, 2, 22 + Math.sin(u * Math.PI) * 7]; });
-  const drones: Drone[] = pair(seeds, line60).map(({ start: s, motif: m }, k) => ({
+  const sky = o.motif === 'heart' ? heart(seeds.length, 0, 2, 25, 46, 24, -24) : line60;
+  const drones: Drone[] = pair(seeds, sky).map(({ start: s, motif: m }, k) => ({
     g: P([s[0], s[1], 0.6], S[3]), l: P([s[0], s[1], 14], S[3]), m: P(m, S[3]),
     c: o.colors[Math.round((m[0] + 30) / 60 * (o.colors.length - 1))], k,
   })).map((d) => ({ ...d, g: [r1(d.g[0]), r1(d.g[1])] as P2, l: [r1(d.l[0]), r1(d.l[1])] as P2, m: [r1(d.m[0]), r1(d.m[1])] as P2 }));

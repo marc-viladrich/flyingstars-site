@@ -1,0 +1,62 @@
+---
+// Labor Blogbilder: eine vorberechnete Drohnenformation (tools/labor/blog-bilder.mjs) als ruhiges Standbild, statisches
+// SVG ohne JavaScript und ohne CSS-filter. Lichtgröße folgt dem Punktabstand im Bild (sonst verschmelzen dichte Motive zu
+// Strichen und lockere wirken verloren), Halo als radialer Verlauf je Farbe, Punktraster dahinter läuft zum Rand aus.
+interface Still { aspect: number; pts: number[][] }
+interface Props {
+  still: Still;
+  format: 'card' | 'cover';
+  /** grad: Logoverlauf nach x (Bernstein → Orchidee → Cyan); own: Farben des Motivs */
+  color?: 'grad' | 'own';
+  /** Mitte des Motivs (Anteil der Fläche) und größte Höhe bzw. Breite */
+  at?: [number, number];
+  maxH?: number;
+  maxW?: number;
+  grid?: boolean;
+  label: string;
+}
+const { still, format, color = 'grad', at = [0.5, 0.5], maxH = 0.74, maxW = 0.82, grid = true, label } = Astro.props;
+const [W, H] = format === 'card' ? [400, 225] : [1024, 512];
+const uid = `ds${Math.random().toString(36).slice(2, 8)}`;
+// Größe: Motiv in [-1, 1] → so groß wie maxH/maxW erlauben
+const halfW = still.aspect >= 1 ? 1 : still.aspect, halfH = still.aspect >= 1 ? 1 / still.aspect : 1;
+const k = Math.min((maxH * H) / (2 * halfH), (maxW * W) / (2 * halfW));
+const cx = at[0] * W, cy = at[1] * H;
+const pts = still.pts.map(([x, y, s, a, r, g, b]) => ({ x: cx + x * k, y: cy + y * k, s, a, rgb: [r, g, b], u: (x / halfW + 1) / 2 }));
+// mittlerer Abstand zum nächsten Nachbarn im Bild
+const nn = pts.map((p, i) => Math.min(...pts.map((q, j) => (i === j ? Infinity : Math.hypot(p.x - q.x, p.y - q.y))))).sort((a, b) => a - b);
+const gap = nn[Math.floor(nn.length / 2)];
+const scale = W / (format === 'card' ? 400 : 1024);
+const core = Math.max(1.1 * scale, Math.min(2.8 * scale, gap * 0.17)), halo = Math.max(4 * scale, Math.min(13 * scale, gap * 0.62));
+const GRAD: [number, number[]][] = [[0, [255, 158, 41]], [0.5, [219, 100, 232]], [1, [51, 237, 242]]];
+const along = (u: number) => { u = Math.max(0, Math.min(1, u)); for (let i = 1; i < GRAD.length; i++) if (u <= GRAD[i][0]) { const [u0, a] = GRAD[i - 1], [u1, b] = GRAD[i], t = (u - u0) / (u1 - u0); return a.map((v, j) => v + (b[j] - v) * t); } return GRAD[2][1]; };
+// Farben auf 24 Stufen gerundet, damit es nur wenige Verläufe gibt
+const hex = (c: number[]) => '#' + c.map((v) => Math.round(Math.round(v / 24) * 24 > 255 ? 255 : Math.round(v / 24) * 24).toString(16).padStart(2, '0')).join('');
+const dots = pts.map((p) => ({ ...p, c: hex(color === 'grad' ? along(p.u) : p.rgb) })).sort((a, b) => a.s - b.s);
+const palette = [...new Set(dots.map((d) => d.c))];
+const gid = (c: string) => `${uid}h${c.slice(1)}`;
+const step = format === 'card' ? 9 : 16;
+---
+<svg class="drone-still" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMid slice" role="img" aria-label={label}>
+  <defs>
+    <radialGradient id={`${uid}glow`} cx={at[0]} cy={at[1]} r="0.62"><stop offset="0" stop-color="#db64e8" stop-opacity="0.16" /><stop offset="1" stop-color="#db64e8" stop-opacity="0" /></radialGradient>
+    <radialGradient id={`${uid}warm`} cx="0.5" cy="1.08" r="0.7"><stop offset="0" stop-color="#ff9e29" stop-opacity="0.12" /><stop offset="1" stop-color="#ff9e29" stop-opacity="0" /></radialGradient>
+    {grid && <>
+      <pattern id={`${uid}grid`} width={step} height={step} patternUnits="userSpaceOnUse"><circle cx={step / 2} cy={step / 2} r={0.7 * scale * (format === 'card' ? 1 : 1.4)} fill="#ede6da" /></pattern>
+      <radialGradient id={`${uid}fade`} cx={at[0]} cy={at[1]} r="0.58"><stop offset="0.15" stop-color="#fff" stop-opacity="1" /><stop offset="1" stop-color="#fff" stop-opacity="0" /></radialGradient>
+      <mask id={`${uid}mask`}><rect width={W} height={H} fill={`url(#${uid}fade)`} /></mask>
+    </>}
+    {palette.map((c) => <radialGradient id={gid(c)}><stop offset="0" stop-color={c} stop-opacity="0.5" /><stop offset="0.35" stop-color={c} stop-opacity="0.16" /><stop offset="1" stop-color={c} stop-opacity="0" /></radialGradient>)}
+  </defs>
+  <rect width={W} height={H} fill="#0a0908" />
+  <rect width={W} height={H} fill={`url(#${uid}glow)`} />
+  <rect width={W} height={H} fill={`url(#${uid}warm)`} />
+  {grid && <rect width={W} height={H} fill={`url(#${uid}grid)`} mask={`url(#${uid}mask)`} opacity="0.11" />}
+  <g>{dots.map((d) => <circle cx={d.x.toFixed(1)} cy={d.y.toFixed(1)} r={(halo * d.s * Math.min(1.2, 0.6 + 0.4 * d.a)).toFixed(2)} fill={`url(#${gid(d.c)})`} />)}</g>
+  <g>{dots.map((d) => <circle cx={d.x.toFixed(1)} cy={d.y.toFixed(1)} r={(core * d.s).toFixed(2)} fill={d.c} fill-opacity={Math.min(1, 0.55 + 0.45 * d.a).toFixed(2)} />)}</g>
+  <g>{dots.filter((d) => d.a > 0.85).map((d) => <circle cx={d.x.toFixed(1)} cy={d.y.toFixed(1)} r={(core * d.s * 0.45).toFixed(2)} fill="#fffaf0" fill-opacity="0.85" />)}</g>
+</svg>
+
+<style>
+  .drone-still { display: block; width: 100%; height: 100%; }
+</style>

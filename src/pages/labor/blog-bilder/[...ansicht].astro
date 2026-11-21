@@ -1,0 +1,194 @@
+---
+// Labor (nur im Dev-Server, nie im Build, wie labor/[variant].astro): Entscheidungsvorlage, wie die Blogartikel ohne
+// Stockfoto-Anmutung bebildert werden (Runde 15, 21.11.2026). Je Artikel fünf Titelbilder im echten Kartenformat und im
+// Artikelkopf, dazu ein Beispiel für eine Prozessgrafik im Text. Daten und Fotos: tools/labor/blog-bilder.mjs.
+import { getCollection } from 'astro:content';
+import Base from '../../../layouts/Base.astro';
+import MediaCard from '../../../components/MediaCard.astro';
+import Picture from '../../../components/Picture.astro';
+import DroneStill from '../../../components/labor/DroneStill.astro';
+import AblaufSzene from '../../../components/labor/AblaufSzene.astro';
+import { authorOf, dateOf, readingMinutes, topicOf } from '../../../components/blog/post-meta';
+import { optimizedImage } from '../../../lib/media';
+import { forPath } from '../../../i18n/server';
+import data from '../../../components/labor/blog-bilder-daten.json';
+
+export function getStaticPaths() {
+  if (!import.meta.env.DEV) return [];
+  return [{ params: { ansicht: undefined } }];
+}
+const { t } = forPath('/blog/');
+
+// Je Artikel: Motiv, Farbe und Stichwort. Feuerwerk behält die Farben des Konfigurator-Feuerwerks.
+const PLAN: Record<string, { slug: string; motif: keyof typeof data.formations; own?: boolean; text: keyof typeof data.texts; motifName: string; at?: [number, number] }> = {
+  '2025-01-14-wie-funktioniert-drohnenshow-drohne': { slug: 'funktioniert', motif: 'atom', text: 'technik', motifName: 'Atom (Katalog, 3D)' },
+  '2025-03-31-drohnen-feuerwerk-als-alternative': { slug: 'feuerwerk', motif: 'feuerwerk', own: true, text: 'ohne-knall', motifName: 'Feuerwerk-Finale (Konfigurator)' },
+  '2025-06-12-wie-programmiert-man-eine-drohnenshow': { slug: 'programmierung', motif: 'zahnraeder', text: 'code', motifName: 'Zahnräder (Katalog)' },
+  '2026-10-06-testflug-wie-eine-drohnenshow-entsteht': { slug: 'testflug', motif: 'startfeld', text: 'testflug', motifName: 'Startraster', at: [0.5, 0.54] },
+};
+const VARIANTS = [
+  { id: 'ist', name: 'Ist', what: 'Heutiges Stockfoto', effort: 'Foto hochladen' },
+  { id: 'formation', name: 'Formation', what: 'Katalogmotiv als Standbild', effort: 'Motiv aus Liste wählen' },
+  { id: 'schrift', name: 'Schrift', what: 'Stichwort in Drohnenschrift', effort: 'ein Wort eintippen' },
+  { id: 'raster', name: 'Lichtraster', what: 'Foto als Lichtpunkt-Raster', effort: 'Foto hochladen, Build rechnet' },
+  { id: 'duoton', name: 'Duoton', what: 'Foto in Seitenfarben', effort: 'Foto hochladen, Build rechnet' },
+] as const;
+
+const all = await getCollection('posts', (p) => p.id in PLAN);
+const posts = Object.keys(PLAN).map((id) => all.find((p) => p.id === id)!).filter(Boolean);
+const clean = (s: string) => s.replace(/\[([^\]]+)\]\([^)]*\)/g, '$1').replace(/\*\*?/g, '').trim();
+const introOf = (body = '') => clean(body.split(/\n\s*\n/).find((p) => /^[A-ZÄÖÜa-zäöü]/.test(p.trim())) ?? '');
+const author = authorOf(posts[0]);
+const face = await optimizedImage(author.image.src, 160);
+const covers = Object.fromEntries(await Promise.all(posts.map(async (p) => [p.id, p.data.cover ? await optimizedImage(p.data.cover.src, 1600) : null])));
+---
+<Base title="Labor: Blogbilder" description="Labor: Titelbilder für den Blog im Vergleich" noindex>
+  <section class="section bb-intro" aria-labelledby="bb-h">
+    <span class="kicker mono">Labor · Entscheidungsvorlage</span>
+    <h1 id="bb-h">Blogbilder ohne Stockfoto</h1>
+    <p>Vier echte Artikel, je fünf Titelbilder: als Blogkarte und im Artikelkopf. Unten ein Beispiel für eine Grafik im Text.</p>
+    <ol class="bb-legend">
+      {VARIANTS.map((v, i) => <li><b>{i + 1} {v.name}</b> <span>{v.what}</span> <span class="mono">Editor: {v.effort}</span></li>)}
+    </ol>
+  </section>
+
+  {posts.map((post, n) => {
+    const plan = PLAN[post.id];
+    const cover = post.data.cover, big = covers[post.id];
+    const still = data.formations[plan.motif], word = data.texts[plan.text];
+    const media = (v: string, format: 'card' | 'cover') => {
+      if (v === 'formation') return <DroneStill still={still} format={format} color={plan.own ? 'own' : 'grad'} at={format === 'cover' ? [0.6, plan.at?.[1] ?? 0.5] : plan.at} maxH={format === 'cover' ? 0.8 : 0.74} label={`Drohnenformation: ${plan.motifName}`} />;
+      if (v === 'schrift') return <DroneStill still={word} format={format} maxW={format === 'cover' ? 0.66 : 0.8} maxH={0.6} label={`Drohnenschrift: ${word.word}`} />;
+      if (v === 'raster' || v === 'duoton') return <img src={`/media/labor/${v}-${plan.slug}.webp`} width="1600" height="1000" alt={cover?.alt ?? ''} loading="lazy" decoding="async" />;
+      return null;
+    };
+    return <section class="section bb-post" aria-labelledby={`bb-${plan.slug}`}>
+      <header class="bb-post-head">
+        <span class="kicker mono">Artikel {n + 1} · {topicOf(post)}{post.data.draft && ' · Entwurf'}</span>
+        <h2 id={`bb-${plan.slug}`}>{post.data.title}</h2>
+        <p>{introOf(post.body)}</p>
+      </header>
+
+      <h3 class="bb-row mono">Als Blogkarte</h3>
+      <div class="bb-cards">
+        {VARIANTS.map((v, i) => <figure class="bb-variant">
+          <MediaCard variant="editorial" class="post-card" title={post.data.title} level="h4" summary={post.data.description} hasMedia={v.id !== 'ist' || Boolean(cover)} dot={false} i={i} badge={`${readingMinutes(post)} ${t('postcard.minRead')}`}>
+            <Fragment slot="media">{v.id === 'ist' ? cover && <Picture {...cover} sizes="(max-width: 45em) 92vw, 20vw" /> : media(v.id, 'card')}</Fragment>
+            <span class="kick mono" slot="meta">{topicOf(post)} · <time datetime={post.data.date.toISOString()}>{dateOf(post)}</time></span>
+          </MediaCard>
+          <figcaption><b>{i + 1} {v.name}</b> {v.id === 'ist' && !cover ? 'heute ohne Titelbild' : v.id === 'formation' ? plan.motifName : v.id === 'schrift' ? `„${word.word}“, ${word.drones} Drohnen` : v.what} · <span>{v.effort}</span></figcaption>
+        </figure>)}
+      </div>
+
+      <h3 class="bb-row mono">Im Artikelkopf</h3>
+      <div class="bb-kopf">
+        <fieldset class="bb-switch">
+          <legend class="sr-only">Titelbild im Artikelkopf</legend>
+          {VARIANTS.map((v, i) => <label><input type="radio" name={`kopf-${plan.slug}`} value={v.id} checked={v.id === 'formation'} /><span>{i + 1} {v.name}</span></label>)}
+        </fieldset>
+        <div class="post-head">
+          <span class="kicker mono post-back"><span aria-hidden="true">←</span> Blog · {topicOf(post)}</span>
+          <p class="bb-h1">{post.data.title}</p>
+          <div class="byline">
+            <img class="face" src={face.src} width={face.width} height={face.height} alt="" loading="lazy" decoding="async" />
+            <p><b>{author.name}</b> <span class="mono">{t(author.roleKey)}</span></p>
+            <p class="when"><time datetime={post.data.date.toISOString()}>{dateOf(post)}</time> · {readingMinutes(post)} {t('postcard.minRead')}</p>
+          </div>
+        </div>
+        <div class="bb-cover">
+          {VARIANTS.map((v) => <div class="bb-cv" data-v={v.id}>
+            {v.id === 'ist' ? (big ? <img src={big.src} {...big.attributes} width={big.width} height={big.height} alt={cover!.alt} loading="lazy" decoding="async" /> : <p class="bb-none mono">Heute kein Titelbild, der Artikel beginnt mit dem Text</p>) : media(v.id, 'cover')}
+          </div>)}
+        </div>
+      </div>
+    </section>;
+  })}
+
+  <section class="section bb-inline" aria-labelledby="bb-inline-h">
+    <header class="bb-post-head">
+      <span class="kicker mono">Im Artikel</span>
+      <h2 id="bb-inline-h">Prozessgrafik statt Foto im Text</h2>
+      <p>Beispiel aus „Wie funktioniert eine Drohnenshow?“: die Schrägansicht der Standortgrafik, je Schritt ein anderer Ausschnitt. Editor: nicht änderbar, wird einmal gebaut.</p>
+    </header>
+    <div class="bb-article">
+      <p class="bb-h2">Ablauf einer Drohnenshow</p>
+      <p>Eine Drohnenshow beginnt am Boden, wo die Drohnen vorbereitet und mit den erforderlichen Informationen für ihre bevorstehende Performance programmiert werden. Nach dem Start bewegen sich die Drohnen nach einer präzisen Choreografie, um verschiedene Bilder und Animationen zu erzeugen.</p>
+      <p><strong>Vorbereitung:</strong> Die benötigte Anzahl an Drohnen wird gemäß einem zuvor erstellten Animationsraster positioniert.</p>
+      <AblaufSzene step={1} label="Startfeld: die Drohnen stehen im Raster auf der Startfläche." />
+      <p><strong>Start und Formationen:</strong> Die Drohnen heben synchron ab und fliegen in zuvor festgelegten Formationen.</p>
+      <AblaufSzene step={2} label="Aufstieg: die Drohnen steigen als Raster über den Flugbereich." />
+      <p><strong>Bewegungen und Animationen:</strong> Durch präzise Flugbewegungen entstehen spektakuläre Bilder und Lichtshows.</p>
+      <AblaufSzene step={3} label="Formation: über der Stadt formen die Drohnen ein Herz, das Publikum steht in seinem Bereich." />
+    </div>
+  </section>
+</Base>
+
+<style>
+  .bb-intro { padding-bottom: var(--space-8); }
+  .bb-intro h1 { font-size: clamp(2.25rem, 4.4vw, 3.75rem); }
+  .bb-intro > p { margin-top: var(--space-4); color: var(--muted); max-width: 44rem; }
+  .bb-legend { list-style: none; padding: 0; margin: var(--space-8) 0 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: var(--space-4); border-top: 1px solid var(--line); padding-top: var(--space-5); }
+  .bb-legend li { display: grid; gap: var(--space-1); font-size: var(--text-control); color: var(--muted); }
+  .bb-legend b { color: var(--head); font: 500 var(--text-md)/1.2 var(--display); }
+  .bb-legend .mono { color: var(--faint); letter-spacing: 0.06em; }
+
+  .bb-post { border-top: 1px solid var(--line); }
+  .bb-post-head { max-width: 46rem; margin-bottom: clamp(var(--space-8), 4vw, var(--space-12)); }
+  .bb-post-head h2 { font-size: clamp(1.75rem, 3vw, 2.5rem); }
+  .bb-post-head p { margin-top: var(--space-4); color: var(--muted); }
+  .bb-post .bb-post-head p { display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+  .bb-row { color: var(--faint); margin: 0 0 var(--space-4); }
+  .bb-cards { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: var(--space-8) var(--space-5); margin-bottom: clamp(var(--space-12), 6vw, var(--space-18)); }
+  .bb-variant { margin: 0; display: grid; gap: var(--space-3); align-content: start; }
+  /* fünf Spalten sind schmaler als das echte Raster: lange Wörter (verbundene letzte zwei Wörter) dürfen trennen */
+  .bb-variant :global(.proj h4) { font-size: var(--text-md); hyphens: auto; overflow-wrap: anywhere; }
+  .bb-variant :global(.proj p) { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .bb-variant figcaption { padding-top: var(--space-3); border-top: 1px solid var(--line); color: var(--muted); font-size: var(--text-sm); }
+  .bb-variant figcaption b { color: var(--head); font-weight: 500; }
+  .bb-variant figcaption span { color: var(--faint); }
+
+  /* Artikelkopf wie templates/BlogPost.astro, schaltbar */
+  .bb-kopf { max-width: 64rem; margin-inline: auto; display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-6); }
+  .bb-switch { border: 0; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--space-2); }
+  .bb-switch label { position: relative; cursor: pointer; }
+  .bb-switch input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+  .bb-switch span { display: block; padding: var(--space-2) var(--space-3-5); border-radius: var(--radius-pill); border: 1px solid var(--line-strong); color: var(--muted); font: 500 var(--text-sm)/1.2 var(--display); transition: background var(--dur-control), color var(--dur-control), border-color var(--dur-control); }
+  .bb-switch label:hover span { color: var(--head); border-color: var(--line-bold); }
+  .bb-switch input:checked + span { background: var(--head); border-color: var(--head); color: var(--ground); }
+  .bb-switch input:focus-visible + span { outline: 2px solid var(--cyan); outline-offset: 0.1875rem; }
+  .post-head { max-width: 42rem; width: 100%; margin-inline: auto; display: grid; gap: var(--space-5-5); margin-block: var(--space-6) clamp(var(--space-2), 2vw, var(--space-6)); }
+  .post-back { margin-bottom: 0; }
+  .bb-h1 { margin: 0; overflow-wrap: break-word; font: 500 clamp(2.125rem, 4vw, 3.5rem)/1.04 var(--display); letter-spacing: -0.035em; color: var(--head); text-wrap: balance; }
+  .byline { display: grid; grid-template-columns: auto 1fr; gap: var(--space-0-5) var(--space-3-5); align-items: center; color: var(--muted); font-size: var(--text-control); }
+  .byline p { margin: 0; }
+  .byline .face { grid-row: span 2; width: 3rem; height: 3rem; border-radius: var(--radius-round); object-fit: cover; }
+  .byline b { color: var(--head); font-weight: 500; margin-right: var(--space-2); }
+  .byline .mono { color: var(--faint); }
+  .byline .when { color: var(--faint); font-size: var(--text-sm); }
+  .bb-cover { aspect-ratio: 2 / 1; overflow: hidden; border-radius: var(--radius-16); background: var(--media-ground); }
+  .bb-cv { display: none; width: 100%; height: 100%; }
+  .bb-cv :is(img, svg) { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .bb-kopf:has(input[value="ist"]:checked) .bb-cv[data-v="ist"],
+  .bb-kopf:has(input[value="formation"]:checked) .bb-cv[data-v="formation"],
+  .bb-kopf:has(input[value="schrift"]:checked) .bb-cv[data-v="schrift"],
+  .bb-kopf:has(input[value="raster"]:checked) .bb-cv[data-v="raster"],
+  .bb-kopf:has(input[value="duoton"]:checked) .bb-cv[data-v="duoton"] { display: block; }
+  .bb-none { height: 100%; display: grid; place-items: center; color: var(--faint); text-align: center; padding: var(--space-6); margin: 0; }
+
+  .bb-inline { border-top: 1px solid var(--line); }
+  .bb-article { max-width: 42rem; margin-inline: auto; font-size: var(--text-md); line-height: 1.72; color: #c9bfb0; display: grid; gap: 1.1em; }
+  .bb-article p { margin: 0; }
+  .bb-article strong { color: var(--head); font-weight: 600; }
+  .bb-article .bb-h2 { font: 500 clamp(1.625rem, 2.4vw, 2.125rem)/1.12 var(--display); letter-spacing: -0.03em; color: var(--head); }
+  .bb-article :global(.as-fig) { margin-block: 0.6em 1.2em; }
+
+  @media (max-width: 80em) { .bb-cards { grid-template-columns: repeat(3, minmax(0, 1fr)); } .bb-legend { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  @media (max-width: 45em) {
+    /* Handy: Varianten nebeneinander zum Wischen statt fünf Karten untereinander */
+    .bb-cards { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 80%; overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; margin-inline: calc(-1 * var(--pad)); padding-inline: var(--pad); scroll-padding-inline: var(--pad); scrollbar-width: none; }
+    .bb-variant { scroll-snap-align: start; }
+    .bb-legend { grid-template-columns: minmax(0, 1fr); }
+    .bb-cover { border-radius: var(--radius-12); }
+    .bb-article { font-size: var(--text-copy); }
+  }
+</style>
