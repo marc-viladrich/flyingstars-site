@@ -1312,3 +1312,15 @@ Marc: „bei Bremen und Berlin die Wappenform rausnehmen … Bremen soll so nice
   - Teile entfernen: Teile sind die Teilnamen des Motivs. Ein Klick wählt Schaft, Bart, Kreise oder Bögen, ein zweiter den ganzen Schlüssel; das Ornament ist ein eigenes Element. Die übrigen Linien werden im selben Punktabstand neu abgetastet (z. B. ohne Bart bei 200: 112 Drohnen).
   - Minimap: das Bild entsteht aus denselben Linien (volle Zeichnung, `landmarkSvg`), keine Datei.
   - Prüfen: `node --test src/scripts/logo-landmark.test.mjs` (Punkte und Farben = Stadtfest für 100–300 über den echten Weg in `logo-mode.js`, Show-Fassung, Liniendichte, Entfernen, Minimap, Hash der übrigen Beispiele); `logo-stage.test.mjs` misst Bremen mittig bei 100/150/200/300; die alten Bremen-Prüfungen in `logo-rows.test.mjs` gelten jetzt für die Stadtfest-Punkte. Geprüft im Build (Chromium und WebKit, 1440 × 900): Stadtfest und Logo-Modus bei 100, 200 und 300 Drohnen nebeneinander, Bart anklicken und entfernen, alle wiederherstellen, Liniendichte, Minimap. Nicht geprüft: Handy, Marcs Safari 18.6.
+
+
+## Runde 14 (21.11.2026): Adventskranz dreht weniger
+
+Marc: „Es reicht, wenn er sich nur ein bisschen dreht wie alle anderen Figuren auch“. In 3D lief der Kranz wie auf einem
+Drehteller (0,32 rad/s, bei 7 s Haltezeit gut 2 rad; weil er viermal symmetrisch ist, wirkte das wie eine ganze Runde). Jetzt
+schwenkt er wie die Katalog-Körper (`catalog-3d/kit.js → turn()`): 0,32 rad hin und zurück, Periode 14 s (`SCHWENK` in
+`scenes/gross/adventskranz.js`). 3D+ behält den sanft anlaufenden Drehteller in eine Richtung, auf 40 % verkleinert (am Ende
+rund 0,5 statt 1,3 rad). Ein Hin-und-her oder Abbremsen in 3D+ schlug im Finten-Wächter an (Überschwingen der Flammen-Drohnen
+im Flug), der Drehteller in eine Richtung nicht. Gesichtet auf `/drohnenshow-preise/?anlass=silvester&motiv=adventskranz`
+in HORIZON und ODYSSEY, Chromium und WebKit, 1440 und 390 px.
+

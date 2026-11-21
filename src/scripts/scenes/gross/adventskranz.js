@@ -7,7 +7,8 @@
 //     andere). Ein warmer Schein wandert die Zweige entlang, die Flammen flackern in Licht.
 //   adventskranz3d (3D, 200–1000): der Kranz als Körper: ein Zweigstrang windet sich als Schraube um den Ring (ab 500 ein
 //     zweiter, versetzt, ab 750 ein goldenes Band und Zweigspitzen), Kerzen als Zylinder aus Mantellinien und oberem Rand,
-//     Flammen aus zwei gekreuzten Tropfen (aus jeder Richtung eine Flamme). Er dreht sich langsam wie auf einem Drehteller.
+//     Flammen aus zwei gekreuzten Tropfen (aus jeder Richtung eine Flamme). Er schwenkt ruhig hin und her wie die anderen
+//     3D-Figuren (Runde 14, Marc: vorher drehte er sich wie auf einem Drehteller, gefühlt einmal ganz herum).
 //   adventskranzStory (3D+, 300–1000): die Kerzen sind dunkel, vorn auf dem Kranz wartet eine warme Lichtspur. Sie läuft
 //     den Kranz entlang, und an jeder Kerze steigen die vordersten Drohnen am Docht hinauf und werden zur Flamme: erste
 //     Kerze, zweite, dritte, vierte. Dieselben Drohnen, keine Wolke; wo die Spur vorbeikommt, leuchten die Zweige nach.
@@ -148,8 +149,17 @@ const flicker = (j, t, u) => (1.15 - 0.25 * u) * (0.88 + 0.12 * Math.sin(t * (9 
 /** Flammen wiegen sich leicht (Spitze am meisten), Bewegung in Szeneneinheiten. */
 const sway3 = (o, c, t, u) => { const p = 1.7 * c, q = 2.3 * c; // die ganze Flamme neigt sich (je Kerze ein Takt), sonst rücken Nachbarn aneinander
   o[0] += 0.012 * u * u * (Math.sin(t * 2.3 + p) - Math.sin(p)); o[2] += 0.012 * u * u * (Math.cos(t * 1.9 + q) - Math.cos(q)); };
-/** Drehteller und Blick von oben. */
+/** Drehung um die Hochachse und Blick von oben. */
 function view(o, ang) { yaw(o, ang); pitch(o, VIEW, WY, 0); }
+/**
+ * Schwenk (Runde 14, Marc: „Es reicht, wenn er sich nur ein bisschen dreht wie alle anderen Figuren auch“): wie die
+ * Katalog-Körper (catalog-3d/kit.js → turn(): 0,26–0,42 rad, Periode 13–14 s) aus der Ausgangslage hin und her. 3D+ dreht
+ * etwas weiter, mit demselben sanft anlaufenden Drehteller wie bisher, nur in eine Richtung, auf plus (Anteil) verkleinert:
+ * Ein Rückschwenk oder ein Abbremsen mitten im Flug der Flammen-Drohnen las sich als Überschwingen (Finten-Wächter).
+ * Vorher drehte 3D fortlaufend (0,32 rad/s, gut 2 rad je Bild), 3D+ auf rund 1,3 rad.
+ */
+export const SCHWENK = { s3: { amp: 0.32, period: 14 }, plus: 0.4 };
+const schwenk = ({ amp, period }) => (t) => amp * Math.sin((t * TAU) / period);
 
 // ---------------------------------------------------------------------------------------------------------------------
 // 2D: Zeichnung in Linien (Vorderansicht leicht von oben)
@@ -207,11 +217,12 @@ function storyBeat(n, caption) {
     slots.forEach((_, i) => { band[c * f + i] = piece[a[i]]; groupAz[c * f + i] = Math.atan2(piece[a[i]][2], piece[a[i]][0]); });
   }
   const lit = [0, 1, 2, 3].map((c) => reach(c) - SPUR.lift + SPUR.fly), end = lit[3] + SPUR.glow;
+  // Drehteller wie bisher (läuft sanft an, nur in eine Richtung), aber auf SCHWENK.plus verkleinert: am Ende rund 0,5 statt 1,3 rad
+  const turn = (t) => (SCHWENK.plus * 0.16 * Math.max(0, t - 0.6) ** 2) / (1 + Math.max(0, t - 0.6));
   // Richtung vom Kerzenschaft zur Mitte des Bandstücks (in der Ebene): dorthin weicht der Flug aus
   const away = [0, 1, 2, 3].map((c) => { const [ax, az] = candleAxis(c); let sx = 0, sz = 0; for (let i = 0; i < f; i++) { sx += band[c * f + i][0] - ax; sz += band[c * f + i][2] - az; } const l = Math.hypot(sx, sz) || 1; return [sx / l, sz / l]; });
   const unwrap = (az) => { let a = az; while (a < A_START - 0.01) a += TAU; while (a > A_START + TAU - 0.01) a -= TAU; return a; };
   const bandAz = band.map((p) => unwrap(Math.atan2(p[2], p[0])));
-  const turn = (t) => (0.16 * Math.max(0, t - 0.6) ** 2) / (1 + Math.max(0, t - 0.6)); // Drehteller läuft sanft an
   const live = (b, j, t, o) => {
     const h = headAz(t), running = t > SPUR.wait && t < reach(3) + 0.4;
     if (j >= flameStart) {
@@ -255,7 +266,7 @@ export const builders = {
   },
   adventskranz3d: (n, caption) => {
     const { pts, tags, flameStart } = wreathModel(n);
-    const turn = (t) => 0.32 * t; // Drehteller (steadyClock lässt ihn sanft anlaufen und auslaufen)
+    const turn = schwenk(SCHWENK.s3); // steadyClock lässt den Schwenk sanft anlaufen und auslaufen
     const live = (b, j, t, o) => {
       const p = pts[j]; o[0] = p[0]; o[1] = p[1]; o[2] = p[2];
       if (j >= flameStart) { const u = flameU(p); sway3(o, Math.floor((j - flameStart) / ((pts.length - flameStart) / 4)), t, u); o[3] = flicker(j, t, u); }

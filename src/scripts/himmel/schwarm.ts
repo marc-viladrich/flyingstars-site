@@ -18,9 +18,11 @@ import catalog from '../../content/catalog-motifs.json';
 import { gradientAt } from '../effects/swarm.js';
 import { hash, lightOrder } from '../formation/index.js';
 import { evenSubset } from '../show-geometry.js';
-import { loadTextEngine, textFormation } from '../text-formation.js';
+import { textFormationAsync } from '../text-formation.js';
+import { INTRO_HOLD, introTexts, SKY, skyDate, START_COUNT } from './himmel-texte.js';
+import { FORM_OCCASION, HIMMEL_MOTIFS, occasionMotif } from './anlass-motiv.js';
 
-type Spec = { motif: string; budget?: number } | { figure: 'bokkenrijders' } | { text: string; count: number } | { burst: true } | { seq: Spec[] };
+type Spec = { motif: string; budget?: number } | { figure: 'bokkenrijders' } | { text: string; count: number } | { burst: true } | { seq: Spec[]; once?: boolean };
 type Box = { x: number; y: number; w: number; h: number };
 type Place = 'head' | 'form';
 type React = (slot: Slot, on: (spec: Spec) => void) => void;
@@ -31,7 +33,7 @@ interface Scene { id: string; n: number; pts: Float32Array; col: Uint8Array; ran
 interface SlotDef { sel: string; place: Place; spec: Spec | ((host: HTMLElement) => Spec); deskOnly?: boolean; then?: Spec; react?: React; when?: (host: HTMLElement) => boolean; max?: number; folge?: boolean; up?: number; tall?: number }
 /** Die Show-Folge (folge.js), erst nahe an ihrer Section geladen. */
 interface Folge { ready: Promise<void>; canEnter(): boolean; place(box: Box): unknown; enter(box: Box): { pts: number[][]; radius: number } | null; peek(): number[][]; play(): void; leave(): number[][]; hide(): void }
-interface Slot { def: SlotDef; host: HTMLElement; bounds?: Box; box: Box; scene: Scene | null; want: string; spec: Spec; first: Spec; seqAt: number; own: HTMLElement | null; turned: boolean }
+interface Slot { def: SlotDef; host: HTMLElement; bounds?: Box; box: Box; scene: Scene | null; want: string; spec: Spec; first: Spec; seqAt: number; own: HTMLElement | null; turned: boolean; heldAt: number }
 
 const N = 300;
 const DESK = 900;
@@ -44,8 +46,9 @@ const idOf = (s: Spec): string => ('motif' in s ? `m:${s.motif}:${s.budget ?? N}
 
 /* ---------- Szenen: echte Formationen ---------- */
 
-type Motif = { name: Record<string, string>; dimension: string; variants: Array<{ id: string; points: number }> };
-const MOTIFS = (catalog as unknown as { motifs: Record<string, Motif> }).motifs;
+type Motif = { dimension: string; base?: string; variants: Array<{ id: string; points: number }> };
+/** Katalogmotive, dazu die vorberechneten Motive des Himmels (Kölner Dom für Gemeinden, anlass-motiv.js). */
+const MOTIFS: Record<string, Motif> = { ...(catalog as unknown as { motifs: Record<string, Motif> }).motifs, ...(HIMMEL_MOTIFS as Record<string, Motif>) };
 const scenes = new Map<string, Promise<Scene>>();
 
 function finish(id: string, raw: number[][], colors: (i: number, x: number) => number[], extra: Partial<Scene>): Scene {
@@ -110,8 +113,8 @@ async function build(spec: Spec, id: string): Promise<Scene> {
     // Feste Worte liegen vorberechnet bereit (tools/himmel/texte-vorberechnen.mjs); der Textplaner lädt erst für Eigenes
     const ready = (await fixedTexts())[id];
     if (ready) return finish(id, ready.map(([x, y]) => [x, y, 0]), (_i, x) => gradientAt((x + 1) / 2), {});
-    await loadTextEngine();
-    const f = textFormation(spec.text, spec.count);
+    // im Worker gerechnet (text-worker.js): Das heutige Datum im Auftakt des Formulars kommt ohne Rechenpause im Hauptthread
+    const f = await textFormationAsync(spec.text, spec.count);
     if (!f || !f.pts.length) throw new Error('Text ergibt keine Formation');
     return finish(id, f.pts, (_i, x) => gradientAt((x + 1) / 2), {});
   }
@@ -129,7 +132,7 @@ async function build(spec: Spec, id: string): Promise<Scene> {
   if (!m) throw new Error(`Katalogmotiv ${spec.motif} fehlt`);
   const budget = spec.budget ?? N;
   const v = m.variants.filter((q) => q.points <= budget).at(-1) ?? m.variants[0];
-  const r = await fetch(`/media/katalog/${v.id}.json`);
+  const r = await fetch(`${m.base ?? '/media/katalog/'}${v.id}.json`);
   if (!r.ok) throw new Error(`Katalog ${v.id}: HTTP ${r.status}`);
   const d = (await r.json()) as { points: number[][] };
   const deep = m.dimension === '3D';
@@ -276,7 +279,7 @@ class Himmel {
     for (const def of defs) {
       const host = document.querySelector<HTMLElement>(def.sel); if (!host || (def.when && !def.when(host))) continue;
       const first = typeof def.spec === 'function' ? def.spec(host) : def.spec;
-      const slot: Slot = { def, host, box: NONE, scene: null, want: '', spec: first, first, seqAt: 0, own: null, turned: false };
+      const slot: Slot = { def, host, box: NONE, scene: null, want: '', spec: first, first, seqAt: 0, own: null, turned: false, heldAt: 0 };
       // Platz im Seitenfluss: auf dem Handy über der Überschrift, im Formular als Himmelsfenster
       if (def.place === 'form') { slot.own = this.own('form'); host.prepend(slot.own); }
       else if (!def.deskOnly) { slot.own = this.own('head'); (host.querySelector(HEAD) ?? host).prepend(slot.own); }
@@ -346,10 +349,12 @@ class Himmel {
     const id = idOf(spec); if (slot.want === id) return;
     slot.want = id; slot.spec = spec; slot.seqAt = 0;
     load(spec).then((sc) => { if (slot.want !== id) return; this.put(slot, sc); }).catch(() => {});
-    if ('seq' in spec) spec.seq.forEach((s) => void load(s).catch(() => {}));
+    // Einmal-Folgen (Auftakt des Formulars) laden ihr nächstes Bild erst beim Wechsel: Das Datum braucht den Textplaner
+    if ('seq' in spec && !spec.once) spec.seq.forEach((s) => void load(s).catch(() => {}));
   }
   put(slot: Slot, sc: Scene) {
     slot.scene = sc;
+    if (slot.own) slot.own.dataset.himmel = sc.id; // welches Bild die Bühne trägt (für Wächter-Tests; das Fenster ist aria-hidden)
     if (!still() && this.active === slot && this.shown !== sc) this.go(slot, 1250);
     this.last = 0; this.kick();
   }
@@ -472,6 +477,7 @@ class Himmel {
     }
     const sc = slot.scene; if (!sc) return;
     const now = performance.now();
+    slot.heldAt = 0; // Haltezeit einer Einmal-Folge zählt erst ab der Ankunft
     this.fc.set(this.cc); this.rad0 = this.rad1 || this.radius(slot.box);
     this.ox.fill(0); this.oy.fill(0); this.ovx.fill(0); this.ovy.fill(0); // der Abflug beginnt an der sichtbaren Lage (x, y)
     this.aim(slot, sc);
@@ -539,14 +545,18 @@ class Himmel {
     if (!flying && this.folPts && slot.def.folge && this.fol) { this.fol.play(); this.handed = true; this.clear(); return; }
     // Die nächste Runde war beim Anflug noch nicht gebaut: Die Blüte steht, bis sie fertig ist, dann kurzer Flug in deren Blüte
     if (!flying && !this.folPts && slot.def.folge && this.fol?.canEnter() && now - this.arrived > 300) this.go(slot, 900);
-    // Geschichte in Akten (ODYSSEY, Formular: Datum → Countdown): nach einer Standzeit folgt das nächste Bild
-    if (!flying && 'seq' in slot.spec && seen && now - this.arrived > 4200) {
-      slot.seqAt = (slot.seqAt + 1) % slot.spec.seq.length; const next = slot.spec.seq[slot.seqAt], want = slot.want;
-      this.arrived = now + 1e6; // wartet auf die geladene Szene
-      load(next).then((nsc) => { if (slot.want === want) this.put(slot, nsc); }).catch(() => {});
+    const inView = slot.box.y > scrollY + vh * 0.04 && slot.box.y + slot.box.h < scrollY + vh * 0.96;
+    // Geschichte in Akten (ODYSSEY, Formular: Datum → Countdown): nach einer Standzeit folgt das nächste Bild.
+    // Einmal-Folge (Auftakt des Formulars): die Standzeit zählt nur, solange das Bild ganz im Blick steht; am Ende steht sie.
+    const sq = 'seq' in slot.spec ? slot.spec : null, done = !!sq?.once && slot.seqAt >= sq.seq.length - 1;
+    if (!flying && sq?.once && !done && inView && !slot.heldAt) slot.heldAt = now;
+    if (!flying && sq && !done && (sq.once ? slot.heldAt > 0 && now - slot.heldAt > (slot.seqAt ? INTRO_HOLD.next : INTRO_HOLD.first) : seen && now - this.arrived > 4200)) {
+      slot.seqAt = (slot.seqAt + 1) % sq.seq.length; const next = sq.seq[slot.seqAt], want = slot.want;
+      this.arrived = now + 1e6; slot.heldAt = -1; // wartet auf die geladene Szene
+      load(next).then((nsc) => { if (slot.want === want) this.put(slot, nsc); }).catch(() => { if (slot.want === want) slot.heldAt = 0; }); // misslingt ein Bild, folgt das nächste
+      if (sq.once && sq.seq[slot.seqAt + 1]) void load(sq.seq[slot.seqAt + 1]).catch(() => {});
     }
     // Verwandlung (Feuerwerk → Stern): einmal, sobald das Bild gut anderthalb Sekunden ganz im Blick stand
-    const inView = slot.box.y > scrollY + vh * 0.04 && slot.box.y + slot.box.h < scrollY + vh * 0.96;
     if (!flying && slot.def.then && !slot.turned && inView && now - this.arrived > 1600 && !(slot.def.folge && this.folReady)) { slot.turned = true; this.want(slot, slot.def.then); }
     const since = this.arrived ? (now - this.arrived) / 1000 : 0, wave = this.arrived && since >= 0 ? ((since % 9) / 1.7) * 1.5 - 0.25 : -9;
     // Verdrängung nur am stehenden Bild; im Flug ruht sie (der Abflug startet dort, wo jede Drohne gerade ist)
@@ -600,7 +610,7 @@ class Himmel {
     // in Bewegung, solange der Zeiger nahe ist oder eine Drohne noch zurückschwingt
     if (P && P.x > slot.box.x - 120 && P.x < slot.box.x + slot.box.w + 120 && P.y > slot.box.y - 120 && P.y < slot.box.y + slot.box.h + 120) busy = true;
     if (stir > 0.05) busy = true;
-    if (!busy) busy = sc.turn || !!sc.pose || (wave > -0.3 && wave < 1.35) || 'seq' in slot.spec || (!!slot.def.then && !slot.turned);
+    if (!busy) busy = sc.turn || !!sc.pose || (wave > -0.3 && wave < 1.35) || (!!sq && !done) || (!!slot.def.then && !slot.turned);
     if (busy) this.kick(); else { const wait = (9 - (since % 9)) * 1000; setTimeout(() => this.kick(), Math.min(wait, 9000)); }
   }
 
@@ -688,22 +698,8 @@ const hover = (root: HTMLElement, items: string[], pickSpec: (el: HTMLElement) =
   root.addEventListener('pointerover', h); root.addEventListener('focusin', h);
 };
 
-/** Anlass → Motiv, über Wörter in Kartenkicker, Link-Ziel oder Formularwert (nie über die Position der Karte).
- *  Reihenfolge zählt: Die Agenturen-Karte verlinkt auf die Werbeseite (#agenturen), Silvester auf die Stadt-Anfrage. */
-const OCCASION: Array<[RegExp, string]> = [
-  [/agentur|agenc|bureau/i, 'handschlag'],
-  [/silvester|weihnacht|new year|oud en nieuw/i, 'sektflasche'],
-  [/hochzeit|privat|wedding|private|bruiloft|prive/i, 'doppelherz'],
-  [/konzert|festival|musical|kultur|concert|cultu/i, 'mikrofon'],
-  [/indoor|halle/i, 'diskokugel'],
-  [/gemeind|st[aä]dt|anlass=stadt|\bstadt\b|cit(y|ies)|town|municipal|gemeente|\bstad\b/i, 'foerderturm'],
-  [/unternehm|firma|firmen|marke|werbung|corporate|compan|business|brand|bedrijf|merk|reclame/i, 'sportwagen'],
-];
-const occasion = (...texts: string[]): Spec | null => {
-  for (const text of texts) { const hit = OCCASION.find(([re]) => re.test(text)); if (hit) return { motif: hit[1] }; }
-  return null;
-};
-const FORM_OCCASION: Record<string, string> = { firma: 'sportwagen', agentur: 'handschlag', stadt: 'foerderturm', privat: 'doppelherz', indoor: 'diskokugel', sonstiges: 'stern' };
+/** Anlass → Motiv (anlass-motiv.js): Kartenkicker, Link-Ziel, Kartentitel oder Formularwert. */
+const occasion = (...texts: string[]): Spec | null => { const motif = occasionMotif(...texts); return motif ? { motif } : null; };
 
 const anlaesse: React = (slot, on) => hover(slot.host, ['[data-dot-host], article, .card', 'li'], (el) => {
   const kicker = el.querySelector('.cat, .kick, .kicker, [class*="kicker"]')?.textContent ?? '';
@@ -729,12 +725,6 @@ const packs: React = (slot, on) => {
   slot.host.addEventListener('change', (e) => { const name = Object.keys(PACK).find((k) => ((e.target as HTMLElement).closest('label')?.textContent ?? '').toUpperCase().includes(k)); if (name) on(PACK[name]); });
 };
 
-/** Texte am Himmel (Entwürfe, nicht mit FlyingStars abgestimmt). */
-const SKY = {
-  de: { start: 'EURE SHOW', days: (n: number) => `NOCH ${n} TAGE`, thanks: 'DANKE' },
-  en: { start: 'YOUR SHOW', days: (n: number) => `${n} DAYS TO GO`, thanks: 'THANK YOU' },
-  nl: { start: 'JULLIE SHOW', days: (n: number) => `NOG ${n} DAGEN`, thanks: 'BEDANKT' },
-};
 const clean = (v: string, max = 24) => v.replace(/[^\p{L}\p{N} .&-]/gu, '').replace(/\s+/g, ' ').trim().slice(0, max);
 
 /** Formular: Anlass → Motiv, Ort → der Name am Himmel, Datum → Datum und Countdown, Paket → Drohnenzahl, Absenden → Dank. */
@@ -746,18 +736,20 @@ const form: React = (slot, on) => {
   const show = () => {
     if (lastText) on(after ? { seq: [word(lastText), word(after)] } : word(lastText));
     else if (lastMotif) on({ motif: lastMotif, budget: count() < 300 ? Math.max(count(), 160) : 300 });
-    else on({ text: SKY[lang()].start, count: 200 });
+    else on({ text: SKY[lang()].start, count: START_COUNT });
   };
   const h = (e: Event) => {
     const el = e.target as HTMLInputElement;
-    if (el.name === 'anlass') { lastMotif = FORM_OCCASION[el.value] ?? (occasion(el.closest('label')?.textContent ?? '') as { motif: string } | null)?.motif ?? 'stern'; lastText = ''; after = ''; show(); }
+    // Wer etwas eingibt, beendet den Auftakt sofort (beim Ort wartet das Bild sonst noch 520 ms auf die Eingabe)
+    if ('seq' in slot.spec && slot.spec.once) on({ text: SKY[lang()].start, count: START_COUNT });
+    if (el.name === 'anlass') { lastMotif = FORM_OCCASION[el.value as keyof typeof FORM_OCCASION] ?? occasionMotif(el.closest('label')?.textContent ?? '') ?? 'stern'; lastText = ''; after = ''; show(); }
     else if (el.name === 'paket') show();
     // Nur echte Änderungen: Das change-Ereignis beim Verlassen des Felds würde sonst ein danach gewähltes Datum überschreiben
     else if (el.name === 'ort' && el.value !== ort) { ort = el.value; clearTimeout(t); t = window.setTimeout(() => { lastText = clean(el.value, 18); after = ''; show(); }, 520); }
     else if (el.name === 'datum' && el.value) { const [y, mo, d] = el.value.split('-'); if (y && mo && d) {
       // Das Datum am Himmel, danach der Countdown: wie viele Tage es bis zur Show noch sind
       const days = Math.round((Date.UTC(+y, +mo - 1, +d) - Date.UTC(new Date().getFullYear(), new Date().getMonth(), new Date().getDate())) / 864e5);
-      lastText = `${d}.${mo}.${y.slice(2)}`; after = days > 0 && days < 1500 ? SKY[lang()].days(days) : ''; show();
+      lastText = skyDate(lang(), +y, +mo, +d); after = days > 0 && days < 1500 ? SKY[lang()].days(days) : ''; show();
     } }
   };
   // Abgeschickt: Der Himmel bedankt sich beim Namen, danach steht der Stern
@@ -767,7 +759,9 @@ const form: React = (slot, on) => {
 
 /* ---------- Bühnenplan ---------- */
 
-const FORM: SlotDef = { sel: '#inquiry-form', place: 'form', spec: () => ({ text: SKY[lang()].start, count: 200 }), react: form };
+/** Start des Formulars: einmal je Seitenaufruf der Auftakt EURE SHOW → EUER TAG → heute → EURE SHOW (himmel-texte.js). */
+const intro = (): Spec => ({ seq: introTexts(lang()).map((text) => ({ text, count: START_COUNT })), once: true });
+const FORM: SlotDef = { sel: '#inquiry-form', place: 'form', spec: intro, react: form };
 const path = () => location.pathname.replace(/^\/(en|nl)(?=\/)/, '');
 
 function plan(): SlotDef[] {
