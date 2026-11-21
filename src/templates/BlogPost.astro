@@ -18,8 +18,10 @@ import { authorOf, dateOf, readingMinutes, topicOf, sortPosts } from '../compone
 // Optional (Labor Blogartikel, Runde 15, 21.11.2026): coverImage ersetzt das Titelbild (z. B. vorgerechnetes Lichtraster),
 // der Slot „body“ ersetzt den Artikelkörper, der Slot „after“ steht ganz am Ende (Labor-Notiz) (Artikel in Abschnitte geteilt, mit Grafiken in eigener Breite), noindex für
 // Labor-Seiten. Ohne diese Angaben wie bisher. Die Lesespalte gilt für jedes .post-body im Artikel, auch aus dem Slot.
-interface Props { post: CollectionEntry<'posts'>; coverImage?: { src: string; width: number; height: number; alt: string }; noindex?: boolean }
-const { post, coverImage, noindex = false } = Astro.props;
+// headroom (Labor Runde 15, Prototyp 3): Kopfzeile weicht auch auf breiten Bildschirmen beim Runterscrollen aus (Cornerstone-
+// Artikel mit klebender Szene, gewinnt Höhe); ohne Angabe wie bisher nur auf schmalen.
+interface Props { post: CollectionEntry<'posts'>; coverImage?: { src: string; width: number; height: number; alt: string }; noindex?: boolean; headroom?: boolean }
+const { post, coverImage, noindex = false, headroom = false } = Astro.props;
 const AUTHOR=authorOf(post);
 const { Content } = await render(post);
 const cover = post.data.cover ? await optimizedImage(post.data.cover.src, 1600) : undefined;
@@ -27,7 +29,7 @@ const face = await optimizedImage(AUTHOR.image.src, 160);
 const more = sortPosts(await localizedCollection('posts', locale, p => !p.data.draft && p.id !== post.id)).slice(0, 3);
 const updated = post.data.updated && post.data.updated.valueOf() !== post.data.date.valueOf() ? new Intl.DateTimeFormat(formatLocale, { dateStyle: 'long' }).format(post.data.updated) : undefined;
 ---
-<Base title={post.data.title} description={post.data.description} image={post.data.cover?.src} navSection="/blog/" noindex={noindex}>
+<Base title={post.data.title} description={post.data.description} image={post.data.cover?.src} navSection="/blog/" noindex={noindex} headroom={headroom}>
   <article class="section post" aria-labelledby="post-h">
     <header class="post-head">
       <a class="kicker mono post-back" href={localHref("/blog/")}><span aria-hidden="true">←</span> Blog · {topicOf(post)}</a>
@@ -55,7 +57,7 @@ const updated = post.data.updated && post.data.updated.valueOf() !== post.data.d
 </Base>
 
 <style>
-  .post { --measure: 42rem; display: grid; justify-items: center; padding-bottom: 0; }
+  .post { --measure: 42rem; --feature-w: 76rem; display: grid; justify-items: center; padding-bottom: 0; }
   .post > * { width: 100%; }
   .post-head { max-width: var(--measure); display: grid; gap: var(--space-5-5); margin-bottom: clamp(var(--space-8), 4vw, var(--space-13)); }
   .post-head h1 { font-size: clamp(2.125rem, 4vw, 3.5rem); line-height: 1.04; }

@@ -41,7 +41,7 @@ const noteStyle = (n: { x: number; y: number; row?: number }) => `--x: ${((n.x *
     <div class="ss-stage" data-stage data-step={LAST} data-frames={JSON.stringify(story.frames)} data-wind={story.wind.join(' ')} data-sweep={story.sweep.flat().join(' ')}>
       <svg viewBox={`0 0 ${VW} ${VH}`} role="img" aria-label={caption}>
         <g class="cam" data-cam style={`transform: translate(${cam.tx}px, ${cam.ty}px) scale(${cam.k})`}>
-          {story.pieces.map((p, li) => { const st = stateOf(p, LAST); return <g class="pc" data-key={p.key} data-steps={p.steps.join(' ')} data-dim={p.dim?.join(' ')} data-shift={p.shift ? JSON.stringify(p.shift) : undefined} data-asm={p.asm} data-hide={p.hide ? `${p.hide.s.join(' ')} ${p.hide.dy ?? 0}` : undefined} data-after={p.after ? `${p.after.s.join(' ')} ${p.after.dy ?? 0}` : undefined} aria-hidden="true" style={`--zc: ${p.zc}; --li: ${li}; transform-origin: ${p.origin[0]}px ${p.origin[1]}px; transform: ${st.t}; opacity: ${st.o}`}>
+          {story.pieces.map((p, li) => { const st = stateOf(p, LAST); return <g class="pc" data-key={p.key} data-steps={p.steps.join(' ')} data-dim={p.dim?.join(' ')} data-shift={p.shift ? JSON.stringify(p.shift) : undefined} data-asm={p.asm} data-asmonly={p.asmOnly ? '' : undefined} data-inner={p.inner ? '' : undefined} data-hide={p.hide ? `${p.hide.s.join(' ')} ${p.hide.dy ?? 0}` : undefined} data-after={p.after ? `${p.after.s.join(' ')} ${p.after.dy ?? 0}` : undefined} aria-hidden="true" style={`--zc: ${p.zc}; --li: ${li}; transform-origin: ${p.origin[0]}px ${p.origin[1]}px; transform: ${st.t}; opacity: ${st.o}`}>
             {p.shapes.map((s) => s.t === 'circle' ? <circle class={s.cls} cx={s.c[0]} cy={s.c[1]} r={s.r} /> : <path class={s.cls} d={pathD(s)} pathLength={drawn(s.cls) ? 1 : undefined} />)}
           </g>; })}
           <g class="ss-drones" aria-hidden="true">
@@ -74,7 +74,7 @@ const noteStyle = (n: { x: number; y: number; row?: number }) => `--x: ${((n.x *
     const stage = root.querySelector<HTMLElement>('[data-stage]')!;
     const svg = stage.querySelector('svg')!;
     const camG = stage.querySelector<SVGGElement>('[data-cam]')!;
-    const pieces = [...stage.querySelectorAll<SVGGElement>('.pc')];
+    const pieces = [...stage.querySelectorAll<SVGGElement>('.pc')]; // Annotationen sind reine Beschriftung, ohne Hover-Effekt (Marc, Prototyp 2)
     const notes = [...stage.querySelectorAll<HTMLElement>('.sn')];
     const marks = [...root.querySelectorAll<HTMLElement>('.ss-text > [data-step]')];
     const dots = [...root.querySelectorAll<HTMLButtonElement>('[data-goto]')];
@@ -88,6 +88,7 @@ const noteStyle = (n: { x: number; y: number; row?: number }) => `--x: ${((n.x *
       el, steps: nums(el.dataset.steps), dim: nums(el.dataset.dim),
       shift: el.dataset.shift ? (JSON.parse(el.dataset.shift) as Record<string, number>) : {},
       hide: nums(el.dataset.hide), after: nums(el.dataset.after), asm: el.dataset.asm === undefined ? null : Number(el.dataset.asm),
+      asmOnly: el.dataset.asmonly !== undefined, inner: el.dataset.inner !== undefined,
     }));
     const D = [...stage.querySelectorAll<SVGGElement>('.sd')].map((el, i) => ({
       el, sw: el.querySelector<SVGGElement>('.sw')!, w: Number(el.dataset.w), ph: i * 1.7, g: 0.7 + ((i * 7919) % 13) / 20,
@@ -115,7 +116,11 @@ const noteStyle = (n: { x: number; y: number; row?: number }) => `--x: ${((n.x *
 
     // ---------- Schritt ----------
     const pose = (p: (typeof P)[number], s: number) => {
-      if (p.steps.includes(s)) {
+      const together = s === 0 && !exploded;
+      // Gehäuse und Beine nur zusammengesetzt; die Innenteile liegen dann unsichtbar im Gehäuse
+      if (p.asmOnly && together) return { t: 'translate(0px, 0px)', o: 1 };
+      if (p.inner && together) return { t: `translate(0px, ${p.asm ?? 0}px)`, o: 0 };
+      if (p.steps.includes(s) && !p.asmOnly) {
         const dy = s === 0 && !exploded && p.asm !== null ? p.asm : p.shift[s] ?? 0;
         return { t: `translate(0px, ${dy}px)`, o: p.dim.includes(s) ? 0.32 : s === 0 && !exploded && p.el.dataset.key === 'drone-axis' ? 0 : 1 };
       }
@@ -131,7 +136,9 @@ const noteStyle = (n: { x: number; y: number; row?: number }) => `--x: ${((n.x *
       N.forEach((n) => n.el.classList.toggle('on', n.steps.includes(step) && (step !== 0 || exploded)));
       fitLater();
     };
-    // Die Explosion startet erst, wenn die Bühne im Blick ist
+    // Die Explosion startet erst, wenn die Bühne im Blick ist und die Drohne eine Weile zusammen stand, oder wenn man im Text
+    // des ersten Schritts weitergelesen hat (Marc, Prototyp 2: „explodiert zu früh“)
+    const blast = () => { clearTimeout(boom); if (step === 0 && !exploded) { exploded = true; paint(0); } };
     const arm = (ms: number) => {
       clearTimeout(boom);
       if (step === 0 && !exploded && visible) boom = window.setTimeout(() => { if (step === 0) { exploded = true; paint(0); } }, ms);
@@ -143,7 +150,7 @@ const noteStyle = (n: { x: number; y: number; row?: number }) => `--x: ${((n.x *
       // Erst die zusammengesetzte Drohne, dann die Explosion (Marc: „damit man beides verknüpft“)
       exploded = s !== 0 || held();
       paint(prev);
-      arm(prev === -1 ? 900 : 1500);
+      arm(2600);
       D.forEach((d) => { const [x, y, a] = d.pos[s]; d.el.style.transform = `translate(${x}px, ${y}px)`; d.el.style.opacity = String(a); });
       place();
       dots.forEach((d) => { const n = Number(d.dataset.goto); if (n === s) d.setAttribute('aria-current', 'step'); else d.removeAttribute('aria-current'); d.classList.toggle('done', n < s); });
@@ -154,19 +161,29 @@ const noteStyle = (n: { x: number; y: number; row?: number }) => `--x: ${((n.x *
       run();
     };
 
-    // ---------- Auslöser: der Textblock, dessen Anfang die Leselinie unter der Bühne überschritten hat ----------
+    // ---------- Auslöser: der Textblock, dessen Anfang die Leselinie überschritten hat. Querformat (Szene rechts daneben):
+    // Leselinie in der Bildschirmmitte; hochkant oder sehr hoch (Szene oben): ein Drittel in den Bereich unter der Bühne ----------
+    const side = matchMedia('(min-aspect-ratio: 5/4) and (min-width: 60em) and (max-height: 74.99em)');
+    const lineY = () => { if (side.matches) return innerHeight * 0.5; const b = stage.getBoundingClientRect().bottom; return b + (innerHeight - b) * 0.32; };
+    const fig = root.querySelector<HTMLElement>('.ss-fig')!;
     const pick = () => {
-      const line = stage.getBoundingClientRect().bottom + (innerHeight - stage.getBoundingClientRect().bottom) * 0.32;
+      fig.classList.toggle('is-stuck', fig.getBoundingClientRect().top <= parseFloat(getComputedStyle(fig).top) + 1);
+      const line = lineY();
       let s = Number(marks[0]?.dataset.step ?? 0);
       for (const m of marks) if (m.getBoundingClientRect().top < line) s = Number(m.dataset.step);
       set(s);
+      // weitergelesen im ersten Schritt: jetzt explodieren
+      if (step === 0 && !exploded && marks[0] && marks[0].getBoundingClientRect().top < line - innerHeight * 0.16) blast();
     };
     let ticking = false;
     addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(() => { ticking = false; pick(); }); } }, { passive: true });
 
     // ---------- Annotationen, die über den Bildschirm ragen würden, stehen auf der anderen Seite ----------
+    const listW = () => Math.max(0, ...notes.filter((n) => n.classList.contains('sn-list')).map((n) => n.querySelector('.sn-pill')!.getBoundingClientRect().width));
     const fit = () => notes.forEach((n) => {
       n.classList.remove('sn-flip');
+      // Prüfliste: alle Zeilen gemeinsam, nach dem Platz rechts vom Anker (unsichtbare zählen sonst zur Seitenbreite)
+      if (n.classList.contains('sn-list')) { if (n.getBoundingClientRect().left + listW() > document.documentElement.clientWidth - 8) n.classList.add('sn-flip'); return; }
       const r = n.querySelector('.sn-pill')!.getBoundingClientRect();
       if (r.right > document.documentElement.clientWidth - 8 || r.left < 8) n.classList.add('sn-flip');
     });
@@ -184,14 +201,8 @@ const noteStyle = (n: { x: number; y: number; row?: number }) => `--x: ${((n.x *
     dots.forEach((d) => d.addEventListener('click', () => {
       const m = marks.find((el) => el.dataset.step === d.dataset.goto && el.classList.contains('ss-step'));
       if (!m) return;
-      const line = stage.getBoundingClientRect().bottom + (innerHeight - stage.getBoundingClientRect().bottom) * 0.32;
-      scrollTo({ top: scrollY + m.getBoundingClientRect().top - line + 24, behavior: held() ? 'auto' : 'smooth' });
+      scrollTo({ top: scrollY + m.getBoundingClientRect().top - lineY() + 24, behavior: held() ? 'auto' : 'smooth' });
     }));
-    notes.forEach((n) => {
-      const hit = () => pieces.filter((p) => p.dataset.key === n.dataset.target);
-      n.addEventListener('pointerenter', () => { if (n.classList.contains('on')) { stage.classList.add('has-hl'); hit().forEach((p) => p.classList.add('hl')); } });
-      n.addEventListener('pointerleave', () => { stage.classList.remove('has-hl'); hit().forEach((p) => p.classList.remove('hl')); });
-    });
 
     // ---------- Schleifen: Abspielkopf (Software), Wind und Böen (Simulation), leise Eigenbewegung des Sterns ----------
     function still() {
@@ -229,14 +240,17 @@ const noteStyle = (n: { x: number; y: number; row?: number }) => `--x: ${((n.x *
       frame = requestAnimationFrame(loop);
     }
     function run() { if (!frame && visible && !held() && !document.hidden && LOOP.has(step)) frame = requestAnimationFrame(loop); else if (!LOOP.has(step) || held()) still(); }
-    new IntersectionObserver((es) => { visible = es[es.length - 1].isIntersecting; arm(700); run(); }, { threshold: 0.35 }).observe(stage);
+    new IntersectionObserver((es) => { const was = visible; visible = es[es.length - 1].isIntersecting; if (visible && !was) arm(2600); run(); }, { threshold: 0.6 }).observe(stage);
     document.addEventListener('flyingstars:motion-change', () => { if (held()) { exploded = true; if (step === 0) paint(0); } run(); });
     document.addEventListener('visibilitychange', run);
   });
 </script>
 
 <style>
-  .ss { --ss-enter: 0.38s; --ss-stage-h: clamp(15rem, 56svh - 3rem, 36rem); width: 100%; max-width: min(64rem, 100%); display: grid; justify-items: center; margin-block: clamp(var(--space-10), 5vw, var(--space-16)) 0; }
+  /* Zwei Formen nach Bildschirmform (Marc, Prototyp 2/3): Standard auf Desktop und Laptop ist die Szene rechts neben der
+     Lesespalte, mitlaufend. Hochkant, schmal oder ab 1200 px Fensterhöhe klebt sie oben über dem Text, etwa halb so hoch
+     wie in Prototyp 2 (Marc: bleibt eindrücklich, lässt mehr Raum zum Lesen). Breite wie die hervorgehobenen Elemente des Artikels (--feature-w, BlogPost). */
+  .ss { --ss-enter: 0.38s; --ss-stage-h: clamp(11rem, 28svh, 19rem); --ss-fade: var(--space-10); width: 100%; max-width: min(var(--feature-w, 76rem), 100%); display: grid; justify-items: center; margin-block: clamp(var(--space-10), 5vw, var(--space-16)) 0; }
   .ss-head, .ss-text { width: 100%; max-width: var(--measure, 42rem); }
   /* Der Schritttitel in der Leiste darf die Spalte des Artikels nicht weiten (nowrap, Auslassung) */
   .ss, .ss-fig, .ss-bar, .ss-now { min-width: 0; }
@@ -244,9 +258,16 @@ const noteStyle = (n: { x: number; y: number; row?: number }) => `--x: ${((n.x *
   .ss-head :global(h2) { margin-top: 0; }
   .ss-head { margin-bottom: var(--space-6); }
 
-  /* Bühne: klebt unter dem Kopf über die Breite des Artikels; der Text läuft darunter durch */
-  .ss-fig { position: sticky; top: var(--nav-h); z-index: 3; width: 100%; margin: 0; padding-block: var(--space-3) 0; background: var(--ground); box-shadow: 0 0 0 100vmax var(--ground); clip-path: inset(0 -100vmax 0 -100vmax); }
-  .ss-fig::after { content: ""; position: absolute; left: 0; right: 0; top: 100%; height: var(--space-8); background: linear-gradient(var(--ground), transparent); pointer-events: none; }
+  /* Hochkant: Bühne klebt unter dem Kopf über die Breite des Artikels; der Text läuft darunter durch und verschwindet weich.
+     Weicht die Kopfzeile beim Runterscrollen aus (nav-away, site.ts), rückt die Bühne nach oben. */
+  .ss-fig { position: sticky; top: var(--nav-h); z-index: 3; width: 100%; margin: 0; padding-block: var(--space-3) 0; background: var(--ground); box-shadow: 0 0 0 100vmax var(--ground); clip-path: inset(0 -100vmax calc(-1 * var(--ss-fade)) -100vmax); transition: top var(--dur-standard) var(--ease-default); }
+  :global(:root.nav-away) .ss-fig { top: 0; }
+  /* Weiche Kanten: unten ein Verlauf mit leichter Unschärfe, oben derselbe nach oben (wenn die Kopfzeile ausweicht) */
+  .ss-fig::before, .ss-fig::after { content: ""; position: absolute; left: calc(50% - 50vw); right: calc(50% - 50vw); height: var(--ss-fade); pointer-events: none; -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); }
+  .ss-fig::after { top: 100%; background: linear-gradient(var(--ground) 0%, color-mix(in srgb, var(--ground) 86%, transparent) 35%, transparent 100%); -webkit-mask-image: linear-gradient(#000 30%, transparent); mask-image: linear-gradient(#000 30%, transparent); }
+  .ss-fig::before { display: none; bottom: 100%; background: linear-gradient(to top, var(--ground) 0%, color-mix(in srgb, var(--ground) 86%, transparent) 35%, transparent 100%); -webkit-mask-image: linear-gradient(to top, #000 30%, transparent); mask-image: linear-gradient(to top, #000 30%, transparent); }
+  .ss-fig.is-stuck { clip-path: inset(calc(-1 * var(--ss-fade)) -100vmax calc(-1 * var(--ss-fade)) -100vmax); }
+  .ss-fig.is-stuck::before { display: block; } /* oben nur, wenn die Bühne klebt (sonst läge der Verlauf über der Überschrift davor) */
   .ss-stage { position: relative; width: 100%; height: var(--ss-stage-h); }
   /* Die Zeichnung endet weich an den Rändern der Bühne (Boden und Feld dürfen hinauslaufen) */
   .ss-stage svg { width: 100%; height: 100%; display: block; overflow: hidden;
@@ -273,9 +294,19 @@ const noteStyle = (n: { x: number; y: number; row?: number }) => `--x: ${((n.x *
   .rotor { fill: color-mix(in srgb, var(--zc) 8%, transparent); stroke: color-mix(in srgb, var(--zc) 50%, transparent); stroke-width: 0.6; }
   .arm { fill: none; stroke: color-mix(in srgb, var(--zc) 80%, transparent); stroke-width: 2; stroke-linecap: round; }
   .hub { fill: var(--ground); stroke: var(--zc); stroke-width: 0.8; }
-  .led-base { fill: color-mix(in srgb, var(--zc) 22%, var(--ground)); stroke: var(--zc); stroke-width: 0.8; }
-  .led-glow { fill: var(--zc); opacity: 0.16; }
-  .led-core { fill: #fff3df; }
+  .motor { fill: color-mix(in srgb, var(--zc) 30%, var(--ground)); stroke: var(--zc); stroke-width: 0.7; }
+  .motor-side { fill: color-mix(in srgb, var(--zc) 45%, var(--ground)); stroke: color-mix(in srgb, var(--zc) 60%, transparent); stroke-width: 0.5; }
+  .blade { fill: color-mix(in srgb, var(--zc) 40%, var(--ground)); stroke: color-mix(in srgb, var(--zc) 85%, transparent); stroke-width: 0.5; stroke-linejoin: round; }
+  .shell { fill: color-mix(in srgb, var(--zc) 20%, var(--ground)); stroke: color-mix(in srgb, var(--zc) 85%, transparent); stroke-width: 0.9; stroke-linejoin: round; }
+  .shell-side { fill: color-mix(in srgb, var(--zc) 38%, var(--ground)); stroke: color-mix(in srgb, var(--zc) 65%, transparent); stroke-width: 0.6; stroke-linejoin: round; }
+  .leg { fill: none; stroke: color-mix(in srgb, var(--zc) 70%, transparent); stroke-width: 1.4; stroke-linecap: round; }
+  /* LED: leuchtet sanft im Logoverlauf (Orange → Orchidee → Cyan), langsam und ohne Blinken */
+  .led-base { fill: color-mix(in srgb, var(--zc) 18%, var(--ground)); stroke: color-mix(in srgb, var(--zc) 70%, transparent); stroke-width: 0.8; }
+  .led-halo { fill: var(--logo-amber, #ff9e29); opacity: 0.1; filter: blur(6px); animation: ss-led 9s ease-in-out infinite; }
+  .led-glow { fill: var(--logo-amber, #ff9e29); opacity: 0.3; filter: blur(2.5px); animation: ss-led 9s ease-in-out infinite; }
+  .led-core { fill: #fff3df; animation: ss-led-core 9s ease-in-out infinite; }
+  @keyframes ss-led { 0%, 100% { fill: var(--logo-amber, #ff9e29); } 33% { fill: var(--logo-orchid, #db64e8); } 66% { fill: var(--cyan, #33edf2); } }
+  @keyframes ss-led-core { 0%, 100% { fill: #ffe2bf; } 33% { fill: #f7d6fb; } 66% { fill: #d4fbfd; } }
   .bar { stroke: none; }
   .bar-0 { fill: #ff9e29; } .bar-1 { fill: #f58a5a; } .bar-2 { fill: #ec7f95; } .bar-3 { fill: #db64e8; } .bar-4 { fill: #b88bec; } .bar-5 { fill: #8aa9ee; } .bar-6 { fill: #6fc8ef; } .bar-7 { fill: #33edf2; }
   .track { fill: none; stroke: color-mix(in srgb, var(--zc) 40%, transparent); stroke-width: 0.6; }
@@ -320,16 +351,12 @@ const noteStyle = (n: { x: number; y: number; row?: number }) => `--x: ${((n.x *
   [data-step="7"] .sd .core { fill: var(--head); }
   [data-step="7"] .sd .halo { opacity: 0.08; }
 
-  /* Hervorheben über die Annotation */
-  .has-hl .pc:not(.hl) { filter: opacity(0.45); }
-  .pc.hl :is(.zplate, .part, .glass-edge, .mesh-front, .file, .slab, .warn-ring, .route, .stream-base) { stroke: var(--zc); stroke-width: 1.4; stroke-dasharray: 6 4; animation: ss-march 1.6s linear infinite; }
-  @keyframes ss-march { to { stroke-dashoffset: -20; } }
 
   /* Annotationen: Punkt am Teil, Pille daneben (feste Größe, lesbar auf jeder Breite); Listen stehen untereinander */
   .sn { position: absolute; left: var(--x); top: var(--y); width: 0; height: 0; opacity: 0; visibility: hidden; transition: opacity var(--dur-fade) var(--ease-out), visibility 0s var(--dur-fade); }
   .sn.on { opacity: 1; visibility: visible; transition-delay: 1.1s, 0s; }
   .sn-dot { position: absolute; left: -0.21875rem; top: -0.21875rem; width: 0.4375rem; height: 0.4375rem; border-radius: var(--radius-round); background: var(--head); box-shadow: 0 0 0 0.1875rem rgb(var(--rgb-head) / 16%); }
-  .sn-pill { position: absolute; top: 0; transform: translateY(-50%); display: inline-flex; align-items: center; gap: var(--space-1-5); white-space: nowrap; padding: var(--space-1) var(--space-2-5); border-radius: var(--radius-pill); background: var(--ground); border: 1px solid var(--line-strong); color: var(--head); font: 500 var(--text-xs)/1.2 var(--display); cursor: default; }
+  .sn-pill { position: absolute; top: 0; transform: translateY(-50%); display: inline-flex; align-items: center; gap: var(--space-1-5); white-space: nowrap; padding: var(--space-1) var(--space-2-5); border-radius: var(--radius-pill); background: var(--ground); border: 1px solid var(--line-strong); color: var(--head); font: 500 var(--text-xs)/1.2 var(--display); }
   .sn-r .sn-pill { left: 1rem; }
   .sn-l .sn-pill { right: 1rem; }
   .sn-pill::before { content: ""; position: absolute; top: 50%; width: 0.75rem; border-top: 1px solid var(--line-strong); }
@@ -340,10 +367,12 @@ const noteStyle = (n: { x: number; y: number; row?: number }) => `--x: ${((n.x *
   .sn-r.sn-flip .sn-pill::before { right: auto; left: 100%; }
   .sn-l.sn-flip .sn-pill::before { left: auto; right: 100%; }
   .sn-check .sn-pill :global(.ico) { color: #6fdc98; }
-  /* Prüfliste (Live-Show): ruhig untereinander in der freien oberen rechten Ecke der Bühne, ohne Verbindungslinie */
-  .sn-list { left: calc(100% - 9.5rem) !important; top: calc(var(--space-3) + (var(--row) + 1) * 2.125rem) !important; }
+  /* Prüfliste (Live-Show): ruhig untereinander auf dem Feld neben dem Stern, ohne Verbindungslinie (Marc, Prototyp 2: näher an die Ebene) */
+  .sn-list { top: calc(var(--y) + var(--row) * 2rem); }
   .sn-list .sn-dot { display: none; }
-  .sn-list .sn-pill, .sn-list.sn-flip .sn-pill { left: 0; right: auto; border-color: transparent; background: none; padding-left: 0; color: var(--text); }
+  .sn-list .sn-pill { left: 0; right: auto; border-color: transparent; background: color-mix(in srgb, var(--ground) 80%, transparent); color: var(--text); }
+  /* Zu wenig Platz rechts: die ganze Liste rückt nach links, die Häkchen bleiben bündig */
+  .sn-list.sn-flip .sn-pill { left: -9.5rem; }
   .sn-list .sn-pill::before { display: none; }
 
   /* Schrittleiste: ruhig, zwei Gruppen aus feinen Strichen; die aktive Gruppe trägt ihren Namen hell */
@@ -374,12 +403,28 @@ const noteStyle = (n: { x: number; y: number; row?: number }) => `--x: ${((n.x *
   .ss-chapter { padding-top: var(--space-10); border-top: 1px solid var(--line); margin-bottom: var(--space-10); }
   .ss-chapter :global(h2) { margin: 0; }
 
-  @media (prefers-reduced-motion: reduce) { .cam, .pc, .sd, .sd *, .sn { transition: none !important; } .pc.hl *, .wave, .path { animation: none !important; } }
-  :global(.motion-paused) .wave, :global(.motion-paused) .path { animation: none !important; }
+  @media (prefers-reduced-motion: reduce) { .cam, .pc, .sd, .sd *, .sn { transition: none !important; } .wave, .path, .led-glow, .led-halo, .led-core { animation: none !important; } }
+  :global(.motion-paused) :is(.wave, .path, .led-glow, .led-halo, .led-core) { animation: none !important; }
+
+  /* Querformat: Text in der Lesespalte links (etwa 10 Zeichen schmaler als der Artikel), die Szene rechts daneben klebt
+     über die Bildschirmhöhe und läuft mit; keine Fläche, keine Verläufe nötig */
+  @media (--story-wide) and (--story-short) and (min-aspect-ratio: 5/4) {
+    .ss { grid-template-columns: minmax(0, 37rem) minmax(0, 1fr); grid-template-areas: "head fig" "text fig"; column-gap: clamp(var(--space-8), 4vw, var(--space-16)); justify-items: stretch; align-items: start; }
+    .ss-head { grid-area: head; max-width: none; }
+    .ss-text { grid-area: text; max-width: none; padding-top: 0; padding-bottom: 32svh; }
+    .ss-fig { grid-area: fig; align-self: start; top: calc(var(--nav-h) + var(--space-4)); height: calc(100svh - var(--nav-h) - var(--space-8)); display: flex; flex-direction: column; padding: 0; background: none; box-shadow: none; clip-path: none; }
+    :global(:root.nav-away) .ss-fig { top: var(--space-4); }
+    .ss-fig::before, .ss-fig::after { content: none; }
+    .ss-stage { flex: 1 1 auto; height: auto; min-height: 0; }
+    .ss-bar { flex-wrap: wrap; row-gap: 0; }
+    .ss-now { flex: 1 1 100%; padding-top: var(--space-1); }
+    .ss-step { padding-bottom: clamp(var(--space-16), 30svh, 16rem); }
+    .ss-chapter { padding-top: var(--space-12); }
+  }
 
   /* Schmal: Bühne niedriger, Gruppennamen weg, nur die Striche */
   @media (max-width: 45em) {
-    .ss { --ss-stage-h: clamp(13rem, 42svh, 24rem); }
+    .ss { --ss-stage-h: clamp(11rem, 26svh, 15rem); }
     .ss-fig { padding-top: var(--space-1); }
     .ss-bar { gap: var(--space-3); padding-top: 0; margin-top: var(--space-1); }
     .ss-now { font-size: var(--text-xs); gap: var(--space-2); }
@@ -389,7 +434,8 @@ const noteStyle = (n: { x: number; y: number; row?: number }) => `--x: ${((n.x *
     .ss-seg { width: 0.625rem; }
     .ss-grp button[aria-current] .ss-seg { width: 0.875rem; }
     .sn-pill { font-size: 0.6875rem; padding: 0.125rem var(--space-2); }
-    .sn-list { left: calc(100% - 7.25rem) !important; top: calc(var(--space-1) + (var(--row) + 1) * 1.5rem) !important; }
+    .sn-list { top: calc(var(--y) + var(--row) * 1.625rem); }
+    .sn-list.sn-flip .sn-pill { left: -7.75rem; }
     .ss-text { padding-top: var(--space-6); }
   }
 </style>

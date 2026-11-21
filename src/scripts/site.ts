@@ -52,7 +52,9 @@ import { whenNear } from './when-near.mjs';
   const onScroll = () => {
     ticking = false;
     const y = clampY(), dy = y - lastY;
-    if (!narrow.matches || y < 80 || document.querySelector("dialog[open]")) { root.classList.remove("nav-away"); lastY = y; return; }
+    // Seiten mit data-headroom="all" (Cornerstone-Artikel, Base.astro) nutzen das Ausweichen auch auf breiten Bildschirmen
+    const away = narrow.matches || root.dataset.headroom === "all";
+    if (!away || y < 80 || document.querySelector("dialog[open]")) { root.classList.remove("nav-away"); lastY = y; return; }
     if (!live) { lastY = y; return; } // Sprung oder Skript-Scrollen: Kopfzeile und Preisleiste bleiben, wie sie sind
     arm(); // Trägheit nach dem Loslassen gehört noch zur Geste
     if (Math.abs(dy) < 8) return; // kleine Zitterer (Adressleiste) ändern nichts, sie sammeln sich bis 8 px

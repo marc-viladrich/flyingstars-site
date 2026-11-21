@@ -30,8 +30,9 @@ const tracking = trackingConfig({
   ads: import.meta.env.PUBLIC_GOOGLE_ADS_ID ?? '',
   label: import.meta.env.PUBLIC_GOOGLE_ADS_LABEL ?? '',
 });
-interface Props { title: string; description: string; noindex?: boolean; canonicalPath?: string; image?: string; navSection?: string; fullBleed?: boolean; }
-const { title, description, noindex: pageNoindex = false, canonicalPath, image, navSection, fullBleed: bleed = false } = Astro.props;
+// headroom: Kopfzeile weicht auch auf breiten Bildschirmen beim Runterscrollen aus (site.ts, global.css; Option für Artikel)
+interface Props { title: string; description: string; noindex?: boolean; canonicalPath?: string; image?: string; navSection?: string; fullBleed?: boolean; headroom?: boolean; }
+const { title, description, noindex: pageNoindex = false, canonicalPath, image, navSection, fullBleed: bleed = false, headroom = false } = Astro.props;
 const noindex = pageNoindex || process.env.AFE_MODE === 'editor';
 const canonical = new URL(canonicalPath ?? Astro.url.pathname, Astro.site);
 const locale = localeFromPath(Astro.url.pathname);
@@ -50,7 +51,7 @@ const occasionPages = footerOccasions(locale);
 const inNav = (href: string) => site.nav.some((item) => item.href === href);
 ---
 <!doctype html>
-<html lang={locale}>
+<html lang={locale} data-headroom={headroom ? 'all' : undefined}>
   <head>
     <meta charset="utf-8" />
     {/* UI-Wörterbuch der Seitensprache vor allen Modul-Skripten (defer läuft in Dokumentreihenfolge), siehe src/i18n/ui.mjs */}

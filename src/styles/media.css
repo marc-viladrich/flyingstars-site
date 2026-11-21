@@ -12,3 +12,9 @@
    sind (Text 60ch + Abstand), darunter in einer eigenen Fläche unter dem Text */
 @custom-media --folge-below (max-width: 81.99em);
 @custom-media --folge-beside (min-width: 82em);
+/* Scroll-Geschichte im Blogartikel (StoryScene.astro, Labor Runde 15, Prototyp 3, Marc): Standard auf Desktop und Laptop ist
+   Text links, Szene rechts klebend. Bedingung = Querformat (min-aspect-ratio 5/4, in StoryScene direkt kombiniert) UND
+   mindestens --story-wide breit UND niedriger als --story-short. Hochkant, schmal oder ab 1200 px Fensterhöhe klebt die Szene
+   oben über dem Text. Gleiche Bedingung im Skript der Komponente (Leselinie). */
+@custom-media --story-wide (min-width: 60em);
+@custom-media --story-short (max-height: 74.99em);

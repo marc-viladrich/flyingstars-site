@@ -686,6 +686,9 @@ td.us { color: var(--text); background: var(--fill-soft); }
   :root.nav-away .nav { transform: translateY(-100%); }
   :root.nav-away .mtabs { top: 0.5rem; }
 }
+/* Option für Artikel (Base.astro headroom → data-headroom="all"): dasselbe Ausweichen auch auf breiten Bildschirmen */
+:root[data-headroom="all"] .nav { transition: background var(--dur-standard), border-color var(--dur-standard), padding var(--dur-standard), transform var(--dur-standard) var(--ease-default); }
+:root[data-headroom="all"].nav-away .nav { transform: translateY(-100%); }
 /* Keyboard focus must remain visible over light gradient buttons. */
 .btn:focus-visible { outline:0.1875rem solid var(--cyan);outline-offset:0.25rem; }
 

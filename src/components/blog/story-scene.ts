@@ -28,6 +28,9 @@ export type Piece = {
   after?: { s: [number, number]; dy?: number };
   /** Lage (y) im zusammengesetzten Zustand des ersten Schritts: die Drohne steht erst zusammen, dann fährt sie auseinander */
   asm?: number;
+  /** nur im zusammengesetzten Zustand sichtbar (Gehäuse, Beine) bzw. dort verborgen (Innenteile, kommen beim Explodieren heraus) */
+  asmOnly?: boolean;
+  inner?: boolean;
   shapes: Shape[];
 };
 /** w: Lage der Drohne entlang der Windrichtung (0 = Luv, 1 = Lee), für den Zeitpunkt, an dem die Böe sie trifft */
@@ -97,35 +100,57 @@ export function storyScene(o: { colors: string[]; zone: Record<string, string> }
   const DC: V3 = [0, K, 0];
   const droneCenter = P([DC[0], DC[1], 10]);
   const layer = (key: string, z: number, shapes: Shape[]) => { const asm = dyBetween([DC[0], DC[1], z], [DC[0], DC[1], az[key as keyof typeof az]]); return add({ key, zc: o.zone.drone, steps: [0], origin: P([DC[0], DC[1], z]), shift: { 0: 0 }, asm, hide: { s: [0.04, 0.04], dy: asm }, shapes }); };
-  layer('bat', dz.bat, [
+  // Prototyp 3 (Marc: „zuerst klar als Drohne erkennbar“): zusammengesetzt sieht man Gehäuse, vier Arme mit Motoren und
+  // Propellern, Beine und die LED oben; Akku, Platine und GPS liegen im Gehäuse und kommen erst beim Explodieren heraus
+  const inner = (p: Piece) => { p.inner = true; return p; };
+  inner(layer('bat', dz.bat, [
     face([[-1.6 * K, 0 * K, dz.bat - 1], [1.6 * K, 0 * K, dz.bat - 1], [1.6 * K, 0 * K, dz.bat], [-1.6 * K, 0 * K, dz.bat]], 'part-side'),
     face([[-1.6 * K, 0 * K, dz.bat - 1], [-1.6 * K, 2 * K, dz.bat - 1], [-1.6 * K, 2 * K, dz.bat], [-1.6 * K, 0 * K, dz.bat]], 'part-side'),
     face(rectZ(-1.6 * K, 0 * K, 1.6 * K, 2 * K, dz.bat), 'part'),
-  ]);
+  ]));
   {
     const z = dz.frame, arms: V3[] = [[-4.2 * K, -3.2 * K, z], [4.2 * K, 5.2 * K, z], [-4.2 * K, 5.2 * K, z], [4.2 * K, -3.2 * K, z]];
     const rotorsBack = [arms[1], arms[2]], rotorsFront = [arms[0], arms[3]];
+    // Motor als kurzer Zylinder, darüber der Propeller: Rotorkreis und zwei Blätter
+    const motor = (a: V3): Shape[] => [face(ring(a[0], a[1], z - 0.3, 0.42 * K, 14), 'motor-side'), face(ring(a[0], a[1], z + 0.7, 0.42 * K, 14), 'motor')];
+    const prop = (a: V3, i: number): Shape[] => {
+      const pz = z + 1, th = 0.5 + i * 0.9, c = Math.cos(th) * 1.95 * K, sn = Math.sin(th) * 1.95 * K, w = 0.22 * K, nx = -Math.sin(th) * w, ny = Math.cos(th) * w;
+      return [face(ring(a[0], a[1], pz, 2.1 * K), 'rotor'), face([[a[0] - c, a[1] - sn, pz], [a[0] + nx, a[1] + ny, pz], [a[0] + c, a[1] + sn, pz], [a[0] - nx, a[1] - ny, pz]], 'blade')];
+    };
     layer('frame', z, [
-      ...rotorsBack.map((a) => face(ring(a[0], a[1], z, 2.1 * K), 'rotor')),
+      ...rotorsBack.flatMap((a, i) => [...motor(a), ...prop(a, i)]),
       seg([arms[0], arms[1]], 'arm'), seg([arms[2], arms[3]], 'arm'),
       face(rectZ(-1.4 * K, -0.4 * K, 1.4 * K, 2.4 * K, z), 'part'),
-      ...rotorsFront.map((a) => face(ring(a[0], a[1], z, 2.1 * K), 'rotor')),
-      ...arms.map((a) => ({ t: 'circle', c: P(a), r: 2.2, cls: 'hub' }) as Shape),
+      ...rotorsFront.flatMap((a, i) => [...motor(a), ...prop(a, i + 2)]),
     ]);
   }
-  layer('board', dz.board, [
+  inner(layer('board', dz.board, [
     ...plate(-2.4 * K, -1.4 * K, 2.4 * K, 3.4 * K, dz.board, 0.25, 'part'),
     face(rectZ(-0.8 * K, 0.2 * K, 0.8 * K, 1.8 * K, dz.board), 'chip'),
     ...[-1.7, 1.7].flatMap((x) => [seg([[x * K, -0.9 * K, dz.board], [x * K, 2.9 * K, dz.board]], 'trace')]),
-  ]);
-  layer('gps', dz.gps, [
+  ]));
+  inner(layer('gps', dz.gps, [
     ...plate(-1.3 * K, 0 * K, 1.3 * K, 2.6 * K, dz.gps, 0.35, 'part'),
     face(rectZ(-0.7 * K, 0.6 * K, 0.7 * K, 2 * K, dz.gps), 'chip'),
-  ]);
+  ]));
+  // Gehäuse mit Beinen: nur zusammengesetzt; beim Explodieren weitet es sich leicht und verblasst
+  {
+    const x0 = -1.75 * K, x1 = 1.75 * K, y0 = -0.75 * K, y1 = 2.75 * K, zb = 7.9, zt = 10.7, leg = 2.2;
+    const legs: V3[] = [[x0 + 0.5, y0 + 0.5, zb], [x1 - 0.5, y0 + 0.5, zb], [x0 + 0.5, y1 - 0.5, zb], [x1 - 0.5, y1 - 0.5, zb]];
+    add({ key: 'shell', zc: o.zone.drone, steps: [0], asmOnly: true, origin: P([0, K, 9.3]), hide: { s: [1.08, 1.08] }, shapes: [
+      ...legs.slice(2).map((l) => seg([l, [l[0], l[1], zb - leg]], 'leg')),
+      face([[x0, y0, zb], [x1, y0, zb], [x1, y0, zt], [x0, y0, zt]], 'shell-side'),
+      face([[x0, y0, zb], [x0, y1, zb], [x0, y1, zt], [x0, y0, zt]], 'shell-side'),
+      face(rectZ(x0, y0, x1, y1, zt), 'shell'),
+      ...legs.slice(0, 2).map((l) => seg([l, [l[0], l[1], zb - leg]], 'leg')),
+      ...legs.map((l) => seg([[l[0] - 0.6, l[1], zb - leg], [l[0] + 0.6, l[1], zb - leg]], 'leg')),
+    ] });
+  }
   layer('led', dz.led, [
+    { t: 'circle', c: P([0 * K, 1.3 * K, dz.led + 0.4]), r: 30, cls: 'led-halo' },
     face(ring(0, 1.3 * K, dz.led, 1.7 * K), 'led-base'),
-    { t: 'circle', c: P([0 * K, 1.3 * K, dz.led + 0.4]), r: 22, cls: 'led-glow' },
-    { t: 'circle', c: P([0 * K, 1.3 * K, dz.led + 0.4]), r: 7, cls: 'led-core' },
+    { t: 'circle', c: P([0 * K, 1.3 * K, dz.led + 0.4]), r: 16, cls: 'led-glow' },
+    { t: 'circle', c: P([0 * K, 1.3 * K, dz.led + 0.4]), r: 6, cls: 'led-core' },
   ]);
   add({ key: 'drone-axis', zc: o.zone.drone, steps: [0], origin: droneCenter, asm: 0, hide: { s: [1, 0.02] }, shapes: [seg([[0, 1.3 * K, dz.bat - 1.5], [0, 1.3 * K, dz.led + 2.4]], 'guide')] });
 
@@ -278,9 +303,9 @@ export function storyScene(o: { colors: string[]; zone: Record<string, string> }
     { text: 'Zu nah: korrigieren', steps: [6], p: [near.at[0] + 9, near.at[1]], side: 'r', target: 'warn' },
     { text: 'Showdatei', steps: [7], p: P([ST[0] - 2.2, ST[1], fileZ[1]]), side: 'l', target: 'file-1' },
     { text: 'Testflug', steps: [7], p: P([seeds[13][0], seeds[13][1], 4.5]), side: 'r' },
-    { text: 'GPS-Signal', steps: [8], p: P([ST[0] - 1.6, ST[1], 1]), side: 'l', target: 'station', check: true, row: -1 },
-    { text: 'Wetter', steps: [8], p: P([ST[0] - 1.6, ST[1], 1]), side: 'l', target: 'station', check: true, row: 0 },
-    { text: 'Flugverbotszonen', steps: [8], p: P([ST[0] - 1.6, ST[1], 1]), side: 'l', target: 'field', check: true, row: 1 },
+    { text: 'GPS-Signal', steps: [8], p: P([15, 3, 0]), side: 'r', check: true, row: 0 },
+    { text: 'Wetter', steps: [8], p: P([15, 3, 0]), side: 'r', check: true, row: 1 },
+    { text: 'Flugverbotszonen', steps: [8], p: P([15, 3, 0]), side: 'r', check: true, row: 2 },
   ];
 
   // ---------- Bildausschnitt aus allem, auf (0, 0) verschoben ----------

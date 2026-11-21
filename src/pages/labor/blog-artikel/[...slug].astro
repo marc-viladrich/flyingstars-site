@@ -54,7 +54,7 @@ const NOTES = [
   ['Logo-Formation', 'Das FlyingStars-Logo aus 600 Drohnen, klein im Textfluss über dem Schlussabschnitt (Engine scripts/formation-play.js). Poster als echtes Bild im HTML.', 'Baustein ohne Pflege: kann unter jedem Artikel stehen. Mit Inhalt übernimmt er den Schlussabschnitt, sonst einen Standardtext.'],
 ];
 ---
-<BlogPost post={post} noindex coverImage={{ src: `${M}titel-030.webp`, width: 1600, height: 800, alt: 'Der Schriftzug NIEHEIM aus Drohnen über dem nächtlichen Horizont, als Lichtpunkt-Raster.' }}>
+<BlogPost post={post} noindex headroom coverImage={{ src: `${M}titel-030.webp`, width: 1600, height: 800, alt: 'Der Schriftzug NIEHEIM aus Drohnen über dem nächtlichen Horizont, als Lichtpunkt-Raster.' }}>
   <Fragment slot="body">
     <div class="post-body ba-col" set:html={intro} />
     <ArticlePhotos photos={[{ src: `${M}foto-012.webp`, width: 1600, height: 1000, alt: 'Showdrohnen auf weißen Startunterlagen, im Raster auf einer gepflasterten Fläche.' }]} caption="Showdrohnen auf ihren Startunterlagen, kurz vor dem Abheben." />
