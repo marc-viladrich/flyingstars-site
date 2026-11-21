@@ -224,7 +224,7 @@ return  [
   { id: 'launch', label: t('showConfigurator.marketing'), motifs: [
     // Runde 10 (Marc 20.11.: „zuerst die Chat- und QR-Code-Sequenz als Einstieg, dann das Logo und dann erst die Rakete“);
     // der QR-Code spielt jetzt auch in 2D (qr2d, ab 100 Drohnen) und 3D
-    ab(motif('qr', 'QR-Code', v('qr2d', t('showConfigurator.qrCodeWithScanMe')), v('qrHorizon', t('showConfigurator.aLightBeamScansTheQrCodeBuildsUp')), v('qrStory', t('showConfigurator.aMessageArrivesItBecomesAScannableQrCode'))), { SPARK: 150 }), // Marc 20.11.: „erst ab 150 Drohnen … wirklich brauchbar“; bei 100 eröffnet das Logo
+    ab(motif('qr', 'QR-Code', v('qr2d', t('showConfigurator.qrCodeWithScanMe')), v('qrHorizon', t('showConfigurator.aLightBeamScansTheQrCodeBuildsUp')), v('qrLogoStory', t('showConfigurator.qrLogoStoryCaption'))), { SPARK: 150 }), // Runde 16: in 3D+ zerlegt sich das Logo zu Handy und QR-Code (scenes/launch.js); qrStory bleibt als Baustein // Marc 20.11.: „erst ab 150 Drohnen … wirklich brauchbar“; bei 100 eröffnet das Logo
     motif('logo', 'Logo', v('logo', t('showConfigurator.exampleLogoWithLightSkating')), v('logo3d', t('showConfigurator.exampleLogoIn3dWithLightGlimmer')), v('logoStory', t('showConfigurator.yourLogoBecomesA3dRingOfLight'))),
     motif('rakete', t('showConfigurator.rocket'), v('rocket', t('showConfigurator.rocketWithFlame')), v('rocket3d', t('showConfigurator.theRocketAsABodyFloatsAndRotates')), v('rocketLaunch', t('showConfigurator.launchFromThePadTheRocketEntersOrbitAroundA'))),
     motif('mond', t('showConfigurator.moonLanding'), null, null, v('moonStory', t('showConfigurator.theRocketLeavesOrbitAndLandsOnTheMoonA')), O1),
@@ -244,7 +244,9 @@ return  [
     // Runde 11b (große Motive): Förderband hinter den Zahnrädern (die Mechanik läuft weiter), ab 500 in 3D und 3D+ (scenes/gross/foerderband.js)
     ab(motif('foerderband', t('showConfigurator.conveyor'), null, v('conveyor3d', t('showConfigurator.conveyor3dCaption')), v('conveyorStory', t('showConfigurator.conveyorStoryCaption')), ['HORIZON', 0]), { HORIZON: 400, ODYSSEY: 400 }), // Runde 11c: liest ab 400
     motif('idee', t('showConfigurator.lightBulb'), v('bulb2d', t('showConfigurator.aLightBulbTheIdea')), v('bulb3d', t('showConfigurator.theLightBulbIn3dTheLightFadeNIs')), v('bulbStory', t('showConfigurator.aLightBulbFormsAroundAFilamentAndShines'))),
-    catalogMotif('drehzahl', 'launch', t, locale),
+    // Runde 16 (Marc: „Tachometer → Auto“, mehr Zerlegen und Zusammensetzen): in 3D+ zerlegt sich der Drehzahlmesser und
+    // setzt sich zum Sportwagen zusammen (scenes/umbau-geschichten.js); 2D und 3D bleiben die Katalogfassungen
+    ((m) => ({ ...m, tiers: { ...m.tiers, ODYSSEY: { ...m.tiers.ODYSSEY, build: 'tachoCarStory', caption: t('showConfigurator.tachoCarStoryCaption') } } }))(catalogMotif('drehzahl', 'launch', t, locale)),
     catalogMotif('sportwagen', 'launch', t, locale),
     catalogMotif('hubschrauber', 'launch', t, locale),
     ab(catalogMotif('flugzeug', 'launch', t, locale), { ODYSSEY: 400 }), // Runde 10: mit der Mondlandung die zweite Stufe von 3D+
@@ -265,6 +267,9 @@ return  [
     ab(motif('radfahrer', t('showConfigurator.radfahrer.label'), null, v('cyclist3d', t('showConfigurator.radfahrer.caption3d')), v('cyclistStory', t('showConfigurator.radfahrer.captionStory')), ['HORIZON', 0]), { HORIZON: 400, ODYSSEY: 400 }),
     catalogMotif('jubilaeum30', 'jubilaeum', t, locale),
     catalogMotif('geburtstag', 'jubilaeum', t, locale),
+    // Runde 16 (Marc: „50 Jahre ↔ Torte als Zerlegen/Zusammensetzen“): die Torte in 2D und 3D wie im Katalog, in 3D+ zerlegt
+    // sie sich Stockwerk für Stockwerk und setzt sich zu eurer Zahl zusammen (scenes/umbau-geschichten.js)
+    ((m) => ({ ...m, label: t('showConfigurator.jubeltorte.label'), tiers: { ...m.tiers, ODYSSEY: { ...m.tiers.ODYSSEY, build: 'cakeNumberStory', caption: t('showConfigurator.jubeltorte.captionStory') } } }))(catalogMotif('torte', 'jubilaeum', t, locale, 'jubeltorte')),
     catalogMotif('golfer', 'jubilaeum', t, locale),
     catalogMotif('golfplatz', 'jubilaeum', t, locale),
     catalogMotif('golfcaddy', 'jubilaeum', t, locale),
@@ -429,7 +434,7 @@ return  [
     zugabe(catalogMotif('anstossen', 'kultur', t, locale)),
     // die Tänzerin dreht sich erst als Körper (HORIZON 250); dancer2d bleibt ungespielt
     ab(motif('tanz', t('showConfigurator.dance'), v('dancer2d', t('showConfigurator.aDancerHerRockSwings')), v('dancer3d', t('showConfigurator.theDancerTurnsIn3dTheRockFlies')), v('dancerStory', t('showConfigurator.theDancerTurnsTheSkirtBecomesTheFlowerTheFlower')), H1), { ODYSSEY: 400 }), // Runde 10: mit den Bokkenrijders
-    motif('teufel', 'Bokkenrijders', null, null, v('devilStory', t('showConfigurator.theDevilFromOurBokkenrijdersShowAnActual3dFormation')), O1),
+    motif('teufel', 'Bokkenrijders', null, null, v('bokkenrijdersStory', t('showConfigurator.bokkenrijdersStoryCaption')), O1), // Runde 16: Maske ↔ Totenkopf mit Zylinder (scenes/bokkenrijders.js); devilStory bleibt als Baustein
   ] },
 ].map(occasion=>({...occasion,motifs:occasion.motifs.flatMap((m) => byStufe(m, t)),anlass:formOccasionFor(occasion.id)}));
 }

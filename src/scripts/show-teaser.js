@@ -34,8 +34,7 @@ import { SHOW_PACKAGES, DRONES_MIN, DRONES_MAX, ART_TIER, TWO_D_LIMIT, artMin, c
 import { createField } from "./show-field.js";
 import { rankOf } from "./show-tempo.js";
 import { buildSequence } from "./show-scenes.js";
-import { liftColor } from "./formation/index.js";
-import logoDots from "../data/logo-dots.json";
+import { logoPoints } from "./scenes/fs-logo.js";
 import lettering from "../data/teaser-lettering.json";
 import { primeTextFormation } from "./text-formation.js";
 // Ruckeln an der Grenze #ablauf → #preise (WebKit/Safari, 18.11.2026): Der Textplaner setzte den Schriftzug FLYINGSTΛRS
@@ -57,7 +56,8 @@ const ZOOM = 0.82;
  * Die Abläufe. Je Eintrag ein Motiv; drones: eine oder mehrere Drohnenzahlen hintereinander (das Paket folgt aus der
  * Zahl, die erste Stufe kommt aus der lebendigen Wolke, jede weitere mit einem normalen Flug). kind: "logo" (das
  * FlyingStars-Logo, ab 450 mit Schriftzug) oder "text" (eigener Text über den Textplaner, value/style). beats: welche
- * Bilder einer Geschichte (Index, negativ vom Ende). note: Schrift unten auf der Bühne ([fett, Rest]).
+ * Bilder einer Geschichte (Index, negativ vom Ende). note: Schrift unten auf der Bühne ([fett, Rest]). arts: nur in diesen
+ * Arten spielen, wenn jemand eine Art wählt (Runde 16).
  * still: das Motiv, das bei reduzierter Bewegung in Ruhe steht (Index im Ablauf).
  */
 const LOGO_NOTE = [message('showTeaser.spaceForYourLogo'), ""];
@@ -68,22 +68,31 @@ const LOGO_NOTE = [message('showTeaser.spaceForYourLogo'), ""];
 // Aus langen Geschichten nur die stärksten Bilder (beats), damit das Tempo bleibt wie bisher (Show-Uhr 90 s statt 84 s).
 // Ein direkter Flug (cloud: false) nur zwischen Motiven, die zusammengehören (Greifarm → Förderband, Drehzahlmesser → Sportwagen).
 const QR = { occasion: "launch", motif: "qr", drones: [300] };
+// Runde 16 (Marc, 21.11.2026: „zu kurz und repetitiv … es dürfen deutlich mehr Motive rein“; „großer Fan der
+// Roboter-Geschichte … diese Art Zerlegen/Zusammensetzen öfter“): alle Vorschläge sind drin, die Folge ist rund doppelt so
+// lang, das Tempo der einzelnen Bilder bleibt. Neu als Zerlegen und Zusammensetzen (scenes/umbau.js, auch im
+// Konfigurator): die Torte wird eure Zahl (Jubiläum), das FlyingStars-Logo wird Handy mit QR-Code, der Drehzahlmesser
+// wird zum Sportwagen, die Bokkenrijders-Maske wird ein Totenkopf mit Zylinder und wieder Maske (Höhepunkt bei 600).
+// Die Arten wechseln sich ab (2D, 3D, 3D+), damit jede Pill-Wahl genug eigene Motive behält.
 export const REELS = {
-  start: { still: 6, label: message('configuratorteaser.theFlyingstarsLogoBecomingSharperWithMoreDronesAHeart'), items: [
+  start: { still: 10, label: message('configuratorteaser.theFlyingstarsLogoBecomingSharperWithMoreDronesAHeart'), items: [
     { occasion: "launch", kind: "logo", drones: [100, 300, 450, 600], note: LOGO_NOTE },
-    { occasion: "festival", motif: "jahreszahl", value: "50", drones: [100, 200, 300], beats: { ODYSSEY: [-1] } }, // 50 Jahre: 2D, 3D mit Konfetti, 3D+ Licht schreibt die Zahl
-    { occasion: "hochzeit", motif: "torte", drones: [100, 200] }, // Torte 2D → 3D
+    { occasion: "hochzeit", motif: "herz", drones: [100], arts: ["2d"] }, // 2D-Herz, ein Schein läuft die Linie entlang (in 3D+ wäre es Amors Pfeil, seit Runde 15 raus)
+    { occasion: "jubilaeum", motif: "jubeltorte", value: "50", drones: [100, 200, 300] }, // Torte 2D → 3D → 3D+: sie zerlegt sich zur 50 mit Konfetti
+    { occasion: "festival", motif: "bremerschluessel", drones: [150, 250] }, // Bremer Schlüssel 2D → 3D
+    { ...QR }, // 3D+: aus dem Logo werden Handy und QR-Code, dann „Scan me“
+    { occasion: "festival", motif: "elbphilharmonie", drones: [250] }, // Elbphilharmonie in 3D, Licht gleitet über das Wellendach
+    { occasion: "launch", motif: "drehzahl", drones: [300] }, // 3D+: die Nadel dreht hoch, der Drehzahlmesser wird zum Sportwagen
     { occasion: "festival", motif: "fernsehturm", drones: [300], beats: [-1] }, // die Kugel dreht sich, Funkwellen gehen hinaus (3D+)
     { occasion: "launch", motif: "roboter", drones: [400], beats: [1, 2] }, // der kleine Roboter wird lebendig, dann zum Greifarm
     { occasion: "launch", motif: "foerderband", drones: [400], beats: [-1], cloud: false }, // …und setzt euer Produkt aufs Band
-    { occasion: "kultur", motif: "teufel", drones: [600] },
+    { occasion: "kultur", motif: "teufel", drones: [600] }, // Höhepunkt: Maske → Totenkopf mit Zylinder → Maske
   ] },
   // Runde 15: Werbung mit den Marketing-Motiven: Drehzahlmesser in 3D → Sportwagen in 3D+ (direkter Flug), Glühbirne 2D → 3D,
   // die QR-Code-Geschichte, der Satellit (3D+) statt der Rakete. Der Seitenkopf der Werbung ist ein Video, keine Dopplung.
-  marke: { still: 5, label: message('configuratorteaser.aLogoBecomingSharperWithMoreDronesALightBulb'), items: [
+  marke: { still: 4, label: message('configuratorteaser.aLogoBecomingSharperWithMoreDronesALightBulb'), items: [
     { occasion: "launch", kind: "logo", drones: [100, 300, 450, 600], note: LOGO_NOTE },
-    { occasion: "launch", motif: "drehzahl", drones: [200] }, // die Nadel dreht hoch
-    { occasion: "launch", motif: "sportwagen", drones: [300], beats: [-1], cloud: false }, // …und aus dem Tachometer wird das Auto
+    { occasion: "launch", motif: "drehzahl", drones: [200, 300] }, // die Nadel dreht hoch (3D); in 3D+ zerlegt er sich zum Sportwagen (Runde 16)
     { occasion: "launch", motif: "idee", drones: [100, 200] },
     QR,
     { occasion: "launch", motif: "satellit", drones: [400], beats: [0, -1] }, // im Orbit, dann der Lichtimpuls zur Erde
@@ -121,29 +130,9 @@ export const REELS = {
 export const REEL = REELS.start.items;
 export const STILL = REELS.start.still;
 
-/**
- * Das FlyingStars-Logo wie in der Designsprache-Probe (ohne Ring): selbst ein Raster aus 88 Lichtpunkten. Mit mehr Drohnen
- * kommen Lichter auf die Verbindungen zwischen benachbarten Punkten (wie DENSE in der früheren Designsprache-Probe, aber stufenlos):
- * bei 100 Drohnen das Raster, bei 600 durchgehende, scharfe Linien. Farben aus den beiden Endpunkten gemischt.
- */
-const DOTS = logoDots.dots.map(([x, y, r, g, b]) => [x, y, r, g, b]);
-const EDGES = (() => {
-  let d0 = Infinity;
-  for (let i = 0; i < DOTS.length; i++) for (let j = i + 1; j < DOTS.length; j++) d0 = Math.min(d0, Math.hypot(DOTS[i][0] - DOTS[j][0], DOTS[i][1] - DOTS[j][1]));
-  const out = [];
-  for (let i = 0; i < DOTS.length; i++) for (let j = i + 1; j < DOTS.length; j++) if (Math.hypot(DOTS[i][0] - DOTS[j][0], DOTS[i][1] - DOTS[j][1]) < d0 * 1.2) out.push([i, j]);
-  return out;
-})();
-export function logoPoints(n) {
-  const pts = DOTS.slice(0, n).map(([x, y, r, g, b]) => [x, y, 0, ...liftColor([r, g, b])]);
-  const extra = Math.max(0, n - DOTS.length), per = Math.floor(extra / EDGES.length), more = extra - per * EDGES.length;
-  EDGES.forEach(([i, j], e) => {
-    // gleichmäßig verteilt: jede Kante bekommt per Lichter, die ersten `more` Kanten (über das Logo gestreut) eines mehr
-    const k = per + (((e * 37) % EDGES.length) < more ? 1 : 0), a = DOTS[i], b = DOTS[j];
-    for (let q = 1; q <= k; q++) { const u = q / (k + 1); pts.push([a[0] + (b[0] - a[0]) * u, a[1] + (b[1] - a[1]) * u, 0, ...liftColor(a.slice(2).map((v, c) => Math.round(v + (b[2 + c] - v) * u)))]); }
-  });
-  return pts;
-}
+/** Das FlyingStars-Logo (Raster aus 88 Lichtpunkten, mit mehr Drohnen durchgehende Linien), seit Runde 16 geteilt mit der
+ * QR-Geschichte: scenes/fs-logo.js. */
+export { logoPoints };
 const FS_GRAD = [[255, 158, 41], [219, 100, 232], [51, 237, 242]];
 const gradAt = (u) => { const t = Math.max(0, Math.min(1, u)) * 2, i = Math.min(1, Math.floor(t)), f = t - i; return FS_GRAD[i].map((v, c) => Math.round(v + (FS_GRAD[i + 1][c] - v) * f)); };
 /** Ab dieser Drohnenzahl sieht das Logo aus, wie es soll; was darüber hinausgeht, schreibt den Schriftzug darunter. */
@@ -173,6 +162,7 @@ const ART_RANGE = (art) => [artMin(art), art === "2d" ? TWO_D_LIMIT - 100 : DRON
  */
 function lockItem(r, tier, motif, own) {
   const art = ART_OF[tier], [lo, hi] = ART_RANGE(art);
+  if (r.arts && !r.arts.includes(art)) return null; // Runde 16: Eintrag nur in diesen Arten (das Herz nicht als Amors Pfeil in 3D+)
   const version = r.kind === "logo" || r.kind === "text" ? {} : r.build ? { minDrones: 0 } : motif?.tiers[tier] ?? (tier === "ODYSSEY" ? own : null);
   if (!version) return null;
   const from = Math.max(lo, version.minDrones ?? 0);
@@ -276,6 +266,18 @@ export function initTeaser(root) {
   const scenes = new Map(), sceneFor = (art) => { if (!scenes.has(art)) scenes.set(art, buildReel(reel, art ? { art } : {})); return scenes.get(art); };
   /** Bild, mit dem eine gewählte Art einsetzt: das gerade gezeigte Motiv in dieser Art, sonst das nächste, das es dort gibt. */
   const entry = (scene, last) => { const pick = (k) => (last ? scene.beats.findLastIndex((b) => b.segment === k) : scene.beats.findIndex((b) => b.segment === k)); for (let k = segment; k <= segment + scene.beats.length; k++) { const at = pick(k); if (at >= 0) return at; } return 0; };
+  // Runde 16 (Marc: „Klick auf die schon gewählte Stufe hebt die Wahl auf“): ein zweiter Klick (oder die Leertaste) auf
+  // die gewählte Art nimmt die Wahl zurück, der gemischte Ablauf läuft ab dem gerade gezeigten Motiv weiter. Der Klick
+  // kommt vor dem change-Ereignis: steht chosen dann schon auf dieser Art, war sie vorher gewählt.
+  arts.forEach((input) => input.addEventListener("click", () => {
+    if (chosen !== input.value) return;
+    input.checked = false; chosen = null;
+    const token = ++picks;
+    sceneFor(null).then((scene) => {
+      if (done || token !== picks || !root.dataset.cftLoaded) return;
+      field.show(scene, 300, 1, reduce ? { instant: true, at: entry(scene, true) } : { at: entry(scene, false), cloud: true });
+    }).catch(() => {});
+  }));
   arts.forEach((input) => input.addEventListener("change", () => {
     if (!input.checked) return;
     chosen = input.value;
