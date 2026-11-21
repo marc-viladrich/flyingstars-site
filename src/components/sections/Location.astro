@@ -68,7 +68,11 @@ const withAddress = pins.some((pin) => pin.lines);
     <figure class="loc-map">
       <div class="loc-stage">
         <img src="/media/standort-nrw.svg" width={NRW_MAP.width} height={NRW_MAP.height} alt="" loading="lazy" decoding="async" />
-        <span class="loc-lit" aria-hidden="true"><span class="loc-glow"></span></span>
+        {/* Wandernder Lichtkegel (Runde 9): EINE Lichtebene über der Punktkarte, die Punktkarte als Maske, geschnitten mit einem
+             Kreis an --sx/--sy. Runde 15 (Marc: „komplett kaputt“ nach dem Umbau auf eine verschobene Lichtfläche): wieder die
+             bewährte Darstellung; die Lage setzt jetzt das Skript aus der Zeigerposition statt 144 unsichtbarer Zeigezellen mit
+             :has(:hover) (die hingen in Safari nach dem Zeigen auf Post/Büro), mit kurzer Trägheit. */}
+        <span class="loc-lit" aria-hidden="true"></span>
         {pins.map((pin, i) => <span class:list={['loc-pin', pin.tone]} data-pin={i} style={`left:${pin.x.toFixed(2)}%;top:${pin.y.toFixed(2)}%`} aria-hidden="true"></span>)}
       </div>
       <figcaption>
@@ -82,7 +86,6 @@ const withAddress = pins.some((pin) => pin.lines);
 <script>
   for (const root of document.querySelectorAll<HTMLElement>('[data-loc]')) {
     const stage = root.querySelector<HTMLElement>('.loc-stage')!;
-    const glow = stage.querySelector<HTMLElement>('.loc-glow')!;
     let hotPin: string | undefined;
     let touchId: number | undefined;
     let releaseLight: number | undefined;
@@ -129,9 +132,8 @@ const withAddress = pins.some((pin) => pin.lines);
         return;
       }
       window.clearTimeout(releaseLight);
-      // Die Verschiebung beginnt an der Mitte der Karte.
-      glow.style.setProperty('--loc-x', `${(x / width - 0.5) * 100}%`);
-      glow.style.setProperty('--loc-y', `${(y / height - 0.5) * 100}%`);
+      stage.style.setProperty('--sx', `${(x / width * 100).toFixed(2)}%`);
+      stage.style.setProperty('--sy', `${(y / height * 100).toFixed(2)}%`);
       stage.classList.toggle('is-touch', touch);
       stage.classList.add('is-lit');
     };
@@ -215,22 +217,22 @@ const withAddress = pins.some((pin) => pin.lines);
   .loc-links a :global(.ico) { flex: none; color: var(--pin); }
   @media (prefers-reduced-motion: reduce) { .loc-pin::before, .loc-pin::after, .loc-place::before, .loc-ico::after { transition: none; } }
 
-  /* Feste Punktmaske, bewegte Lichtfläche. WebKit muss weder zwei Masken komponieren
-     noch einen animierten Maskenverlauf neu zeichnen. Die Ebene nimmt keine Eingaben an. */
-  .loc-lit { display: none; position: absolute; inset: 0; pointer-events: none; opacity: 0;
-    -webkit-mask: url(/media/standort-nrw-maske.svg) center / 100% 100% no-repeat;
-    mask: url(/media/standort-nrw-maske.svg) center / 100% 100% no-repeat; }
-  .loc-glow { display: none; position: absolute; inset: 0;
-    transform: translate(var(--loc-x, 0%), var(--loc-y, 0%)); }
-  .loc-glow::before { content: ""; position: absolute; width: 17rem; aspect-ratio: 1;
-    left: calc(50% - 8.5rem); top: calc(50% - 8.5rem);
-    background: radial-gradient(circle closest-side, var(--amber) 30%, transparent); }
+  /* Lichtkegel wie Runde 9 (Maske wie DotField: Langschreibweisen, sonst setzt WebKit das mask-composite zurück). Die Lage
+     gleitet über registrierte Eigenschaften mit kurzer Trägheit (Runde 15, Marc: „more responsive, die Inertia kann trotzdem
+     bleiben“); bei Touch ohne Nachziehen. */
+  @property --sx { syntax: '<percentage>'; inherits: true; initial-value: 50%; }
+  @property --sy { syntax: '<percentage>'; inherits: true; initial-value: 50%; }
+  .loc-lit { display: none; position: absolute; inset: 0; pointer-events: none; opacity: 0; background: var(--amber);
+    -webkit-mask-image: url(/media/standort-nrw-maske.svg), radial-gradient(circle 8.5rem at var(--sx) var(--sy), #000 30%, transparent);
+    mask-image: url(/media/standort-nrw-maske.svg), radial-gradient(circle 8.5rem at var(--sx) var(--sy), #000 30%, transparent);
+    -webkit-mask-size: 100% 100%, 100% 100%; mask-size: 100% 100%, 100% 100%; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+    -webkit-mask-composite: source-in; mask-composite: intersect;
+    transition: opacity var(--dur-standard) var(--ease-default), --sx 0.16s var(--ease-out), --sy 0.16s var(--ease-out); }
   @media (prefers-reduced-motion: no-preference) {
     :global(html:not(.motion-paused)) .loc-stage { touch-action: pan-y pinch-zoom; }
     :global(html:not(.motion-paused)) .loc-lit { display: block; }
     .loc-stage.is-lit .loc-lit { opacity: 0.85; }
-    .loc-stage.is-lit .loc-glow { display: block; }
-    .loc-stage:not(.is-touch) .loc-glow { transition: transform calc(var(--dur-quick) * 2 / 3) var(--ease-out); }
+    .loc-stage.is-touch .loc-lit { transition: opacity var(--dur-standard) var(--ease-default); }
   }
   @media (--grid-stacked) { .loc-grid { grid-template-columns: 1fr; } .loc-map { justify-self: start; } }
 </style>

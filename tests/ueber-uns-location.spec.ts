@@ -33,10 +33,11 @@ test('the spotlight stays with the mouse across map pins and returns after hover
     await expect(pin).toHaveClass(/is-hot/);
     await expect(place).toHaveClass(/is-hot/);
     await expect(light).toHaveCSS('opacity', '0.85');
+    // Runde 15: Lichtkreis an --sx/--sy der Bühne (Prozent), Mitte des Kreises = Mitte der Markierung
     await expect.poll(async () => {
-      const glow = (await light.locator('.loc-glow').boundingBox())!;
-      return Math.hypot(glow.x + glow.width / 2 - pinBox.x - pinBox.width / 2,
-        glow.y + glow.height / 2 - pinBox.y - pinBox.height / 2);
+      const [sx, sy] = await light.evaluate((el) => { const cs = getComputedStyle(el); return [parseFloat(cs.getPropertyValue('--sx')), parseFloat(cs.getPropertyValue('--sy'))]; });
+      return Math.hypot(bounds.x + bounds.width * sx / 100 - pinBox.x - pinBox.width / 2,
+        bounds.y + bounds.height * sy / 100 - pinBox.y - pinBox.height / 2);
     }).toBeLessThan(3);
 
     await page.mouse.move(point.x, point.y);

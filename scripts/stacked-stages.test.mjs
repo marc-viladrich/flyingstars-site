@@ -33,7 +33,9 @@ test('Lichtkegel der NRW-Karte: feste Punktmaske und nur bei erlaubter Bewegung'
   const src = read('src/components/sections/Location.astro');
   assert.match(src, /\.loc-lit \{ display: none;/);
   assert.match(src, /@media \(prefers-reduced-motion: no-preference\) \{[^}]+\}\s*:global\(html:not\(\.motion-paused\)\) \.loc-lit \{ display: block;/);
-  assert.match(src, /mask: url\(\/media\/standort-nrw-maske\.svg\)/);
-  assert.doesNotMatch(src, /\bmask-composite:|class="loc-hit"/);
+  // Runde 15: Punktmaske geschnitten mit dem Lichtkreis (Darstellung wie Runde 9), Lage per Skript statt Zeigezellen
+  assert.match(src, /mask-image: url\(\/media\/standort-nrw-maske\.svg\), radial-gradient\(circle 8\.5rem at var\(--sx\) var\(--sy\)/);
+  assert.match(src, /stage\.style\.setProperty\('--sx'/);
+  assert.doesNotMatch(src, /class="loc-hit"|:has\(\.hc\d/);
   assert.ok(existsSync(new URL('../public/media/standort-nrw-maske.svg', import.meta.url)));
 });
