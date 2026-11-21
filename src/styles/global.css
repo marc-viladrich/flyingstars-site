@@ -92,6 +92,7 @@
   --dur-image: 0.8s;
   --dur-slow: 0.9s;
   --dur-slow-long: 0.95s;
+  --dur-weight-fill: 0.96s; /* Verlaufswort füllt sich (himmel.css, Runde 14) */
   --dur-reel: 1.2s;
   --dur-ambient: 1.4s;
   --dur-record: 1.6s;
@@ -1007,6 +1008,10 @@ a.pack { grid-template-rows: auto auto 1fr; align-items: start; row-gap: var(--s
 .ig.ig-on::before { opacity: 1; }
 .ig.ig-snap::before { transition: opacity var(--dur-standard) var(--ease-default); }
 @media (prefers-reduced-motion: reduce) { .ig::before { transition: opacity var(--dur-standard) var(--ease-default); } }
+/* Handy und Touch (Marc, 21.11.2026): keine gleitende Fläche. In einer Spalte ohne seitlichen Innenabstand passt sie nicht
+   mehr zur Zelle (sie saß eingerückt neben dem bündigen Icon), und ohne Zeiger gibt es kein Hover. */
+@media (--compact) { .ig::before { display: none; } }
+@media (hover: none) { .ig::before { display: none; } }
 
 /* Handy (Marc, 02.11.2026): das Showreel steht als gerahmtes Bild im Seitenfluss über der Überschrift, nicht als Hintergrund
    hinter dem Text. Startseiten-Hero (.hero); der Referenz-Kopf (.c-hero) hat seine Fassung in case.css. Video: kleine Fassung

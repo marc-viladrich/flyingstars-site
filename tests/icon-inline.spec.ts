@@ -32,13 +32,20 @@ for (const path of PAGES) {
   test(`Handy: Icon-Zellen bündig mit der Inhaltskante (${path})`, async ({ page, isMobile }) => {
     test.skip(!isMobile, 'nur Handy');
     await page.goto(path);
+    // Ausnahme (Marc, 21.11.2026, zweite Rückmeldung): Zellen, die am Handy Karten mit sichtbarem Rand bleiben (Bento-Kacheln),
+    // stehen mit dem Rand an der Inhaltskante; ihr Icon ist um Rand + Innenabstand eingerückt.
     const off = await page.evaluate(() => [...document.querySelectorAll('.icon-feature')].flatMap((cell) => {
       const mark = cell.querySelector(':scope > .ico, :scope > .q-logo, :scope > .ic-h'), h = cell.closest('section')?.querySelector('h1, h2');
       if (!mark || !h || !(cell as HTMLElement).offsetParent) return [];
-      return [{ title: cell.textContent!.trim().slice(0, 40), dx: Math.round(mark.getBoundingClientRect().left - h.getBoundingClientRect().left) }];
+      const cs = getComputedStyle(cell), card = parseFloat(cs.borderLeftWidth) > 0 && parseFloat(cs.borderTopLeftRadius) > 0;
+      const left = h.getBoundingClientRect().left, inset = card ? parseFloat(cs.borderLeftWidth) + parseFloat(cs.paddingLeft) : 0;
+      return [{ title: cell.textContent!.trim().slice(0, 40), card, edge: Math.round(cell.getBoundingClientRect().left - left), dx: Math.round(mark.getBoundingClientRect().left - left - inset) }];
     }));
     expect(off.length, 'Icon-Zellen gefunden').toBeGreaterThan(0);
-    for (const c of off) expect(c.dx, `${c.title}: Abstand zur Inhaltskante`).toBe(0);
+    for (const c of off) {
+      expect(c.dx, `${c.title}: Abstand zur Inhaltskante`).toBe(0);
+      if (c.card) expect(c.edge, `${c.title}: Kartenrand an der Inhaltskante`).toBe(0);
+    }
     expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth), 'kein seitliches Scrollen').toBe(0);
   });
 }

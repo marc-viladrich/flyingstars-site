@@ -117,5 +117,10 @@ main:has(+ .footer) > div:last-of-type > section:last-of-type {
 }
 html.reveal:not(.motion-paused) :is(h1, h2, h3) .grad:not(.st-an, .st-bereit),
 html.reveal:not(.motion-paused) :is(h1, h2, h3) .grad.st-bereit:not(.st-an) .st-v { font-weight: 300; }
-html.reveal :is(h1, h2, h3) .grad.st-an .st-v { transition: font-weight var(--dur-slow-long) cubic-bezier(0.7, 0, 0.12, 1) 0.14s; }
+/* Runde 14 (Marc 21.11.2026, Werte aus seinem DialKit-Labor, freelance/clients/flyingstars/25-schrift-animation-dial):
+   easeInExpo über 960 ms ohne Verzögerung, von 300 auf 700. Das Wort verharrt dünn und schnappt dann voll zu („clean und
+   springy“ statt des weichen Ankommens). Endstärke 700 gilt für das Verlaufswort in jeder Überschrift; das Satzzeichen
+   danach (.st-p) behält die Stärke der Überschrift. */
+:is(h1, h2, h3) .grad { font-weight: 700; }
+html.reveal :is(h1, h2, h3) .grad.st-an .st-v { transition: font-weight var(--dur-weight-fill) cubic-bezier(0.7, 0, 0.84, 0) 0s; }
 html.motion-paused :is(h1, h2, h3) .grad .st-v { transition: none; }

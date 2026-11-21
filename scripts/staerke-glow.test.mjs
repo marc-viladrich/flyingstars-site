@@ -54,16 +54,17 @@ test('Verlaufsworte: der Verlauf malt je Wort, ausgerichtet am ganzen Begriff (W
   assert.match(ts, /setProperty\('--st-bx', `\$\{\(PAD - offset \/ fs\)\.toFixed\(4\)\}em`\)/);
 });
 
-test('Verlaufsworte: später auslösen, kurz dünn halten, dann ein Schwung ohne Überschwingen', () => {
+test('Verlaufsworte: später auslösen, dünn verharren, dann zuschnappen ohne Überschwingen (easeInExpo, Runde 14)', () => {
   const css = read('src/styles/himmel.css'), ts = read('src/scripts/himmel/staerke.ts');
   const m = css.match(/\.grad\.st-an \.st-v \{ transition: font-weight var\((--[\w-]+)\) cubic-bezier\(([^)]*)\) ([\d.]+)s; \}/);
   assert.ok(m, 'Übergang der Schriftstärke fehlt');
   const token = read('src/styles/global.css').match(new RegExp(`${m[1]}: ([\\d.]+)s;`));
   const [dur, curve, delay] = [Number(token?.[1]), m[2].split(',').map(Number), Number(m[3])];
   assert.ok(dur >= 0.6 && dur <= 1.2, `Dauer ${dur}s`);
-  assert.ok(delay > 0 && delay <= 0.3, `Verzögerung ${delay}s`);
+  assert.ok(delay >= 0 && delay <= 0.3, `Verzögerung ${delay}s`);
   assert.ok(curve[1] >= 0 && curve[1] <= 1 && curve[3] >= 0 && curve[3] <= 1, 'Kurve schwingt über das Zielgewicht');
-  assert.ok(curve[0] >= 0.5, 'Kurve soll dünn verharren (langsamer Start)');
+  assert.ok(curve[0] >= 0.5 && curve[2] >= 0.5, 'Kurve soll dünn verharren und dann beschleunigen (ease-in)');
+  assert.match(css, /:is\(h1, h2, h3\) \.grad \{ font-weight: 700; \}/, 'Endstärke 700 (Marcs Labor-Wert)');
   const late = Number(ts.match(/const LATE = '0% 0% (-\d+)% 0%'/)?.[1]);
   assert.ok(late <= -35 && late >= -50, `Auslösung bei ${late} %`);
   assert.match(ts, /scrollHeight - 2/, 'Wörter am Seitenende füllen sich trotzdem');

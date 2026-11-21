@@ -80,11 +80,9 @@ const img = lead.image ? await optimizedImage(lead.image.src, 960, 720) : undefi
   }
   @media (--compact) {
     .lb-grid { grid-template-columns: 1fr; grid-auto-rows: auto; }
-    /* Kachelinhalt an der Inhaltskante (Marc, 21.11.2026: Icons linksbündig mit Text und Seitenrand); die Kachelfläche läuft
-       dafür bis an den Bildschirmrand, ohne Rundung und Seitenlinien, und wirkt weiter wie eine Karte mit Innenabstand */
-    .lb-cell, .lb-lead { margin-inline: calc(-1 * var(--pad)); border-radius: 0; border-inline-width: 0; }
-    .lb-cell { padding-inline: var(--pad); }
-    .lb-lead-copy { padding-inline: var(--pad); }
+    /* Die Kacheln bleiben am Handy Karten mit sichtbarem Rand (Marc, 21.11.2026, zweite Rückmeldung): Rand an der
+       Inhaltskante, Inhalt mit Karten-Innenabstand eingerückt. Ausnahme von der Bündig-Regel der Icon-Zellen (global.css),
+       die nur für randlose Zellen gilt. Wächter: tests/icon-inline.spec.ts (Karten: Rand bündig, Icon um den Innenabstand) */
     .lb-grid .lb-cell, .lb-grid[data-n] .lb-cell { grid-column: auto; grid-row: auto; }
     .lb-lead { min-height: 21.25rem; }
     /* schmal: die Ecke wird breiter, der Text beginnt unter ihrer geschlossenen Fläche */
