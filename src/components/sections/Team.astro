@@ -69,9 +69,12 @@ const crew = await Promise.all(members.map(async item => {const member=teamMembe
     .crew .member:nth-child(3n + 1):last-child { grid-column: 3 / span 2; }
   }
   /* Handy (Marc, 19.11.2026: keine endlosen Scrollstrecken): eine wischbare Reihe statt untereinander gestapelter Karten.
-     Die Reihe läuft bis an die Bildschirmkanten, die erste Karte steht an der Content-Kante, die nächste ist angeschnitten. */
+     Die Reihe läuft bis an die Bildschirmkanten, die erste Karte steht an der Content-Kante, die nächste ist angeschnitten.
+     overflow-y: hidden (Marc, 21.11.2026: „alle Slider sollten nur horizontally draggable sein“): Karten außerhalb des Bildes
+     warten noch auf ihr Einblenden und stehen 24 px tiefer; mit overflow-y: auto ließ sich die Reihe dadurch hochschieben.
+     Wächter: scripts/slider-axis.test.mjs */
   @media (--compact) {
-    .crew { display: flex; gap: var(--space-3); margin-inline: calc(-1 * var(--pad)); padding-inline: var(--pad); scroll-padding-inline: var(--pad); overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scrollbar-width: none; }
+    .crew { display: flex; gap: var(--space-3); margin-inline: calc(-1 * var(--pad)); padding-inline: var(--pad); scroll-padding-inline: var(--pad); overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scrollbar-width: none; }
     .crew::-webkit-scrollbar { display: none; }
     .crew:focus-visible { outline: var(--focus-width, 2px) solid var(--cyan); outline-offset: -0.125rem; }
     .crew .member { flex: 0 0 min(15.5rem, 72%); scroll-snap-align: start; }

@@ -246,7 +246,11 @@ test('Video folgt der mobilen em-Grenze bei größerer Grundschrift; minAutoWidt
  const {createVideoController,VIDEO_MOBILE_QUERY}=await import('../src/scripts/video-controller.ts');
  const css=readFileSync(join(REPO,'src/styles/global.css'),'utf8');
  assert.ok(css.replace(/@media ([^{]+)/g,(_,query)=>'@media '+expandMedia(query)).includes('@media '+VIDEO_MOBILE_QUERY), 'CSS und Video-Quelle müssen dieselbe Grenze verwenden.');
- assert.match(readFileSync(join(REPO,'src/components/landing/LandingHero.astro'),'utf8'),/autoMediaQuery: `not all and \$\{VIDEO_MOBILE_QUERY\}`/);
+ // Marc, 21.11.2026: Anlass-Seitenköpfe laufen auch auf dem Handy von selbst, dort mit der 480p-Fassung (data-src-small,
+ // die Quelle wählt der Controller über VIDEO_MOBILE_QUERY)
+ const lh=readFileSync(join(REPO,'src/components/landing/LandingHero.astro'),'utf8');
+ assert.match(lh,/autoMediaQuery: 'all'/);
+ assert.match(lh,/data-src-small=\{small\}/);
  const names=['document','navigator','matchMedia','MutationObserver','window'];
  const saved=Object.fromEntries(names.map(k=>[k,Object.getOwnPropertyDescriptor(globalThis,k)]));
  const doc=new EventTarget();doc.hidden=false;doc.documentElement={classList:{contains:()=>false}};

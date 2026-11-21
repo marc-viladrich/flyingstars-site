@@ -119,7 +119,7 @@
 
 .c-reel { padding: var(--section) 0; }
 .c-reel-head { display: flex; justify-content: space-between; align-items: end; gap: var(--space-5); padding: 0 var(--gutter); margin-bottom: var(--space-7); }
-.c-track { display: flex; gap: clamp(var(--space-3), 1.6vw, var(--space-5-5)); overflow-x: auto; scroll-snap-type: x mandatory; margin: 0 var(--gutter); padding: 0 0 var(--space-2); border-radius: var(--radius-16); -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 5.625rem), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 5.625rem), transparent); scrollbar-width: none; cursor: grab; }
+.c-track { display: flex; gap: clamp(var(--space-3), 1.6vw, var(--space-5-5)); overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; margin: 0 var(--gutter); padding: 0 0 var(--space-2); border-radius: var(--radius-16); -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 5.625rem), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 5.625rem), transparent); scrollbar-width: none; cursor: grab; }
 .c-track::-webkit-scrollbar { display: none; }
 .c-track.at-end { -webkit-mask-image: none; mask-image: none; }
 .c-track.drag { cursor: grabbing; scroll-snap-type: none; }

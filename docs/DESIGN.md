@@ -434,3 +434,15 @@ Name und Porträt liegen unter `src/content/people/`, im Editor als Personen. Te
 Historische Showdaten liegen in `src/content/project-facts.json`, im Editor unter Website-Daten → Historische Projektfakten. Strukturierte Ausgaben verwenden `{project, field, display?}`; die Auswahl zeigt Ereignis, Faktenfeld und Ausgabeformat. Übersetzte Kunden-/Ortsnamen stehen beim Fakt. Teaser und spätere Aufführungsserien dürfen eigene Ereignisse sein; ein unbekannter Tag wird nicht als tatsächlicher erster Monatstag ausgegeben. VW-Drohnenzahl und unzugeordnete Ereignisse bleiben offen.
 
 Formular, Referenzfilter und Konfigurator verwenden getrennte Anlass-IDs aus `occasions.mjs` mit ausdrücklichem Mapping. `inquiry.mjs` besitzt den Anfrage-URL-Vertrag und die bisherigen Limits. Native No-JS-Anfragen bleiben möglich; Query-Vorbelegung benötigt auf der statischen Site JavaScript. `i18n/public-routes.mjs` verbindet öffentliche Route, AFE-Adresse und Delivery-Projektion; widersprüchliche Redirects und belegte Inhaltsrouten als Redirect-Quellen sind Fehler.
+
+## Handy: Icon neben der Überschrift, Slider nur waagerecht (21.11.2026)
+
+- **Icon-Zellen** (jede `IconFeature.astro` mit Icon, z. B. Im Preis enthalten, Extras, Anlass-Kacheln, Kontaktwege):
+  bis `--compact` steht das Icon (1,75 rem) links neben der Überschrift, Untertitel, Text, Preis und Links darunter über die
+  volle Breite. Marc: „on mobile sollten solche Icons in line mit dem Text sein, sonst isses awkward.“ Ausgenommen: Logos statt
+  Icons, die kompakte Zeile und die großen Leitkacheln der Anlass-Seiten (eigenes Icon, keine IconFeature). Wächter:
+  `tests/icon-inline.spec.ts`.
+- **Slider** (Team, Anlässe, Fallstudien-Galerie, Tabellen): jeder waagerechte Scroll-Bereich hat `overflow-y: hidden`.
+  Ursache beim Team: Karten außerhalb des Bildes warten noch auf ihr Einblenden und stehen 24 px tiefer; `overflow-x: auto`
+  macht die senkrechte Achse automatisch scrollbar, die Reihe ließ sich hochschieben und schnitt Namen ab. Wächter:
+  `scripts/slider-axis.test.mjs` (jede Regel mit `overflow-x: auto|scroll` braucht `overflow-y: hidden|clip`).

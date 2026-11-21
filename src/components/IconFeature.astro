@@ -17,4 +17,13 @@ const { icon, logo, title, text, level: H = 'h3', as: Tag = 'div', variant = 'de
   .icon-feature-compact { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 var(--space-1-5); }
   .icon-feature-compact > .ico { width: 1.125rem; height: 1.125rem; align-self: center; margin: 0 var(--space-1) 0 0; }
   .icon-feature-compact > .ic-h, .icon-feature-compact > p { font: inherit; color: inherit; }
+  /* Handy (Marc, 21.11.2026: „on mobile sollten solche Icons in line mit dem Text sein, sonst isses awkward“): Icon links
+     neben der Überschrift statt darüber, alles Weitere (Untertitel, Text, Preis, Links) darunter über die volle Breite.
+     Gilt für jede Icon-Zelle mit Icon (nicht für Logos und die kompakte Zeile). Wächter: tests/icon-inline.spec.ts */
+  @media (--compact) {
+    .icon-feature:not(.icon-feature-compact):has(> .ico) { grid-template-columns: auto minmax(0, 1fr); column-gap: var(--space-3); align-items: center; }
+    .icon-feature:not(.icon-feature-compact):has(> .ico) > * { grid-column: 1 / -1; }
+    .icon-feature:not(.icon-feature-compact):has(> .ico) > .ico { grid-column: 1; width: 1.75rem; height: 1.75rem; margin: 0; }
+    .icon-feature:not(.icon-feature-compact):has(> .ico) > .ic-h { grid-column: 2; }
+  }
 </style>

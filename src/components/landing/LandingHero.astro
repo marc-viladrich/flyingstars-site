@@ -5,9 +5,11 @@ import { forPath } from '../../i18n/server';
 const { t, localHref, fact } = forPath(Astro.url.pathname);
 // Seitenkopf der Anlass-Landingpages (Marc, 31.10.2026: „in der Hero Section … so ein kleines Showreel, gerne in einer
 // kleineren Variante, so ähnlich wie wir jetzt ein Hero-Bild haben“). Links Kicker, Headline, Satz, Aktionen und bis zu
-// vier Eckdaten; rechts ein Bildrahmen mit stummem Loop. Startet erst, wenn der Rahmen im Bild ist: oberhalb der mobilen em-Grenze von selbst,
-// auf dem Handy per Knopf (Datenvolumen). Hält an bei globaler Pause (html.motion-paused), reduzierter Bewegung,
-// Datensparmodus und außerhalb des Bildes. Quelle nur aus src/lib/videos.ts, als kleine Vorschau über videoPath() auf derselben Origin.
+// vier Eckdaten; rechts ein Bildrahmen mit stummem Loop. Startet von selbst, sobald der Rahmen im Bild ist, auch auf dem
+// Handy (Marc, 21.11.2026: „wie bei der Startseite oben und autoplay … aber halt auch 480p für geringe Datenmengen“): dort
+// steht der Rahmen über der Überschrift und lädt die 480p-Fassung. Hält an bei globaler Pause (html.motion-paused),
+// reduzierter Bewegung, Datensparmodus und außerhalb des Bildes; dann startet der Knopf. Quelle nur aus src/lib/videos.ts
+// (Vorschau 960 px bzw. Handyfassung 480p über videoPath()) auf derselben Origin.
 import type { Section } from '../../content.config';
 import Accent from '../Accent.astro';
 import Icon from '../Icon.astro';
@@ -17,6 +19,7 @@ type Props = Extract<Section, { type: 'landingHero' }> & { index: number };
 const { kicker, headline, text, cta, secondary, video, videoLabel = t('common.showreel'), poster, facts } = Astro.props;
 const still = await optimizedImage(poster.src, 960);
 const src = videoPath(videos[video], 'preview');
+const small = videoPath(videos[video], 'mobile');
 ---
 <section class="lh" aria-labelledby="hero-h">
   <div class="lh-copy">
@@ -27,7 +30,7 @@ const src = videoPath(videos[video], 'preview');
   </div>
   <MediaFrame class="lh-media" corners="inset" data-lh-reel>
     <img src={still.src} width={still.width} height={still.height} alt={poster.alt} loading="eager" fetchpriority="high" decoding="async" />
-    <video data-src={src} muted loop playsinline preload="none" aria-hidden="true" tabindex="-1"></video>
+    <video data-src={src} data-src-small={small} muted loop playsinline preload="none" aria-hidden="true" tabindex="-1"></video>
     <span class="lh-rec mono" aria-hidden="true">{videoLabel}</span>
     <button class="lh-toggle mono" type="button" data-lh-toggle aria-pressed="false" hidden>
       <Icon name="play" size={16} class="g i-play" /><Icon name="pause" size={16} class="g i-pause" />
@@ -38,7 +41,7 @@ const src = videoPath(videos[video], 'preview');
 
 <script>
   import { t } from '../../i18n/ui.mjs';
-  import { createVideoController, VIDEO_MOBILE_QUERY } from '../../scripts/video-controller';
+  import { createVideoController } from '../../scripts/video-controller';
   document.querySelectorAll<HTMLElement>('[data-lh-reel]').forEach((host) => {
     const v = host.querySelector('video')!;
     const btn = host.querySelector<HTMLButtonElement>('[data-lh-toggle]')!;
@@ -52,7 +55,7 @@ const src = videoPath(videos[video], 'preview');
       if (on) host.classList.add('has-played');
       host.classList.add('ready');
     };
-    const controller = createVideoController(v, { host, trigger: 'manual', visibilityThreshold: 0.25, autoMediaQuery: `not all and ${VIDEO_MOBILE_QUERY}`, onState: show,
+    const controller = createVideoController(v, { host, trigger: 'manual', visibilityThreshold: 0.25, autoMediaQuery: 'all', onState: show,
       onError: () => { host.classList.remove('is-on', 'can-toggle'); btn.hidden = true; } });
     btn.hidden = false;
     btn.addEventListener('click', () => controller.setChoice(!host.classList.contains('is-on')));
@@ -81,8 +84,13 @@ const src = videoPath(videos[video], 'preview');
   /* Knopf (Marc, 02.11.2026): läuft das Video, sitzt „Video anhalten“ unten rechts in der Ecke. Angehalten (oder noch nicht
      gestartet) wandert er weich in die Mitte, verliert die Beschriftung und wird zum großen Play-Knopf; das Bild des
      Videos bleibt stehen. Lage über left/top/transform, damit sich die Bewegung überblenden lässt. */
+  /* Das Video blendet über das Standbild (LCP) und bleibt 1 px kleiner, damit sein erstes Bild kein neues, späteres
+     LCP-Element wird (gleiche Lösung wie im Startseiten-Hero, docs/himmel.md → Performance) */
+  .lh :global(.lh-media video) { clip-path: inset(var(--space-0-25)); }
   @media (--timeline-stacked) {
     .lh { grid-template-columns: 1fr; }
+    /* gestapelt steht der Rahmen oben, wie das Showreel auf der Startseite (Marc, 21.11.2026) */
+    .lh :global(.lh-media) { order: -1; }
     .lh::before { width: 120%; right: -40%; top: 40%; height: 60%; }
   }
   @media (--small-facts) {

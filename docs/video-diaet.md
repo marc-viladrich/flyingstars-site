@@ -213,3 +213,33 @@ Der T3-Browser konnte die Seite zweimal nicht auslesen: `Preview automation snap
 Logs und reproduzierbarer lokaler Browser-Harness liegen unter `/tmp/fs-videos/` und `/tmp/fs-video-diaet/check-playback.mjs`. Für einen erneuten Lauf zuerst den gebauten Stand mit Wrangler auf 4421 starten. Keine Umgebungsdateien wurden gelesen, kein Push und kein Deployment ausgeführt.
 
 Offen bleibt der Smoke-Test nach dem nächsten freigegebenen Cloudflare-Deployment: echte HTTPS-Antworten für alle sechs Vorschauen, korrekte Längen/Cache-Header und Safari-Wiedergabe dort prüfen. Die lokale Cloudflare-Laufzeit wurde geprüft, eine neue produktive Auslieferung wurde nicht behauptet. Scaleway-Migration und eine mögliche spätere Rückkehr eines Players mit Ton sind separate Arbeiten.
+
+## Anlass-Seitenköpfe auf dem Handy: Autoplay in 480p (21.11.2026)
+
+Marc: „Bei Marken & Werbung sollte das Video auch wie bei der Startseite oben und autoplay sein. Aber halt auch 480p für
+geringe Datenmengen.“ Umgesetzt im gemeinsamen Seitenkopf `LandingHero.astro`, gilt also für Werbung, Hochzeit, Indoor und
+Über uns:
+
+- Gestapelt (bis `--timeline-stacked`) steht der Videorahmen über der Überschrift, wie das Showreel der Startseite.
+- Das Video startet von selbst, sobald der Rahmen im Bild ist (`autoMediaQuery: 'all'`). Datensparmodus, reduzierte
+  Bewegung und globale Pause halten es wie bisher an; dann startet der Knopf.
+- Bis 43,75 em (`VIDEO_MOBILE_QUERY`) lädt der Controller `data-src-small` = `videoMobile[key]` aus `src/lib/videos.ts`,
+  darüber die 960er-Vorschau. Das Video ist 1 px kleiner als das Standbild (`clip-path: inset`), damit es kein späteres
+  LCP-Element wird.
+- Handyfassungen: 854 × 480, gleicher Ausschnitt wie die Vorschau, x264 `slow`, CRF 29. Ford 0,81 MB (Vorschau 1,19 MB),
+  Showreel 0,78 MB (1,18 MB), Siemens Indoor 0,12 MB (0,21 MB). CRF 27 und 29 im Einzelbildvergleich bei 480 px ohne
+  sichtbaren Unterschied an Lichtpunkten und Ford-Logo. Erzeugt aus den Originalen in `/tmp/fs-videos/` mit
+
+  ```sh
+  ffmpeg -ss <start> -i /tmp/fs-videos/<key>.mp4 -t <dauer> -map 0:v:0 -an -sn -dn -map_metadata -1 \
+    -vf scale=854:480:flags=lanczos,fps=25 -c:v libx264 -preset slow -crf 29 -threads 2 -pix_fmt yuv420p \
+    -movflags +faststart public/media/video/<key>-mobile-480-v1.mp4
+  ```
+
+  (Start/Dauer wie bei der Vorschau: showreel 10/12, siemensIndoor 8/10, ford ganz.)
+- Wächter: `src/scripts/videos.test.mjs` (jede Seitenkopf-Quelle hat eine Handyfassung unter 1 MB, Faststart, eigene
+  Header-Regel), `scripts/no-px.test.mjs` (Autoplay-Vertrag), Spec „Handy: Video im Seitenkopf …“ in
+  `tests/reference-pass.spec.ts` (Rahmen über der h1, läuft, Quelle `-mobile-480-`).
+
+Damit gilt die Aussage oben („Landing-Videos nach Klick“, „0 Video-Bytes im ersten mobilen Viewport“) für die
+Anlass-Seiten nicht mehr: dort lädt der erste mobile Viewport 0,12–0,81 MB Video. Die Startseite ist von dieser Änderung nicht berührt.

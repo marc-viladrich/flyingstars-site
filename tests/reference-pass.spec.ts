@@ -106,8 +106,7 @@ test('Formationen erscheinen fertig, wenn die Bewegung schon pausiert ist', asyn
   await expect.poll(() => colouredPixels(page, 'canvas[data-formation]')).toBeGreaterThan(500);
 });
 
-test('Anlass-Seiten: Klick irgendwo aufs Video hält es an und startet es wieder', async ({ page, isMobile }) => {
-  test.skip(isMobile, 'auf dem Handy startet das Video erst per Knopf');
+test('Anlass-Seiten: Klick irgendwo aufs Video hält es an und startet es wieder', async ({ page }) => {
   // astro preview hat die Pages Function /api/media nicht: ein winziges Testvideo ersetzt das Showreel
   await page.route('**/api/media**', (route) => route.fulfill({ path: 'tests/fixtures/tiny.webm', contentType: 'video/webm' }));
   await page.goto('/drohnenshow-werbung/');
@@ -120,3 +119,17 @@ test('Anlass-Seiten: Klick irgendwo aufs Video hält es an und startet es wieder
   await page.mouse.click(box.x + box.width * 0.3, box.y + box.height * 0.3);
   await expect(toggle).toHaveAttribute('aria-pressed', 'true');
 });
+
+// Marc, 21.11.2026: „Bei Marken & Werbung sollte das Video auch wie bei der Startseite oben und autoplay sein. Aber halt
+// auch 480p für geringe Datenmengen.“ Gilt für alle Anlass-Seitenköpfe (Werbung, Hochzeit, Indoor, Über uns).
+for (const path of ['/drohnenshow-werbung/', '/drohnenshow-hochzeit/', '/drohnenshow-indoor/']) {
+  test(`Handy: Video im Seitenkopf von ${path} steht über der Überschrift und läuft von selbst in 480p`, async ({ page, isMobile }) => {
+    test.skip(!isMobile, 'nur Handy');
+    await page.goto(path);
+    const host = page.locator('[data-lh-reel]');
+    await expect(host).toHaveClass(/is-on/, { timeout: 15000 });
+    expect(await page.locator('[data-lh-reel] video').evaluate((v: HTMLVideoElement) => v.currentSrc)).toMatch(/-mobile-480-v\d+\.mp4$/);
+    const frame = (await host.boundingBox())!, heading = (await page.locator('#hero-h').boundingBox())!;
+    expect(frame.y + frame.height).toBeLessThanOrEqual(heading.y);
+  });
+}

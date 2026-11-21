@@ -26,6 +26,18 @@ https://flyingstars-site.pages.dev/*
   Content-Length: 214043
   Cache-Control: public, max-age=31536000, immutable, no-transform
 
+/media/video/showreel-mobile-480-v1.mp4
+  Content-Length: 776265
+  Cache-Control: public, max-age=31536000, immutable, no-transform
+
+/media/video/ford-mobile-480-v1.mp4
+  Content-Length: 808085
+  Cache-Control: public, max-age=31536000, immutable, no-transform
+
+/media/video/siemensIndoor-mobile-480-v1.mp4
+  Content-Length: 120584
+  Cache-Control: public, max-age=31536000, immutable, no-transform
+
 /fonts/inter-latin-400-700-v1.woff2
   Content-Type: font/woff2
   Content-Length: 36220
