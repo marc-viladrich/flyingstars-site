@@ -20,6 +20,7 @@ import { t as message } from '../../../i18n/ui.mjs';
 // Steht im Marketing direkt hinter dem Kleinen Roboter. Wächter: scripts/robotergreifer.test.mjs.
 import { TAU, GOLD, WARM, CYAN, BLUE, DIAMOND, ORANGE, GREEN, VIOLET, mix, smooth, yaw, pitch, part, act } from '../../show-motion.js';
 import { curves, spot, assemble } from '../catalog-3d/kit.js';
+import { assignScalable } from '../../show-field.js';
 
 const lerp = (a, b, u) => a + (b - a) * u;
 const ease = (u) => (u <= 0 ? 0 : u >= 1 ? 1 : u * u * u * (u * (u * 6 - 15) + 10));
@@ -240,7 +241,7 @@ const KEYS_STORY = [
   // Schwenk hinter dem Sockel als gerade Strecken über zwei Punkte weit weg von der Turmachse (jede Koordinate wandert in
   // eine Richtung); nach dem Anheben eine kurze Haltepause
   [6.9, G.lifted], [7.3, G.lifted], [9.0, G.carry], [10.4, G.carry2], [11.8, G.abovePlace], [13.9, G.aligned],
-  [16.2, G.inserted], [17.4, G.released], [19.2, G.clear], [22.4, { ...G.home, phi: 0 }],
+  [16.2, G.inserted], [17.4, G.released], [19.2, G.clear], [22.4, G.home],
 ];
 const STORY = { grab: 5.2, release: 16.9, click: 16.25 };
 // 3D: Vorführung ohne Modul, eine Folge von Zielen
@@ -278,7 +279,52 @@ const COLOURS = {
 };
 const view = (o, ya) => { yaw(o, ya); pitch(o, 0.18); return o; };
 
+/** Ab hier wird der kleine Roboter in 3D+ zum Greifarm (Runde 11c); darunter spielt seine Geschichte allein. */
+export const GRIPPER_MIN = 400;
+const MORPH = { hold: 4, spread: 2.8, fly: 2.3 };
+/** Bauordnung des Arbeitsplatzes im Übergang: erst der Tisch, dann von unten nach oben der Arm, das Modul zuletzt. */
+const BUILD_ORDER = { tisch: 0, turret: 1, upper: 2, fore: 3, kabel: 3.5, hand: 4, fingerA: 5, fingerB: 5, modul: 6 };
+
 export const builders = {
+  // Runde 11c (Marc 21.11.: „der Robotergreifer … könnte in 3D+ ja auch Teil von der aktuellen Story mit dem süßen Roboter
+  // … werden“): die Geschichte des kleinen Roboters aus dem Katalog bleibt unverändert (Licht zeichnet ihn, er erwacht);
+  // danach fliegt jede seiner Drohnen auf geradem Weg an ihren Platz im Arbeitsplatz (optimale Zuordnung, alle zugleich,
+  // keine Wolke), und der Greifarm erzählt weiter: greifen, schwenken, ausrichten, einsetzen. Wie Baumstern → Stern:
+  // dasselbe Bild steht zuerst still, der Weg ist die Bewegung dieses Bildes.
+  robotGripperStory: async (n, caption) => {
+    const { catalogScene } = await import('../catalog.js');
+    const robot = (await catalogScene('roboter', 'ODYSSEY', n, caption)).beats;
+    if (n < GRIPPER_MIN) return { beats: robot };
+    const alive = robot[robot.length - 1];
+    // nach Roboter und Übergang je zwei Akte in einem Bild (die Wolke kommt höchstens alle fünf Bilder, show-clouds)
+    const arm = builders.robotArmStory(n, '', { acts: [ACT[0], ACT[2], ACT[4]], caps: ['robotergreifer.gripsAndTurns', 'robotergreifer.alignsAndClicks'] }).beats.map((b) => ({ ...b, frame: 'werkstatt' }));
+    const first = arm[0], target = first.pts;
+    const end = alive.pts.map((p, j) => { const o = [p[0], p[1], p[2] || 0, 1]; alive.live(p, j, MORPH.hold, o); return o; });
+    const lit = end.map((o) => o[3] > 0.05);
+    // gestaffelt (wie die Lichterkette am Baumstern; alle zugleich ergab ein Knäuel): Startzeit nach Bauordnung und Höhe.
+    // Zuordnung schichtweise: die untersten Roboterdrohnen werden der Tisch, die nächsthöheren der Turm … (je Schicht
+    // optimal), so kreuzen sich früh und spät startende Bahnen nicht
+    const tags = armModel(n).tags, key = target.map((p, i) => (BUILD_ORDER[GROUP_OF(tags[i])] ?? 0) + 0.3 * (p[1] + 0.6));
+    const sorted = key.map((k, i) => [k, i]).sort((a, b) => a[0] - b[0]), rank = new Float64Array(n); sorted.forEach(([, i], r) => { rank[i] = r / Math.max(1, n - 1); });
+    const slot = new Int32Array(n), bySlotOrder = sorted.map(([, i]) => i), byHeight = end.map((o, j) => [o[1] + 0.15 * (lit[j] ? 0 : 1), j]).sort((a, b) => a[0] - b[0]).map(([, j]) => j);
+    for (const g of Object.keys(BUILD_ORDER).map((k) => BUILD_ORDER[k]).filter((v, i, a) => a.indexOf(v) === i).sort((a, b) => a - b)) {
+      const slots = bySlotOrder.filter((i) => (BUILD_ORDER[GROUP_OF(tags[i])] ?? 0) === g); if (!slots.length) continue;
+      const start = bySlotOrder.indexOf(slots[0]), drones = byHeight.slice(start, start + slots.length);
+      const m = assignScalable(Float64Array.from(drones.flatMap((j) => [end[j][0], end[j][1], end[j][2]])), Float64Array.from(slots.flatMap((i) => [target[i][0], target[i][1], target[i][2] || 0])));
+      drones.forEach((j, r) => { slot[j] = slots[m[r]]; });
+    }
+    const leave = end.map((_, j) => rank[slot[j]] * MORPH.spread);
+    // ein benannter Teil, der „schreibt“ (wie die Lichterkette am Baumstern): die Drohnen fliegen einzeln gestaffelt, der
+    // Teil hat keine gemeinsame Bewegung, von der die Finten-Prüfung je Teil ausgehen könnte; jede einzelne Bahn ist eine
+    // Gerade ohne Umkehr (scripts/robotergreifer.test.mjs prüft das absolut)
+    const morph = {
+      groups: [{ name: 'umbau', count: n, rigid: false }], writes: ['umbau'],
+      pts: alive.pts.map((p, j) => [end[j][0], end[j][1], end[j][2], p[3], p[4], p[5]]), caption: message('robotergreifer.becomesArm'), hold: Math.max(...leave) + MORPH.fly + 0.5, frame: 'werkstatt',
+      fitPts: [...first.fitPts, ...end.filter((_, j) => lit[j]).map((o) => o.slice(0, 3))],
+      live: (b, j, t, o) => { const u = ease((t - leave[j]) / MORPH.fly), q = target[slot[j]]; for (let c = 0; c < 3; c++) o[c] = lerp(b[c], q[c] ?? 0, u); o[3] = lit[j] ? 1 - 0.3 * Math.sin(Math.PI * u) : smooth((u - 0.35) / 0.5); }, // Reserven (teils doppelt geparkt) leuchten erst getrennt
+    };
+    return { beats: [...robot.slice(0, -1), { ...alive, hold: MORPH.hold }, morph, ...arm.map((b) => ({ ...b, fitPts: morph.fitPts }))] };
+  },
   robotArm3d: (n, caption) => {
     const m = armModel(n, { module: false }), pose = makePose(m, track(KEYS_3D), null), col = m.tags.map((t) => COLOURS[t] ?? WARM);
     const ya = (T) => 0.35 + 0.2 * smooth(T / 3) * Math.sin((T * TAU) / 18);
@@ -288,7 +334,7 @@ export const builders = {
       view(pose(j, t, o), ya(t)); const tag = m.tags[j]; o[3] = tag === 'hand' || tag.startsWith('finger') ? 1.1 : 1;
     } }), fitPts }] };
   },
-  robotArmStory: (n) => {
+  robotArmStory: (n, caption, { acts = ACT, caps = ['robotergreifer.grips', 'robotergreifer.turns', 'robotergreifer.aligns', 'robotergreifer.clicks'] } = {}) => {
     const m = armModel(n), tr = track(KEYS_STORY), pose = makePose(m, tr, STORY), col = m.tags.map((t) => COLOURS[t] ?? WARM);
     const ya = (T) => 0.32 + 0.06 * Math.sin((T * TAU) / 20);
     const at = (T) => m.pts.map((_, j) => [...view(pose(j, T, [0, 0, 0]), ya(T)), ...col[j]]);
@@ -304,9 +350,8 @@ export const builders = {
       if (tag === 'fingerA' || tag === 'fingerB') return 1.1;
       return 1;
     };
-    const caps = ['robotergreifer.grips', 'robotergreifer.turns', 'robotergreifer.aligns', 'robotergreifer.clicks'];
-    return { beats: caps.map((key, a) => ({ ...act(partsOf(m, at(ACT[a])), { caption: message(key), hold: ACT[a + 1] - ACT[a], live: (b, j, t, o) => {
-      const T = ACT[a] + t; view(pose(j, T, o), ya(T)); o[3] = light(j, T);
+    return { beats: caps.map((key, a) => ({ ...act(partsOf(m, at(acts[a])), { caption: message(key), hold: acts[a + 1] - acts[a], live: (b, j, t, o) => {
+      const T = acts[a] + t; view(pose(j, T, o), ya(T)); o[3] = light(j, T);
     } }), fitPts })) };
   },
 };

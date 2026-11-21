@@ -14,7 +14,7 @@ const { droneStops } = await import('../src/content/show-packages.ts');
 const { OCCASIONS } = await import('../src/content/show-configurator.js');
 const { BUILDERS } = await import('../src/scripts/scenes/index.js');
 
-const MIN = 700, STOPS = { s3: droneStops('3d').filter((n) => n >= MIN), plus: droneStops('story').filter((n) => n >= MIN) };
+const MIN = 400, STOPS = { s3: droneStops('3d').filter((n) => n >= MIN), plus: droneStops('story').filter((n) => n >= MIN) };
 const nearest = (pts) => pts.map((p, i) => { let m = Infinity; for (let j = 0; j < pts.length; j++) if (j !== i) m = Math.min(m, Math.hypot(p[0] - pts[j][0], p[1] - pts[j][1], (p[2] || 0) - (pts[j][2] || 0))); return m; });
 const quantile = (a, q) => { const s = [...a].sort((x, y) => x - y); return s[Math.min(s.length - 1, Math.floor(q * s.length))]; };
 const frame = (b, t, from = 0, to = b.pts.length) => b.pts.slice(from, to).map((p, k) => { const o = [p[0], p[1], p[2] || 0, 1]; b.live?.(p, k + from, t, o); return o; });
@@ -39,7 +39,7 @@ function motion(b, every = 1) {
 }
 const groupRange = (b, name) => { let s = 0; for (const g of b.groups) { if (g.name === name) return [s, s + g.count]; s += g.count; } return [0, 0]; };
 
-test('im Konfigurator: Marketing, direkt hinter der Mondlandung, 3D und 3D+ ab 700, nachgeladen', () => {
+test('im Konfigurator: Marketing, direkt hinter der Mondlandung, 3D und 3D+ ab 400 (Runde 11c), nachgeladen', () => {
   const launch = OCCASIONS.find((o) => o.id === 'launch'), i = launch.motifs.findIndex((m) => m.id === 'satellit'), m = launch.motifs[i];
   assert.ok(m, 'Satellit fehlt im Marketing');
   assert.equal(launch.motifs[i - 1].id, 'mond', 'Satellit steht nicht direkt hinter der Mondlandung');
@@ -62,7 +62,7 @@ test('genau n Drohnen in jedem Bild bei jeder einstellbaren Zahl, Punkte und Tei
 });
 
 test('keine zwei Drohnen aufeinander, keine verstreuten Punkte (Ruhe, Mitte, Ende; Stufe, Mitte, 1000)', async () => {
-  for (const name of ['satellite3d', 'satelliteStory']) for (const n of [700, 850, 1000]) {
+  for (const name of ['satellite3d', 'satelliteStory']) for (const n of [400, 700, 1000]) {
     const { beats } = await builders[name](n, '');
     for (const [k, b] of beats.entries()) {
       const [s0] = b.groups ? groupRange(b, 'stars') : [n];
@@ -77,7 +77,7 @@ test('keine zwei Drohnen aufeinander, keine verstreuten Punkte (Ruhe, Mitte, End
 });
 
 test('Eigenbewegung in Drohnengrenzen und ohne Sprung bei t = 0', async () => {
-  for (const [name, n] of [['satellite3d', 700], ['satellite3d', 1000], ['satelliteStory', 700], ['satelliteStory', 1000]]) {
+  for (const [name, n] of [['satellite3d', 400], ['satellite3d', 1000], ['satelliteStory', 400], ['satelliteStory', 1000]]) {
     const { beats } = await builders[name](n, '');
     for (const [k, b] of beats.entries()) {
       const m = motion(b, n > 800 ? 3 : 2);
@@ -89,7 +89,7 @@ test('Eigenbewegung in Drohnengrenzen und ohne Sprung bei t = 0', async () => {
 });
 
 test('Bilder schließen aneinander an: jedes Bild beginnt, wo das vorige endet (starre Teile, keine Wolke)', async () => {
-  for (const n of [700, 1000]) {
+  for (const n of [400, 1000]) {
     const { beats } = await builders.satelliteStory(n, '');
     for (let k = 1; k < beats.length; k++) {
       const end = frame(beats[k - 1], beats[k - 1].hold), d = Math.max(...beats[k].pts.map((p, j) => Math.hypot(p[0] - end[j][0], p[1] - end[j][1], p[2] - end[j][2])));
@@ -106,7 +106,7 @@ test('Übergang mit Bezug zur Mondlandung: Teile heißen wie dort (Rakete → Sa
 });
 
 test('das Bild füllt die Bühne, die Flügel klappen wirklich, erst links, dann rechts', async () => {
-  for (const n of [700, 1000]) {
+  for (const n of [400, 1000]) {
     // 3D: eingeklappt schmal, ausgeklappt mindestens 75 % der Bildbreite (der Ausschnitt enthält auch die geschwenkten Lagen)
     const { beats: [b3] } = await builders.satellite3d(n, ''), w0 = extent(frame(b3, 0), 0), w1 = extent(frame(b3, 6), 0);
     assert.ok(w1 >= 0.75 * extent(b3.fitPts, 0), `3D ${n}: ausgeklappt nur ${(w1 / extent(b3.fitPts, 0) * 100).toFixed(0)} % der Breite`);
@@ -124,9 +124,9 @@ test('das Bild füllt die Bühne, die Flügel klappen wirklich, erst links, dann
 });
 
 test('der Lichtimpuls: drei Ringe lösen sich aus der Schüssel und liegen am Ende auf der Erde', async () => {
-  for (const n of [700, 1000]) {
+  for (const n of [400, 1000]) {
     const { beats } = await builders.satelliteStory(n, ''), b = beats[3], [t0, t1] = groupRange(b, 'trail'), [w0, w1] = groupRange(b, 'world');
-    assert.ok(t1 - t0 >= 50, `${n}: nur ${t1 - t0} Ringdrohnen`);
+    assert.ok(t1 - t0 >= 0.07 * n, `${n}: nur ${t1 - t0} Ringdrohnen`); // anteilig (Runde 11c: ab 400)
     const start = frame(b, 0, t0, t1), end = frame(b, b.hold, t0, t1), earth = frame(b, b.hold, w0, w1);
     const lowest = Math.min(...earth.map((p) => p[1])), top = Math.max(...earth.map((p) => p[1]));
     assert.ok(Math.min(...start.map((p) => p[1])) > top, `${n}: Ringe stehen anfangs nicht in der Schüssel über der Erde`);

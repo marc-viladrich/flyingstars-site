@@ -15,7 +15,7 @@ const { droneStops } = await import('../src/content/show-packages.ts');
 const { OCCASIONS } = await import('../src/content/show-configurator.js');
 const { BUILDERS } = await import('../src/scripts/scenes/index.js');
 
-const MIN = 700, STOPS = { s3: droneStops('3d').filter((n) => n >= MIN), plus: droneStops('story').filter((n) => n >= MIN) };
+const MIN = 400, STOPS = { s3: droneStops('3d').filter((n) => n >= MIN), plus: droneStops('story').filter((n) => n >= MIN) };
 const nearest = (pts) => pts.map((p, i) => { let m = Infinity; for (let j = 0; j < pts.length; j++) if (j !== i) m = Math.min(m, Math.hypot(p[0] - pts[j][0], p[1] - pts[j][1], (p[2] || 0) - (pts[j][2] || 0))); return m; });
 const quantile = (a, q) => { const s = [...a].sort((x, y) => x - y); return s[Math.min(s.length - 1, Math.floor(q * s.length))]; };
 const frame = (b, t, from = 0, to = b.pts.length) => b.pts.slice(from, to).map((p, k) => { const o = [p[0], p[1], p[2] || 0, 1]; b.live?.(p, k + from, t, o); return o; });
@@ -39,7 +39,7 @@ function motion(b, every = 1) {
   return { v, a, jump };
 }
 
-test('im Konfigurator: Jubiläum, direkt hinter dem LKW, 3D und 3D+ ab 700, nachgeladen', () => {
+test('im Konfigurator: Jubiläum, direkt hinter dem LKW, 3D und 3D+ ab 400 (Runde 11c), nachgeladen', () => {
   const jub = OCCASIONS.find((o) => o.id === 'jubilaeum'), i = jub.motifs.findIndex((m) => m.id === 'firmensitz'), m = jub.motifs[i];
   assert.ok(m, 'Firmensitz fehlt im Jubiläum');
   assert.equal(jub.motifs[i - 1].id, 'lkw', 'Firmensitz steht nicht direkt hinter dem LKW');
@@ -62,7 +62,7 @@ test('genau n Drohnen in jedem Bild bei jeder einstellbaren Zahl, Punkte und Tei
 });
 
 test('keine zwei Drohnen aufeinander, keine verstreuten Punkte (Stufe, Mitte, 1000; mehrere Zeitpunkte)', async () => {
-  for (const name of ['headquarters3d', 'headquartersStory']) for (const n of [700, 850, 1000]) {
+  for (const name of ['headquarters3d', 'headquartersStory']) for (const n of [400, 700, 1000]) {
     const { beats } = await builders[name](n, '');
     for (const [k, b] of beats.entries()) for (const f of [0, 0.2, 0.4, 0.6, 0.8, 1]) {
       const t = f * (b.hold ?? 6), nn = nearest(frame(b, t)), med = quantile(nn, 0.5);
@@ -73,7 +73,7 @@ test('keine zwei Drohnen aufeinander, keine verstreuten Punkte (Stufe, Mitte, 10
 });
 
 test('Eigenbewegung in Drohnengrenzen und ohne Sprung bei t = 0', async () => {
-  for (const [name, n] of [['headquarters3d', 700], ['headquarters3d', 1000], ['headquartersStory', 700], ['headquartersStory', 1000]]) {
+  for (const [name, n] of [['headquarters3d', 400], ['headquarters3d', 1000], ['headquartersStory', 400], ['headquartersStory', 1000]]) {
     const { beats } = await builders[name](n, '');
     for (const [k, b] of beats.entries()) {
       const m = motion(b, 3);
@@ -85,7 +85,7 @@ test('Eigenbewegung in Drohnengrenzen und ohne Sprung bei t = 0', async () => {
 });
 
 test('Bilder schließen aneinander an (starre Teile, keine Wolke)', async () => {
-  for (const n of [700, 1000]) {
+  for (const n of [400, 1000]) {
     const { beats } = await builders.headquartersStory(n, '');
     for (let k = 1; k < beats.length; k++) {
       const end = frame(beats[k - 1], beats[k - 1].hold), d = Math.max(...beats[k].pts.map((p, j) => Math.hypot(p[0] - end[j][0], p[1] - end[j][1], p[2] - end[j][2])));
@@ -95,7 +95,7 @@ test('Bilder schließen aneinander an (starre Teile, keine Wolke)', async () => 
 });
 
 test('Etage für Etage: jeder Ring steigt nur nach oben und erreicht seine Etage, die Fenster folgen, der Kran wird zur Schrift', async () => {
-  for (const n of [700, 1000]) {
+  for (const n of [400, 1000]) {
     const m = hqModel(n), tl = timeline(m.N), { beats } = await builders.headquartersStory(n, '');
     // in Weltkoordinaten (ohne Bühnenschwenk): über die Zeitachse abtasten
     const T = (k, t) => ({ b: beats[k], t }), at = (T0) => { const k = tl.ACT.findIndex((a, i) => T0 >= a && T0 <= tl.ACT[i + 1]); return frame(beats[k], T0 - tl.ACT[k]); };
@@ -122,8 +122,8 @@ test('Etage für Etage: jeder Ring steigt nur nach oben und erreicht seine Etage
 });
 
 test('mehr Drohnen machen das Haus höher und bringen mehr Teile', () => {
-  assert.deepEqual([700, 849, 850, 949, 950, 1000].map(hqLevel), [0, 0, 1, 1, 2, 2]);
-  assert.ok(FLOORS[2] > FLOORS[1] && FLOORS[1] > FLOORS[0]);
+  assert.deepEqual([400, 549, 550, 849, 850, 949, 950, 1000].map(hqLevel), [0, 0, 1, 1, 2, 2, 3, 3]);
+  assert.ok(FLOORS.every((f, i) => !i || f > FLOORS[i - 1]));
   const tags = (n) => new Set(hqModel(n).tags.filter((t) => !t.startsWith('ring'))).size;
   assert.ok(tags(1000) > tags(850) && tags(850) > tags(700), `Teile ${[700, 850, 1000].map(tags).join(' / ')}`);
 });

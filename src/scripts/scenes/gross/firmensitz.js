@@ -11,7 +11,7 @@ import { t as message } from '../../../i18n/ui.mjs';
 //   - Ein Turmdrehkran (Gittermast, Ausleger mit Zugband, Gegenausleger mit Gewicht, Laufkatze, Seil, Haken) schwenkt
 //     ein und hält den Stapel am Haken. Wenn das Haus steht, fliegen seine Drohnen aufs Dach und werden zur Leuchtschrift
 //     mit eurer Zahl (25, wie im übrigen Jubiläum).
-// Mehr Drohnen kaufen Größe: 8, 10 oder 12 Etagen, ab 850 ein Flachbau daneben, ab 950 eine Antenne auf dem Dach.
+// Mehr Drohnen kaufen Größe: 6, 8, 10 oder 12 Etagen, ab 850 ein Flachbau daneben, ab 950 eine Antenne auf dem Dach.
 //
 //   headquarters3d (3D, ab 700): das fertige Haus mit Leuchtschrift auf dem Dach, Licht geht Etage für Etage an, das Haus
 //     schwenkt langsam.
@@ -26,9 +26,10 @@ const lerp = (a, b, u) => a + (b - a) * u;
 const ease = (u) => (u <= 0 ? 0 : u >= 1 ? 1 : u * u * u * (u * (u * 6 - 15) + 10));
 const rect = (hx, y, hz, cx = 0, cz = 0) => ({ pts: [[cx - hx, y, cz - hz], [cx + hx, y, cz - hz], [cx + hx, y, cz + hz], [cx - hx, y, cz + hz]], closed: true });
 
-/** Detailstufe nach Drohnen: 0 bis 849, 1 bis 949, 2 ab 950. */
-export const hqLevel = (n) => (n >= 950 ? 2 : n >= 850 ? 1 : 0);
-const FLOORS = [8, 10, 12];
+/** Detailstufe nach Drohnen: 0 bis 549, 1 bis 849, 2 bis 949, 3 ab 950. */
+// Runde 11c (Marc: „wir müssen nicht alles in 500+ reinforcen“): ab 400 mit 6 Etagen, mehr Drohnen machen das Haus höher
+export const hqLevel = (n) => (n >= 950 ? 3 : n >= 850 ? 2 : n >= 550 ? 1 : 0);
+const FLOORS = [6, 8, 10, 12];
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Bauplan (x Front, y oben, z zum Publikum)
@@ -54,11 +55,11 @@ function houseParts(lv) {
     for (let i = 1; i <= 3; i++) { const z = -HZ + (2 * HZ * i) / 4; win.push([[HX - WIN, y0, z], [HX - WIN, y1, z]]); }
   }
   P.push(curves('fenster', win, { w: 0.8 }));
-  if (lv >= 1) {
+  if (lv >= 2) {
     const x0 = -HX - 0.62, x1 = -HX - 0.06, h = Y0 + 2.4 * FH, c = (x, y, z) => [x, y, z];
     P.push(curves('flachbau', [{ pts: [c(x0, h, -0.2), c(x1, h, -0.2), c(x1, h, 0.22), c(x0, h, 0.22)], closed: true }, ...[[x0, -0.2], [x0, 0.22], [x1, 0.22]].map(([x, z]) => [c(x, Y0, z), c(x, h, z)]), ...[1, 2, 3].map((i) => [c(x0 + ((x1 - x0) * i) / 4, Y0 + 0.03, 0.22), c(x0 + ((x1 - x0) * i) / 4, h - 0.03, 0.22)])], { w: 0.8 }));
   }
-  if (lv >= 2) P.push(curves('antenne', [[[0.1, top(lv), 0], [0.1, top(lv) + 0.2, 0]]]), spot('antennenlicht', [0.1, top(lv) + 0.22, 0], 1));
+  if (lv >= 3) P.push(curves('antenne', [[[0.1, top(lv), 0], [0.1, top(lv) + 0.2, 0]]]), spot('antennenlicht', [0.1, top(lv) + 0.22, 0], 1));
   return P;
 }
 /** Kran in Ruhelage (Ausleger über dem Haus, Seil bis zur Hakenhöhe hook). Der Schwenk kommt in der Bewegung dazu. */
@@ -147,7 +148,7 @@ function cranePoint(p, tag, swing, hookY, lv, f = 0, off = 0) {
 // Zeitplan der Geschichte
 // ---------------------------------------------------------------------------------------------------------------------
 /** Takt je Etage: bei vielen Etagen etwas schneller, damit die Geschichte nicht zu lang wird. */
-const stepOf = (N) => (N >= 10 ? 0.72 : 0.85);
+const stepOf = (N) => (N >= 10 ? 0.72 : N <= 6 ? 0.95 : 0.85);
 function timeline(N) {
   const step = stepOf(N), dur = step - 0.06, t0 = 3.4, land = Array.from({ length: N + 1 }, (_, k) => (k ? t0 + (k - 1) * step + dur : 0));
   const A2 = t0 - 0.2, A3 = land[N] + 0.5, A4 = A3 + 2.6, END = A4 + 7.2;

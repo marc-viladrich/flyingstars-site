@@ -7,14 +7,14 @@ import './show-node-env.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-const { builders, armModel, armLevel, frames, Q } = await import('../src/scripts/scenes/gross/robotergreifer.js');
+const { builders, armModel, armLevel, frames, Q, GRIPPER_MIN } = await import('../src/scripts/scenes/gross/robotergreifer.js');
 const { GROSS } = await import('../src/scripts/scenes/gross/index.js');
 const { LIMITS } = await import('../src/scripts/show-flight.js');
 const { droneStops } = await import('../src/content/show-packages.ts');
 const { OCCASIONS } = await import('../src/content/show-configurator.js');
 const { BUILDERS } = await import('../src/scripts/scenes/index.js');
 
-const MIN = 800, STOPS = { s3: droneStops('3d').filter((n) => n >= MIN), plus: droneStops('story').filter((n) => n >= MIN) };
+const MIN = 400, STOPS = { s3: droneStops('3d').filter((n) => n >= MIN), plus: droneStops('story').filter((n) => n >= MIN) };
 const nearest = (pts) => pts.map((p, i) => { let m = Infinity; for (let j = 0; j < pts.length; j++) if (j !== i) m = Math.min(m, Math.hypot(p[0] - pts[j][0], p[1] - pts[j][1], (p[2] || 0) - (pts[j][2] || 0))); return m; });
 const quantile = (a, q) => { const s = [...a].sort((x, y) => x - y); return s[Math.min(s.length - 1, Math.floor(q * s.length))]; };
 const frame = (b, t, from = 0, to = b.pts.length) => b.pts.slice(from, to).map((p, k) => { const o = [p[0], p[1], p[2] || 0, 1]; b.live?.(p, k + from, t, o); return o; });
@@ -39,14 +39,47 @@ function motion(b, every = 1) {
   return { v, a, jump };
 }
 
-test('im Konfigurator: Marketing, direkt hinter dem Kleinen Roboter, 3D und 3D+ ab 800, nachgeladen', () => {
+test('im Konfigurator: 3D ab 400 hinter dem Kleinen Roboter; in 3D+ erzählt der Roboter weiter (Runde 11c), keine Fassung doppelt', () => {
   const launch = OCCASIONS.find((o) => o.id === 'launch'), i = launch.motifs.findIndex((m) => m.id === 'robotergreifer'), m = launch.motifs[i];
   assert.ok(m, 'Robotergreifer fehlt im Marketing');
   assert.equal(launch.motifs[i - 1].id, 'roboter', 'Robotergreifer steht nicht direkt hinter dem Kleinen Roboter');
-  assert.deepEqual(Object.keys(m.tiers), ['HORIZON', 'ODYSSEY']);
+  assert.deepEqual(Object.keys(m.tiers), ['HORIZON']);
   assert.equal(m.tiers.HORIZON.build, 'robotArm3d'); assert.equal(m.tiers.HORIZON.minDrones, MIN);
-  assert.equal(m.tiers.ODYSSEY.build, 'robotArmStory'); assert.equal(m.tiers.ODYSSEY.minDrones, MIN);
-  for (const b of ['robotArm3d', 'robotArmStory']) { assert.equal(typeof GROSS[b], 'function', `${b} nicht in gross/index.js`); assert.equal(BUILDERS[b], undefined, `${b} im gemeinsamen Szenenpaket`); }
+  assert.equal(m.coveredBy, 'roboter');
+  const bot = launch.motifs[i - 1];
+  assert.equal(bot.tiers.ODYSSEY.build, 'robotGripperStory');
+  assert.ok(bot.tiers.ODYSSEY.minDrones <= GRIPPER_MIN && GRIPPER_MIN === MIN, 'Greifer in 3D+ ab derselben Zahl wie in 3D');
+  for (const b of ['robotArm3d', 'robotGripperStory']) { assert.equal(typeof GROSS[b], 'function', `${b} nicht in gross/index.js`); assert.equal(BUILDERS[b], undefined, `${b} im gemeinsamen Szenenpaket`); }
+});
+
+test('Roboter-Geschichte: unter 400 unverändert, ab 400 dieselben Drohnen vom Roboter in den Greifarm, ohne Wolke', async () => {
+  const { catalogScene } = await import('../src/scripts/scenes/catalog.js');
+  const plain = (await catalogScene('roboter', 'ODYSSEY', 300, '')).beats, short = (await builders.robotGripperStory(300, '')).beats;
+  assert.equal(short.length, plain.length, '300: Roboter-Geschichte verändert');
+  for (const n of [400, 700, 1000]) {
+    const robot = (await catalogScene('roboter', 'ODYSSEY', n, '')).beats, { beats } = await builders.robotGripperStory(n, '');
+    assert.equal(beats.length, robot.length + 1 + 2, `${n}: Bilder`); // höchstens fünf Bilder ohne Wolke (show-clouds)
+    // die Akte des Roboters sind unverändert (gleiche Punkte); das letzte steht nur länger
+    robot.forEach((b, k) => assert.deepEqual(beats[k].pts, b.pts, `${n}: Roboter-Bild ${k} verändert`));
+    const alive = beats[robot.length - 1], morph = beats[robot.length], arm = beats[robot.length + 1];
+    // der Übergang beginnt genau dort, wo der Roboter steht, und endet genau auf den Plätzen des Greifarms
+    const end = frame(alive, alive.hold), d0 = Math.max(...morph.pts.map((p, j) => Math.hypot(p[0] - end[j][0], p[1] - end[j][1], p[2] - end[j][2])));
+    assert.ok(d0 < 1e-6, `${n}: Übergang beginnt ${d0.toFixed(4)} neben dem Roboter`);
+    const fin = frame(morph, morph.hold).map((o) => o.slice(0, 3).map((v) => v.toFixed(5)).join()).sort(), want = arm.pts.map((p) => p.slice(0, 3).map((v) => v.toFixed(5)).join()).sort();
+    assert.deepEqual(fin, want, `${n}: Übergang endet nicht auf den Plätzen des Greifarms`);
+    for (const b of beats.slice(robot.length)) { assert.equal(b.pts.length, n); assert.ok(!b.cloud, `${n}: Wolke im Übergang`); }
+    // Abstand und Grenzen im Flug
+    // im Flug (wie die Bildwechsel der Engine) kommen sich einzelne Nachbarn aus dem Roboter bis knapp 15 % des
+    // mittleren Abstands nahe; Start und Ziel halten die üblichen 30 % (Stand Runde 11c). Gezählt werden sichtbare
+    // Drohnen: über 480 parkt der Katalog-Roboter dunkle Reserven hinter der Form, teils doppelt am selben Punkt
+    // (scenes/catalog.js reserve), sie leuchten erst im Flug auf
+    for (const t of [0, 1, 2, 3, 4, morph.hold]) { const nn = nearest(frame(morph, t).filter((o) => o[3] > 0.3)), med = quantile(nn, 0.5); assert.ok(Math.min(...nn) >= (t === 0 || t === morph.hold ? 0.3 : 0.14) * med, // Stand 11c: knappstes Paar im Flug 14,6 % bei 1000 (zwei Roboter-Nachbarn)
+       `${n} Übergang t ${t}: knappster Abstand ${Math.min(...nn).toFixed(4)} bei Median ${med.toFixed(4)}`); }
+    // jede Bahn ist eine Gerade vom Start zum Ziel, ohne Umkehr (Abstand zum Start wächst nur)
+    for (let j = 0; j < n; j += 7) { let prev = -1; for (let t = 0; t <= morph.hold; t += 0.1) { const o = [...morph.pts[j].slice(0, 3), 1]; morph.live(morph.pts[j], j, t, o); const d = Math.hypot(o[0] - morph.pts[j][0], o[1] - morph.pts[j][1], o[2] - morph.pts[j][2]); assert.ok(d >= prev - 1e-9, `${n}: Drohne ${j} kehrt um`); prev = d; } }
+    const mo = motion(morph, n > 600 ? 3 : 1);
+    assert.ok(mo.jump < 1e-6 && mo.v < LIMITS.speed * 0.8 && mo.a < LIMITS.accel, `${n} Übergang: v ${mo.v.toFixed(2)}, a ${mo.a.toFixed(2)}`);
+  }
 });
 
 test('genau n Drohnen in jedem Bild bei jeder einstellbaren Zahl, Punkte und Teile gültig', async () => {
@@ -62,7 +95,7 @@ test('genau n Drohnen in jedem Bild bei jeder einstellbaren Zahl, Punkte und Tei
 });
 
 test('keine zwei Drohnen aufeinander, keine verstreuten Punkte (Stufe, Mitte, 1000; mehrere Zeitpunkte)', async () => {
-  for (const name of ['robotArm3d', 'robotArmStory']) for (const n of [800, 900, 1000]) {
+  for (const name of ['robotArm3d', 'robotArmStory']) for (const n of [400, 800, 1000]) {
     const { beats } = await builders[name](n, '');
     for (const [k, b] of beats.entries()) for (const f of [0, 0.25, 0.5, 0.75, 1]) {
       const t = f * (b.hold ?? 6), nn = nearest(frame(b, t)), med = quantile(nn, 0.5);
@@ -73,7 +106,7 @@ test('keine zwei Drohnen aufeinander, keine verstreuten Punkte (Stufe, Mitte, 10
 });
 
 test('Eigenbewegung in Drohnengrenzen und ohne Sprung bei t = 0', async () => {
-  for (const [name, n] of [['robotArm3d', 800], ['robotArm3d', 1000], ['robotArmStory', 800], ['robotArmStory', 1000]]) {
+  for (const [name, n] of [['robotArm3d', 400], ['robotArm3d', 1000], ['robotArmStory', 400], ['robotArmStory', 1000]]) {
     const { beats } = await builders[name](n, '');
     for (const [k, b] of beats.entries()) {
       const m = motion(b, 3);
@@ -85,7 +118,7 @@ test('Eigenbewegung in Drohnengrenzen und ohne Sprung bei t = 0', async () => {
 });
 
 test('Bilder schließen aneinander an (starre Teile, keine Wolke)', async () => {
-  for (const n of [800, 1000]) {
+  for (const n of [400, 1000]) {
     const { beats } = await builders.robotArmStory(n, '');
     for (let k = 1; k < beats.length; k++) {
       const end = frame(beats[k - 1], beats[k - 1].hold), d = Math.max(...beats[k].pts.map((p, j) => Math.hypot(p[0] - end[j][0], p[1] - end[j][1], p[2] - end[j][2])));
@@ -104,7 +137,7 @@ test('Kinematik: Glieder behalten ihre Länge, die Hand trifft Modul und Aufnahm
 });
 
 test('Ablauf: greifen, anheben, ausrichten, einsetzen; das Modul sitzt am Ende in der Aufnahme', async () => {
-  for (const n of [800, 1000]) {
+  for (const n of [400, 1000]) {
     const m = armModel(n), { beats } = await builders.robotArmStory(n, '');
     const mod = (b, t) => frame(b, t).filter((_, j) => m.tags[j] === 'modul'), sock = frame(beats[3], beats[3].hold).filter((_, j) => m.tags[j] === 'aufnahme');
     const c0 = centre(mod(beats[0], 0)), cLift = centre(mod(beats[1], 2)), cEnd = centre(mod(beats[3], beats[3].hold)), cs = centre(sock);

@@ -15,7 +15,7 @@ const { droneStops } = await import('../src/content/show-packages.ts');
 const { OCCASIONS } = await import('../src/content/show-configurator.js');
 const { BUILDERS } = await import('../src/scripts/scenes/index.js');
 
-const MIN = 500, STOPS = { s3: droneStops('3d').filter((n) => n >= MIN), plus: droneStops('story').filter((n) => n >= MIN) };
+const MIN = 400, STOPS = { s3: droneStops('3d').filter((n) => n >= MIN), plus: droneStops('story').filter((n) => n >= MIN) };
 const nearest = (pts) => pts.map((p, i) => { let m = Infinity; for (let j = 0; j < pts.length; j++) if (j !== i) m = Math.min(m, Math.hypot(p[0] - pts[j][0], p[1] - pts[j][1], (p[2] || 0) - (pts[j][2] || 0))); return m; });
 const quantile = (a, q) => { const s = [...a].sort((x, y) => x - y); return s[Math.min(s.length - 1, Math.floor(q * s.length))]; };
 const frame = (b, t, from = 0, to = b.pts.length) => b.pts.slice(from, to).map((p, k) => { const o = [p[0], p[1], p[2] || 0, 1]; b.live?.(p, k + from, t, o); return o; });
@@ -39,7 +39,7 @@ function motion(b, every = 1) {
   return { v, a, jump };
 }
 
-test('im Konfigurator: Marketing, direkt hinter den Zahnrädern, 3D und 3D+ ab 500, nachgeladen', () => {
+test('im Konfigurator: Marketing, direkt hinter den Zahnrädern, 3D und 3D+ ab 400 (Runde 11c), nachgeladen', () => {
   const launch = OCCASIONS.find((o) => o.id === 'launch'), i = launch.motifs.findIndex((m) => m.id === 'foerderband'), m = launch.motifs[i];
   assert.ok(m, 'Förderband fehlt im Marketing');
   assert.equal(launch.motifs[i - 1].id, 'zahnraeder', 'Förderband steht nicht direkt hinter den Zahnrädern');
@@ -62,7 +62,7 @@ test('genau n Drohnen in jedem Bild bei jeder einstellbaren Zahl, Punkte und Tei
 });
 
 test('keine zwei Drohnen aufeinander, keine verstreuten Punkte (Stufe, Mitte, 1000; mehrere Zeitpunkte)', async () => {
-  for (const name of ['conveyor3d', 'conveyorStory']) for (const n of [500, 700, 1000]) {
+  for (const name of ['conveyor3d', 'conveyorStory']) for (const n of [400, 700, 1000]) {
     const { beats } = await builders[name](n, '');
     for (const [k, b] of beats.entries()) for (const f of [0, 0.25, 0.5, 0.75, 1]) {
       const t = f * (b.hold ?? 6), nn = nearest(frame(b, t)), med = quantile(nn, 0.5);
@@ -73,7 +73,7 @@ test('keine zwei Drohnen aufeinander, keine verstreuten Punkte (Stufe, Mitte, 10
 });
 
 test('Eigenbewegung in Drohnengrenzen (auch um die Rollen) und ohne Sprung bei t = 0', async () => {
-  for (const [name, n] of [['conveyor3d', 500], ['conveyor3d', 1000], ['conveyorStory', 500], ['conveyorStory', 1000]]) {
+  for (const [name, n] of [['conveyor3d', 400], ['conveyor3d', 1000], ['conveyorStory', 400], ['conveyorStory', 1000]]) {
     const { beats } = await builders[name](n, '');
     for (const [k, b] of beats.entries()) {
       const m = motion(b, n > 600 ? 3 : 1);
@@ -85,7 +85,7 @@ test('Eigenbewegung in Drohnengrenzen (auch um die Rollen) und ohne Sprung bei t
 });
 
 test('Bilder schließen aneinander an (starre Teile, keine Wolke)', async () => {
-  for (const n of [500, 1000]) {
+  for (const n of [400, 1000]) {
     const { beats } = await builders.conveyorStory(n, '');
     for (let k = 1; k < beats.length; k++) {
       const end = frame(beats[k - 1], beats[k - 1].hold), d = Math.max(...beats[k].pts.map((p, j) => Math.hypot(p[0] - end[j][0], p[1] - end[j][1], p[2] - end[j][2])));
@@ -96,7 +96,7 @@ test('Bilder schließen aneinander an (starre Teile, keine Wolke)', async () => 
 });
 
 test('Mechanik: das Band läuft, das Gehäuse fährt mit, Modul und Deckel wandern vom Werkzeug ins Gehäuse, das Produkt hebt ab', async () => {
-  for (const n of [500, 1000]) {
+  for (const n of [400, 1000]) {
     const m = beltModel(n), { beats } = await builders.conveyorStory(n, ''), B = m.B;
     const tagged = (b, t, tag) => frame(b, t, B).filter((_, k) => m.tags[k] === tag);
     const cx = (pts) => pts.reduce((s, p) => s + p[0], 0) / pts.length, cy = (pts) => pts.reduce((s, p) => s + p[1], 0) / pts.length;
