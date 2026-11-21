@@ -111,6 +111,8 @@ test('Die Wahl der Show-Art spielt den Ablauf in dieser Art weiter', async ({ pa
   await expect.poll(() => page.evaluate(() => (window as unknown as { __n: number[] }).__n.length), { timeout: 20_000 }).toBeGreaterThan(1);
   expect(Math.min(...await page.evaluate(() => (window as unknown as { __n: number[] }).__n))).toBeGreaterThanOrEqual(300);
   await r.getByText('2D', { exact: true }).click();
+  // die Zahl gleitet vom alten Wert herunter (Regler-Übergang); gezählt wird erst, wenn sie im 2D-Bereich angekommen ist
+  await expect.poll(async () => Number(await count.textContent()), { timeout: 20_000 }).toBeLessThanOrEqual(300);
   await page.evaluate(() => { (window as unknown as { __n: number[] }).__n = []; });
   await expect.poll(() => page.evaluate(() => (window as unknown as { __n: number[] }).__n.length), { timeout: 20_000 }).toBeGreaterThan(1);
   expect(Math.max(...await page.evaluate(() => (window as unknown as { __n: number[] }).__n))).toBeLessThanOrEqual(300);
