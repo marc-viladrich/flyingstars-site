@@ -188,6 +188,7 @@ async function diveStory(n) {
   // the dive: from the top down into the water, the body stretches and turns head first; the hands meet the water at tE
   const fall = (t) => ease(t / 2.8), fallAt = (t) => ({ c: bez(AH, K, UNDER, fall(t)), a: APEX_A + (UNDER_A - APEX_A) * fall(t) });
   const diving = (t) => ({ ...STRAIGHT, thigh: 0.35 * (1 - ease(t / 1.3)) });
+  const DIVE0 = 3.7, BLEND = 0.5; // der Fall beginnt kurz vor dem Scheitel des Absprungs (ease endet bei 4,2)
   let tE = 2.8, xE = 0.3;
   for (let c = 0; c < 2.8; c += 0.01) { const { c: q, a } = fallAt(c), hand = sp.hand(diving(c), q, a); if (hand[1] < WY) { tE = c; xE = hand[0]; break; } }
   const E = surf(xE, 0, WY);
@@ -208,17 +209,26 @@ async function diveStory(n) {
   const scene = (diverPts, opts = {}) => [part("diver", paint(diverPts, bodyCol), { rigid: true, ...opts }), part("board", paint(board, boardCol)), part("water", paint(water, waterCol))];
   return { beats: [
     act(scene(standPts), { caption: message('jubilaeum.aDivingBoard'), hold: 1.4, live: (b, j, t, o) => { if (j >= D1) swell(b, t, o); } }),
-    act(scene(standPts), { caption: message('jubilaeum.takeOff'), hold: 4.4, live: (b, j, t, o) => {
-      if (j < D0) { const tt = Math.max(0, t), { c, a } = leapAt(tt); set(o, sp.at(j, takeoff(tt), c, a)); }
+    // Runde 11c (Marc: „beim Kopfsprung, da brauchen wir auch keine Pause“): Absprung und Kopfsprung sind ein Bild. Vorher
+    // endete der Absprung am Scheitel, und zwischen den Bildern stand der Springer still in der Luft. Jetzt geht der Flug
+    // vor dem Scheitel weich in den Fall über (DIVE0, Überblendung über BLEND s), ohne Halt.
+    act(scene(standPts, { offstage: true }), { caption: message('jubilaeum.headFirstDiveTheWaterSplashes'), hold: DIVE0 + 3.6, live: (b, j, t, o) => {
+      if (j < D0) {
+        const tt = Math.max(0, t);
+        let p;
+        if (tt < DIVE0) { const { c, a } = leapAt(tt); p = sp.at(j, takeoff(tt), c, a); }
+        else {
+          const f = tt - DIVE0, { c, a } = fallAt(f); p = sp.at(j, diving(f), c, a);
+          const w = smooth(f / BLEND);
+          if (w < 1) { const L = leapAt(tt), q = sp.at(j, takeoff(tt), L.c, L.a); p = p.map((v, i) => q[i] + (v - q[i]) * w); }
+        }
+        set(o, p); o[3] = underwater(p[1], WY);
+      }
       else if (j < D1) o[1] -= dip(Math.max(0, t)) * bend(b[0]);
-      else swell(b, t, o);
-    } }),
-    act(scene(underPts, { offstage: true }), { caption: message('jubilaeum.headFirstDiveTheWaterSplashes'), hold: 3.6, live: (b, j, t, o) => {
-      if (j < D0) { const tt = Math.max(0, t), { c, a } = fallAt(tt), p = sp.at(j, diving(tt), c, a); set(o, p); o[3] = underwater(p[1], WY); }
-      else if (j >= D1) {
+      else {
         swell(b, t, o);
         // the splash: drones near the entry lift a little and flash, then a ring of light runs outward
-        const since = t - tE, r = Math.hypot(b[0] - E[0], (b[2] - E[2]) / Math.cos(TIP));
+        const since = t - DIVE0 - tE, r = Math.hypot(b[0] - E[0], (b[2] - E[2]) / Math.cos(TIP));
         if (since > 0) {
           const near = Math.exp(-((r / 0.28) ** 2)), up = Math.sin(Math.PI * Math.min(1, since / 1.3)) ** 2;
           o[1] += 0.13 * near * up; o[3] += near * 1.4 * Math.exp(-since / 0.7) + 0.8 * smooth(since / 0.3) * Math.exp(-(((r - 0.45 * since) / 0.12) ** 2));

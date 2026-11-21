@@ -90,7 +90,8 @@ function figureParts(she, lv) {
     ellipsoid('kopf', [0.012, 0.68, 0], she ? [0.083, 0.1, 0.08] : [0.092, 0.112, 0.088], { lat: [0.3], mer: [Math.PI / 2], roll: -0.3, w: 1.25 }),
     tube('kopf', [[0.005, 0.53, 0], [0.01, 0.6, 0]], she ? 0.034 : 0.044, { hoops: 0, crest: false, caps: [false, false] }),
     ellipsoid('rumpf', [0, 0.3, 0], she ? [0.1, 0.22, 0.15] : [0.13, 0.25, 0.2], { lat: [-0.55], mer: [Math.PI / 2] }),
-    ellipsoid('hose', [0, 0.0, 0], she ? [0.1, 0.1, 0.14] : [0.115, 0.12, 0.18], { mer: [] }),
+    // ihre Hüfte steckt im Kleid: nur als Körper (verdeckt die Oberschenkel), ohne eigene Linie neben dem Taillenreif
+    ellipsoid('hose', [0, 0.0, 0], she ? [0.1, 0.1, 0.14] : [0.115, 0.12, 0.18], { mer: [], silhouette: !she }),
   ];
   if (she) parts.push(ellipsoid('haar', [-0.075, 0.72, 0], [0.04, 0.04, 0.042], { w: 1.2 }));
   for (const [s, sz] of [['L', 1], ['R', -1]]) {

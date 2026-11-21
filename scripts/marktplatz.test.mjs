@@ -1,5 +1,5 @@
 // Runde 11b (große Motive): Wächter für scenes/gross/marktplatz.js, Fest auf dem Marktplatz (geteilt in Winter & Silvester und im
-// Stadtfest, 3D und 3D+ ab 700). Genau n Drohnen bei jeder einstellbaren Zahl, keine Drohnen aufeinander und keine verstreuten
+// Stadtfest, 3D und 3D+ ab der Schwelle). Genau n Drohnen bei jeder einstellbaren Zahl, keine Drohnen aufeinander und keine verstreuten
 // Punkte (jede halbe Sekunde; der Feuerwerksstern darf locker sein), Bewegung in Drohnengrenzen, die Geschichte erzählt mit
 // denselben Drohnen weiter, die Laternen gehen vom Rand zur Mitte an, der Lichtkreis steigt über die Dächer und öffnet sich.
 // Aufruf: node --test scripts/marktplatz.test.mjs
@@ -13,7 +13,8 @@ const { LIMITS } = await import('../src/scripts/show-flight.js');
 const { droneStops } = await import('../src/content/show-packages.ts');
 const { OCCASIONS } = await import('../src/content/show-configurator.js');
 
-const MIN = 700, from = (art) => droneStops(art).filter((n) => n >= MIN);
+// Runde 11c: Schwelle gesenkt (Kontaktbogen)
+const MIN = 500, from = (art) => droneStops(art).filter((n) => n >= MIN);
 const nearest = (pts) => pts.map((p, i) => { let m = Infinity; for (let j = 0; j < pts.length; j++) if (j !== i) { const d = Math.hypot(p[0] - pts[j][0], p[1] - pts[j][1], p[2] - pts[j][2]); if (d < m) m = d; } return m; });
 const quantile = (a, q) => { const s = [...a].sort((x, y) => x - y); return s[Math.min(s.length - 1, Math.floor(q * s.length))]; };
 const frame = (b, t) => b.pts.map((p, j) => { const o = [p[0], p[1], p[2] || 0, 1]; b.live(p, j, t, o); return o; });
@@ -38,7 +39,7 @@ function motion(b, s, every = 1) {
   return { v, a, jump };
 }
 
-test('im Konfigurator: geteilt in Winter & Silvester und im Stadtfest, 3D und 3D+ ab 700, nachgeladen', async () => {
+test('im Konfigurator: geteilt in Winter & Silvester und im Stadtfest, 3D und 3D+ ab der Schwelle, nachgeladen', async () => {
   for (const id of ['silvester', 'festival']) {
     const o = OCCASIONS.find((x) => x.id === id), m = o.motifs.find((x) => x.id === 'marktplatz');
     assert.ok(m, `Marktplatz fehlt in ${id}`);
@@ -49,7 +50,7 @@ test('im Konfigurator: geteilt in Winter & Silvester und im Stadtfest, 3D und 3D
   for (const b of ['marketSquare3d', 'marketSquareStory']) assert.equal((await GROSS[b]()).builders[b], builders[b]);
 });
 
-test('genau n Drohnen in jedem Bild bei jeder einstellbaren Zahl ab 700, Punkte und Teile gültig, keine Wolke im Motiv', async () => {
+test('genau n Drohnen in jedem Bild bei jeder einstellbaren Zahl ab der Schwelle, Punkte und Teile gültig, keine Wolke im Motiv', async () => {
   for (const [name, stops] of [['marketSquare3d', from('3d')], ['marketSquareStory', from('story')]]) for (const n of stops) {
     const { beats } = await builders[name](n, '');
     for (const [k, b] of beats.entries()) {
@@ -63,7 +64,7 @@ test('genau n Drohnen in jedem Bild bei jeder einstellbaren Zahl ab 700, Punkte 
 
 // dunkle Drohnen (Laternen und Fenster vor dem Anschalten) sieht niemand, der Stern ist gewollt locker: beide zählen nur für den Mindestabstand
 test('keine zwei Drohnen aufeinander, keine verstreuten Punkte (jede halbe Sekunde jedes Bildes)', async () => {
-  for (const [name, ns] of [['marketSquare3d', [700, 850, 1000]], ['marketSquareStory', [700, 800, 1000]]]) for (const n of ns) {
+  for (const [name, ns] of [['marketSquare3d', [500, 700, 850, 1000]], ['marketSquareStory', [500, 700, 800, 1000]]]) for (const n of ns) {
     const { beats } = await builders[name](n, '');
     const [r0, r1] = range(beats[0], 'lichtkreis');
     for (const [k, b] of beats.entries()) for (let t = 0; t <= b.hold + 1e-9; t += 0.5) {
@@ -76,7 +77,7 @@ test('keine zwei Drohnen aufeinander, keine verstreuten Punkte (jede halbe Sekun
 });
 
 test('Bewegung in Drohnengrenzen, ohne Sprung bei t = 0', async () => {
-  for (const [name, n] of [['marketSquare3d', 700], ['marketSquare3d', 1000], ['marketSquareStory', 700], ['marketSquareStory', 1000]]) {
+  for (const [name, n] of [['marketSquare3d', 500], ['marketSquare3d', 1000], ['marketSquareStory', 500], ['marketSquareStory', 1000]]) {
     const { beats } = await builders[name](n, ''), s = fit(beats).k;
     for (const [k, b] of beats.entries()) {
       const m = motion(b, s, n > 800 ? 3 : 2);

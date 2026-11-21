@@ -228,8 +228,9 @@ async function buildBeats(version, n) {
   // Runde 24: Motive aus dem FlyingStars-Katalog (scenes/catalog.js, erst bei Bedarf geladen); Bauname catalog:<Motiv>:<Paket>:<Anlass>
   if (version.build.startsWith("catalog:")) { const [, key, tier] = version.build.split(":"); const { catalogScene } = await (catalogModule ||= import("./scenes/catalog.js")); return catalogScene(key, tier, n, caption); }
   switch (version.build) {
-    case "diveStory": if (!version.whole) return sliceExtra("diveStory", 0, 4); break;
-    case "medalStory": return sliceExtra("diveStory", 4, 5, "Die Ringe im Wasser werden zu eurer Zahl");
+    // Runde 11c: Absprung und Kopfsprung sind ein Bild (kein Halt am Scheitel), die Geschichte hat ein Bild weniger
+    case "diveStory": if (!version.whole) return sliceExtra("diveStory", 0, 3); break;
+    case "medalStory": return sliceExtra("diveStory", 3, 4, "Die Ringe im Wasser werden zu eurer Zahl");
     case "fireworkStory": if (!version.whole) return sliceExtra("fireworkStory", 0, 3); break;
     case "fireworkFinale": return sliceExtra("fireworkStory", 3, 5);
     case "travelStory": if (!version.whole) return sliceExtra("travelStory", 0, 4); break;

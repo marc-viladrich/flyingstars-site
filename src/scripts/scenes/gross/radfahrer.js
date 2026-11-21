@@ -13,8 +13,8 @@ import { t as message } from '../../../i18n/ui.mjs';
 //
 //   cyclist3d (3D, ab 500): der Fahrer im Wiegetritt auf der Straße, die Kamera fährt mit (die Straßenmarkierung läuft als
 //     Licht nach hinten), er schwenkt langsam aus der Seitenansicht in die Dreiviertelansicht.
-//   cyclistStory (3D+, ab 500): Zielbogen steht, der Fahrer kommt angerollt → Sprint durch den Bogen, die Ziellinie
-//     leuchtet → Arme hoch, Funken aus dem Banner.
+//   cyclistStory (3D+): Close-up des Fahrers im Tritt → Zieleinfahrt in einem Zug: durch den Bogen, die Ziellinie
+//     leuchtet, er rollt aus, Arme hoch, Funken aus dem Banner.
 // Wächter: scripts/radfahrer.test.mjs.
 import { TAU, WARM, GOLD, ORANGE, CYAN, BLUE, PINK, RED, mix, smooth, yaw, pitch, sparkle, chase, share } from '../../show-motion.js';
 import { ellipsoid, tube, curves, assemble } from '../catalog-3d/kit.js';
@@ -60,7 +60,9 @@ const J = { hip: [-0.17, 0.07, 0], neck: [0.31, 0.33, 0], head: [0.42, 0.42, 0],
 const HOOD = { L: [0.47, 0.03, 0.17], R: [0.47, 0.03, -0.17] };
 const ARM = [0.27, 0.26], LEG = [0.42, 0.41];
 /** Fußpunkt auf dem Pedal bei Kurbelwinkel a (Seite s = +1 links, −1 rechts; rechts um π versetzt). */
-const pedal = (a, s) => { const q = a + (s > 0 ? 0 : Math.PI); return [BB[0] + Math.cos(q) * CRANK, BB[1] + Math.sin(q) * CRANK, s * PEDAL_Z]; };
+// Runde 11c (Marc: „er tritt rückwärts in die Pedale“): die Kurbel dreht wie die Räder (von links gesehen im Uhrzeigersinn,
+// das obere Pedal geht nach vorn); Winkel a wächst mit dem Tritt
+const pedal = (a, s) => { const q = -a + (s > 0 ? 0 : Math.PI); return [BB[0] + Math.cos(q) * CRANK, BB[1] + Math.sin(q) * CRANK, s * PEDAL_Z]; };
 const KNEE_POLE = [1, 0.25, 0], ELBOW_POLE = [-0.2, -1, 0];
 
 /** Detailstufe: 0 bis 690, 1 ab 700 (Kettenblatt, Startnummer, Felgenring), 2 ab 900 (Fahnen am Bogen). */
@@ -248,8 +250,11 @@ function cyclist3d(n, caption) {
 }
 
 // 3D+: eine Zeitachse über drei Akte; jedes Bild beginnt dort, wo das vorige endet
-const ACT = [0, 4.6, 8.6, 15.5];
-const RUN = { from: -1.85, gate: 0, to: 0.95, t0: 0.4, t1: 11.5 }; // Weg entlang der Straße (Bogen bei 0), Start, Ankunft
+// Runde 11c (Marc: „zuerst das Close-up und dann erst die Zieleinfahrt … in einem Schwung durchlaufen“): zwei Bilder. Erst der
+// Fahrer groß im Tritt (eigener Bildausschnitt, die Straße zieht als Licht unter ihm durch), dann die Zieleinfahrt als eine
+// Fahrt ohne Halt: anfahren, durch den Bogen, Ziellinie, ausrollen, Arme hoch.
+const ACT = [0, 5.2, 16.4], CU = ACT[1];
+const RUN = { from: -1.85, gate: 0, to: 0.95, t0: CU + 0.2, t1: 13.4 }; // Weg entlang der Straße (Bogen bei 0), Start, Ankunft
 function cyclistStory(n) {
   const lv = level(n), nr = Math.round(n * 0.6), M = riderModel(nr, lv), tags = M.body.tags;
   const { lines, banner } = archLines(lv), nArch = Math.round(n * 0.22), nLine = Math.round(n * 0.07), nSpark = Math.round(n * 0.05), nRoad = n - nr - nArch - nLine - nSpark;
@@ -268,9 +273,13 @@ function cyclistStory(n) {
   // Kurbel und Räder: Winkel = Integral der Geschwindigkeit (Räder rollen ab, Kurbel im Übersetzungsverhältnis)
   const dist = (T) => path(T) - s0;
   const crossT = (() => { let lo = RUN.t0, hi = RUN.t1; for (let i = 0; i < 40; i++) { const m = (lo + hi) / 2; if (path(m) + HUB.f[0] < 0) lo = m; else hi = m; } return hi; })(); // Vorderrad auf der Linie
-  const upT = ACT[2] + 0.3; // er richtet sich nach dem Ziel auf (drittes Bild)
-  const st = (T) => ({ crank: 2.4 + (dist(T) / R) * 0.55 * (1 - 0.7 * smooth((T - crossT) / 1.2)), spin: [dist(T) / R, dist(T) / R], up: ease((T - upT) / 3.2) });
-  const rocking = (T) => 0.07 * Math.sin(st(T).crank) * smooth((T - 3) / 1.5) * (1 - smooth((T - crossT) / 0.8)); // Wiegetritt im Sprint
+  const upT = crossT + 1.5; // nach dem Ziel rollt er aus und richtet sich auf
+  // im Close-up tritt er gleichmäßig (die Kamera fährt mit), danach Kurbel und Räder nach dem Weg
+  const cu = (T) => Math.min(Math.max(T, 0), CU), ride = (T) => (dist(T) / R) * 0.55 * (1 - 0.7 * smooth((T - crossT) / 1.2));
+  // die Kurbel steht am Ende des Close-ups waagerecht (6π): die letzte Bewegung der Füße ist ein ganzer Weg, kein Rest (Finten-Wächter)
+  const CADENCE = (6 * Math.PI - 2.4) / CU;
+  const st = (T) => ({ crank: 2.4 + CADENCE * cu(T) + ride(T), spin: [3.4 * cu(T) + dist(T) / R, 3.4 * cu(T) + dist(T) / R], up: ease((T - upT) / 3.2) });
+  const rocking = (T) => 0.06 * Math.sin(st(T).crank) * (1 - smooth((T - crossT) / 0.8)); // Wiegetritt
   const A0 = nr, L0 = nr + nArch, S0 = L0 + nLine, R0 = S0 + nSpark;
   const colOf = (j) => (j < M.nb ? (typeof COLOUR[tags[j]] === 'function' ? COLOUR[tags[j]](M.body.pts[j]) : COLOUR[tags[j]] ?? WARM) : j < M.nb + M.ns ? SPOKE : FRAME);
   const cols = Array.from({ length: n }, (_, k) => (k < nr ? colOf(k) : k < L0 ? (arch.tags[k - A0] === 'banner' ? BANNER : arch.tags[k - A0] === 'fahne' ? GOLD : ARCHC) : k < S0 ? WARM : k < R0 ? (k % 2 ? WARM : mix(BLUE, WARM, 0.4)) : ROAD));
@@ -291,24 +300,38 @@ function cyclistStory(n) {
         o[1] += u * (Math.sin(a) * r * 0.85 + 0.12); o[2] -= u * Math.cos(a) * r * 1.3; o[0] += u * (0.3 + 0.12 * (i % 3)); // aus der Bogenebene heraus nach vorn
       }
     } else { const p = road[k - R0]; o[0] = p[0]; o[1] = p[1]; o[2] = p[2]; }
+    // im Close-up sieht man ihn zuerst mehr von der Seite; bis zur Zieleinfahrt dreht sich der Blick um ihn in die Fahrtansicht
+    const swing = 0.6 * (1 - ease(T / CU));
+    if (swing) yaw(o, swing, RUN.from, 0);
     yaw(o, DIR); pitch(o, VIEW.pitch, VIEW.y0, 0);
     return o;
   };
   const light = (k, T) => {
     if (k < nr) return 1;
+    // im Close-up ist nur der Fahrer zu sehen; Bogen, Linie und Funken leuchten erst mit der Zieleinfahrt auf
+    if (k >= R0) { // im Close-up leuchtet nur die Straße unter ihm (als Lauflicht), der Rest kommt mit der Zieleinfahrt
+      const near = Math.abs(road[k - R0][0] - RUN.from) < 0.95;
+      if (T < CU) return near ? chase(-road[k - R0][0], T, 1.6, 0.75, 0.35, 1.35) : 0.02;
+      return near ? 0.7 : 0.02 + 0.68 * smooth((T - CU - 0.1) / 1.2);
+    }
+    const shown = smooth((T - CU - 0.1) / 1.2);
+    if (shown <= 0) return 0.02;
+    return 0.02 + (lightOn(k, T) - 0.02) * shown;
+  };
+  const lightOn = (k, T) => {
     if (k < L0) return arch.tags[k - A0] === 'banner' ? 1 + 0.4 * Math.exp(-(((T - crossT - 0.2) / 0.5) ** 2)) : 0.95 + 0.25 * Math.exp(-(((T - crossT) / 0.6) ** 2));
     if (k < S0) { // Ziellinie: dunkel, leuchtet auf, wenn das Vorderrad sie überfährt, von der Mitte nach außen
       const z = Math.abs(finish[k - L0][2]), since = T - crossT - z * 0.6;
       return since < 0 ? 0.35 : 0.35 + 1.0 * smooth(since / 0.25) + 0.6 * Math.exp(-since / 0.7);
     }
-    if (k < R0) { const s = T - upT - 0.2; return s < 0 ? 1 : 1.1 + 0.5 * sparkle(k, T, 0.6, 1.2) * Math.exp(-s / 3.2) - 0.25 * smooth((s - 2) / 3); }
-    return 0.7;
+    const s = T - upT - 0.2; return s < 0 ? 1 : 1.1 + 0.5 * sparkle(k, T, 0.6, 1.2) * Math.exp(-s / 3.2) - 0.25 * smooth((s - 2) / 3);
   };
   const sizes = [['fahrer', nr], ['bogen', nArch], ['ziellinie', nLine], ['funken', nSpark], ['strasse', nRoad]];
   const atT = (T) => cols.map((c, k) => [...pose(k, T, [0, 0, 0]), ...c]);
-  const fitPts = [0, 3, 6, 8, 10, 12, ACT[3]].flatMap((T) => atT(T).slice(0, R0 + nRoad).map((p) => p.slice(0, 3)));
-  const caps = ['radfahrer.theArchStandsARiderApproaches', 'radfahrer.sprintThroughTheArch', 'radfahrer.armsUpSparksFly'];
-  return { beats: caps.map((key, a) => ({ pts: atT(ACT[a]), groups: groupsOf(sizes), caption: message(key), hold: ACT[a + 1] - ACT[a], fitPts, live: (b, k, t, o) => { const T = ACT[a] + Math.min(Math.max(t, 0), ACT[a + 1] - ACT[a]); /* jedes Bild nur in seinem Abschnitt der Zeitachse */ pose(k, T, o); o[3] = light(k, T); } })), meta: { crossT, upT, nr, nArch, nLine, nSpark, nRoad } };
+  const fitWide = [CU, 7, 9, 11, 13, 15, ACT[2]].flatMap((T) => atT(T).map((p) => p.slice(0, 3)));
+  const fitNear = [0, 1.3, 2.6, 3.9, CU].flatMap((T) => atT(T).slice(0, nr).map((p) => p.slice(0, 3))); // Close-up: nur der Fahrer
+  const caps = ['radfahrer.aRiderInFullFlow', 'radfahrer.inOneGoThroughTheArch'], fits = [fitNear, fitWide], frames = ['nah', null];
+  return { beats: caps.map((key, a) => ({ pts: atT(ACT[a]), groups: groupsOf(sizes), caption: message(key), hold: ACT[a + 1] - ACT[a], fitPts: fits[a], ...(frames[a] ? { frame: frames[a] } : {}), live: (b, k, t, o) => { const T = ACT[a] + Math.min(Math.max(t, 0), ACT[a + 1] - ACT[a]); /* jedes Bild nur in seinem Abschnitt der Zeitachse */ pose(k, T, o); o[3] = light(k, T); } })), meta: { crossT, upT, nr, nArch, nLine, nSpark, nRoad } };
 }
 
 export const builders = {
@@ -317,5 +340,7 @@ export const builders = {
 };
 // für den Wächter
 export const _internal = { ACT, HUB, R };
+/** Für den Wächter: Pedal (Kurbelwinkel, Seite) und Speichenpunkt (Rad, Winkel, Drehung) im Radrahmen. */
+export const _rider = { pedal, spoke: (w, a, spin) => { const c = w ? HUB.f : HUB.r, q = a - spin; return [c[0] + Math.cos(q) * R * 0.8, c[1] + Math.sin(q) * R * 0.8, 0]; } };
 /** Für die Werkzeuge: Teilname einer Fahrerdrohne (Körperteil, Speiche, Kurbel). */
 export const _tagOf = (name, n, j) => { const M = riderModel(Math.round(n * (name === 'cyclist3d' ? 0.8 : 0.6)), level(n)); return j < M.nb ? M.body.tags[j] : j < M.nb + M.ns ? 'speiche' : j < M.m ? 'kurbel' : ''; };

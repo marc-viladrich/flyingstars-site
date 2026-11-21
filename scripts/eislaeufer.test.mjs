@@ -13,7 +13,8 @@ const { LIMITS } = await import('../src/scripts/show-flight.js');
 const { droneStops } = await import('../src/content/show-packages.ts');
 const { OCCASIONS } = await import('../src/content/show-configurator.js');
 
-const MIN = 700, from = (art) => droneStops(art).filter((n) => n >= MIN);
+// Runde 11c: Schwelle gesenkt (Kontaktbogen)
+const MIN = 400, from = (art) => droneStops(art).filter((n) => n >= MIN);
 const nearest = (pts) => pts.map((p, i) => { let m = Infinity; for (let j = 0; j < pts.length; j++) if (j !== i) { const d = Math.hypot(p[0] - pts[j][0], p[1] - pts[j][1], p[2] - pts[j][2]); if (d < m) m = d; } return m; });
 const quantile = (a, q) => { const s = [...a].sort((x, y) => x - y); return s[Math.min(s.length - 1, Math.floor(q * s.length))]; };
 const frame = (b, t) => b.pts.map((p, j) => { const o = [p[0], p[1], p[2] || 0, 1]; b.live(p, j, t, o); return o; });
@@ -38,7 +39,7 @@ function motion(b, s, every = 1) {
   return { v, a, jump };
 }
 
-test('im Konfigurator: Winter & Silvester, 3D und 3D+ ab 700, nachgeladen', async () => {
+test('im Konfigurator: Winter & Silvester, 3D und 3D+ ab der Schwelle, nachgeladen', async () => {
   const o = OCCASIONS.find((x) => x.id === 'silvester'), m = o.motifs.find((x) => x.id === 'eislaeufer');
   assert.ok(m, 'Eisläufer fehlen im Winter');
   assert.deepEqual(Object.keys(m.tiers), ['HORIZON', 'ODYSSEY']);
@@ -47,7 +48,7 @@ test('im Konfigurator: Winter & Silvester, 3D und 3D+ ab 700, nachgeladen', asyn
   for (const b of ['skaters3d', 'skatersStory']) assert.equal((await GROSS[b]()).builders[b], builders[b]);
 });
 
-test('genau n Drohnen in jedem Bild bei jeder einstellbaren Zahl ab 700, Punkte und Teile gültig, keine Wolke im Motiv', async () => {
+test('genau n Drohnen in jedem Bild bei jeder einstellbaren Zahl ab der Schwelle, Punkte und Teile gültig, keine Wolke im Motiv', async () => {
   for (const [name, stops] of [['skaters3d', from('3d')], ['skatersStory', from('story')]]) for (const n of stops) {
     const { beats } = await builders[name](n, '');
     for (const [k, b] of beats.entries()) {
@@ -61,7 +62,7 @@ test('genau n Drohnen in jedem Bild bei jeder einstellbaren Zahl ab 700, Punkte 
 
 // dunkle Spurdrohnen (noch nicht befahren) sieht niemand: sie zählen nur für den Mindestabstand
 test('keine zwei Drohnen aufeinander, keine verstreuten Punkte (jede halbe Sekunde jedes Bildes)', async () => {
-  for (const [name, ns] of [['skaters3d', [700, 850, 1000]], ['skatersStory', [700, 800, 1000]]]) for (const n of ns) {
+  for (const [name, ns] of [['skaters3d', [400, 700, 850, 1000]], ['skatersStory', [400, 700, 800, 1000]]]) for (const n of ns) {
     const { beats } = await builders[name](n, '');
     for (const [k, b] of beats.entries()) for (let t = 0; t <= b.hold + 1e-9; t += 0.5) {
       const all = frame(b, t), nnAll = nearest(all), lit = all.map((o, j) => j).filter((j) => all[j][3] > 0.2);
@@ -73,7 +74,7 @@ test('keine zwei Drohnen aufeinander, keine verstreuten Punkte (jede halbe Sekun
 });
 
 test('Bewegung in Drohnengrenzen, ohne Sprung bei t = 0', async () => {
-  for (const [name, n] of [['skaters3d', 700], ['skaters3d', 1000], ['skatersStory', 700], ['skatersStory', 1000]]) {
+  for (const [name, n] of [['skaters3d', 400], ['skaters3d', 1000], ['skatersStory', 400], ['skatersStory', 1000]]) {
     const { beats } = await builders[name](n, ''), s = fit(beats).k;
     for (const [k, b] of beats.entries()) {
       const m = motion(b, s, n > 800 ? 3 : 2);

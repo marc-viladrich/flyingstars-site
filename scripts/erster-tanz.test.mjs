@@ -14,7 +14,8 @@ const { LIMITS } = await import('../src/scripts/show-flight.js');
 const { droneStops } = await import('../src/content/show-packages.ts');
 const { OCCASIONS } = await import('../src/content/show-configurator.js');
 
-const from500 = (art) => droneStops(art).filter((n) => n >= 500);
+// Runde 11c (Marc: „nicht alles in 500+ reinforcen“): Schwelle 300 in 3D und 3D+
+const from500 = (art) => droneStops(art).filter((n) => n >= 300);
 const nearest = (pts) => pts.map((p, i) => { let m = Infinity; for (let j = 0; j < pts.length; j++) if (j !== i) { const d = Math.hypot(p[0] - pts[j][0], p[1] - pts[j][1], p[2] - pts[j][2]); if (d < m) m = d; } return m; });
 const quantile = (a, q) => { const s = [...a].sort((x, y) => x - y); return s[Math.min(s.length - 1, Math.floor(q * s.length))]; };
 const frame = (b, t, dark = false) => b.pts.map((p, j) => { const o = [p[0], p[1], p[2] || 0, 1]; b.live?.(p, j, t, o); return o; }).filter((o) => dark || o[3] > 0.05);
@@ -39,17 +40,17 @@ function motion(b, s, every = 1) {
   return { v, a, jump };
 }
 
-test('im Konfigurator: Hochzeit, 3D und 3D+ ab 500, direkt nach dem Antrag, nachgeladen', async () => {
+test('im Konfigurator: Hochzeit, 3D und 3D+ ab 300, direkt nach dem Antrag, nachgeladen', async () => {
   const h = OCCASIONS.find((o) => o.id === 'hochzeit'), i = h.motifs.findIndex((x) => x.id === 'erstertanz'), m = h.motifs[i];
   assert.ok(m, 'Erster Tanz fehlt in der Hochzeit');
   assert.equal(h.motifs[i - 1].id, 'antrag', 'nicht direkt nach dem Antrag');
   assert.deepEqual(Object.keys(m.tiers), ['HORIZON', 'ODYSSEY']);
-  assert.equal(m.tiers.HORIZON.build, 'firstDance3d'); assert.equal(m.tiers.HORIZON.minDrones, 500);
-  assert.equal(m.tiers.ODYSSEY.build, 'firstDanceStory'); assert.equal(m.tiers.ODYSSEY.minDrones, 500);
+  assert.equal(m.tiers.HORIZON.build, 'firstDance3d'); assert.equal(m.tiers.HORIZON.minDrones, 300);
+  assert.equal(m.tiers.ODYSSEY.build, 'firstDanceStory'); assert.equal(m.tiers.ODYSSEY.minDrones, 300);
   for (const b of ['firstDance3d', 'firstDanceStory']) assert.equal((await GROSS[b]()).builders[b], builders[b]);
 });
 
-test('genau n Drohnen in jedem Bild bei jeder einstellbaren Zahl ab 500, Punkte gültig, Teile vollständig', async () => {
+test('genau n Drohnen in jedem Bild bei jeder einstellbaren Zahl ab 300, Punkte gültig, Teile vollständig', async () => {
   for (const [name, stops] of [['firstDance3d', from500('3d')], ['firstDanceStory', from500('story')]]) for (const n of stops) {
     const { beats } = await builders[name](n, '');
     for (const [k, b] of beats.entries()) {
@@ -63,7 +64,7 @@ test('genau n Drohnen in jedem Bild bei jeder einstellbaren Zahl ab 500, Punkte 
 // alle halbe Sekunde, nicht nur in Ruhe, Mitte und Ende: Arme, die sich heben oder senken, streifen sonst unbemerkt den
 // eigenen Rumpf (Runde 11: Schultergelenke als unsichtbare Kugeln in erster-tanz.js)
 test('keine zwei Drohnen aufeinander, keine verstreuten Punkte (Ruhe, Mitte, Ende und jede halbe Sekunde jedes Bildes)', async () => {
-  for (const [name, ns] of [['firstDance3d', [500, 750, 1000]], ['firstDanceStory', [500, 700, 1000]]]) for (const n of ns) {
+  for (const [name, ns] of [['firstDance3d', [300, 500, 750, 1000]], ['firstDanceStory', [300, 500, 700, 1000]]]) for (const n of ns) {
     const { beats } = await builders[name](n, '');
     for (const [k, b] of beats.entries()) for (const t of [...Array.from({ length: Math.floor(b.hold / 0.5) + 1 }, (_, i) => i * 0.5), b.hold]) {
       const pts = frame(b, t, true), nn = nearest(pts), med = quantile(nn, 0.5);
@@ -74,7 +75,7 @@ test('keine zwei Drohnen aufeinander, keine verstreuten Punkte (Ruhe, Mitte, End
 });
 
 test('Eigenbewegung in Drohnengrenzen und ohne Sprung bei t = 0', async () => {
-  for (const [name, n] of [['firstDance3d', 500], ['firstDance3d', 1000], ['firstDanceStory', 500], ['firstDanceStory', 1000]]) {
+  for (const [name, n] of [['firstDance3d', 300], ['firstDance3d', 1000], ['firstDanceStory', 300], ['firstDanceStory', 1000]]) {
     const { beats } = await builders[name](n, ''), s = scaleOf(beats).k;
     for (const [k, b] of beats.entries()) {
       const m = motion(b, s, n > 600 ? 3 : 2);
@@ -86,7 +87,7 @@ test('Eigenbewegung in Drohnengrenzen und ohne Sprung bei t = 0', async () => {
 });
 
 test('Geschichte mit denselben Drohnen: jedes Bild beginnt, wo das vorige endet; keine Wolke mitten im Motiv', async () => {
-  for (const n of [500, 1000]) {
+  for (const n of [300, 1000]) {
     const { beats } = await builders.firstDanceStory(n, '');
     assert.equal(beats.length, 4);
     for (const [k, b] of beats.entries()) {
@@ -101,7 +102,7 @@ test('Geschichte mit denselben Drohnen: jedes Bild beginnt, wo das vorige endet;
 });
 
 test('das Bild füllt die Bühne: das Paar trägt die Höhe, der Parkettkreis die Breite', async () => {
-  for (const [name, n] of [['firstDance3d', 500], ['firstDance3d', 1000], ['firstDanceStory', 500], ['firstDanceStory', 1000]]) {
+  for (const [name, n] of [['firstDance3d', 300], ['firstDance3d', 1000], ['firstDanceStory', 300], ['firstDanceStory', 1000]]) {
     const { beats } = await builders[name](n, ''), M = model(n), fit = scaleOf(beats);
     for (const [k, b] of beats.entries()) {
       const f = frame(b, b.hold * 0.5, true), couple = f.slice(0, M.nb + M.nd), floor = f.slice(M.nb + M.nd + M.nv);
@@ -114,7 +115,7 @@ test('das Bild füllt die Bühne: das Paar trägt die Höhe, der Parkettkreis di
 });
 
 test('das Kleid schwingt mit Nachlauf: weiter Saum in der Drehung, nach dem Anhalten legt er sich erst später', async () => {
-  for (const n of [500, 1000]) {
+  for (const n of [300, 1000]) {
     const { beats } = await builders.firstDance3d(n, ''), b = beats[0], M = model(n);
     // Weite des Saums: größter Abstand einer Saumdrohne von der Achse des Kleides (Mittel der Taillendrohnen)
     const hemWidth = (t) => {

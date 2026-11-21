@@ -14,7 +14,8 @@ const { LIMITS } = await import('../src/scripts/show-flight.js');
 const { droneStops } = await import('../src/content/show-packages.ts');
 const { OCCASIONS } = await import('../src/content/show-configurator.js');
 
-const MIN = 500, from = (art) => droneStops(art).filter((n) => n >= MIN);
+// Runde 11c: Schwelle 400 in 3D und 3D+ (Kontaktbogen: bei 300 zerfasert der Fahrer im weiten Bild der Zieleinfahrt, und 3D+ zeigt nie weniger als 3D)
+const MIN = { '3d': 400, story: 400 }, from = (art) => droneStops(art).filter((n) => n >= MIN[art]);
 const nearest = (pts) => pts.map((p, i) => { let m = Infinity; for (let j = 0; j < pts.length; j++) if (j !== i) { const d = Math.hypot(p[0] - pts[j][0], p[1] - pts[j][1], p[2] - pts[j][2]); if (d < m) m = d; } return m; });
 const quantile = (a, q) => { const s = [...a].sort((x, y) => x - y); return s[Math.min(s.length - 1, Math.floor(q * s.length))]; };
 const frame = (b, t) => b.pts.map((p, j) => { const o = [p[0], p[1], p[2] || 0, 1]; b.live(p, j, t, o); return o; });
@@ -39,18 +40,18 @@ function motion(b, s, every = 1) {
   return { v, a, jump };
 }
 
-test('im Konfigurator: geteilt im Stadtfest und im Jubiläum, 3D und 3D+ ab 500, nachgeladen', async () => {
+test('im Konfigurator: geteilt im Stadtfest und im Jubiläum, 3D und 3D+ ab 400, nachgeladen', async () => {
   for (const id of ['festival', 'jubilaeum']) {
     const o = OCCASIONS.find((x) => x.id === id), m = o.motifs.find((x) => x.id === 'radfahrer');
     assert.ok(m, `Radfahrer fehlt in ${id}`);
     assert.deepEqual(Object.keys(m.tiers), ['HORIZON', 'ODYSSEY']);
-    assert.equal(m.tiers.HORIZON.build, 'cyclist3d'); assert.equal(m.tiers.HORIZON.minDrones, MIN);
-    assert.equal(m.tiers.ODYSSEY.build, 'cyclistStory'); assert.equal(m.tiers.ODYSSEY.minDrones, MIN);
+    assert.equal(m.tiers.HORIZON.build, 'cyclist3d'); assert.equal(m.tiers.HORIZON.minDrones, MIN['3d']);
+    assert.equal(m.tiers.ODYSSEY.build, 'cyclistStory'); assert.equal(m.tiers.ODYSSEY.minDrones, MIN.story);
   }
   for (const b of ['cyclist3d', 'cyclistStory']) assert.equal((await GROSS[b]()).builders[b], builders[b]);
 });
 
-test('genau n Drohnen in jedem Bild bei jeder einstellbaren Zahl ab 500, Punkte und Teile gültig, keine Wolke im Motiv', async () => {
+test('genau n Drohnen in jedem Bild bei jeder einstellbaren Zahl ab der Schwelle, Punkte und Teile gültig, keine Wolke im Motiv', async () => {
   for (const [name, stops] of [['cyclist3d', from('3d')], ['cyclistStory', from('story')]]) for (const n of stops) {
     const { beats } = await builders[name](n, '');
     for (const [k, b] of beats.entries()) {
@@ -63,7 +64,7 @@ test('genau n Drohnen in jedem Bild bei jeder einstellbaren Zahl ab 500, Punkte 
 });
 
 test('keine zwei Drohnen aufeinander, keine verstreuten Punkte (jede halbe Sekunde jedes Bildes)', async () => {
-  for (const [name, ns] of [['cyclist3d', [500, 700, 1000]], ['cyclistStory', [500, 800, 1000]]]) for (const n of ns) {
+  for (const [name, ns] of [['cyclist3d', [400, 500, 700, 1000]], ['cyclistStory', [400, 500, 800, 1000]]]) for (const n of ns) {
     const { beats } = await builders[name](n, '');
     for (const [k, b] of beats.entries()) for (let t = 0; t <= b.hold + 1e-9; t += 0.5) {
       // die Funken sind gewollt verstreut (wie die Sterne beim Satelliten): sie zählen nur für den Mindestabstand
@@ -75,11 +76,12 @@ test('keine zwei Drohnen aufeinander, keine verstreuten Punkte (jede halbe Sekun
   }
 });
 
+// Maßstab je Bild: das Close-up hat einen eigenen Bildausschnitt (frame), dort wirkt jede Bewegung größer
 test('Bewegung in Drohnengrenzen, ohne Sprung bei t = 0', async () => {
-  for (const [name, n] of [['cyclist3d', 500], ['cyclist3d', 1000], ['cyclistStory', 500], ['cyclistStory', 1000]]) {
-    const { beats } = await builders[name](n, ''), s = fit(beats).k;
+  for (const [name, n] of [['cyclist3d', 400], ['cyclist3d', 1000], ['cyclistStory', 400], ['cyclistStory', 1000]]) {
+    const { beats } = await builders[name](n, '');
     for (const [k, b] of beats.entries()) {
-      const m = motion(b, s, n > 600 ? 3 : 2);
+      const m = motion(b, fit([b]).k, n > 600 ? 3 : 2);
       assert.ok(m.jump < 1e-6, `${name} ${n} Bild ${k}: Sprung ${m.jump.toFixed(4)}`);
       assert.ok(m.v < LIMITS.speed * 0.8, `${name} ${n} Bild ${k}: ${m.v.toFixed(2)} Einheiten/s`);
       assert.ok(m.a < LIMITS.accel, `${name} ${n} Bild ${k}: Beschleunigung ${m.a.toFixed(2)}`);
@@ -87,51 +89,76 @@ test('Bewegung in Drohnengrenzen, ohne Sprung bei t = 0', async () => {
   }
 });
 
-test('Geschichte mit denselben Drohnen: jedes Bild beginnt, wo das vorige endet', async () => {
+test('Geschichte: erst das Close-up (eigener Ausschnitt), dann die Zieleinfahrt; jedes Bild beginnt, wo das vorige endet', async () => {
   for (const n of [500, 1000]) {
     const { beats } = await builders.cyclistStory(n, '');
-    assert.equal(beats.length, 3);
-    for (let k = 1; k < beats.length; k++) {
-      const end = frame(beats[k - 1], beats[k - 1].hold), gap = Math.max(...beats[k].pts.map((p, j) => Math.hypot(p[0] - end[j][0], p[1] - end[j][1], p[2] - end[j][2])));
-      assert.ok(gap < 1e-6, `${n}: Bild ${k} beginnt ${gap.toFixed(4)} neben dem Ende von Bild ${k - 1}`);
-      assert.deepEqual(beats[k].groups, beats[0].groups);
-    }
+    assert.equal(beats.length, 2);
+    assert.deepEqual(beats.map((b) => b.frame ?? null), ['nah', null]);
+    const end = frame(beats[0], beats[0].hold), gap = Math.max(...beats[1].pts.map((p, j) => Math.hypot(p[0] - end[j][0], p[1] - end[j][1], p[2] - end[j][2])));
+    assert.ok(gap < 1e-6, `${n}: die Zieleinfahrt beginnt ${gap.toFixed(4)} neben dem Ende des Close-ups`);
+    assert.deepEqual(beats[1].groups, beats[0].groups);
   }
 });
 
-test('das Bild füllt die Bühne: der Fahrer im 3D mindestens 70 % der Höhe, im 3D+ Bogen und Fahrer zusammen', async () => {
-  for (const n of [500, 1000]) {
+test('das Bild füllt die Bühne: der Fahrer im 3D und im Close-up mindestens 70 % der Höhe, in der Zieleinfahrt trägt der Bogen', async () => {
+  for (const n of [400, 1000]) {
     const { beats } = await builders.cyclist3d(n, ''), b = beats[0], f = fit(beats), [r0, r1] = range(b, 'fahrer');
     const rider = frame(b, b.hold / 2).slice(r0, r1);
     assert.ok(extent(rider, 1) >= 0.7 * f.h, `3D ${n}: Fahrer ${(extent(rider, 1) / f.h * 100).toFixed(0)} % der Höhe`);
-    const s = await builders.cyclistStory(n, ''), g = fit(s.beats), [a0, a1] = range(s.beats[0], 'bogen');
-    const arch = frame(s.beats[1], 0).slice(a0, a1);
+    const s = await builders.cyclistStory(n, ''), near = fit([s.beats[0]]), [q0, q1] = range(s.beats[0], 'fahrer');
+    const close = frame(s.beats[0], 2.5).slice(q0, q1).filter((o) => o[3] > 0.05);
+    assert.ok(extent(close, 1) >= 0.7 * near.h, `3D+ ${n}: Close-up ${(extent(close, 1) / near.h * 100).toFixed(0)} % der Höhe`);
+    // im Close-up ist außer Fahrer und Straße nichts zu sehen
+    const [a0] = range(s.beats[0], 'bogen'), [, s1] = range(s.beats[0], 'funken');
+    assert.ok(frame(s.beats[0], 2.5).slice(a0, s1).every((o) => o[3] <= 0.05), 'Bogen im Close-up sichtbar');
+    const g = fit([s.beats[1]]), arch = frame(s.beats[1], 3).slice(...range(s.beats[1], 'bogen'));
     assert.ok(extent(arch, 1) >= 0.6 * g.h, `3D+ ${n}: Bogen ${(extent(arch, 1) / g.h * 100).toFixed(0)} % der Höhe`);
-    // der Fahrer am Ende groß genug: mindestens 30 % der Bildhöhe
-    const [f0, f1] = range(s.beats[2], 'fahrer'), end = frame(s.beats[2], s.beats[2].hold).slice(f0, f1);
+    const end = frame(s.beats[1], s.beats[1].hold).slice(...range(s.beats[1], 'fahrer'));
     assert.ok(extent(end, 1) >= 0.3 * g.h, `3D+ ${n}: Fahrer am Ende nur ${(extent(end, 1) / g.h * 100).toFixed(0)} % der Höhe`);
   }
 });
 
-test('die Beine treten: Füße kreisen mit der Kurbel, die Beinlänge bleibt', async () => {
+test('die Beine treten: Füße kreisen mit der Kurbel', async () => {
   const { beats } = await builders.cyclist3d(500, ''), b = beats[0], M = riderModel(Math.round(500 * 0.8), level(500));
-  // Schuhdrohnen des linken Beins: ihr Weg über eine Kurbelumdrehung ist ein geschlossener Bogen mit deutlicher Höhe
   const shoe = M.body.tags.map((t, j) => [t, j]).filter(([t, j]) => t === 'uschL' && M.body.pts[j][1] < -0.5).map(([, j]) => j);
   assert.ok(shoe.length >= 2, 'keine Fußdrohnen');
   const ys = Array.from({ length: 31 }, (_, i) => frame(b, 2 + i * 0.05)[shoe[0]][1]);
   assert.ok(extent(ys.map((y) => [y]), 0) > 0.12, `Fuß hebt sich nur ${extent(ys.map((y) => [y]), 0).toFixed(3)}`);
 });
 
-test('Ziellinie leuchtet erst, wenn das Vorderrad sie überfährt; danach Arme hoch und Funken', async () => {
-  const { beats, meta } = await builders.cyclistStory(500, ''), [l0, l1] = range(beats[0], 'ziellinie');
-  const at = (T) => { const a = _internal.ACT.findIndex((x, i) => T >= x && T < _internal.ACT[i + 1]); return frame(beats[a], T - _internal.ACT[a]); };
-  const mean = (T) => { const f = at(T).slice(l0, l1); return f.reduce((s, o) => s + o[3], 0) / f.length; };
+// Runde 11c (Marc: „er tritt rückwärts in die Pedale“): oben laufen Pedal und Rad in Fahrtrichtung, unten dagegen, wie beim
+// echten Rad. Geprüft im Radrahmen (x = Fahrtrichtung) und auf der Bühne aus mehreren Blickwinkeln (dort gegen die
+// gesehene Fahrtrichtung, weil die Ansicht die Richtung spiegeln kann)
+test('Kurbel und Räder drehen vorwärts (zur Fahrtrichtung passend), aus mehreren Blickwinkeln', async () => {
+  const { _rider } = await import('../src/scripts/scenes/gross/radfahrer.js');
+  for (const crank of [0.3, 1.9, 4.0]) {
+    const top = (a) => { const p = _rider.pedal(a, 1), q = _rider.pedal(a, -1); return p[1] > q[1] ? p : q; };
+    const v = top(crank + 0.01)[0] - top(crank)[0];
+    assert.ok(v > 0, `Kurbel ${crank}: das obere Pedal geht nach hinten`);
+    const w = _rider.spoke(0, Math.PI / 2, 0.01)[0] - _rider.spoke(0, Math.PI / 2, 0)[0];
+    assert.ok(w > 0, 'das Rad dreht rückwärts');
+  }
+  const { yaw } = await import('../src/scripts/show-motion.js');
+  for (const view of [-1.2, -0.6, 0, 0.6, 1.2]) {
+    const scr = (p) => { const o = [...p]; yaw(o, view); return o[0]; };
+    const fwd = scr([1, 0, 0]) - scr([0, 0, 0]), top = (a) => { const p = _rider.pedal(a, 1), q = _rider.pedal(a, -1); return p[1] > q[1] ? p : q; };
+    if (Math.abs(fwd) < 0.2) continue; // fast frontal gesehen: die Richtung ist auf der Bühne nicht zu lesen
+    const v = scr(top(1.01)) - scr(top(1.0));
+    assert.ok(Math.sign(v) === Math.sign(fwd), `Ansicht ${view}: oberes Pedal läuft gegen die gesehene Fahrtrichtung`);
+  }
+});
+
+test('Zieleinfahrt in einem Zug: der Fahrer hält zwischen Anfahren und Ziel nie an; die Ziellinie leuchtet erst, wenn das Vorderrad sie überfährt; danach Arme hoch und Funken', async () => {
+  const { beats, meta } = await builders.cyclistStory(500, ''), b = beats[1], ACT = _internal.ACT, [f0] = range(b, 'fahrer');
+  const at = (T) => frame(b, T - ACT[1]);
+  const hub = (T) => at(T)[f0]; // eine Rahmendrohne genügt für die Fahrt
+  for (let T = ACT[1] + 1.2; T < meta.crossT + 1; T += 0.25) { const p = hub(T), q = hub(T + 0.1); assert.ok(Math.hypot(q[0] - p[0], q[2] - p[2]) / 0.1 > 0.12, `bei ${T.toFixed(2)} s steht der Fahrer fast`); }
+  const [l0, l1] = range(b, 'ziellinie'), mean = (T) => { const f = at(T).slice(l0, l1); return f.reduce((s, o) => s + o[3], 0) / f.length; };
   assert.ok(mean(meta.crossT - 0.5) < 0.5 && mean(meta.crossT + 0.6) > 1.1, `Ziellinie ${mean(meta.crossT - 0.5).toFixed(2)} → ${mean(meta.crossT + 0.6).toFixed(2)}`);
-  // Arme hoch: die Hände stehen am Ende über dem Helm
-  const [f0] = range(beats[0], 'fahrer'), M = riderModel(meta.nr, level(500)), end = at(_internal.ACT[3] - 0.01);
+  const M = riderModel(meta.nr, level(500)), end = at(ACT[2] - 0.01);
   const ys = (tags) => M.body.tags.map((t, j) => [t, j]).filter(([t]) => tags.includes(t)).map(([, j]) => end[f0 + j][1]);
   assert.ok(Math.max(...ys(['uarmL', 'uarmR'])) > Math.max(...ys(['kopf'])), 'die Hände sind nicht über dem Kopf');
-  const [s0, s1] = range(beats[0], 'funken'), before = at(meta.upT - 0.1).slice(s0, s1), after = at(_internal.ACT[3] - 0.01).slice(s0, s1);
+  const [s0, s1] = range(b, 'funken'), before = at(meta.upT - 0.1).slice(s0, s1), after = at(ACT[2] - 0.01).slice(s0, s1);
   assert.ok(extent(after, 1) > 2.5 * extent(before, 1), `Funken sprühen nicht (${extent(before, 1).toFixed(2)} → ${extent(after, 1).toFixed(2)})`);
 });
 
