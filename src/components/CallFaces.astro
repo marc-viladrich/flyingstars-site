@@ -1,0 +1,29 @@
+---
+// Drei kleine Porträts neben dem Telefon-Knopf im Seitenkopf (Marc, Runde 15: „damit man sofort sieht: echte Menschen“).
+// Ronja, Erwin, Florian aus src/content/people (dieselben Bilder wie das Team), rund und überlappend. Die Bilder sind
+// Schmuck (alt=""); der Knopf verweist per aria-describedby auf den Satz „Am Telefon: …“. Feste Maße, kein Layout-Shift.
+// Der Aufrufer stellt Knopf und Porträts in eine Gruppe (.call), die nicht umbricht.
+import { optimizedImage } from '../lib/media';
+import { portraitPerson } from '../content/people.mjs';
+import { forPath } from '../i18n/server';
+interface Props { id: string }
+const { id } = Astro.props;
+const { t, locale } = forPath(Astro.url.pathname);
+const people = ['ronja-donsbach', 'erwin-wilms', 'florian-becker'].map((pid) => portraitPerson(pid));
+const faces = await Promise.all(people.map(async (p) => ({ name: p.name, img: await optimizedImage(p.image.src, 112) })));
+const first = (name: string) => name.split(/\s+/)[0];
+const names = new Intl.ListFormat(locale, { type: 'conjunction' }).format(people.map((p) => first(p.name)));
+---
+<span class="call-faces"><span class="sr-only" id={id}>{t('hero.callPeople', { names })}</span>{faces.map((f) => <span class="cf" aria-hidden="true"><img src={f.img.src} width={f.img.width} height={f.img.height} alt="" loading="eager" decoding="async" /></span>)}</span>
+
+<style is:global>
+  /* Knopf und Porträts bleiben eine Zeile; die Knopfreihe (.actions) darf vor der Gruppe umbrechen */
+  .call { display: inline-flex; align-items: center; gap: var(--space-3); flex-wrap: nowrap; min-width: 0; }
+  .call-faces { display: inline-flex; flex: none; }
+  /* Ausschnitt aufs Gesicht: die Teamfotos sind Halbtotalen (4 : 5), bei 36 px wäre der Kopf sonst winzig. Das Bild ist
+     1,8-mal so breit wie der Kreis, Bildpunkt (50 %, 32 %) liegt in der Kreismitte. */
+  .call-faces .cf { position: relative; display: block; width: 2.25rem; height: 2.25rem; border-radius: var(--radius-round); overflow: hidden;
+    box-shadow: 0 0 0 0.125rem rgb(var(--rgb-ground)); background: var(--media-ground); }
+  .call-faces .cf + .cf { margin-left: -0.5rem; }
+  .call-faces img { position: absolute; width: 180%; height: auto; max-width: none; left: -40%; top: -22%; }
+</style>
