@@ -35,6 +35,7 @@ import { createField } from "./show-field.js";
 import { rankOf } from "./show-tempo.js";
 import { buildSequence } from "./show-scenes.js";
 import { logoPoints } from "./scenes/fs-logo.js";
+import { reassemble } from "./scenes/umbau.js";
 import lettering from "../data/teaser-lettering.json";
 import { primeTextFormation } from "./text-formation.js";
 // Ruckeln an der Grenze #ablauf → #preise (WebKit/Safari, 18.11.2026): Der Textplaner setzte den Schriftzug FLYINGSTΛRS
@@ -86,7 +87,7 @@ export const REELS = {
     { occasion: "festival", motif: "fernsehturm", drones: [300], beats: [-1] }, // die Kugel dreht sich, Funkwellen gehen hinaus (3D+)
     { occasion: "launch", motif: "roboter", drones: [400], beats: [1, 2] }, // der kleine Roboter wird lebendig, dann zum Greifarm
     { occasion: "launch", motif: "foerderband", drones: [400], beats: [-1], cloud: false }, // …und setzt euer Produkt aufs Band
-    { occasion: "kultur", motif: "teufel", drones: [600] }, // Höhepunkt: Maske → Totenkopf mit Zylinder → Maske
+    { occasion: "kultur", motif: "teufel", drones: [600], loop: true }, // Höhepunkt: Maske → Totenkopf mit Zylinder → Maske, das Grinsen wird wieder zum Logo
   ] },
   // Runde 15: Werbung mit den Marketing-Motiven: Drehzahlmesser in 3D → Sportwagen in 3D+ (direkter Flug), Glühbirne 2D → 3D,
   // die QR-Code-Geschichte, der Satellit (3D+) statt der Rakete. Der Seitenkopf der Werbung ist ein Video, keine Dopplung.
@@ -135,6 +136,16 @@ export const STILL = REELS.start.still;
 export { logoPoints };
 const FS_GRAD = [[255, 158, 41], [219, 100, 232], [51, 237, 242]];
 const gradAt = (u) => { const t = Math.max(0, Math.min(1, u)) * 2, i = Math.min(1, Math.floor(t)), f = t - i; return FS_GRAD[i].map((v, c) => Math.round(v + (FS_GRAD[i + 1][c] - v) * f)); };
+/**
+ * Runde 17 (Marc, 21.11.2026: die Bokkenrijders-Übergänge „mega nice“, nur das Ende abrupt): ein Eintrag mit `loop` hält
+ * sein letztes Bild LOOP_LINGER Sekunden Show-Uhr länger (bei REEL_RATE rund 1,3 s; das Grinsen mit den glühenden Augen,
+ * vorher stand es rund 0,1 s) und setzt sich dann zum ersten Bild des Ablaufs zusammen (scenes/umbau.js, wie Logo → QR):
+ * Zähne und Augen fliegen zum Logo, in dessen Drohnenzahl und Maßstab. Der nächste Durchlauf beginnt mit genau diesem
+ * Logo, ohne Wolke und ohne zweiten Aufbau (scene.loopJoined, show-field.js). Nur, wenn das letzte Bild dafür gebaut ist
+ * (`handoff`: die Bokkenrijders-Geschichte in 3D+, also im gemischten Ablauf und nach der Wahl 3D+); in 2D und 3D steht
+ * am Ende die ganze Maske ohne Geschichte, dort bleibt die lebendige Wolke zurück zum Anfang.
+ */
+export const LOOP_LINGER = 4.5;
 /** Ab dieser Drohnenzahl sieht das Logo aus, wie es soll; was darüber hinausgeht, schreibt den Schriftzug darunter. */
 export const LOGO_FULL = 300;
 async function logoBeat(n) {
@@ -202,6 +213,7 @@ export async function buildReel(reel = REEL, { art = null, zoom = ZOOM } = {}) {
         let version = r.kind === "text" ? { build: `text${pkg}`, caption: message('showTeaser.yourInitials'), value: r.value, style: r.style, occasion: r.occasion } : r.build ? { build: r.build, caption: r.label } : motif?.tiers[pkg] ?? own;
         if (!version) throw new Error(`Showreel: ${r.occasion}/${r.motif} hat keine ${pkg}-Fassung`);
         if (r.value !== undefined && r.kind !== "text") version = { ...version, value: r.value };
+        if (r.loop) version = { ...version, linger: LOOP_LINGER };
         const seq = await buildSequence([{ id: r.motif ?? r.kind, label: r.label ?? motif?.label ?? "Text", tiers: { [pkg]: { ...version, minDrones: 0 } } }], pkg, n, SHOW_PACKAGES[pkg].color, r.occasion);
         const all = seq.beats.filter((b) => !b.interlude);
         const which = Array.isArray(r.beats) ? r.beats : r.beats?.[pkg];
@@ -216,7 +228,19 @@ export async function buildReel(reel = REEL, { art = null, zoom = ZOOM } = {}) {
   // Runde 6: die Lichtlauf-Reihenfolge (rankOf, je Bild O(n²)) schon hier im Leerlauf rechnen; sonst entsteht sie beim ersten
   // Zeigen eines Bildes mitten in der Show (ein Bild von 30–50 ms bei 4× Drossel)
   for (const [k, b] of beats.entries()) { if (k % 4 === 0) await idle(); rankOf(b); }
-  return { beats, loopTo: 0 };
+  const joined = beats.length > 1 && beats.at(-1).reel?.loop && beats.at(-1).handoff;
+  if (joined) { await idle(); beats.push(loopBeat(beats.at(-1), beats[0])); }
+  return { beats, loopTo: 0, ...(joined ? { loopJoined: true } : {}) };
+}
+
+/** Der Umbau vom letzten Bild zurück zum ersten (LOOP_LINGER): die leuchtenden Drohnen bauen das erste Bild, die übrigen
+ * verlöschen an ihrem Platz und gehen mit dessen Start in Reserve. Beide Bilder stehen in eigenen Ausschnitten, der Umbau
+ * rechnet beim Abspielen zwischen ihnen um (refit). Er gehört zum ersten Motiv (segment, Wireframe: Regler, Paket und
+ * „Platz für euer Logo“ wechseln, während sich das Logo zusammensetzt; eine Wahl der Art setzt dort ein). */
+function loopBeat(last, first) {
+  const morph = reassemble(last, first, { caption: first.caption, spread: 2.2, fly: 2.3, seamless: true, keepLit: true, refit: true });
+  // eigener Ausschnitt (refit macht ihn für die Lage auf dem Bildschirm bedeutungslos); kopieren darf man das Bild nicht
+  return Object.assign(morph, { segment: first.segment, frame: "schleife", zoom: last.zoom, fitPts: last.fitPts ?? last.pts.map((p) => p.slice(0, 3)), cloud: false, drones: first.drones, reel: first.reel });
 }
 
 /** Preis als Euro-Zeichen in acht Stufen, nach dem Preis der Drohnenzahl: 100 = €, 150 = €€, 200 = €€€, 250 = €€€€,

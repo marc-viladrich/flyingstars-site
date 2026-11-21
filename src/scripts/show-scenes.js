@@ -240,7 +240,7 @@ async function buildBeats(version, n) {
     case "maskStory": if (!version.whole) return slice("maskStoryAll", 0, 3); break;
     case "devilStory": return { beats: [await devilBeat(n, message('showScenes.theDevilFromOurBokkenrijdersShow'), 4)] };
     // Runde 16: Höhepunkt von 3D+, die Maske zerlegt sich zum Totenkopf mit Zylinder und wieder zurück (scenes/bokkenrijders.js)
-    case "bokkenrijdersStory": { const { maskSkullStory } = await import("./scenes/bokkenrijders.js"); return maskSkullStory(await devilBeat(n, caption), n); }
+    case "bokkenrijdersStory": { const { maskSkullStory } = await import("./scenes/bokkenrijders.js"); return maskSkullStory(await devilBeat(n, caption), n, { linger: version.linger ?? 0 }); }
     case "clockStory": if (!version.whole) return slice("clockStoryAll", 0, 4); break;
     case "champagneStory": { const all = await buildBeats({ ...version, build: "clockStoryAll" }, n); const pop = all.beats[all.beats.length - 1]; return { beats: [{ ...pop, caption: message('showScenes.aChampagneBottleTheCorkPops'), hold: 4.5 }] }; }
   }

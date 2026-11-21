@@ -41,9 +41,16 @@ const paintsAt = (beat, j, t) => { if (!beat.live) return false; const p = beat.
  * an ihren Plätzen; dasselbe Flag am Bild danach lässt es ebenso ohne Pause beginnen.
  * leaveOrder(p) (Runde 17): in welcher Reihenfolge die Drohnen des alten Bildes losfliegen (klein = zuerst; Standard: von
  * unten nach oben). Baut sich das neue Bild von oben auf, fliegen mit leaveOrder = −y auch die oberen Drohnen zuerst, statt
- * von ganz unten quer durch die Figur nach oben.
+ * von ganz unten quer durch die Figur nach oben. * keepLit (Runde 17, Schleife): hat das neue Bild weniger Plätze, bauen es zuerst die Drohnen, die im alten leuchten (das
+ * Grinsen der Maske wird zum Logo), statt der untersten; die übrigen verlöschen an ihrem Platz.
+ * refit (Runde 17, Schleife): `from` und `to` liegen in verschiedenen Bildausschnitten (eigene Motive, eigene Einpassung
+ * der Engine, abhängig von der Bühne). Dann rechnet der Umbau beim Abspielen Anfang und Ziel jeder Drohne aus dem
+ * Ausschnitt ihres Bildes (from.fit, to.fit, von show-field.js gesetzt) in seinen eigenen um: Er beginnt auf dem
+ * Bildschirm genau dort, wo das alte Bild steht, und endet genau dort, wo das neue beginnt, ohne Maßstabssprung.
+ * from und to müssen dafür die Bilder sein, die wirklich in der Szene stehen, und das Ergebnis darf nicht kopiert werden
+ * (live liest den eigenen Ausschnitt am zurückgegebenen Objekt).
  */
-export function reassemble(from, to, { caption = '', frame, spread = 2.6, fly = 2.2, order = (p) => p[1], leaveOrder = (p) => p[1], layers = 6, at = from.hold ?? 2.2, seamless = false } = {}) {
+export function reassemble(from, to, { caption = '', frame, spread = 2.6, fly = 2.2, order = (p) => p[1], leaveOrder = (p) => p[1], layers = 6, at = from.hold ?? 2.2, seamless = false, keepLit = false, refit = false } = {}) {
   const A = poseAt(from, at), B = poseAt(to, 0), M = Math.max(A.length, B.length);
   const litA = A.map((o) => o[3] > 0.05), litB = B.map((o) => o[3] > 0.05);
   // Startplätze: die Drohnen des alten Bildes, fehlende parken dunkel auf den hellsten Plätzen (jeder Platz höchstens
@@ -57,7 +64,7 @@ export function reassemble(from, to, { caption = '', frame, spread = 2.6, fly = 
   const off = Math.max(A.length + (from.offstageDrones ?? 0), B.length + (to.offstageDrones ?? 0)) - M;
   // Zuordnung schichtweise: Ziele nach Bauordnung, Drohnen nach Höhe (leuchtende zuerst), je Schicht optimal
   const byOrder = slots.map((s, i) => [order(to.pts[i], i), i]).sort((a, b) => a[0] - b[0]).map(([, i]) => i);
-  const byHeight = src.map((s, j) => [leaveOrder(s.p) + (s.lit ? 0 : 0.5), j]).sort((a, b) => a[0] - b[0]).map(([, j]) => j);
+  const byHeight = src.map((s, j) => [leaveOrder(s.p) + (s.lit ? 0 : keepLit ? 1e6 : 0.5), j]).sort((a, b) => a[0] - b[0]).map(([, j]) => j);
   const slotOf = new Int32Array(M).fill(-1), rank = new Float64Array(M);
   byOrder.forEach((i, r) => { rank[i] = r / Math.max(1, byOrder.length - 1); });
   // überzählige Drohnen: die dunkelsten und höchsten (am Ende von byHeight) bleiben stehen
@@ -81,13 +88,20 @@ export function reassemble(from, to, { caption = '', frame, spread = 2.6, fly = 
   // gelesen (getönt wie das Bild selbst)
   const own = B.map((o, i) => (paintsAt(to, i, 0) ? o.slice(4, 7) : null));
   const fitPts = [...(to.fitPts ?? B.map((o) => o.slice(0, 3))), ...A.filter((_, j) => litA[j]).map((o) => o.slice(0, 3))];
-  return {
+  // refit: Faktor und Versatz vom Ausschnitt eines Bildes in den eigenen, je Aufruf aus den aktuellen Einpassungen
+  const into = [1, 0, 0], frameInto = (f) => { const s = beat.fit; if (!refit || !s || !f) { into[0] = 1; into[1] = 0; into[2] = 0; return into; } const r = f.k / s.k; into[0] = r; into[1] = s.x - f.x * r; into[2] = s.y - f.y * r; return into; };
+  const toIndex = new Uint8Array(M); for (let j = 0; j < M; j++) toIndex[j] = slotOf[j] >= 0 ? 1 : 0;
+  const beat = {
     groups: [{ name: 'umbau', count: M, rigid: false }], writes: ['umbau'],
     pts, caption, hold: spread + fly + 0.4, fitPts, ...(frame ? { frame } : {}), ...(off > 0 ? { offstageDrones: off } : {}), ...(seamless ? { seamless } : {}),
     umbau: { from: A.length, to: B.length, slotOf, leave, fly }, // für den Wächter
     live: (b, j, t, o) => {
       const u = ease((t - leave[j]) / fly), q = target[j], i = slotOf[j];
-      for (let c = 0; c < 3; c++) o[c] = lerp(b[c], q[c], u);
+      if (refit) {
+        const [ra, ax, ay] = frameInto(from.fit), sx = b[0] * ra + ax, sy = b[1] * ra + ay, sz = b[2] * ra;
+        const [rb, bx, by] = toIndex[j] ? frameInto(to.fit) : frameInto(from.fit);
+        o[0] = lerp(sx, q[0] * rb + bx, u); o[1] = lerp(sy, q[1] * rb + by, u); o[2] = lerp(sz, q[2] * rb, u);
+      } else for (let c = 0; c < 3; c++) o[c] = lerp(b[c], q[c], u);
       if (litS[j] && litT[j]) o[3] = 1 - 0.3 * Math.sin(Math.PI * u);
       else if (litS[j]) o[3] = 1 - smooth(u / 0.6);
       else if (litT[j]) o[3] = smooth((u - 0.6) / 0.4);
@@ -97,6 +111,7 @@ export function reassemble(from, to, { caption = '', frame, spread = 2.6, fly = 
       if (w > 0) { const c = own[i], p = to.pts[i]; for (let d = 0; d < 3; d++) o[4 + d] = b[3 + d] + ((c ? c[d] : p[3 + d]) - b[3 + d]) * w; }
     },
   };
+  return beat;
 }
 
 /**

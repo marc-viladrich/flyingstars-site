@@ -90,6 +90,21 @@ Leistungsvergleich) gelten nur, wenn dieser Abschnitt sie nennt.
     Paketfarbe, Hut/Schädeldecke/Tränen/Glühen, Grinsen am Anfang und Ende, Drohnengrenzen, Farb- und Nahtlos-Haken der
     Engine), dazu `scripts/umbau.test.mjs` und `scripts/show-counts.test.mjs`. Kontaktbögen: `/tmp/fs-r17-totenkopf/`
     (`geschichte.png` aus der Engine, `kontaktbogen-browser.png` aus dem Konfigurator im Browser).
+- Runde 17, Schleife (Marc, 21.11.2026: Bokkenrijders-Übergänge „mega nice“, nur das Ende abrupt), Startseiten-Teaser:
+  - Das letzte Bild (Grinsen mit glühenden Augen) steht `LOOP_LINGER` = 4,5 s Show-Uhr länger allein (rund 1,4 s statt
+    0,1 s); Hörner und Gesicht verlöschen zur selben Zeit wie bisher (`maskSkullStory(…, { linger })`, `fadeEnd`).
+  - Danach setzen sich Zähne und Augen per Umbau zum ersten Logo des Ablaufs zusammen (`loopBeat` in show-teaser.js,
+    `reassemble` mit `keepLit`: die leuchtenden Drohnen bauen das Logo, fehlende Plätze kommen dunkel dazu; `refit`: der
+    Umbau rechnet beim Abspielen zwischen den Bildausschnitten von Maske und Logo um, kein Maßstabssprung). Der nächste
+    Durchlauf beginnt mit genau diesem Logo ohne Wolke und ohne zweiten Aufbau (`scene.loopJoined`; `startBeat(…, joined)`
+    in show-field.js, ein nahtloses Bild mit weniger Drohnen übernimmt dabei die leuchtenden). Wireframe: Regler, Paket und
+    „Platz für euer Logo“ wechseln schon während des Umbaus.
+  - Gilt im gemischten Ablauf und nach der Wahl 3D+ (dort endet der Ablauf mit der Bokkenrijders-Geschichte, Bild
+    `handoff`). In 2D und 3D steht am Ende die ganze Maske ohne Geschichte, dort bleibt die lebendige Wolke zurück zum
+    Anfang; `marke` und `hochzeit` ebenso. Der Konfigurator (Kultur, 3D+) bleibt unverändert (kein `linger`, `loopTo`
+    durch die Wolke, dort beginnt die Geschichte ohnehin mit dem Grinsen).
+  - Wächter: `scripts/schleife.test.mjs`. Kontaktbögen: `/tmp/fs-r17-schleife/kontaktbogen-1440.png` und
+    `kontaktbogen-390.png` (WebKit).
 
 ## Aufbau
 

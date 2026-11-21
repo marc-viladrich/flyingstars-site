@@ -111,8 +111,9 @@ function maskParts(pts) {
  * Die Maske aus der Show (Bild aus show-scenes.js, devilBeat), mit eigener Bewegung: mode 'enter' (Grinsen, Gesicht von
  * oben, Hörner wachsen) oder 'leave' (am Ende bleibt nur das Grinsen). Augen und Zähne glühen, sie schwenkt leicht.
  */
-function maskBeat(mask, parts, mode, extra) {
-  const { horn, grin, face, down, along, root } = parts, hold = extra.hold;
+function maskBeat(mask, parts, mode, { fadeEnd, ...extra }) {
+  // fadeEnd: bis wann Hörner und Gesicht verloschen sind (Standard: zum Ende des Bildes); was danach bleibt, ist das Grinsen
+  const { horn, grin, face, down, along, root } = parts, hold = fadeEnd ?? extra.hold;
   return { ...mask, ...extra, live: (b, j, t, o) => {
     let a = grin[j] ? 0.8 + 0.5 * Math.abs(Math.sin(t * 1.5)) : 1;
     if (mode === 'enter') {
@@ -136,14 +137,17 @@ function maskBeat(mask, parts, mode, extra) {
 /**
  * Die Geschichte aus der Maske (Bild aus show-scenes.js, devilBeat) und dem Totenkopf: Maske → Totenkopf → Maske. n
  * Drohnen; der Totenkopf nutzt so viele wie die Maske, die übrigen warten in Reserve wie bei der Maske.
+ * linger (s, Runde 17, Schleife im Startseiten-Teaser): so lange steht am Ende das Grinsen mit den glühenden Augen allein,
+ * bevor das nächste Bild kommt (ohne: rund 0,2 s, im Konfigurator unverändert). Das letzte Bild trägt `handoff`: es endet
+ * auf einem ruhigen Rest, aus dem sich das nächste Motiv zusammensetzen kann (show-teaser.js, buildReel).
  */
-export function maskSkullStory(mask, n) {
+export function maskSkullStory(mask, n, { linger = 0 } = {}) {
   const k = mask.pts.length, skull = skullHat(k), parts = maskParts(mask.pts);
   const off = n > k ? { offstageDrones: n - k } : {};
   const first = maskBeat(mask, parts, 'enter', { hold: 4, caption: message('bokkenrijders.mask'), frame: 'bokkenrijders' });
   // seamless: Umbau und Bild danach beginnen ohne Pause, die Drohnen stehen schon an ihren Plätzen (show-field.js)
   const head = { ...act([part('totenkopf', skull.pts)]), caption: message('bokkenrijders.skullTipsHat'), hold: HOLD, live: skull.live, frame: 'bokkenrijders', seamless: true, ...off };
-  const last = maskBeat(mask, parts, 'leave', { hold: 5, caption: message('bokkenrijders.maskAgain'), frame: 'bokkenrijders', seamless: true });
+  const last = maskBeat(mask, parts, 'leave', { hold: 5 + linger, fadeEnd: 5, caption: message('bokkenrijders.maskAgain'), frame: 'bokkenrijders', seamless: true, handoff: true });
   // ein Bildausschnitt für alle Bilder: die Maske und der Totenkopf zu mehreren Zeitpunkten ihrer Bewegung
   const at = (b, t) => b.pts.map((p, j) => { const o = [p[0], p[1], p[2] || 0, 1, NaN, 0, 0]; b.live?.(p, j, t, o); return o.slice(0, 3); });
   const fitPts = [...[0, 1.5, 3, 4].flatMap((t) => at(first, t)), ...[0, 1.7, 3.6, 6, HOLD].flatMap((t) => at(head, t))];

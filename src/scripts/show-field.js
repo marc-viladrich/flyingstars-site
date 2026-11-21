@@ -384,8 +384,10 @@ export function createField(canvas, { onBeat, onTick, cloudTime = 1, cloudSpread
   }
 
   /** auto: the show moves on by itself (slower flights, the living cloud where the beat asks for it); otherwise a
-   * visitor's click, which answers quickly. viaCloud: reach this beat through the living cloud also on a click. */
-  function startBeat(k, t, auto = false, viaCloud = false) {
+   * visitor's click, which answers quickly. viaCloud: reach this beat through the living cloud also on a click.
+   * joined (Runde 17, Schleife): this beat begins exactly where the last one ended (scene.loopJoined: the last beat
+   * rebuilds the first one), so it starts like a seamless beat and never through the cloud. */
+  function startBeat(k, t, auto = false, viaCloud = false, joined = false) {
     ensureCapacity(Math.max(scene.beats[k].pts.length, active, leaveEnd));
     // bring every drone to where it is now: time may have passed since the last frame (slow device, async build)
     if (lastT && t > lastT) { for (let q = 0; q < Math.max(active, leaveEnd) * 3; q++) pos[q] += vel[q] * (t - lastT); lastT = t; }
@@ -396,11 +398,27 @@ export function createField(canvas, { onBeat, onTick, cloudTime = 1, cloudSpread
     // drones joining come from outside (dark there); every drone beyond this beat that is still lit flies out
     for (let i = active; i < n; i++) if (alpha[i] < 0.02) { away(i, spot); pos.set(spot, i * 3); vel.fill(0, i * 3, i * 3 + 3); groupOf[i] = ""; }
     const previousEnd = Math.max(active, leaveEnd);
+    // Runde 17 (Schleife): ein nahtloses Bild mit weniger Drohnen als das vorige übernimmt die leuchtenden. Die Engine
+    // zeigt Drohne 0 … n−1; eine leuchtende mit höherer Nummer tauscht darum die Nummer mit einer dunklen darunter (die
+    // Drohnen sind gleich, sichtbar ändert sich nichts). Sonst flöge sie hinaus und eine dunkle an ihren Platz.
+    const seamless = Boolean(b.seamless) || joined;
+    if (seamless && n < previousEnd) {
+      const swap3 = (a, x, y) => { for (let d = 0; d < 3; d++) { const v = a[x * 3 + d]; a[x * 3 + d] = a[y * 3 + d]; a[y * 3 + d] = v; } };
+      const swap1 = (a, x, y) => { const v = a[x]; a[x] = a[y]; a[y] = v; };
+      let dark = 0;
+      for (let i = n; i < previousEnd; i++) {
+        if (alpha[i] <= 0.01) continue;
+        while (dark < n && alpha[dark] > 0.01) dark++;
+        if (dark >= n) break;
+        swap3(pos, i, dark); swap3(vel, i, dark); swap3(col, i, dark); swap1(alpha, i, dark); swap1(groupOf, i, dark); swap1(localOf, i, dark); swap1(flowOf, i, dark);
+        dark++;
+      }
+    }
     leaveEnd = n;
     for (let i = n; i < previousEnd; i++) if (alpha[i] > 0.01) leaveEnd = i + 1;
     active = n;
     // lebendige Wolke: das ganze Bild (cloud: true) oder nur die genannten Teile (cloud: ["star"], Teil-Umbau)
-    const want = !held() && !userPaused && (viaCloud ? true : auto ? b.cloud : null);
+    const want = !joined && !held() && !userPaused && (viaCloud ? true : auto ? b.cloud : null);
     const parts = Array.isArray(want) ? new Set(want) : null;
     cloud = Boolean(want);
     assignPlaces(b, n, target, parts ?? cloud);
@@ -422,7 +440,7 @@ export function createField(canvas, { onBeat, onTick, cloudTime = 1, cloudSpread
     for (let i = 0; i < leaveEnd; i++) carried = Math.max(carried, Math.hypot(vel[i * 3], vel[i * 3 + 1], vel[i * 3 + 2]));
     // Runde 17: ein Bild, das genau dort beginnt, wo das vorige endet (seamless, z. B. ein Umbau und das Bild danach), wartet
     // nicht die Mindestflugzeit ab, wenn wirklich jede Drohne schon an ihrem Platz steht und keine hinausfliegt
-    let inPlace = Boolean(b.seamless) && leaveEnd <= n && !cloud;
+    let inPlace = seamless && leaveEnd <= n && !cloud;
     for (let i = 0; inPlace && i < n * 3; i++) if (Math.abs(from[i] - ordered[i]) > 1e-4) inPlace = false;
     flightN = still() || inPlace ? 0 : Math.max(longest, b.minFlight || 0, plain.length || leaveEnd > n ? 1.1 * carried : 0);
     const spreadN = still() ? 0 : Math.min(0.5, flightN * 0.25);
@@ -560,8 +578,9 @@ export function createField(canvas, { onBeat, onTick, cloudTime = 1, cloudSpread
     if (dt > 0) for (let k = 0; k < movingEnd * 3; k++) vel[k] = (pos[k] - prev[k]) / dt;
     if (arrived && elapsed - flight - spread - settled >= (b.hold ?? 2.2)) {
       if (beat < scene.beats.length - 1) startBeat(beat + 1, t, true);
-      // vierzehnte Fassung (Marc): vom letzten Bild zurück zum ersten immer durch die lebendige Wolke, in jedem Paket
-      else if (scene.loopTo !== undefined) startBeat(scene.loopTo, t, true, true);
+      // vierzehnte Fassung (Marc): vom letzten Bild zurück zum ersten immer durch die lebendige Wolke, in jedem Paket.
+      // Runde 17: außer das letzte Bild baut das erste schon selbst zusammen (scene.loopJoined, Schleife im Teaser)
+      else if (scene.loopTo !== undefined) startBeat(scene.loopTo, t, true, !scene.loopJoined, Boolean(scene.loopJoined));
     }
     return !arrived || beat < scene.beats.length - 1 || scene.loopTo !== undefined || Boolean(b.live) || Boolean(b.shimmer);
   }
