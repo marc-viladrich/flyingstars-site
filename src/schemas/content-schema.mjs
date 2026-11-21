@@ -323,9 +323,10 @@ const rawSectionSchema = z.discriminatedUnion('type', [
     // Handy per Knopf), pausiert bei globaler Pause und reduzierter Bewegung. Nur registrierte Videos (src/lib/videos.ts).
     type: fieldPolicy(z.literal('landingHero'), 'shared'), ...todo, kicker: fieldPolicy(z.string().optional(), 'translatable'),
     headline: fieldPolicy(z.string().min(1), 'translatable'), text: fieldPolicy(z.string().min(1), 'translatable'), cta: link, secondary: link.optional(),
-    video: fieldPolicy(z.enum(['showreel', 'bokkenrijders', 'nfl', 'ford', 'puma', 'siemensIndoor']).describe('Schlüssel aus src/lib/videos.ts'), 'shared'),
+    video: fieldPolicy(z.enum(['showreel', 'bokkenrijders', 'nfl', 'ford', 'puma', 'siemensIndoor']).optional().describe('Schlüssel aus src/lib/videos.ts; genau eins von video und show'), 'shared'),
+    show: fieldPolicy(z.enum(['hochzeitHero']).optional().describe('Statt des Videos: Formationen aus dem Show-Konfigurator (Ablauf in src/scripts/show-teaser.js, Runde 14)'), 'shared'),
     videoLabel: fieldPolicy(z.string().optional().describe('Kleine Beschriftung im Rahmen, z. B. "Ford Explorer · Köln"'), 'translatable'),
-    poster: image.describe('Standbild bis zum ersten Videobild und bei reduzierter Bewegung'),
+    poster: image.describe('Standbild bis zum ersten Videobild bzw. Formationsbild, bei reduzierter Bewegung und ohne JavaScript'),
     facts: z.array(z.object({ value: businessValueSchema, label: fieldPolicy(z.string().min(1), 'translatable') })).max(4).default([]),
   }),
   z.object({

@@ -90,9 +90,9 @@
     "nl": "een logo dat scherper wordt met meer drones, een gloeilamp, een spiraal, een QR-code en een raket die op de maan landt"
   },
   "configuratorteaser.initialsInsideAHeartAHeartIn2dAsA": {
-    "de": "Initialen im Herz, ein Herz in 2D, als Tunnel und in 3D, Sektgläser, Ringe und ein Antrag",
-    "en": "initials inside a heart, a heart in 2D, as a tunnel and in 3D, champagne glasses, rings and a proposal",
-    "nl": "initialen in een hart, een hart in 2D, als tunnel en in 3D, champagneglazen, ringen en een huwelijksaanzoek"
+    "de": "Initialen im Herz, die mit mehr Drohnen schärfer werden, ein Unendlich-Zeichen in 2D und 3D, eine Sektflasche mit Korken und ein Blütenspalier",
+    "en": "initials inside a heart becoming sharper with more drones, an infinity sign in 2D and 3D, a champagne bottle with its cork and an arch of blossoms",
+    "nl": "initialen in een hart die scherper worden met meer drones, een oneindigheidsteken in 2D en 3D, een champagnefles met kurk en een bloemenboog"
   },
   "configuratorteaser.sampleDroneShowPreviewValue": {
     "de": "Beispiel-Vorschau einer Drohnenshow: {v0}",
@@ -298,6 +298,11 @@
     "de": "Video anhalten",
     "en": "Pause video",
     "nl": "Video pauzeren"
+  },
+  "landinghero.weddingShowLabel": {
+    "de": "Drohnenformationen zur Hochzeit: ein Herz in 2D, das zum Herztunnel in 3D wird, ein Ring, der auf den Ringfinger gleitet, eine Hochzeitstorte in 2D und 3D, ein Paar beim ersten Tanz, Sektgläser in 2D und 3D und eine Lichtkugel mit goldenem Herz",
+    "en": "Wedding drone formations: a heart in 2D that becomes a 3D tunnel of hearts, a ring gliding onto the ring finger, a wedding cake in 2D and 3D, a couple's first dance, champagne glasses in 2D and 3D and a sphere of light with a golden heart",
+    "nl": "Droneformaties voor een bruiloft: een hart in 2D dat een hartentunnel in 3D wordt, een ring die om de ringvinger glijdt, een bruidstaart in 2D en 3D, een paar bij de eerste dans, champagneglazen in 2D en 3D en een lichtbol met een gouden hart"
   },
   "landingprice.excludingVatForValueDronesPlusTravel": {
     "de": "netto für {v0} Drohnen, zzgl. Anfahrt",

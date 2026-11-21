@@ -121,8 +121,9 @@ test('Anlass-Seiten: Klick irgendwo aufs Video hält es an und startet es wieder
 });
 
 // Marc, 21.11.2026: „Bei Marken & Werbung sollte das Video auch wie bei der Startseite oben und autoplay sein. Aber halt
-// auch 480p für geringe Datenmengen.“ Gilt für alle Anlass-Seitenköpfe (Werbung, Hochzeit, Indoor, Über uns).
-for (const path of ['/drohnenshow-werbung/', '/drohnenshow-hochzeit/', '/drohnenshow-indoor/']) {
+// auch 480p für geringe Datenmengen.“ Gilt für alle Anlass-Seitenköpfe mit Video (Werbung, Indoor, Über uns). Die Hochzeit
+// zeigt seit Runde 14 Formationen statt Video (tests/landing-hero-show.spec.ts).
+for (const path of ['/drohnenshow-werbung/', '/drohnenshow-indoor/']) {
   test(`Handy: Video im Seitenkopf von ${path} steht über der Überschrift und läuft von selbst in 480p`, async ({ page, isMobile }) => {
     test.skip(!isMobile, 'nur Handy');
     await page.goto(path);

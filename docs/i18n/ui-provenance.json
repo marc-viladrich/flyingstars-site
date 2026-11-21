@@ -111,6 +111,8 @@
   {"key":"landinghero.playVideo","locale":"nl","origin":"machine-new","components":["src/components/landing/LandingHero.astro"]},
   {"key":"landinghero.pauseVideo","locale":"en","origin":"machine-new","components":["src/components/landing/LandingHero.astro"]},
   {"key":"landinghero.pauseVideo","locale":"nl","origin":"machine-new","components":["src/components/landing/LandingHero.astro"]},
+  {"key":"landinghero.weddingShowLabel","locale":"en","origin":"machine-new","components":["src/components/landing/LandingHero.astro"]},
+  {"key":"landinghero.weddingShowLabel","locale":"nl","origin":"machine-new","components":["src/components/landing/LandingHero.astro"]},
   {"key":"landingprice.excludingVatForValueDronesPlusTravel","locale":"en","origin":"machine-new","components":["src/components/landing/LandingPrice.astro"]},
   {"key":"landingprice.excludingVatForValueDronesPlusTravel","locale":"nl","origin":"machine-new","components":["src/components/landing/LandingPrice.astro"]},
   {"key":"landingprice.upToValueDronesValuePerValueAdditionalDrones","locale":"en","origin":"machine-new","components":["src/components/landing/LandingPrice.astro"]},

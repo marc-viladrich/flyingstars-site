@@ -10,18 +10,16 @@ sections:
     text: Dürfen wir euch zum Tanz auffordern? Auf eurer Hochzeit erweckt unsere Drohnenshow euer Märchen zum Leben. Für Tränenmomente und einen Höhepunkt im Hochzeitsvideo.
     cta: { label: Show anfragen, href: "#anfrage" }
     secondary: { label: "☎︎ {{contact.phone.international}}", href: "{{contact.phone.href}}" }
-    video: showreel
-    videoLabel: Showreel
+    # Runde 14 (Moritz und Marc, 21.11.2026): kein Showreel (zeigt Marken und öffentliche Feiern), sondern Hochzeitsmotive aus
+    # dem Konfigurator als Steigerung 2D → 3D; das Foto bleibt Standbild (LCP, reduzierte Bewegung, ohne JavaScript)
+    show: hochzeitHero
     poster:
       src: https://flyingstars.art/wp-content/uploads/2025/07/Heiratsantrag_Headerbild.jpg
       alt: Hand mit Ring aus Drohnen am blauen Abendhimmel über Baumkronen, bei einem Heiratsantrag am Schloss Hugenpoet
       width: 2063
       height: 1303
-    # Eckdaten wie im Prototyp (Werte aus show-packages.ts, Preis wie bei Moritz)
-    facts:
-      - { value: ab 7.900 €, label: netto mit SPARK, "_key": "k_d6b481df0eeda9dbd41c" }
-      - { value: 100 Drohnen, label: im Paket, "_key": "k_b54242b2d9dbb9fb4cb8" }
-      - { value: inklusive, label: Genehmigung, "_key": "k_23f7c52d3dd38daa58dc" }
+    # Runde 14 (Moritz): keine Eckdaten im Seitenkopf, der Fokus liegt auf der Emotion
+    facts: []
     _key: k_683af193db254741d0d4
 
   # Moritz: „Du kennst uns aus: ZDF, WDR, NTV, WAZ + ‚Featured on Hochzeitsportal24‘“. Runde 6 (Marc): dazu sechs
