@@ -75,6 +75,11 @@ const PIECES = {
   // Runde 11 (Marc: „die Krake sollte da definitiv auch mit rein“): die 3D+-Geschichte ab 400 Drohnen (scenes/gross/
   // tintenfisch.js, erst beim Bauen nachgeladen); die 100 zusätzlichen Drohnen steigen dunkel von unten auf (joinLate)
   krake: { kind: "story", tags: ["tier", "wasser"], steps: [O("octopusStory", { n: 400, story: 10 })] },
+  // Runde 11 (Marc 21.11.2026: „auf der Startseite nicht übertreiben und maximal 400 Drohnen“): aus den neuen Motiven alles,
+  // was mit höchstens 400 Drohnen geht. Countdown 10 → 0 mit Feuerwerk (gross/countdown.js, 3D+ ab 400) und der aztekische
+  // Drachenkopf (catalog-3d/drache.js, 3D+ ab 300). Wächter: scripts/himmel-folge-drohnen.test.mjs
+  countdown: { kind: "story", tags: ["zeichen", "feuer"], steps: [O("countdownStory", { n: 400, story: 10 })] },
+  drache: { kind: "story", tags: ["tier", "gesicht"], steps: [O("dragonHead", { story: 8 })] },
   // Feuerwerk aus Drohnen: Leuchtspur, Sterne blühen, Finale; Runde 5 (Marc: „da fehlt dieser Feuerregen“): die ganze
   // Geschichte bis zum Goldregen (whole), der Regen steht 3 s und läuft langsamer, damit man ihn fallen sieht
   feuerwerk: { kind: "story", tags: ["feuer"], steps: [O("fireworkStory", { whole: true, rate: 1.5, hold: 3.0 })] },
@@ -82,7 +87,7 @@ const PIECES = {
 /** Erster Besuch: unser Feuerwerk (Finale), dann sofort groß. Danach die Wunschliste in dieser Reihenfolge, später gemischt.
  *  Runde 6 (Marc): der QR-Code direkt nach dem Logo (typischer Einsatz: Logo, dann „Scan me“). */
 const OPENING = { kind: "story", tags: ["feuer"], steps: [O("fireworkFinale", { story: 2.0, rate: 1.5, hold: 2.6 })] }; // Finale, dann Goldregen
-const FIRST = ["maske", "logo", "qr", "kugel", "delfine", "turm", "baum", "wappen", "krake", "musik", "kolibri", "buch", "taenzerin", "riesenrad", "feuerwerk"];
+const FIRST = ["maske", "logo", "qr", "kugel", "delfine", "turm", "baum", "wappen", "krake", "countdown", "musik", "drache", "kolibri", "buch", "taenzerin", "riesenrad", "feuerwerk"];
 
 /** Indoor-Reihe (scenes/indoor.js): bis 50 Drohnen, einfache Motive, in fester Runde. */
 const NI = 50;
