@@ -29,13 +29,15 @@ test('Scrollstory-Kopf in der Hero-Stufe, Startseite mit benanntem Riesenformat 
   assert.match(read('scripts/layout-audit.mjs'), /const EXEMPT = '\.eco-head-xl';/);
 });
 
-test('Lichtkegel der NRW-Karte: feste Punktmaske und nur bei erlaubter Bewegung', () => {
+test('Lichtkegel der NRW-Karte: Canvas mit den Punkten im Kreis und nur bei erlaubter Bewegung', () => {
   const src = read('src/components/sections/Location.astro');
   assert.match(src, /\.loc-lit \{ display: none;/);
   assert.match(src, /@media \(prefers-reduced-motion: no-preference\) \{[^}]+\}\s*:global\(html:not\(\.motion-paused\)\) \.loc-lit \{ display: block;/);
-  // Runde 15: Punktmaske geschnitten mit dem Lichtkreis (Darstellung wie Runde 9), Lage per Skript statt Zeigezellen
-  assert.match(src, /mask-image: url\(\/media\/standort-nrw-maske\.svg\), radial-gradient\(circle 8\.5rem at var\(--sx\) var\(--sy\)/);
-  assert.match(src, /stage\.style\.setProperty\('--sx'/);
-  assert.doesNotMatch(src, /class="loc-hit"|:has\(\.hc\d/);
-  assert.ok(existsSync(new URL('../public/media/standort-nrw-maske.svg', import.meta.url)));
+  // Runde 16: Canvas zeichnet nur die Punkte im Lichtkreis (Safari ruckelte mit der Verbundmaske, die bei jeder Lageänderung
+  // über die ganze Fläche neu gerastert wird). Keine Maske und keine Übergänge auf registrierten Eigenschaften mehr.
+  assert.match(src, /<canvas class="loc-lit" aria-hidden="true"><\/canvas>/);
+  assert.match(src, /const LIGHT_RADIUS_REM = 8\.5, CORE = 0\.3/);
+  assert.match(src, /cssTime\('--dur-follow'\)/);
+  assert.doesNotMatch(src, /mask-image|@property --s[xy]|class="loc-hit"|:has\(\.hc\d/);
+  assert.ok(!existsSync(new URL('../public/media/standort-nrw-maske.svg', import.meta.url)));
 });
