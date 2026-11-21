@@ -1,7 +1,7 @@
 // Runde 10b (Marc 20.11.2026: „der ganze Drachenflug sieht sehr scheiße aus … im Vergleich mit den Delfinen sieht der
 // Drache mega krass 2D aus“), Runde 11 („Bei den ganzen Drachenmotiven … musst du dir echt mal mehr Mühe machen“: Kopf bei
 // 300 zu dicht und fischartig, Sonnenscheibe und Drachenflug raus). Wächter für scenes/catalog-3d/drache.js: aufsteigender
-// Drache (3D 200–290) und Drachenkopf (3D+ 300–1000; Runde 11b: eine Silhouette statt Parallelstrichen, füllt die Bühne,
+// Drache (3D ab 200; Runde 11b neu als östlicher Drache in Windungen, Marc 21.11.: „3D Drache ist noch mega whack“) und Drachenkopf (3D+ 300–1000; Runde 11b: eine Silhouette statt Parallelstrichen, füllt die Bühne,
 // Feuerstoß als Höhepunkt mit eigenem Bildausschnitt). Genau n Drohnen bei jeder einstellbaren Zahl, keine Klumpen, keine
 // verstreuten Punkte, Bewegung in Drohnengrenzen, räumlich statt flach, Lesbarkeit (die Zeichen eines Drachen, wenige
 // Linien bei 300, kein zweites Auge wie eine Brille, der Kopf füllt das Bild, die Flamme den halben Himmel), Übergang ohne
@@ -12,7 +12,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 
 const { BUILDERS } = await import('../src/scripts/scenes/index.js');
-const { builders, riseModel, headModel, headLevel, headLineCount } = await import('../src/scripts/scenes/catalog-3d/drache.js');
+const { builders, riseModel, risePoseAt, headModel, headLevel, headLineCount } = await import('../src/scripts/scenes/catalog-3d/drache.js');
 const { LIMITS } = await import('../src/scripts/show-flight.js');
 const { droneStops } = await import('../src/content/show-packages.ts');
 const { OCCASIONS } = await import('../src/content/show-configurator.js');
@@ -63,7 +63,7 @@ test('genau n Drohnen in jedem Bild bei jeder einstellbaren Zahl, Punkte gültig
 });
 
 test('keine zwei Drohnen aufeinander, keine verstreuten Punkte (Ruhelage und in Bewegung)', async () => {
-  for (const [name, ns] of [['dragonRise', [200, 250, 290]], ['dragonHead', [300, 400, 500, 700, 1000]]]) for (const n of ns) {
+  for (const [name, ns] of [['dragonRise', [200, 400, 700, 1000]], ['dragonHead', [300, 400, 500, 700, 1000]]]) for (const n of ns) {
     const { beats } = await builders[name](n, '');
     for (const [k, b] of beats.entries()) for (const t of [0, (b.hold ?? 6) / 2, b.hold ?? 6]) {
       const pts = frame(b, t), nn = nearest(pts), med = quantile(nn, 0.5);
@@ -74,7 +74,7 @@ test('keine zwei Drohnen aufeinander, keine verstreuten Punkte (Ruhelage und in 
 });
 
 test('Eigenbewegung in Drohnengrenzen und ohne Sprung bei t = 0', async () => {
-  for (const [name, n] of [['dragonRise', 200], ['dragonRise', 290], ['dragonHead', 300], ['dragonHead', 1000]]) {
+  for (const [name, n] of [['dragonRise', 200], ['dragonRise', 500], ['dragonRise', 1000], ['dragonHead', 300], ['dragonHead', 1000]]) {
     const { beats } = await builders[name](n, '');
     for (const [k, b] of beats.entries()) {
       const m = motion(b, n, n > 500 ? 3 : 1);
@@ -86,14 +86,13 @@ test('Eigenbewegung in Drohnengrenzen und ohne Sprung bei t = 0', async () => {
 });
 
 test('räumlich, nicht flach: Rumpf und Schwanz schwingen in die Tiefe, Flügel gepfeilt, Kopf mit Seitenkonturen', async () => {
-  // Ein bloßes Tiefenmaß über die ganze Figur reicht nicht (die alte Fassung dragon3d kam auf 0,52, weil sie flache Flügel
-  // schräg stellt). Gemessen wird je Teil im eigenen Rahmen; Stand Runde 11: Rumpf und Schwanz Tiefe/Höhe 0,25, Flügel
-  // Tiefe/Spannweite 0,45, Kopf 37–41 % der Drohnen abseits der Mittelebene (beide Seitenkonturen, Hörner, Mähne).
-  for (const n of [200, 250, 290]) {
-    const m = riseModel(n), spine = m.pts.filter((_, j) => m.tags[j] === 'body' || m.tags[j] === 'tail');
-    const wing = m.pts.filter((_, j) => m.tags[j] === 'wingR' || m.tags[j] === 'boneR');
-    assert.ok(extent(spine, 2) / extent(spine, 1) >= 0.2, `Drache ${n}: Rumpf und Schwanz liegen flach (${(extent(spine, 2) / extent(spine, 1)).toFixed(2)})`);
-    assert.ok(extent(wing, 2) / extent(wing, 0) >= 0.35, `Drache ${n}: Flügel Tiefe/Spannweite ${(extent(wing, 2) / extent(wing, 0)).toFixed(2)}`);
+  // aufsteigender Drache: die Windungen liegen im Raum (Tiefe/Breite des Körpers mindestens 0,5; Stand 11b: 0,6–0,7) und
+  // drehen sich, der Kopf hat Seitenkonturen (Augen, Brauen, Zähne, Hörner beidseits)
+  for (const n of [200, 500, 1000]) for (const t of [0, 5, 10]) {
+    const m = riseModel(n), p = risePoseAt(n, t), body = p.filter((_, j) => m.slots[j].kind === 'body');
+    assert.ok(extent(body, 2) / extent(body, 0) >= 0.5, `Drache ${n} t ${t}: Windungen flach (${(extent(body, 2) / extent(body, 0)).toFixed(2)})`);
+    const head = m.slots.filter((q) => q.kind === 'head'), off = head.filter((q) => Math.abs(q.p[2]) > 0.03).length / head.length;
+    assert.ok(off >= 0.3, `Drache ${n}: Kopf nur ${(off * 100).toFixed(0)} % abseits der Mittelebene`);
   }
   for (const n of [300, 500, 1000]) {
     const h = headModel(n), pts = h.pts.slice(0, h.B), w = extent(pts, 0), off = pts.filter((p) => Math.abs(p[2]) > 0.1 * w).length / pts.length;
@@ -130,8 +129,13 @@ test('lesbar: die Zeichen eines Drachen, wenige Linien bei 300, kein zweites Aug
   const { beats } = await builders.dragonHead(300, ''), h = headModel(300), b = beats[1];
   const eye = (sgn) => { const l = []; b.pts.forEach((p, j) => { if ((h.tags[j] === 'auge' || h.tags[j] === 'pupille') && Math.sign(h.pts[j][2]) === sgn) { const o = [p[0], p[1], p[2], 1]; b.live(p, j, b.hold, o); l.push(o[3]); } }); return l.reduce((s, a) => s + a, 0) / l.length; };
   assert.ok(eye(-1) <= eye(1) / 3, `ferne Augen ${eye(-1).toFixed(2)} gegen nahe ${eye(1).toFixed(2)}`);
-  // aufsteigender Drache: der Kopf ist groß genug, um ihn zu lesen (mindestens 12 % der Höhe, mindestens 40 Drohnen)
-  for (const n of [200, 290]) { const m = riseModel(n), head = m.pts.filter((_, j) => ['head', 'jaw', 'horn'].includes(m.tags[j])); assert.ok(head.length >= 40 && extent(head, 1) / extent(m.pts, 1) >= 0.12, `Drache ${n}: Kopf ${head.length} Drohnen, ${(extent(head, 1) / extent(m.pts, 1) * 100).toFixed(0)} % der Höhe`); }
+  // aufsteigender Drache: der Kopf ist groß genug, um ihn zu lesen (mindestens 40 Drohnen, mindestens 30 % der Breite;
+  // Runde 11b, Iteration 1 war er ein Knubbel oben auf der Spirale), er steht frei über den Windungen
+  for (const n of [200, 500, 1000]) for (const t of [0, 7]) {
+    const m = riseModel(n), p = risePoseAt(n, t), head = p.filter((_, j) => m.slots[j].kind === 'head'), body = p.filter((_, j) => m.slots[j].kind === 'body' && m.slots[j].s > 0.2);
+    assert.ok(head.length >= 40 && extent(head, 0) >= 0.3 * extent(p, 0), `Drache ${n} t ${t}: Kopf ${head.length} Drohnen, ${(extent(head, 0) / extent(p, 0) * 100).toFixed(0)} % der Breite`);
+    assert.ok(Math.min(...head.map((q) => q[1])) > Math.max(...body.map((q) => q[1])) - 0.05, `Drache ${n} t ${t}: Kopf liegt in den Windungen`);
+  }
 });
 
 test('Übergang mit Bezug statt Wolke: Mähne und Barteln werden zum Feuer, die Kamera zieht nur für den Feuerstoß zurück', async () => {
@@ -153,6 +157,11 @@ test('Übergang mit Bezug statt Wolke: Mähne und Barteln werden zum Feuer, die 
 
 test('mehr Drohnen bringen mehr Teile, nicht nur dichtere Linien', () => {
   assert.deepEqual([300, 399, 400, 699, 700, 1000].map(headLevel), [0, 0, 1, 1, 2, 2]);
+  // aufsteigender Drache: ab 400 Beine, Barteln, Bauchschuppen und Perle, ab 700 vier Beine und mehr Mähne
+  const kinds = (n) => { const c = {}; for (const q of riseModel(n).slots) c[q.kind] = (c[q.kind] ?? 0) + 1; return c; };
+  const legs = (n) => new Set(riseModel(n).slots.filter((q) => q.kind === 'leg').map((q) => q.g)).size, strands = (n) => new Set(riseModel(n).slots.filter((q) => q.kind === 'mane').map((q) => q.g)).size;
+  assert.deepEqual([200, 400, 700].map(legs), [0, 2, 4]); assert.deepEqual([200, 400, 700].map(strands), [2, 4, 6]);
+  for (const k of ['whisk', 'scale', 'pearl']) assert.ok(!kinds(200)[k] && kinds(400)[k] > 0, `Drache: ${k}`);
   assert.ok(headLineCount(300) < headLineCount(500) && headLineCount(500) < headLineCount(1000), `Kopf: Linien ${[300, 500, 1000].map(headLineCount).join(' / ')}`);
   // die Linien werden nicht beliebig dicht: Medianabstand bei 1000 mindestens 40 % dessen bei 300
   const med = (n) => { const h = headModel(n); return quantile(nearest(h.pts.slice(0, h.B)), 0.5); };
@@ -160,7 +169,7 @@ test('mehr Drohnen bringen mehr Teile, nicht nur dichtere Linien', () => {
 });
 
 test('Aufbau schnell genug für den Anlasswechsel (bester von drei)', async () => {
-  for (const [name, n, ms] of [['dragonRise', 290, 60], ['dragonHead', 300, 80], ['dragonHead', 1000, 250]]) {
+  for (const [name, n, ms] of [['dragonRise', 290, 60], ['dragonRise', 1000, 120], ['dragonHead', 300, 80], ['dragonHead', 1000, 250]]) {
     let best = Infinity;
     for (let r = 0; r < 3; r++) { const t0 = performance.now(); await builders[name](n, ''); best = Math.min(best, performance.now() - t0); }
     assert.ok(best < ms, `${name} ${n}: ${best.toFixed(1)} ms`);

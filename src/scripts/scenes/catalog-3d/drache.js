@@ -8,10 +8,11 @@ import { t as message } from '../../../i18n/ui.mjs';
 // sichtbares Volumen) mit wenigen Querkanten an den markanten Ecken; der Hals als Röhre mit Kammlinie, Reifen erst bei
 // mehr Drohnen. Keine Füllung, keine Linie, die nichts sagt.
 //
-//   dragonRise (3D, 200–290): ein Drache steigt auf. Lesbar an vier Zeichen: Profilkopf mit offenem Maul und
-//     zurückgeschwungenen Hörnern, große Fledermausflügel mit Fingern und Bogenkante, S-förmiger Rumpf mit Stachelkamm in
-//     der Bildebene, eingerollter Schwanz mit Spitze. Bewegung: Flügelschlag mit Nachlauf zur Spitze (die Flughaut
-//     schwingt nach), eine Welle läuft durch Rumpf und Schwanz, er steigt mit jedem Schlag, der Körper schwenkt langsam.
+//   dragonRise (3D, ab 200): ein östlicher Drache schraubt sich in Windungen nach oben (Runde 11b neu, Marc: „3D Drache ist
+//     noch mega whack“). Der Kopf mit Hörnern, Mähne und Barteln steht ruhig über den Windungen und schaut sich in der
+//     Dreiviertelansicht um; die Windungen drehen sich stetig, so dass sie unter ihm aufzusteigen scheinen, eine Welle
+//     läuft vom Hals zur Schwanzquaste. Ab 400 Beine mit Krallen, Bauchschuppen, Barteln und die Perle, der er nachjagt;
+//     ab 700 vier Beine und eine reichere Mähne.
 //   dragonHead (3D+, 300–1000): ein aztekischer Drachenkopf auf dem Hals, im Profil nach links. Lesbar an Silhouette
 //     (lange Schnauze, kantige Braue, offenes Maul mit Fangzähnen, zwei weit zurückgeschwungene Hörner, Federmähne am
 //     Nacken) statt an Binnenlinien. Aus Maul und Nase steigen Atem-Voluten (die aztekischen Sprechrollen); sie sind die
@@ -57,110 +58,6 @@ function ribbon(c, w) {
   return [...L, ...R.reverse().slice(1)];
 }
 const at3 = (pts2, z) => pts2.map(([x, y]) => [x, y, typeof z === 'function' ? z(x, y) : z]);
-
-// =====================================================================================================================
-// 3D: der aufsteigende Drache
-// =====================================================================================================================
-const SHOULDER = [0.02, 0.26, -0.06];
-const FLAP_AXIS = norm([0, 0.45, 1]); // schräg: der Schlag hebt die Spitzen und schiebt sie zugleich in die Tiefe
-const BEAT = 2.6; // s je Flügelschlag (Drohnengrenzen: Spitze < 0,6 Anzeigeeinheiten/s)
-const HEAD_AT = [0.15, 1.05], HEAD_TILT = 0.55, HEAD_S = 1.25; // Kopfansatz; ein aufsteigender Drache schaut nach oben
-
-/** Der Drache in Ruhelage: Teile für assemble() und das Rückgrat (Schwanzspitze → Kopf) für Welle und Lichtlauf. */
-function riseParts(n) {
-  const L1 = n >= 250; // ab 250: mehr Stacheln, Daumenkralle, Kieferseiten, Doppelspitze am Schwanz
-  // Schwanz: eine Spirale unter dem Körper in einer gekippten Ebene (vorn tiefer), sie endet vorn und geht in den Rumpf über
-  const TURNS = 1.15, A0 = Math.PI / 2 - TURNS * TAU, C = [0.0, -0.86];
-  const coil = Array.from({ length: 73 }, (_, i) => { const u = i / 72, a = A0 + u * TURNS * TAU, r = 0.08 + 0.56 * u; return [C[0] + r * Math.cos(a), C[1] + 0.6 * r * Math.sin(a) + 0.04 * u, 0.5 * r * Math.sin(a)]; });
-  // Rumpf als S: Bauch nach links, Brust rechts, Hals wieder links, der Kopf schaut nach rechts
-  const bodyCtrl = [coil[66], coil[72], [-0.26, -0.4, 0.26], [-0.3, -0.14, 0.12], [-0.12, 0.12, 0.03], [0.08, 0.36, 0], [0.08, 0.6, 0], [-0.08, 0.8, 0], [-0.02, 0.97, 0], [0.15, 1.05, 0]];
-  const axis = spline(bodyCtrl, 10).slice(10);
-  // Doppelkontur mit Reifen (wie Fußballer und Fahrzeuge unter 300: keine Kammlinie, sonst wird der Rumpf eine Leiter)
-  // Rumpf als EINE kräftige Linie wie in der Referenz (Runde 11, Kontaktbogen v5): die Doppelkontur einer Röhre zerfiel bei
-  // 200–290 Drohnen und 0,1 Linienabstand in Punktrauschen, die eine Linie zeigt das S. Räumlich wird er durch das S in der
-  // Tiefe, die Schwanzschlaufe, die gepfeilten Flügel und die Welle, die als Schraube durch ihn läuft.
-  const body = curves('body', [axis], { w: 1.6 });
-  const cum = [0]; for (let i = 1; i < axis.length; i++) cum.push(cum[i - 1] + Math.hypot(...sub(axis[i], axis[i - 1])));
-  const frameAt = (s) => { const L = s * cum.at(-1); let i = 1; while (i < cum.length - 1 && cum[i] < L) i++; const dir = norm(sub(axis[Math.min(axis.length - 1, i + 1)], axis[i - 1])); return { p: axis[i], dir, side: norm([-dir[1], dir[0], 0]) }; };
-  // Stachelkamm auf dem Rücken (links am S, in der Bildebene: aus jeder Richtung zu sehen), nach hinten geneigt
-  const spikeAt = (L1 ? [0.16, 0.26, 0.36, 0.46, 0.56, 0.66, 0.76, 0.86] : [0.2, 0.34, 0.48, 0.62, 0.76, 0.88]);
-  // (die Stacheln sitzen auf der Rumpflinie)
-  const spikes = spikeAt.map((s) => { const { p, dir, side } = frameAt(s), h = 0.11 * (1 - 0.35 * Math.abs(s - 0.5)); return [addv(p, scale(dir, 0.04)), addv(addv(p, scale(side, h)), scale(dir, -0.035)), addv(p, scale(dir, -0.04))]; });
-  const tip = coil[0], d = norm(sub(coil[0], coil[3])), up = [0, 1, 0], across = norm([d[2], 0, -d[0]]);
-  const spade = (o) => ({ pts: [tip, addv(addv(tip, scale(d, 0.07)), scale(o, 0.06)), addv(tip, scale(d, 0.17)), addv(addv(tip, scale(d, 0.07)), scale(o, -0.06))], closed: true });
-  const parts = [body, curves('tail', [coil, spade(up), ...(L1 ? [spade(across)] : [])]), curves('spike', spikes, { w: 0.9 })];
-  // Flügel: Arm (Schulter → Ellbogen → Handgelenk → Spitze), Finger, Hinterkante als Bögen zwischen den Fingerspitzen.
-  // In der Tiefe nach hinten gepfeilt (−0,4 je Einheit Spannweite), die Flughaut wölbt sich nach hinten.
-  for (const s of [1, -1]) {
-    const P = (u, v, cam = 0) => [SHOULDER[0] + s * (0.08 + u), SHOULDER[1] + v, SHOULDER[2] - 0.4 * u - cam];
-    const arm = spline([[0, 0], [0.34, 0.3], [0.58, 0.52], [1.05, 0.8]].map(([u, v]) => P(u, v)), 8);
-    const wrist = [0.58, 0.52], tips = [[1.05, 0.8], [1.06, 0.28], [0.86, -0.08], [0.52, -0.3], [0.08, -0.18]];
-    const trailing = [];
-    for (let i = 1; i < tips.length; i++) {
-      const a = tips[i - 1], b = tips[i], m = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2], c = [m[0] + 0.24 * (wrist[0] - m[0]), m[1] + 0.24 * (wrist[1] - m[1])];
-      quad(a, b, c, 10).forEach(([u, v], k) => { if (i === 1 || k) trailing.push(P(u, v, 0.07 * Math.sin((Math.PI * k) / 10))); });
-    }
-    const bones = [arm, ...tips.slice(1, 4).map(([u, v]) => [P(...wrist), P(u, v)])];
-    if (L1) bones.push([P(...wrist), P(wrist[0] + 0.03, wrist[1] + 0.09), P(wrist[0] - 0.02, wrist[1] + 0.14)]);
-    parts.push(curves(s > 0 ? 'boneR' : 'boneL', bones, { w: 1.05 }), curves(s > 0 ? 'wingR' : 'wingL', [trailing]));
-  }
-  // Kopf im Profil nach rechts: Schädel mit kantiger Braue, lange Schnauze, offener Unterkiefer, zwei Hörner nach hinten.
-  // Seitenkontur auf beiden Seiten (halbe Breite hw), wie ein Fahrzeug; Augen als Lichtpunkte auf beiden Seiten.
-  const place = ([x, y]) => [HEAD_AT[0] + HEAD_S * (x * Math.cos(HEAD_TILT) - y * Math.sin(HEAD_TILT)), HEAD_AT[1] + HEAD_S * (x * Math.sin(HEAD_TILT) + y * Math.cos(HEAD_TILT))];
-  const hw = (x) => 0.06 - 0.025 * Math.max(0, x / 0.45);
-  const skull = [[-0.05, 0.0], [0.0, 0.09], [0.1, 0.11], [0.17, 0.09], [0.21, 0.13], [0.25, 0.075], [0.37, 0.06], [0.44, 0.035], [0.46, 0.0], [0.34, -0.015], [0.14, -0.02], [0.03, -0.05]].map(place);
-  const jaw = [[0.03, -0.06], [0.18, -0.085], [0.38, -0.155], [0.41, -0.12], [0.17, -0.05]].map(place);
-  const lx = (q) => ((q[0] - HEAD_AT[0]) * Math.cos(HEAD_TILT) + (q[1] - HEAD_AT[1]) * Math.sin(HEAD_TILT)) / HEAD_S; // Stelle entlang der Schnauze
-  const sides = (poly, k = 1) => [-1, 1].map((sg) => ({ pts: poly.map((q) => [q[0], q[1], sg * hw(lx(q)) * k]), closed: true }));
-  const hornC = spline([[0.02, 0.09], [-0.04, 0.24], [-0.12, 0.36], [-0.23, 0.45]], 5), hornO = ribbon(hornC, (u) => 0.035 * (1 - u) ** 0.9).map(place);
-  const horn = (sg) => ({ pts: hornO.map(([x, y], i) => { const u = Math.min(i, hornO.length - 1 - i) / ((hornO.length - 1) / 2); return [x, y, sg * (0.045 + 0.09 * u)]; }), closed: true });
-  parts.push(
-    curves('head', [...sides(skull), ...(L1 ? [[[...place([0.46, 0]), -hw(0.46)], [...place([0.46, 0]), hw(0.46)]]] : [])], { w: 1.1 }),
-    curves('jaw', L1 ? sides(jaw, 0.8) : [{ pts: jaw.map(([x, y]) => [x, y, 0]), closed: true }]),
-    curves('horn', [horn(1), horn(-1)], { w: 1.1 }),
-    ...[-1, 1].map((k) => spot('eye', [...place([0.15, 0.05]), k * 0.06], 2, 0.016, [0, 0, k])),
-  );
-  return { parts, spine: [...coil, ...axis] };
-}
-
-export function riseModel(n) {
-  const { parts, spine } = riseParts(n), { pts, tags } = assemble(parts, n);
-  // Stelle jeder Drohne auf dem Rückgrat (0 Schwanzspitze … 1 Kopf): Welle und Lichtlauf
-  const cum = [0]; for (let i = 1; i < spine.length; i++) cum.push(cum[i - 1] + Math.hypot(...sub(spine[i], spine[i - 1])));
-  const along = pts.map((p) => { let best = Infinity, k = 0; for (let i = 0; i < spine.length; i += 2) { const d = Math.hypot(...sub(p, spine[i])); if (d < best) { best = d; k = i; } } return cum[k] / cum.at(-1); });
-  return { pts, tags, along, spine };
-}
-
-const riseColour = (tag, s, p) => {
-  if (tag === 'eye') return CYAN;
-  if (tag === 'horn' || tag === 'spike') return GOLD;
-  if (tag.startsWith('bone')) return GOLD;
-  if (tag.startsWith('wing')) return mix(GOLD, WARM, 0.3 + 0.3 * Math.min(1, Math.abs(p[0]) / 1.1));
-  if (tag === 'head') return mix(ORANGE, GOLD, 0.35);
-  if (tag === 'jaw') return mix(ORANGE, RED, 0.2);
-  return mix(mix(RED, ORANGE, 0.3), ORANGE, s);
-};
-const wingSide = (tag) => (tag === 'wingR' || tag === 'boneR' ? 1 : tag === 'wingL' || tag === 'boneL' ? -1 : 0);
-const WAVED = new Set(['body', 'tail', 'spike']);
-
-/** Lage einer Drohne des aufsteigenden Drachen zur Zeit t (aus ihrer Ruhelage). */
-function risePose(model, j, t, out) {
-  const p = model.pts[j], tag = model.tags[j], s = wingSide(tag), on = smooth(t / 1.3), ph = (t * TAU) / BEAT;
-  out[0] = p[0]; out[1] = p[1]; out[2] = p[2];
-  if (s) {
-    // Flügelschlag mit Nachlauf: weiter außen schlägt die Flughaut etwas später (sie schwingt nach, statt starr zu klappen)
-    const pivot = [SHOULDER[0] + s * 0.08, SHOULDER[1], SHOULDER[2]], d = Math.hypot(...sub(p, pivot));
-    turnAbout(out, pivot, FLAP_AXIS, s * 0.3 * on * Math.sin(ph - 0.55 * d));
-  } else if (WAVED.has(tag)) {
-    // eine Welle läuft vom Hals zur Schwanzspitze, zum Schwanz hin weiter ausschwingend; der Hals bleibt ruhig
-    const a = model.along[j], amp = 0.045 * on * smooth((0.82 - a) / 0.6), w = 0.5 * ph - 7 * a;
-    out[0] += amp * Math.sin(w); out[2] += 0.6 * amp * Math.cos(w);
-  }
-  out[1] += 0.03 * on * Math.sin(ph + 1.2); // er steigt mit jedem Schlag ein wenig
-  yaw(out, 0.22 + 0.3 * smooth(t / 2) * Math.sin((t * TAU) / 12)); // aus der Dreiviertelansicht hin und her
-  pitch(out, 0.08); // etwas von oben: die Schwanzspirale zeigt sich als Schlaufe
-  return out;
-}
 
 // =====================================================================================================================
 // 3D+: der Drachenkopf (Runde 11b)
@@ -331,18 +228,201 @@ const fireColour = (u) => (u < 0.25 ? mix(WARM, GOLD, u / 0.25) : u < 0.6 ? mix(
 // Haltungen: Dreiviertelansicht als Grundpose, Drehung weiter zum Publikum, zum Feuer zurück ins Halbprofil (das Feuer geht nach links)
 const YAW0 = 0.5, YAW1 = 0.92, YAW2 = 0.55, YAW3 = 0.38, JAW0 = 0.18, JAW1 = 0.48, LIFT = 0.1, TURN = 3.4, INHALE = 2.4;
 
+// =====================================================================================================================
+// 3D: der aufsteigende Drache, Runde 11b neu gedacht (Marc 21.11.2026: „3D Drache ist noch mega whack“). Gebaut nach dem
+// Prinzip der Krake (scenes/gross/tintenfisch.js): Körper sind Bänder um eine Mittellinie, jede Drohne sitzt fest an
+// ihrer Stelle (s entlang, Seite), Bewegung ändert nur die Mittellinie; so fliegt jede Drohne eine weiche Bahn.
+// =====================================================================================================================
+const lerpR = (a, b, u) => a + (b - a) * u;
+const crossR = (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
+/** Kubische Bézierkurve (3D) bei e ∈ [0, 1]. */
+const bez3 = (a, b, c, d, e, out) => { const v = 1 - e; for (let q = 0; q < 3; q++) out[q] = v * v * v * a[q] + 3 * v * v * e * b[q] + 3 * v * e * e * c[q] + e * e * e * d[q]; return out; };
+const dotR = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+const share2 = (n, w) => { const s = w.reduce((a, b) => a + b, 0), raw = w.map((x) => (n * x) / s), out = raw.map(Math.floor); let r = n - out.reduce((a, b) => a + b, 0); raw.map((x, i) => [x - out[i], i]).sort((a, b) => b[0] - a[0]).forEach(([, i]) => { if (r > 0) { out[i]++; r--; } }); return out; };
+/** Detailstufe des aufsteigenden Drachen: 0 bis 399, 1 bis 699, 2 ab 700. */
+export const riseLevel = (n) => (n >= 700 ? 2 : n >= 400 ? 1 : 0);
+
+// ---- Drachenkopf (Anleihe beim 3D+-Kopf): Profil in der Mittelebene, Auge, Braue, Nüster, Fangzahn auf beiden Seiten,
+// zwei Hörner in der Tiefe auseinander. Kopfrahmen: x nach hinten (Schnauze bei −x), y oben, z zur Seite. Länge ≈ 0,62.
+const HP_TOP = [[-0.5, 0.0], [-0.52, 0.055], [-0.46, 0.1], [-0.4, 0.095], [-0.36, 0.12], [-0.2, 0.14], [-0.13, 0.205], [-0.07, 0.165], [0.03, 0.19], [0.12, 0.17], [0.17, 0.1], [0.16, 0.0]];
+const HP_LIP = [[0.16, 0.0], [0.04, -0.02], [-0.25, -0.02], [-0.46, -0.01], [-0.5, 0.0]];
+const HP_JAW = [[0.02, -0.04], [-0.22, -0.04], [-0.44, -0.055], [-0.47, -0.09], [-0.4, -0.12], [-0.18, -0.13], [0.05, -0.11], [0.12, -0.04]];
+const hw = (x) => 0.06 + 0.07 * smooth((x + 0.5) / 0.55); // halbe Kopfbreite (breit genug, dass er von vorn ein Gesicht hat)
+function headLines(lv) {
+  const side = (pts2, k, w = hw, lift = 0) => pts2.map(([x, y]) => [x, y, k * (w(x) + lift)]);
+  const lines = [];
+  lines.push({ tag: 'kopf', pts: [...HP_TOP, ...HP_LIP.slice(1)].map(([x, y]) => [x, y, 0]), closed: true });
+  lines.push({ tag: 'kiefer', pts: HP_JAW.map(([x, y]) => [x, y, 0]) });
+  const eye = Array.from({ length: 14 }, (_, i) => { const a = (i / 14) * TAU; return [-0.12 + Math.cos(a) * 0.035, 0.11 + Math.sin(a) * 0.02]; });
+  for (const k of [-1, 1]) {
+    lines.push({ tag: 'auge', pts: side(eye, k, hw, 0.005), closed: true });
+    lines.push({ tag: 'braue', pts: side(quad([-0.2, 0.135], [-0.04, 0.15], [-0.12, 0.19], 6), k, hw, 0.008) });
+    lines.push({ tag: 'zahn', pts: side([[-0.42, -0.01], [-0.405, -0.075], [-0.39, -0.01]], k, (x) => hw(x) * 0.7) });
+    // Horn: vom Scheitel weit nach hinten oben, in der Tiefe nach außen
+    const hc = spline([[0.0, 0.18], [0.12, 0.29], [0.26, 0.36], [0.38, 0.37]], 5), hz = (i) => k * (0.05 + 0.09 * (i / (hc.length - 1)));
+    if (lv >= 1) { const o = ribbon(hc, (u) => 0.03 * (1 - u) ** 0.9); lines.push({ tag: 'horn', pts: o.map(([x, y], i) => [x, y, hz(i < hc.length ? i : 2 * hc.length - 2 - i)]), closed: true }); }
+    else lines.push({ tag: 'horn', pts: hc.map(([x, y], i) => [x, y, hz(i)]) });
+  }
+  return lines;
+}
+
+// ---- Band entlang einer Mittellinie: Lage zur Zeit aus C (Punkte), T (Tangenten), N (Bandnormale), W (halbe Breite)
+/** Rahmen entlang einer Mittellinie: T Tangente, N möglichst „oben“ (Rücken), B = T × N. */
+function frames(C) {
+  const m = C.length, T = [], N = [], B = [];
+  for (let i = 0; i < m; i++) {
+    const a = C[Math.max(0, i - 1)], b = C[Math.min(m - 1, i + 1)], t = norm(sub(b, a)), up = [0, 1, 0], d = dotR(up, t);
+    let nn = norm([up[0] - d * t[0], up[1] - d * t[1], up[2] - d * t[2]]); if (!Number.isFinite(nn[0])) nn = [1, 0, 0];
+    T.push(t); N.push(nn); B.push(crossR(t, nn));
+  }
+  return { T, N, B };
+}
+/** Punkt auf dem Band: Stelle s ∈ [0, 1] (Index-Interpolation), Querlage q (Vielfaches der halben Breite entlang N), r entlang B. */
+function onBand(C, F, W, s, q, r, out) {
+  const f = s * (C.length - 1), i = Math.min(C.length - 2, Math.floor(f)), w = f - i;
+  for (let k = 0; k < 3; k++) {
+    const c = lerpR(C[i][k], C[i + 1][k], w), n = lerpR(F.N[i][k], F.N[i + 1][k], w), b = lerpR(F.B[i][k], F.B[i + 1][k], w), h = lerpR(W[i], W[i + 1], w);
+    out[k] = c + n * q * h + b * r * h;
+  }
+  return out;
+}
+
+// ---- Der östliche Drache, der sich als Spirale nach oben schraubt. Verglichen mit einem westlichen Drachen mit großen
+// Flügelflächen (Runde 11b, Kontaktbogen): der las sich wie ein Kolibri, die Flächen wirkten steif; die Spirale trägt Raum
+// und Bewegung.
+const EAST = { RX: 1.25, RZ: 0.85, H: 1.85, top: 0.5, turns: 1.55, M: 240, S0: 0.14 };
+/** Kopf: ruhig oben über den Windungen, Dreiviertelansicht zum Publikum; schaut sich langsam um. k = Kopfgröße. */
+const eastHead = (t, on, lv) => {
+  const a = 0.62 + on * 0.22 * Math.sin((t * TAU) / 13), fwd = norm([-Math.cos(a), 0.22 + on * 0.05 * Math.sin((t * TAU) / 7), Math.sin(a)]);
+  const up = norm(sub([0, 1, 0], scale(fwd, fwd[1]))), sd = crossR(fwd, up), k = [1.6, 1.7, 1.8][lv];
+  return { o: [-0.42, EAST.top + 0.78 + on * 0.04 * Math.sin((t * TAU) / 6.5), 0.2], fwd, up, sd, k };
+};
+/** Mittellinie zur Zeit t (Kopf bei s = 0 oben, Schwanz unten). Die Windungen drehen sich stetig um die Hochachse, so dass
+ * sie unter dem ruhigen Kopf aufzusteigen scheinen; eine Welle läuft vom Hals zum Schwanz (Nachlauf). Der Hals führt als
+ * Bogen vom Hinterkopf in die erste Windung. */
+function eastLine(t, on, lv) {
+  const { RX, RZ, H, top, turns, M, S0 } = EAST, C = [], W = [], wide = [0.1, 0.12, 0.13][lv];
+  const P = (s) => {
+    const wave = on * Math.sin(TAU * (1.4 * s - t / 3.2)), th = -0.2 - s * turns * TAU - (t * TAU) / 18, r = (1 - 0.3 * s) * (1 + 0.12 * wave * s);
+    return [RX * r * Math.cos(th), top - s * H + 0.16 * wave * Math.min(1, s * 2.5), RZ * r * Math.sin(th)];
+  };
+  const h = eastHead(t, on, lv), A = addv(h.o, scale(h.fwd, -0.17 * h.k)), D = P(S0), D2 = P(S0 + 0.01), dD = norm(sub(D, D2));
+  // der Hals als S: vom Hinterkopf erst nach hinten und zur Seite, dann in einem Bogen in die erste Windung
+  const B1 = addv(addv(addv(A, scale(h.fwd, -0.55)), scale(h.sd, -0.35)), [0, -0.05, 0]), B2 = addv(D, scale(dD, 0.9));
+  for (let i = 0; i <= M; i++) {
+    const s = i / M;
+    if (s < S0) C.push(bez3(A, B1, B2, D, s / S0, [0, 0, 0])); else C.push(P(s));
+    W.push(wide * (0.55 + 0.45 * smooth(s / 0.12)) * (1 - 0.8 * smooth((s - 0.35) / 0.65)));
+  }
+  return { C, W };
+}
+/** Teile als Stellen auf dem Band (Körper) und im Kopfrahmen (Kopf). */
+function eastModel(n) {
+  const lv = riseLevel(n);
+  // Kopf: Linien im Kopfrahmen, gleichmäßig verteilt (assemble)
+  const head = headLines(lv), headParts = [...new Set(head.map((l) => l.tag))].map((tag) => curves(tag, head.filter((l) => l.tag === tag).map((l) => (l.closed ? { pts: l.pts, closed: true } : l.pts)), { w: 1.15 }));
+  // Längen der Körperteile (Ruhelage) für die Verteilung
+  const { C } = eastLine(0, 0, lv), bodyLen = (() => { let L = 0; for (let i = 1; i < C.length; i++) L += Math.hypot(...sub(C[i], C[i - 1])); return L; })();
+  const headLen = head.reduce((a, l) => a + (() => { let L = 0; const p = l.closed ? [...l.pts, l.pts[0]] : l.pts; for (let i = 1; i < p.length; i++) L += Math.hypot(...sub(p[i], p[i - 1])); return L; })(), 0) * 1.15;
+  const spikes = lv >= 1 ? 18 : 12, spikeLen = spikes * 0.16, scales = lv >= 1 ? 26 : 0, scaleLen = scales * 0.11, legs = lv >= 2 ? 4 : lv >= 1 ? 2 : 0, legLen = legs * 0.62;
+  const K = eastHead(0, 0, lv).k, mane = [2, 4, 6][lv], maneLen = mane * 0.5 * K;
+  const whisk = lv >= 1 ? 2 : 0, whiskLen = whisk * 0.55 * K, tuft = 3, tuftLen = tuft * 0.22, pearl = lv >= 1 ? 1 : 0, pearlLen = pearl * 0.45 * K;
+  const [nBody, nHead, nSpike, nScale, nLeg, nWhisk, nTuft, nPearl, nMane] = share2(n, [2 * bodyLen, headLen * K, spikeLen, scaleLen, legLen, whiskLen, tuftLen, pearlLen, maneLen]);
+  const slots = [];
+  // Körper: zwei Kanten (Rücken q = +1, Bauch q = −1), gleichmäßig in s; zum Kopf hin beginnt er am Hinterkopf
+  const [nb0, nb1] = share2(nBody, [1, 1]);
+  for (const [cnt, q] of [[nb0, 1], [nb1, -1]]) for (let i = 0; i < cnt; i++) slots.push({ kind: 'body', s: 0.02 + 0.98 * ((i + (q > 0 ? 0.25 : 0.75)) / cnt), q });
+  // Rückenkamm: Zacken über der Rückenkante (zwei Drohnen je Zacke: Spitze und Flanke)
+  // mindestens drei Drohnen je Zacke (Flanke, Spitze, Flanke), sonst liegen einzelne Zackenpunkte auf der Rückenkante
+  const zk = Math.max(1, Math.min(spikes, Math.floor(nSpike / 3)));
+  for (let i = 0; i < nSpike; i++) { const z = Math.floor((i * zk) / nSpike), f = (((i * zk) / nSpike) % 1) + (0.5 * zk) / nSpike; slots.push({ kind: 'spike', s: 0.2 + (0.52 * (z + 0.5)) / zk, f, w: 0.52 / zk }); }
+  for (let i = 0; i < nScale; i++) { const z = Math.floor((i * scales) / nScale), f = ((i * scales) / nScale) % 1; slots.push({ kind: 'scale', s: 0.08 + (0.55 * (z + 0.5)) / scales, f }); }
+  for (let i = 0; i < nLeg; i++) { const g = Math.floor((i * legs) / nLeg), f = ((i * legs) / nLeg) % 1; slots.push({ kind: 'leg', g, f }); }
+  for (let i = 0; i < nWhisk; i++) { const g = Math.floor((i * whisk) / nWhisk), f = ((i * whisk) / nWhisk) % 1; slots.push({ kind: 'whisk', g, f }); }
+  for (let i = 0; i < nTuft; i++) { const g = Math.floor((i * tuft) / nTuft), f = ((i * tuft) / nTuft) % 1; slots.push({ kind: 'tuft', g, f }); }
+  for (let i = 0; i < nPearl; i++) slots.push({ kind: 'pearl', f: i / nPearl });
+  for (let i = 0; i < nMane; i++) { const g = Math.floor((i * mane) / nMane), f = ((i * mane) / nMane) % 1; slots.push({ kind: 'mane', g, f, m: mane }); }
+  const hd = assemble(headParts, nHead);
+  hd.pts.forEach((p, i) => slots.push({ kind: 'head', p, tag: hd.tags[i] }));
+  return { lv, slots };
+}
+const EAST_LEGS = [0.16, 0.48, 0.3, 0.62];
+/** Lage aller Drohnen zur Zeit t. */
+function eastScene(model) {
+  let at = NaN, C, W, F, H = null;
+  const ready = (t) => {
+    if (t === at) return; at = t;
+    const on = smooth(t / 2); ({ C, W } = eastLine(t, on, model.lv)); F = frames(C); H = eastHead(t, on, model.lv);
+  };
+  const tmp = [0, 0, 0];
+  return (q, t, out) => {
+    ready(t);
+    if (q.kind === 'body') return onBand(C, F, W, q.s, q.q, 0, out);
+    if (q.kind === 'spike') { // Zacke: von der Rückenkante nach oben hinten und zurück
+      const a = 0.5 + 0.5 * (q.f < 0.5 ? q.f * 2 : 2 - q.f * 2), ds = 0.7 * q.w * (q.f - 0.5); onBand(C, F, W, Math.min(1, q.s + ds), 1, 0, out);
+      const i = Math.round(q.s * (C.length - 1)), h = 0.08 * (1 - 0.5 * q.s) * a; for (let k = 0; k < 3; k++) out[k] += F.N[i][k] * h; return out;
+    }
+    if (q.kind === 'scale') { const a = Math.PI * (0.18 + 0.64 * q.f); return onBand(C, F, W, q.s + 0.008 * Math.cos(a), -Math.cos(a) * 0.9, Math.sin(a) * 1.1, out); } // Bauchschuppe: Bogen über die Vorderseite
+    if (q.kind === 'leg') { // Bein: Oberschenkel vom Bauch nach außen unten, Unterschenkel nach vorn, drei gespreizte Krallen
+      const s = EAST_LEGS[q.g], i = Math.round(s * (C.length - 1)), side = q.g % 2 ? 1 : -1, dirO = scale(F.B[i], side), dn = scale(F.N[i], -1), fw = scale(F.T[i], -1);
+      const base = onBand(C, F, W, s, -0.5, side * 0.8, tmp).slice(), sw = 0.03 * Math.sin((t * TAU) / 3 + q.g * 1.7);
+      const knee = addv(base, addv(scale(dn, 0.13), scale(dirO, 0.12 + sw))), ankle = addv(knee, addv(scale(dn, 0.1), scale(fw, 0.1)));
+      const claw = (a) => addv(ankle, addv(scale(fw, 0.07 * Math.cos(a)), addv(scale(dirO, 0.07 * Math.sin(a)), scale(dn, 0.03))));
+      if (q.f < 0.55) { const pts = [base, knee, ankle], u = (q.f / 0.55) * 2, k0 = Math.min(1, Math.floor(u)), w = u - k0; for (let k = 0; k < 3; k++) out[k] = lerpR(pts[k0][k], pts[k0 + 1][k], w); return out; }
+      const c = Math.min(2, Math.floor(((q.f - 0.55) / 0.45) * 3)), v = ((q.f - 0.55) / 0.45) * 3 - c, tip = claw((c - 1) * 0.75);
+      for (let k = 0; k < 3; k++) out[k] = lerpR(ankle[k], tip[k], 0.45 + 0.55 * v); return out;
+    }
+    if (q.kind === 'tuft') { // Schwanzquaste: drei Flammenblätter an der Schwanzspitze
+      const i = C.length - 1, tip = C[i], a = (q.g - 1) * 0.6, d = norm(addv(scale(F.T[i], Math.cos(a)), scale(F.N[i], Math.sin(a)))), L = 0.2, u = q.f, side = u < 0.5 ? 1 : -1, v = 0.25 + 0.75 * (1 - Math.abs(1 - 2 * u));
+      for (let k = 0; k < 3; k++) out[k] = tip[k] + d[k] * L * v + F.B[i][k] * 0.04 * side * Math.sin(Math.PI * v) + F.N[i][k] * 0.03 * Math.sin(TAU * v + t);
+      return out;
+    }
+    const h = H;
+    if (q.kind === 'head') { const p = q.p, m = h.k; for (let k = 0; k < 3; k++) out[k] = h.o[k] - h.fwd[k] * p[0] * m + h.up[k] * p[1] * m + h.sd[k] * p[2] * m; return out; }
+    if (q.kind === 'whisk') { // Bartel: von der Nüster in einer langen Welle nach hinten unten, weht
+      const k1 = q.g ? 1 : -1, u = q.f, x = -0.45 + 0.95 * u, y = 0.0 - 0.18 * u - 0.1 * Math.sin(Math.PI * u) + 0.05 * u * Math.sin(TAU * (u - t / 2.2)), z = k1 * (0.06 + 0.16 * u);
+      for (let k = 0; k < 3; k++) out[k] = h.o[k] + h.k * (-h.fwd[k] * x + h.up[k] * y + h.sd[k] * z); return out;
+    }
+    if (q.kind === 'mane') { // Mähne: Strähnen vom Hinterkopf nach hinten, abwechselnd links und rechts, wehen mit Nachlauf
+      const sg = q.g % 2 ? 1 : -1, row = Math.floor(q.g / 2) / Math.max(1, q.m / 2 - 1), u = q.f, w = Math.sin(TAU * (1.1 * u - t / 2.4) + q.g * 0.9);
+      const x = 0.06 + 0.06 * row + 0.5 * u, y = 0.16 - 0.1 * row + 0.1 * u * (1 - row) + 0.05 * u * w, z = sg * (0.05 + 0.12 * u + 0.04 * u * w);
+      for (let k = 0; k < 3; k++) out[k] = h.o[k] + h.k * (-h.fwd[k] * x + h.up[k] * y + h.sd[k] * z); return out;
+    }
+    if (q.kind === 'pearl') { // die Perle vor dem Kopf: ein Ring, dem er nachjagt
+      const a = q.f * TAU, c = addv(h.o, addv(scale(h.fwd, 0.62 * h.k), scale(h.up, 0.05 * h.k))), r = 0.07 * h.k, e1 = h.sd, e2 = norm(addv(h.up, scale(h.fwd, 0.3)));
+      for (let k = 0; k < 3; k++) out[k] = c[k] + (e1[k] * Math.cos(a) + e2[k] * Math.sin(a)) * r; return out;
+    }
+    return out;
+  };
+}
+const eastColour = (q) => {
+  if (q.kind === 'head') return { auge: CYAN, zahn: WARM, horn: mix(WARM, GOLD, 0.4), braue: GOLD }[q.tag] ?? mix(GOLD, ORANGE, 0.25);
+  if (q.kind === 'body') return q.q > 0 ? mix(ORANGE, RED, 0.25 + 0.45 * q.s) : mix(GOLD, ORANGE, 0.2 + 0.5 * q.s);
+  if (q.kind === 'spike') return mix(GOLD, ORANGE, 0.3 * q.s);
+  if (q.kind === 'scale') return mix(GOLD, WARM, 0.3);
+  if (q.kind === 'whisk' || q.kind === 'tuft') return mix(GOLD, ORANGE, 0.5);
+  if (q.kind === 'mane') return mix(WARM, GOLD, 0.3 + 0.5 * q.f);
+  if (q.kind === 'pearl') return WARM;
+  return mix(ORANGE, GOLD, 0.4);
+};
+/** Modell des aufsteigenden Drachen (für den Wächter): Detailstufe und Stellen je Drohne. */
+export const riseModel = (n) => eastModel(n);
+/** Lage aller Drohnen des aufsteigenden Drachen zur Zeit t (ohne Ansicht), für den Wächter. */
+export const risePoseAt = (n, t) => { const m = eastModel(n), pose = eastScene(m); return m.slots.map((q) => pose(q, t, [0, 0, 0])); };
+function eastBuilder(n, caption) {
+  const model = eastModel(n), pose = eastScene(model), col = model.slots.map(eastColour);
+  const view = (t, o) => { yaw(o, 0.25 * smooth(t / 3) * Math.sin((t * TAU) / 18), 0, 0); pitch(o, 0.3); return o; };
+  const at = (t) => model.slots.map((q, j) => [...view(t, pose(q, t, [0, 0, 0])), ...col[j]]);
+  const fitPts = [0, 4, 8, 12, 16].flatMap((t) => at(t)).filter((_, i) => i % 3 === 0);
+  return { beats: [{ pts: at(0), caption, hold: 16, fitPts, live: (b, j, t, o) => {
+    const q = model.slots[j]; view(t, pose(q, t, o));
+    // Licht läuft den Körper vom Kopf zum Schwanz entlang, Augen und Perle glühen
+    o[3] = q.kind === 'body' || q.kind === 'spike' ? 1 + 0.35 * Math.exp(-(((((t / 4) % 1.4) - q.s - 0.1) / 0.07) ** 2)) : q.tag === 'auge' ? 1.4 : q.kind === 'pearl' ? 1.25 + 0.25 * Math.sin(t * 2.4 + q.f * TAU) : 1;
+  } }] };
+}
+
 export const builders = {
-  dragonRise: (n, caption) => {
-    const model = riseModel(n), col = model.pts.map((p, j) => riseColour(model.tags[j], model.along[j], p));
-    const pts = model.pts.map((_, j) => [...risePose(model, j, 0, [0, 0, 0]), ...col[j]]);
-    return { beats: [{ pts, caption, live: (b, j, t, o) => {
-      risePose(model, j, t, o);
-      const tag = model.tags[j];
-      if (tag === 'eye') o[3] = 1.4;
-      else if (WAVED.has(tag)) o[3] = 1 + 0.4 * Math.exp(-((((1.2 - 1.5 * frac(t / 3.6)) - model.along[j]) / 0.08) ** 2)); // Licht läuft vom Hals zur Schwanzspitze
-      else if (wingSide(tag)) o[3] = tag.startsWith('bone') ? 1.12 : 0.95 + 0.22 * (0.5 + 0.5 * Math.sin((t * TAU) / BEAT - Math.abs(model.pts[j][0]) * 2));
-    } }] };
-  },
+  dragonRise: (n, caption) => eastBuilder(n, caption),
 
   dragonHead: (n) => {
     const model = headModel(n), { B, F, lv } = model;
