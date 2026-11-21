@@ -2,9 +2,9 @@
   "de": {
     "pillars": [
       {
-        "icon": "eu",
-        "title": "Gebaut in der EU",
-        "text": "Unsere Drohnen wiegen rund 300 Gramm und werden bei Drotek SAS in Frankreich gebaut."
+        "icon": "quiet",
+        "title": "Leise Drohnen",
+        "text": "Der TÜV NORD bestätigt den Schallschutz unserer Technik."
       },
       {
         "icon": "repair",
@@ -26,9 +26,9 @@
   "en": {
     "pillars": [
       {
-        "icon": "eu",
-        "title": "Built in the EU",
-        "text": "Our drones weigh around 300 grams and are built by Drotek SAS in France."
+        "icon": "quiet",
+        "title": "Quiet drones",
+        "text": "TÜV NORD confirms the noise protection of our technology."
       },
       {
         "icon": "repair",
@@ -50,9 +50,9 @@
   "nl": {
     "pillars": [
       {
-        "icon": "eu",
-        "title": "Gebouwd in de EU",
-        "text": "Onze drones wegen circa 300 gram en worden gebouwd door Drotek SAS in Frankrijk."
+        "icon": "quiet",
+        "title": "Stille drones",
+        "text": "TÜV NORD bevestigt de geluidsbescherming van onze techniek."
       },
       {
         "icon": "repair",

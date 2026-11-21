@@ -251,7 +251,7 @@ Verbindlich seit 15.11.2026 (Abschluss des Schrift-Labors). Konzept, Bühnenplan
 - Darunter Satz, Gesichter der drei Geschäftsführer:innen, Kontaktwege mit Verlaufs-Icons (E-Mail, Telefon, Videocall, WhatsApp)
 - Formular in genau zwei Schritten: Schritt 1 „Deine Show“ (Anlass, Ort, Datum oder „noch offen“, Paket, Idee), Schritt 2 „Du“ (Name, E-Mail, Telefon, Firma, Datenschutzhinweis)
 
-**Team:** große Porträts mit Vorhang-Reveal und Lichtpunkt-Hover.
+**Team:** große Porträts mit Vorhang-Reveal und Lichtpunkt-Hover. Startseite seit Runde 14 als Collage (`layout: collage`, siehe „Startseite: Nachhaltigkeit kompakt, Team als Collage“).
 
 **FAQ:**
 - Gruppen: Planung und Ablauf, Ort und Genehmigung, Sicherheit, Wetter und Umwelt, Kosten, Indoor
@@ -307,7 +307,7 @@ Marc nach dem Umbau auf Moritz' Texte: „Why did you strip out the whole person
 - Pixelschriften (Geist Pixel, „FS Pixel Weich“), Auftritte an H2, Bedienleiste und URL-Schalter des Schrift-Labors
 - Musterschicht aus Punktlinien, Startfeld-Ecken und Wolken hinter Kästen (Schrift-Labor Runde 1: „Tapete“)
 - Hover-Lupe mit Drohnen
-- Scrollstory nur gezielt: Nachhaltigkeit auf der Startseite (aus dem Prototyp zurückgeholt, Marc 31.10.: „das Scrollytelling finde ich ganz nice“), einmal Über uns nach persönlicher Vorstellung und frühem CTA
+- Scrollstory nur gezielt: Nachhaltigkeit auf der Nachhaltigkeitsseite, einmal Über uns nach persönlicher Vorstellung und frühem CTA. Auf der Startseite seit Runde 14 (21.11.2026) keine Scrollstory mehr (Moritz: Nachhaltigkeit erwähnen, aber nicht so viel Raum); ihre Figuren leben dort als Drohnen-Bühne weiter
 - Rechter Fülltext, Microcopy, die nur wiederholt, was man sieht (Eyebrows sind seit 31.10. wieder Pflicht, siehe Section-Köpfe)
 - Verlaufskreise um Schrittnummern, bunte Verlaufs-Icons
 - Kundenlogos als Drohnenformation
@@ -450,3 +450,46 @@ Formular, Referenzfilter und Konfigurator verwenden getrennte Anlass-IDs aus `oc
   Ursache beim Team: Karten außerhalb des Bildes warten noch auf ihr Einblenden und stehen 24 px tiefer; `overflow-x: auto`
   macht die senkrechte Achse automatisch scrollbar, die Reihe ließ sich hochschieben und schnitt Namen ab. Wächter:
   `scripts/slider-axis.test.mjs` (jede Regel mit `overflow-x: auto|scroll` braucht `overflow-y: hidden|clip`).
+
+## Startseite: Nachhaltigkeit kompakt, Team als Collage (Runde 14, 21.11.2026)
+
+Rückmeldung von Moritz, Entscheidung von Marc.
+
+**Nachhaltigkeit (`#nachhaltigkeit`, `type: sustainability`, `show: eco`).** Moritz: Nachhaltigkeit soll erwähnt werden, aber
+nicht so viel Raum einnehmen; Scrollstory und die Säule „Gebaut in der EU“ raus (FlyingStars schaut sich auch Drohnen anderer
+Hersteller an). Marc: eine kompakte Section.
+- Aufbau wie die Indoor-Reihe (`.eco-staged`, ein Mechanismus): links Kicker, Überschrift, Text und „Über die Nachhaltigkeit“,
+  rechts die Bühne, darunter über beide Spalten die vier Punkte (`IconFeature`, `sustainability-pillars.json`). Handy: Text,
+  Bühne (Querformat 2 : 1), Punkte mit Icon neben der Überschrift.
+- Überschrift: jeder Satz eine Zeile, „Kein Müll.“ als Kontur, „Kein Rauch.“ im Verlauf wie bisher, aber in der normalen
+  Größe einer Section-Überschrift (das Riesenformat gehörte zur Scrollstory). Gilt für jede Bühnen-Section mit einem Kopf
+  aus mehreren Sätzen (`stagedLines` in `Sustainability.astro`).
+- Bühne: dieselbe Engine wie die Show-Folge und die Indoor-Reihe (`createFolge(canvas, { variant: "eco" })`, `folge.js`),
+  keine eigene Render-Engine. Figuren aus der Scrollstory in `src/scripts/scenes/eco.js`, 120 Drohnen im Logoverlauf von links
+  nach rechts, feste Runde: ruhige Schallwelle (3,2 s, Hauptaussage „Kein Knall“), geparkte Flotte in Reihen von schräg oben
+  („Kein Müll“, wiederverwendbare Drohnen, eine Lichtwelle läuft durch die Reihen), Blitz (Ökostrom, Licht läuft von oben nach
+  unten). Die Null der Scrollstory ist nicht dabei: ohne Zahl daneben liest sie sich als Ring. Die drei Linien der Schallwelle
+  schwingen fast phasengleich und kreuzen sich nie (in der Scrollstory lagen an den Kreuzungen zwei Drohnen aufeinander).
+- Reduzierte Bewegung und Pause: die Schallwelle steht. Ohne JavaScript entfällt die Bühne, Text und Punkte stehen allein.
+- Vierter Punkt statt „Gebaut in der EU“: „Leise Drohnen – Der TÜV NORD bestätigt den Schallschutz unserer Technik.“ Wortlaut
+  aus der bisherigen Startseite (Scrollstory-Wert „Kein Knall“), Beleg ist das TÜV-NORD-Gutachten (siehe `todo`). Ökostrom von
+  naturstrom steht auf der Startseite schon in der Logo-Reihe unter „Sicherheit“ und als Blitz in der Bühne; ohne diesen Punkt
+  wäre der TÜV-Beleg mit der Scrollstory von der Startseite verschwunden. Keine pauschale Umweltaussage (EmpCo).
+- `sustainability-pillars.json` ist nur auf der Startseite (DE/EN/NL) eingebunden. „Gebaut in der EU“ und Drotek stehen sonst
+  nirgends im Seitentext; `business-facts.json` nennt Drotek im Geltungsbereich der Drohnengewichtsangabe (unverändert).
+- Wächter: `scripts/eco-motive.test.mjs`.
+
+**Team (`#ueber`, `type: team`, `layout: collage`).** Moritz: die Teamvorstellung nimmt zu viel Platz, lieber ein Teamfoto
+rechts neben dem Text; ein Teamfoto gibt es noch nicht. Marc: die Lösung aus einer frühen Version zurückholen.
+- Vorlage: die drei Porträts der Geschäftsführung in der Kontakt-Section (`ContactDetails.astro`, „die mittlere versetzt: wirkt
+  wie eine Gruppe statt wie drei Passbilder“, eingeführt auf `feat/designsprache-poc`, Runde 20 vom 04.11.2026).
+- Links Kopf, Text, „Ihr kennt uns aus …“ und die beiden Links; rechts Ronja, Florian und Erwin in kleineren Rechtecken (4 : 5):
+  die mittlere tiefer und vor den beiden anderen, die äußeren rücken leicht unter sie, darunter die
+  Leuchtpunkt-Unterlage (`DotField.astro`) wie bei den Bildleitern. Name klein unter jedem Porträt, rechts rechtsbündig. Rollen
+  und Vorstellungen stehen auf „Über uns“. Vorhang-Reveal und Lichtpunkt-Hover wie bei den großen Team-Karten (`.member`,
+  `.portrait`). Handy: Collage unter dem Text, ohne Überlappung (sonst verdeckt das mittlere Porträt den Namen links).
+- Bilder 480 px breit, `loading="lazy"`, feste Maße, alt-Texte aus `imageAlt` der Person.
+- Alle anderen Team-Sections (Werbung, Hochzeit, Indoor, Über uns) bleiben große Karten.
+- Der Himmel findet neben der Collage keinen freien Platz mehr (`free()`); das lachende Gesicht bei `#ueber` entfällt damit,
+  es bleibt ein Bild in der Section (siehe `docs/himmel.md`).
+

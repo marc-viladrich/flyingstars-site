@@ -32,9 +32,15 @@ test('T02: AFE-Speichern erreicht die DE/EN/NL-Verbraucher und erhält die seite
    assert.ok(visible.includes(member.role),`${where}: seitenlokale Rolle`);
    for(const field of ['bio','role'])assert.ok(!has('people','florian-becker',[field,locale]),`${where}: seitenlokales Feld ${field}`);
   }else{
+   // Startseite seit Runde 14 (21.11.2026): Team als Collage ohne Rolle und Vorstellung; Name und Porträt bleiben am Personendatensatz
+   if(name==='index'){
+    assert.ok(!visible.includes('Beweisbiografie '+locale)&&!visible.includes('Beweisrolle '+locale),`${where}: Collage ohne Bio und Rolle`);
+    for(const field of [['name'],['image']])assert.ok(has('people','florian-becker',field),`${where}: Personendatensatz ${field[0]}`);
+   }else{
    assert.ok(visible.includes('Beweisbiografie '+locale),`${where}: Bio`);
    assert.ok(visible.includes('Beweisrolle '+locale),`${where}: Rolle`);
    for(const field of ['bio','role'])assert.ok(has('people','florian-becker',[field,locale]),`${where}: Personendatensatz ${field}`);
+   }
    assert.ok(visible.includes('Beweissicherheit '+locale),`${where}: Kartenlegende`);
    assert.ok(visible.includes('Beweisdiagramm '+locale),`${where}: Kartenbeschreibung`);
    for(const field of ['items','diagram'])assert.ok(has('safetyConcept','configuration',[locale,field]),`${where}: Sicherheitsdatensatz ${field}`);

@@ -11,9 +11,10 @@ test('Geschäftsfakten tragen Geltungsbereich und Stand; strukturierte Referenze
 test('Prosa-Driftbericht erfasst alle aktuellen Blätter und meldet zentrale sowie lokale Wertänderungen',()=>{
  const docs=businessDocuments(),result=businessDrift(docs);assert.deepEqual(result.drift,[]);assert.ok(result.checked.length>50);
  // Ohne Fließtext-Verwendung kann nichts abweichen. Diese Menge ist ausdrücklich: die Flughöhe steht seit Moritz' Texten
- // (Runde 4, 15.11.2026) in keinem Text mehr; kehrt sie zurück, prüft der Wächter sie wieder.
+ // (Runde 4, 15.11.2026) in keinem Text mehr; kehrt sie zurück, prüft der Wächter sie wieder. Das Drohnengewicht (rund
+ // 300 g) stand nur in der Säule „Gebaut in der EU“ der Startseite, die seit Runde 14 (21.11.2026, Moritz) entfällt.
  const used=new Set(result.checked.map(d=>d.fact));
- assert.deepEqual(Object.keys(BUSINESS_FACTS).filter(fact=>!used.has(fact)),['maxAltitudeMetres']);
+ assert.deepEqual(Object.keys(BUSINESS_FACTS).filter(fact=>!used.has(fact)),['droneWeightGrams','maxAltitudeMetres']);
  for(const fact of Object.keys(BUSINESS_FACTS).filter(fact=>used.has(fact))){
   const changed=structuredClone(BUSINESS_FACTS);changed[fact].value++;
   assert.ok(businessDrift(docs,changed).drift.some(d=>d.fact===fact),fact);
