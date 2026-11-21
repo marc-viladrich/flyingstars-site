@@ -984,6 +984,10 @@ a.pack { grid-template-rows: auto auto 1fr; align-items: start; row-gap: var(--s
 .ic-h, .ic h3 { margin: 0; font: 500 var(--text-lg)/1.2 var(--display); letter-spacing: -0.015em; color: var(--head); }
 .ic > p { margin: 0; color: var(--muted); font-size: var(--text-control); max-width: 40ch; }
 @media (--grid-stacked) { .ig, .ig.cols-4 { --ig-cols: 2; } }
+/* Drei Punkte als eine Reihe (Steps, z. B. die Werte auf Über uns, Runde 14): auf dem Tablet weiter drei Spalten statt
+   2 + 1 mit leerer Zelle, erst unterhalb von --mobile eine Spalte. */
+@media (--grid-stacked) { .ig.cols-3 { --ig-cols: 3; } }
+@media (--mobile) { .ig.cols-3 { --ig-cols: 1; } }
 @media (--compact) { .ig, .ig.cols-4 { --ig-cols: 1; } }
 /* Handy (Marc, 21.11.2026): Icon und Text jeder Icon-Zelle stehen exakt an der Inhaltskante der Seite, ohne seitlichen
    Innenabstand. Eine Zellfläche (--ic-fill: Hinweis in „Im Preis enthalten“, gewähltes Extra) läuft dafür als Pseudoelement

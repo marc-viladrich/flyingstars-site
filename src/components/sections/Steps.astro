@@ -15,8 +15,12 @@ const T = index === 0 ? 'h2' : 'h3';
 // Tragen alle Schritte ein Icon, erscheinen sie als offenes Icon-Raster (.ig/.ic wie „Immer inklusive“), z. B. Moritz'
 // Aufzählungen „Komplettpaket“ (15.11.2026: „sieben Haken → Icon-Raster“). Bei sieben Punkten füllt der Link die achte Zelle.
 const icons = steps.every((step) => step.icon);
-const cols = icons && (steps.length % 4 === 0 || steps.length % 4 === 3) ? 4 : 3;
+// Vier Spalten, wenn die Punkte (mit dem Link als letzter Zelle) genau aufgehen: vier, acht, oder sieben plus Link.
+// Drei Punkte ohne Link füllen drei gleich breite Spalten über die volle Breite (Über uns, Runde 14: drei Werte).
+const cols = icons && (steps.length % 4 === 0 || (steps.length % 4 === 3 && cta)) ? 4 : 3;
 const ctaInGrid = icons && cta && steps.length % cols !== 0;
+// Genau drei Punkte in einer Reihe (cols-3) bleiben auch auf dem Tablet nebeneinander, statt als 2 + 1 mit leerer Zelle.
+const trio = icons && steps.length === 3 && !ctaInGrid;
 // Anfrage-Kachel als Abschluss des Rasters (Marc, 18.11.2026: „einladender, u. a. mit den Bildern von Ronja, Erwin und Flo“):
 // Gesichter wie im Abschluss-Kasten (Faces.astro), eine Zeile mit der Antwortzeit aus Moritz' Texten, ein Knopf.
 const founders = new Intl.ListFormat(locale, { type: 'conjunction' }).format(FOUNDERS.map((p) => p.name.split(' ')[0]));
@@ -24,7 +28,7 @@ const founders = new Intl.ListFormat(locale, { type: 'conjunction' }).format(FOU
 <section class:list={['section', { alt: surface === 'alt', 'steps-ig': icons }]} id={id} aria-labelledby={headingId}>
   <SectionHead kicker={kicker} headline={headline} text={text} id={headingId} level={H} />
   {icons ? (
-    <ul class:list={['ig', { 'cols-4': cols === 4 }]} role="list">
+    <ul class:list={['ig', { 'cols-4': cols === 4, 'cols-3': trio }]} role="list">
       {steps.map((step) => <IconFeature as="li" class="ic" icon={step.icon} title={step.title} text={step.text} level={T}>{step.subtitle && <p slot="sub" class="ic-sub">{step.subtitle}</p>}</IconFeature>)}
       {ctaInGrid && <li class="ic ic-more"><div class="ic-more-in"><Faces /><p>{t('steps.foundersReply', { names: founders })}</p><a class="btn primary small" href={localHref(cta!.href)}>{cta!.label}</a></div></li>}
     </ul>
