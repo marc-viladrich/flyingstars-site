@@ -115,7 +115,7 @@ const rawSectionSchema = z.discriminatedUnion('type', [
     gallery: fieldPolicy(z.enum(['logos', 'willkommen', 'indoor']).optional().describe('Bildgalerie statt Foto neben der Einleitung (Sätze in public/media/galerie)'), 'shared'),
     cta: link.optional().describe('Weiterführender Link unter der Einleitung'),
     icon: fieldPolicy(z.string().min(1).optional().describe('Lucide-Name: Kachel mit Icon und Punktmuster statt Foto neben der Einleitung'), 'shared'),
-    show: fieldPolicy(z.enum(['indoor']).optional().describe('Drohnen-Animation neben der Einleitung statt Foto oder Icon-Kachel (Indoor-Reihe, scripts/himmel/folge.js)'), 'shared'),
+    show: fieldPolicy(z.enum(['indoor', 'eco']).optional().describe('Drohnen-Animation neben der Einleitung statt Foto oder Icon-Kachel: indoor = Indoor-Reihe, eco = Figuren der Nachhaltigkeit (Schallwelle, Flotte, Blitz; scripts/himmel/folge.js)'), 'shared'),
     scene: fieldPolicy(z.enum(['chopper-play']).optional().describe('Leuchtpunkt-Szene neben der Einleitung statt Foto oder Icon: Chopper spielt mit zwei Kindern Ball'), 'shared'),
     lines: z.array(keyedText(fieldPolicy(z.string(), 'translatable'))).optional().describe('Veraltet (dreizeiliger Titel der Scrollstory), wird nicht mehr angezeigt'),
   }).strict(),
@@ -215,6 +215,9 @@ const rawSectionSchema = z.discriminatedUnion('type', [
   z.object({
     type: fieldPolicy(z.literal('team'), 'shared'), ...sectionHeading,
     note: fieldPolicy(z.string().optional(), 'translatable'), cta: link.optional(), secondary: link.optional().describe('Zweiter Link neben cta'),
+    // Runde 14 (Moritz: die Teamvorstellung nimmt auf der Startseite zu viel Platz; ein Teamfoto fehlt): collage = die
+    // Porträts klein und gegeneinander versetzt rechts neben dem Text, ohne Rollen und Kurzvorstellung (Team.astro)
+    layout: fieldPolicy(z.enum(['collage']).optional().describe('Porträts als kleine, versetzte Collage neben dem Text statt großer Karten mit Vorstellung (Ersatz für ein Teamfoto)'), 'shared'),
     headline: fieldPolicy(z.string().min(1), 'translatable'),
     text: fieldPolicy(z.string().optional(), 'translatable'),
     members: z.array(z.object({

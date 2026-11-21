@@ -10,8 +10,12 @@ import type { Section } from '../../content.config';
 import { optimizedImage } from '../../lib/media';
 import Accent from '../Accent.astro';
 import SectionHead from '../SectionHead.astro';
+import DotField from '../DotField.astro';
 type Props = Extract<Section, { type: 'team' }> & { index: number };
-const { headline, text, members, memberTexts = [], note, cta, secondary, id = `s${Astro.props.index}`, index, kicker } = Astro.props;
+const { headline, text, members, memberTexts = [], note, cta, secondary, id = `s${Astro.props.index}`, index, kicker, layout } = Astro.props;
+// Collage (Startseite, Runde 14): Porträts klein und versetzt neben dem Text als Ersatz für ein Teamfoto, nach den drei
+// Porträts der Kontakt-Section (ContactDetails.astro, die mittlere tiefer). Rollen und Vorstellungen stehen auf Über uns.
+const collage = layout === 'collage';
 const headingId = `${id}-h`;
 const H = index === 0 ? 'h1' : 'h2';
 const Name = index === 0 ? 'h2' : 'h3';
@@ -21,16 +25,29 @@ const n = members.length;
 const cols = n <= 5 ? n : n % 4 === 0 ? 4 : n % 3 === 0 ? 3 : 4;
 // Seitenspezifische Rolle/Bio (memberTexts) gehen vor; dann zeigt der Editor-Marker auf die Seite statt auf die Person.
 const own = (personId: string) => memberTexts.find((entry) => entry.personId === personId);
-const crew = await Promise.all(members.map(async item => {const member=teamMember(item,undefined,locale);const page=own(item.personId);return {...member, role: page?.role ?? member.role, bio: page?.bio ?? member.bio, ownRole: Boolean(page?.role), ownBio: Boolean(page?.bio), media: member.image ? await optimizedImage(member.image.src, 640) : undefined};}));
+const crew = await Promise.all(members.map(async item => {const member=teamMember(item,undefined,locale);const page=own(item.personId);return {...member, role: page?.role ?? member.role, bio: page?.bio ?? member.bio, ownRole: Boolean(page?.role), ownBio: Boolean(page?.bio), media: member.image ? await optimizedImage(member.image.src, collage ? 480 : 640) : undefined};}));
 ---
-<section class="team-sec" id={id} aria-labelledby={headingId}>
+{collage ? <section class="team-sec team-collage" id={id} aria-labelledby={headingId}>
+  <div class="tc-copy">
+    <SectionHead kicker={kicker} headline={headline} text={text} id={headingId} level={H} next="text" />
+    {note && <p class="tc-note">{note}</p>}
+    {(cta || secondary) && <p class="tc-links">{cta && <a class="link" href={localHref(cta.href)}>{cta.label} <span aria-hidden="true">→</span></a>}{secondary && <a class="link" href={localHref(secondary.href)}>{secondary.label} <span aria-hidden="true">→</span></a>}</p>}
+  </div>
+  <div class="tc-stage df-host">
+    <DotField inset="14% max(-7%, -2.5rem) -10% -9%" insetM="18% -1rem -8% -1rem" focus="50% 62%" />
+    <ul class="tc-crew" aria-labelledby={headingId}>{crew.map((member,i) => <li class="member" style={`--i:${i}`} data-dot-host>
+      <div {...field({collection:"people",id:member.personId},["image"],{mode:"panel"})} class="portrait" data-dot-img={member.media ? '' : undefined} data-step="6">{member.image && member.media ? <img src={member.media.src} width={member.media.width} height={member.media.height} alt={member.image.alt} loading="lazy" decoding="async" /> : <span class="ini" aria-hidden="true">{initials(member.name)}</span>}</div>
+      <span {...field({collection:"people",id:member.personId},["name"])} class="tc-name">{member.name}</span>
+    </li>)}</ul>
+  </div>
+</section> : <section class="team-sec" id={id} aria-labelledby={headingId}>
   <SectionHead kicker={kicker} headline={headline} text={text} id={headingId} level={H} />
   <ul class="crew" style={`--cols:${cols}`} aria-labelledby={headingId} data-crew>{crew.map((member,i) => <li class="member" style={`--i:${i}`} data-dot-host>
     <div {...field({collection:"people",id:member.personId},["image"],{mode:"panel"})} class="portrait" data-dot-img={member.media ? '' : undefined} data-step="6">{member.image && member.media ? <img src={member.media.src} width={member.media.width} height={member.media.height} alt={member.image.alt} loading="lazy" decoding="async" /> : member.personId === "chopper" ? <Chopper mood="happy" class="portrait-chopper" /> : <span class="ini" aria-hidden="true">{initials(member.name)}</span>}</div>
     <span {...(member.ownRole ? {} : field({collection:"people",id:member.personId},["role",locale]))} class="role mono">{member.role}</span><Name {...field({collection:"people",id:member.personId},["name"])}>{member.name}</Name>{member.bio && <p {...(member.ownBio ? {} : field({collection:"people",id:member.personId},["bio",locale]))}>{member.bio}</p>}
   </li>)}</ul>
   {(note || cta || secondary) && <p class="crew-note">{note && <span>{note}</span>}{(cta || secondary) && <span class="crew-links">{cta && <a class="link" href={localHref(cta.href)}>{cta.label} <span aria-hidden="true">→</span></a>}{secondary && <a class="link" href={localHref(secondary.href)}>{secondary.label} <span aria-hidden="true">→</span></a>}</span>}</p>}
-</section>
+</section>}
 
 <style>
   /* Team: Porträts steigen nacheinander auf und öffnen sich wie ein Vorhang. Der Porträtrahmen selbst (.portrait) ist
@@ -80,4 +97,32 @@ const crew = await Promise.all(members.map(async item => {const member=teamMembe
     .crew .member { flex: 0 0 min(15.5rem, 72%); scroll-snap-align: start; }
   }
   @media (prefers-reduced-motion: reduce) { .member { transition: none; } }
+
+  /* Collage (Startseite, Runde 14): Text links, rechts drei kleinere Porträts, die mittlere tiefer und leicht vor den
+     anderen (ohne Ring: der Porträtrahmen schneidet per clip-path jeden Schatten ab), darunter die Leuchtpunkt-Unterlage (DotField) wie bei den Bildleitern; wirkt wie ein Gruppenbild statt wie
+     eine Kartenreihe. Ab breitem Desktop zwei Spalten (5 : 7 wie die Bühnen der Nachhaltigkeit), schmal untereinander. */
+  .team-collage { display: grid; gap: clamp(var(--space-10), 5vw, var(--space-20)); align-items: center; }
+  .tc-copy :global(.section-head) { margin-bottom: 0; }
+  .tc-note { margin: var(--head-gap-text) 0 0; color: var(--muted); }
+  .tc-links { display: flex; flex-wrap: wrap; gap: var(--space-3-5) var(--space-7); margin: var(--head-gap-cta) 0 0; }
+  .tc-stage { padding-bottom: var(--tc-drop); --tc-drop: clamp(2.5rem, 5vw, 4.5rem); --tc-over: clamp(0.75rem, 1.6vw, 1.75rem); }
+  .tc-crew { list-style: none; margin: 0 auto; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: clamp(34rem, 40vw, 48rem); }
+  .tc-crew .member { gap: var(--space-2); min-width: 0; }
+  /* die äußeren rücken unter die mittlere (Überlappung nur am Bildrand), die mittlere steht tiefer und davor; der Name
+     rechts steht rechtsbündig, sonst läge sein Anfang hinter dem mittleren Porträt */
+  .tc-crew .member:nth-child(1) { translate: var(--tc-over) 0; }
+  .tc-crew .member:nth-child(2) { translate: 0 var(--tc-drop); z-index: 1; }
+  .tc-crew .member:nth-child(3) { translate: calc(-1 * var(--tc-over)) calc(var(--tc-drop) * 0.35); text-align: end; }
+  .tc-crew .portrait { margin: 0; }
+  .tc-name { font-size: var(--text-sm); color: var(--muted); }
+  /* Handy: ohne Überlappung, sonst verdeckt das mittlere Porträt den Namen links; Namen dürfen umbrechen */
+  @media (--compact) {
+    .tc-stage { --tc-over: 0rem; --tc-drop: 2rem; }
+    .tc-crew { column-gap: var(--space-2-5); }
+    .tc-name { font-size: var(--text-xs); text-wrap: balance; }
+  }
+  @media (--grid-expanded) {
+    .team-collage { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }
+    .tc-stage { padding-left: clamp(0rem, 2vw, var(--space-8)); }
+  }
 </style>

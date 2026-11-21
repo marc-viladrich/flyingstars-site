@@ -100,11 +100,23 @@ const I = (key, hold = 1.4) => ({ build: `indoor:${key}`, pkg: "SPARK", n: NI, h
 const INDOOR_ROW = [["welle"], ["wuerfel", 2.2], ["stern"], ["spirale"], ["formen", 3.4], ["raster", 2.4], ["diamant"], ["tetraeder", 2.0], ["noten"], ["lissajous", 2.4], ["krone"]];
 const INDOOR = Object.fromEntries(INDOOR_ROW.map(([k, hold]) => [k, { kind: "indoor", tags: [], steps: [I(k, hold)] }]));
 
-/** Varianten: Startseite (Übergabe vom Himmel-Schwarm) und Indoor-Seite (eigene Bühne in #unterschied). */
+/** Nachhaltigkeit auf der Startseite (Runde 14, scenes/eco.js): die drei Figuren der früheren Scrollstory (Schallwelle,
+ *  geparkte Flotte, Blitz) in fester Runde, 120 Drohnen wie die Scrollstory auf schmalen Bildschirmen. Die Schallwelle
+ *  steht länger, sie ist die Hauptaussage („Kein Knall“). */
+const NE = 120;
+const E = (key, hold) => ({ build: `eco:${key}`, pkg: "SPARK", n: NE, hold, rate: 1 });
+const ECO_ROW = [["schall", 3.2], ["flotte", 2.6], ["blitz", 2.4]];
+const ECO = Object.fromEntries(ECO_ROW.map(([k, hold]) => [k, { kind: "eco", tags: [], steps: [E(k, hold)] }]));
+
+/** Varianten: Startseite (Übergabe vom Himmel-Schwarm), Indoor-Seite (eigene Bühne in #unterschied) und Nachhaltigkeit der
+ *  Startseite (eigene Bühne in #nachhaltigkeit). */
 const VARIANTS = {
   himmel: { n: N, pieces: PIECES, first: FIRST, opening: OPENING, mixed: true, fill: 0.9, light: 1, cloud: { cloudTime: 0.45, cloudSpread: 0.55 } },
   indoor: { n: NI, pieces: INDOOR, first: Object.keys(INDOOR), opening: null, mixed: false, fill: 0.9, light: 1.6, cloud: { cloudTime: 0.4, cloudSpread: 0.45 } },
+  eco: { n: NE, pieces: ECO, first: Object.keys(ECO), opening: null, mixed: false, fill: 0.85, light: 1.3, cloud: { cloudTime: 0.45, cloudSpread: 0.5 } },
 };
+/** Varianten mit eigener Bühne (ohne Schwarm, Canvas per CSS in der Bühne): data-folge an der Bühne. */
+const STAGED = new Set(["indoor", "eco"]);
 
 /** Die „125“ des Wappens (show-scenes.js, shield3d bei 300 Drohnen: share(300, [3, 1])[1] Punkte), vorberechnet mit
  *  textFormation() in Node (Meter, 2 Nachkommastellen). Sonst lädt der Textplaner und rechnet am Stück. Ändert sich die
@@ -143,7 +155,7 @@ function steadyBeat(b) {
  * variant "indoor": eigene Bühne ohne Schwarm; das Canvas liegt per CSS in seiner Bühne (siehe mountFolge()).
  * @param {HTMLCanvasElement} canvas
  * order: eigene Reihenfolge der Stücke ohne Auftakt (Prüfwerkzeuge, Kontaktbögen).
- * @param {{ locale?: string, burst?: number[][], rnd?: () => number, variant?: "himmel" | "indoor", order?: string[] }} [opts]
+ * @param {{ locale?: string, burst?: number[][], rnd?: () => number, variant?: "himmel" | "indoor" | "eco", order?: string[] }} [opts]
  */
 export function createFolge(canvas, { burst = [], rnd = Math.random, variant = "himmel", order = null } = {}) {
   const V = VARIANTS[variant] ?? VARIANTS.himmel, NV = V.n, PIECE = V.pieces;
@@ -173,6 +185,9 @@ export function createFolge(canvas, { burst = [], rnd = Math.random, variant = "
     if (build.startsWith("indoor:")) {
       const { indoorScene } = await import("../scenes/indoor.js");
       all = indoorScene(build.slice(7), n).beats.map(steadyBeat);
+    } else if (build.startsWith("eco:")) {
+      const { ecoScene } = await import("../scenes/eco.js");
+      all = ecoScene(build.slice(4), n).beats.map(steadyBeat);
     } else {
       const [{ buildSequence }, { SHOW_PACKAGES }] = await Promise.all([import("../show-scenes.js"), import("../../content/show-packages.ts")]);
       const seq = await buildSequence([{ id: "m", label: "", tiers: { [pkg]: { build, caption: "", minDrones: 0, ...(step.whole ? { whole: true } : {}) } } }], pkg, n, SHOW_PACKAGES[pkg].color, "");
@@ -288,7 +303,7 @@ export function createFolge(canvas, { burst = [], rnd = Math.random, variant = "
   let frame = { x: 0, y: 0, w: 0, h: 0 }, box = { x: 0, y: 0, w: 1, h: 1 };
   function place(b) {
     box = b;
-    if (variant === "indoor") {
+    if (STAGED.has(variant)) {
       // Bühnenkoordinaten; Lage und Größe des Canvas stehen im CSS der Komponente (--stage-bleed ringsum symmetrisch, die
       // Feldmitte ist die Canvas- und damit die Bühnenmitte)
       frame = { x: canvas.offsetLeft, y: canvas.offsetTop, w: canvas.offsetWidth, h: canvas.offsetHeight };
@@ -346,7 +361,7 @@ export function createFolge(canvas, { burst = [], rnd = Math.random, variant = "
 }
 
 /**
- * Indoor-Reihe in ihrer Bühne (Sustainability.astro, `data-folge="indoor"`): Canvas darin, Start erst, wenn die Bühne
+ * Indoor-Reihe bzw. Nachhaltigkeits-Figuren in ihrer Bühne (Sustainability.astro, `data-folge="indoor|eco"`): Canvas darin, Start erst, wenn die Bühne
  * zu einem Drittel im Bild ist; das erste Motiv wird vorher in Leerlauf-Tasks gebaut.
  * @param {HTMLElement} stage
  */
@@ -354,7 +369,7 @@ export function mountFolge(stage) {
   const canvas = stage.querySelector("canvas");
   if (!canvas || stage.dataset.folgeOn) return;
   stage.dataset.folgeOn = "1";
-  const f = createFolge(canvas, { variant: stage.dataset.folge === "indoor" ? "indoor" : "himmel" });
+  const f = createFolge(canvas, { variant: STAGED.has(stage.dataset.folge) ? stage.dataset.folge : "himmel" });
   const boxOf = () => ({ x: 0, y: 0, w: stage.clientWidth, h: stage.clientHeight });
   let started = false;
   f.ready.then(() => {
@@ -365,6 +380,6 @@ export function mountFolge(stage) {
       if (started) { io.disconnect(); stage.classList.add("is-live"); }
     }, { threshold: 0.33 });
     io.observe(stage);
-  }).catch((e) => console.warn("Indoor-Reihe nicht verfügbar:", e));
+  }).catch((e) => console.warn("Show-Bühne nicht verfügbar:", e));
   if ("ResizeObserver" in window) new ResizeObserver(() => f.place(boxOf())).observe(stage);
 }

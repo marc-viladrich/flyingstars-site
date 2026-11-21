@@ -206,21 +206,17 @@ sections:
     todo: FlyingStars muss die Website-Angabe Windstärke 5 mit den Windgrenzen der AGB abstimmen, die Startflächen je Drohnenzahl bestätigen und schriftliche Nutzungsfreigaben für LBA-, EASA- und naturstrom-Logos liefern.
     _key: k_80f57143a3d7d816104c
 
-  # Nachhaltigkeit als Scrollstory wie auf main (Marc, 17.11.2026: „die war im Original viel besser“): drei Zeilen,
-  # die mittlere als Kontur, die letzte im Verlauf, kurze Einleitung unter dem Titel, ohne Foto, vier große Werte wie im
-  # Prototyp (leise, 0 kg, 0 g, 100 %). Reihenfolge und Sätze nach Moritz; sein Satz zu Müll und Ökostrom ist auf die
-  # Werte „Kein Müll“ und „Ökostrom“ verteilt. Die Figur je Wert wählt die Einheit (Sustainability.astro).
+  # Nachhaltigkeit kompakt (Runde 14, 21.11.2026). Moritz: erwähnen, aber nicht so viel Raum; Scrollstory und die Zeile
+  # „Gebaut in der EU“ raus (FlyingStars prüft auch Drohnen anderer Hersteller). Marc: eine Section, links Kopf, Text und
+  # Link, rechts die Figuren der früheren Scrollstory als Drohnen-Bühne (show: eco: Schallwelle, Flotte, Blitz), darunter
+  # die vier Punkte aus sustainability-pillars.json. Kopf wie bisher: jeder Satz eine Zeile, Kontur und Verlauf.
   - type: sustainability
     id: nachhaltigkeit
     kicker: Nachhaltigkeit
     headline: Kein Knall. Kein Müll. Kein Rauch.
     text: "Bei unseren Drohnen-Veranstaltungen sind auch Hunde und Kinder herzlich willkommen: Sie sind abfallfrei, lokal emissionsfrei und surren leiser als Feuerwerke. Mit Shows für die Deutsche Umwelthilfe und Kein Bock auf Nazis setzen wir zudem regelmäßig ökologische und soziale Zeichen in den Himmel."
     cta: { label: Über die Nachhaltigkeit, href: /nachhaltigkeit/ }
-    facts:
-      - { label: Kein Knall, value: leise, text: "Der TÜV NORD bestätigt den Schallschutz unserer Technik.", "_key": "k_20d9386f213523952598" }
-      - { label: Kein Müll, value: "0", unit: kg, text: "Wiederverwendbare Drohnen.", "_key": "k_a69ce4ddf7966109fb50" }
-      - { label: Kein Rauch, value: "0", unit: g, text: "Vor Ort entstehen keine schädlichen Emissionen.", "_key": "k_2f6c2a2e8d48eea5522d" }
-      - { label: Ökostrom, value: { fact: renewablePercent }, unit: "%", text: "Geladen mit 100 % Ökostrom.", logo: { src: "https://flyingstars.art/wp-content/uploads/2024/10/NATURSTROM-Logo_weiss.png", alt: naturstrom, width: 301, height: 71 }, "_key": "k_f24c1ffbe1647069ab03" }
+    show: eco
     pillarsRef: sustainability-pillars
     todo: Moritz und FlyingStars müssen die Umweltformulierungen vor Veröffentlichung prüfen und die Belege für Ökostrom und das TÜV-Nord-Schallschutzgutachten bereithalten.
     _key: k_001c02ae39915e989410
@@ -264,19 +260,20 @@ sections:
     _key: k_bb613fb3a85d23de53b1
 
   # Presse steht als Logos oben bei „Geflogen für“; hier dieselbe Zeile als Text, damit die Logos nicht doppelt stehen.
-  # Ein Teamfoto gibt es noch nicht, deshalb die Porträts. „In der Presse“: eine Presseseite gibt es nicht, der Link führt
-  # zu den Presselogos oben.
+  # „In der Presse“: eine Presseseite gibt es nicht, der Link führt zu den Presselogos oben.
+  # Runde 14 (Moritz: die Teamvorstellung nimmt zu viel Platz, lieber ein Teamfoto rechts neben dem Text; es gibt noch
+  # keins): die drei Porträts der Geschäftsführung als kleine, versetzte Collage neben dem Text (layout: collage, nach der
+  # Kontakt-Section), Rollen und Vorstellungen auf „Über uns“.
   - type: team
     id: ueber
     kicker: Über FlyingStars
     headline: Leuchtende Drohnen für *leuchtende Augen*
     text: "Wir möchten Menschen faszinieren, mitreißen, bewegen. Deshalb zeigen wir seit 2021, dass unvergessliche Momente voller Magie stecken – und gleichzeitig leise, sauber und rücksichtsvoll sein können."
+    layout: collage
     members:
       - personId: ronja-donsbach
       - personId: florian-becker
       - personId: erwin-wilms
-      - personId: patrick
-      - personId: alejandro
     note: "Ihr kennt uns aus: ZDF, WDR, NTV, WAZ"
     cta: { label: Über uns, href: /ueber-uns/ }
     secondary: { label: In der Presse, href: "#kundinnen" }

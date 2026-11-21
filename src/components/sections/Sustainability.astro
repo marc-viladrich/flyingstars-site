@@ -20,7 +20,7 @@ import { optimizedLogo } from '../../lib/media';
 import Icon from '../Icon.astro';
 import Chopper from '../Chopper.astro';
 import ComparisonMatrix from '../ComparisonMatrix.astro';
-const PICON = { eu: 'eu', repair: 'wrench', ev: 'e-car', campaign: 'megaphone', leaf: 'leaf' } as const;
+const PICON = { eu: 'eu', repair: 'wrench', ev: 'e-car', campaign: 'megaphone', leaf: 'leaf', quiet: 'audio-waveform' } as const;
 type Props = Extract<Section, { type: 'sustainability' }> & { index: number };
 const { headline, text: source, id = 'nachhaltigkeit', facts = [], points = [], pillarsRef, proofImage, proofText, campaign, index, kicker, image, cta, icon, scene, show, gallery, comparison } = Astro.props;
 // Fließtext darf freigegebene Faktenplatzhalter tragen (Indoor: Showdauer aus show-duration.json)
@@ -51,6 +51,10 @@ const figs = facts.map((fact, i) => fact.unit ? FIG[fact.unit.trim()] ?? i : 0).
 const lead = Boolean(image || icon || scene || show || gallery);
 // Bühne statt Bild (Indoor-Reihe, Chopper-Szene): Kopf, Text und Bühne in einem Grid, die Bühne spannt Kopf- und Textzeile
 const staged = Boolean(scene || show);
+// Startseite seit Runde 14 (Moritz: Nachhaltigkeit erwähnen, aber nicht so viel Raum; Marc: eine kompakte Section): statt der
+// Scrollstory die Bühne mit den Figuren der Scrollstory (show: eco). Ein Kopf aus mehreren Sätzen behält dort die Zeilen-
+// Logik der Scrollstory (jeder Satz eine Zeile, Kontur und Verlauf), in der normalen Größe einer Section-Überschrift.
+const stagedLines = staged && lines.length > 1;
 // Ohne Bild ab breitem Desktop: Schlagzeile links, Einleitung und Link rechts unten bündig
 const split = Boolean(text) && lines.length > 1;
 const parts = (point: string) => point.split(/(\S+-\S+)/).filter(Boolean);
@@ -82,7 +86,11 @@ const factItems = await Promise.all(facts.map(async (fact) => {
     {cta && <p class="eco-more"><a class="link" href={localHref(cta.href)}>{cta.label} <span aria-hidden="true">→</span></a></p>}
   </div></Gallery>}
   {staged && <div class="eco-staged">
-    <SectionHead class="eco-head-std eco-staged-head" next="text" kicker={kicker} headline={headline} id={headingId} level={H} />
+    {stagedLines
+      ? <SectionHead class="eco-head-std eco-staged-head" titleClass="eco-lines" next="text" kicker={kicker} headline={plain(headline)} id={headingId} level={H}>
+          <Fragment slot="title">{lines.map((line, i) => <span class:list={lineClass(line, i)}>{whole(line) ? plain(line) : accentParts(line).map((p) => p.g ? <span class="grad">{p.t}</span> : p.t)} </span>)}</Fragment>
+        </SectionHead>
+      : <SectionHead class="eco-head-std eco-staged-head" next="text" kicker={kicker} headline={headline} id={headingId} level={H} />}
     <div class="eco-lead-copy">
       {text && text.split(/\n\s*\n/).map((para) => <p>{para.trim()}</p>)}
       {cta && <p class="eco-more"><a class="link" href={localHref(cta.href)}>{cta.label} <span aria-hidden="true">→</span></a></p>}
@@ -168,11 +176,19 @@ const factItems = await Promise.all(facts.map(async (fact) => {
      das Canvas der Indoor-Reihe über die Bühne hinaus (Licht, aufsteigende Drohnen; die Feldmitte bleibt die Bühnenmitte). */
   .eco-staged { --stage-min: clamp(20rem, 32vw, 34rem); --stage-bleed: min(15rem, 60%); display: grid; grid-template-areas: "head" "copy" "stage"; column-gap: clamp(var(--space-7), 4vw, var(--space-14)); margin-bottom: clamp(var(--space-10), 6vw, var(--space-20)); }
   .eco-staged:last-child { margin-bottom: 0; }
+  /* Kopf aus Sätzen neben der Bühne (Startseite): jeder Satz eine Zeile, die mittlere als Kontur, die letzte im Verlauf */
+  .eco-staged :global(.eco-lines .head-line > span) { display: block; width: fit-content; }
+  .eco-staged :global(.eco-lines .o) { color: transparent; -webkit-text-stroke: 1.25px var(--ink-bright); }
+  /* Die vier Punkte stehen direkt unter Kopf und Bühne; den Abstand gibt die Bühne vor */
+  .eco-staged + :global(.eco-pillars) { margin-top: 0; }
   .eco-staged > :global(.eco-staged-head) { grid-area: head; }
   .eco-staged > .eco-lead-copy { grid-area: copy; }
   .eco-stage { grid-area: stage; position: relative; display: none; margin: 0; }
   :global(html:is(.reveal, .motion-paused)) .eco-stage { display: block; }
   .eco-show { min-height: var(--stage-min); }
+  /* Nachhaltigkeit der Startseite (show: eco): die Figuren sind flach (Schallwelle, Flotte) oder schmal (Blitz), die Bühne
+     ist deshalb niedriger als die der Indoor-Reihe, gestapelt im Querformat 2 : 1 */
+  .eco-show[data-folge="eco"] { --stage-min: clamp(18rem, 26vw, 28rem); }
   .eco-show canvas { position: absolute; left: 0; width: 100%; top: calc(-1 * var(--stage-bleed)); height: calc(100% + 2 * var(--stage-bleed)); pointer-events: none; }
   @media (--grid-expanded) {
     :global(html:is(.reveal, .motion-paused)) .eco-staged { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); grid-template-rows: auto 1fr; grid-template-areas: "head stage" "copy stage"; }
@@ -183,4 +199,5 @@ const factItems = await Promise.all(facts.map(async (fact) => {
      Die Spalte ist auf die Containerbreite begrenzt (minmax(0, 1fr)): Mindesthöhe und Seitenverhältnis ergeben sonst eine
      Mindestbreite (390 px: 360 statt 350 px, der Text ragte 10 px über die Kante; layout-audit contain) */
   @media (--grid-stacked) { .eco-lead.has-img { grid-template-columns: 1fr; } .eco-staged { --stage-min: 15rem; grid-template-columns: minmax(0, 1fr); } .eco-show { aspect-ratio: 3 / 2; max-height: 32rem; } }
+  @media (--grid-stacked) { .eco-show[data-folge="eco"] { aspect-ratio: 2 / 1; --stage-min: 11rem; } }
 </style>

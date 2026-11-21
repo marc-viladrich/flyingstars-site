@@ -24,13 +24,14 @@ Eine Bühne spielt nur, wenn ihre ID im DOM steht und neben dem Section-Kopf Pla
 | Start | `#warum-drohnen` | Feuerwerksblüte, danach die Show-Folge (siehe unten), auch unter 900 px | keine |
 | Start | `#projekte` | Maske der Bokkenrijders (Kundenformation aus dem ersten Referenzbild, statt der Galaxie: Marc, 18.11.: Spirale „zu lame“). Runde 5 („größer und eingedrehter“): Dreiviertelansicht (0,38 rad), schwenkt in 9 s um ±0,22 rad, Augen glühen; Bühne wächst bis 190 px über den Kopf, `#projekte` hat dafür ab 900 px 6 rem mehr Luft oben (`himmel.css`). Rund 375 statt 245 px hoch | keine |
 | Start | `#preise` | mit Paketkarten Wasserball, ohne Sonne; steht dort der Konfigurator (eigene Formation), bleibt der Himmel leer | Zeigen auf ein Paket: SPARK Stern, HORIZON Wasserball, ODYSSEY Atom → Mandala → Welle |
-| Start | `#ueber` | Lachendes Gesicht | keine |
+| Start | `#ueber` | Lachendes Gesicht; seit Runde 14 (Team als Collage neben dem Text) ohne freien Platz, die Stelle bleibt leer | keine |
 | alle | Formular `#inquiry-form` | „EURE SHOW“ | Anlass → Motiv, Ort → Schrift, Datum → Schrift und „NOCH n TAGE“, Paket → Drohnenzahl, `flyingstars:lead-confirmed` → „DANKE <Vorname>“, dann Stern |
 | Hochzeit | `#choreografie` | Doppelherz | keine |
 | Indoor | `#unterschied` | Indoor-Reihe (eigene Bühne, siehe unten); die Diskokugel des Schwarms findet dort keinen Platz mehr | keine |
 | Marken & Werbung | `#agenturen` | Handschlag (`#marketing` ohne Schwarm, dort stehen die Logo-Shows als Bildleiter, Marc Runde 7) | keine |
 
-Ohne Bild: `#darum`, `#sicherheit`, `#nachhaltigkeit`, `#ablauf`, `#faq`. Die Show endet am Formular.
+Ohne Bild: `#darum`, `#sicherheit`, `#nachhaltigkeit` (dort spielt seit Runde 14 eine eigene Bühne mit den Figuren der früheren
+Scrollstory, `variant: "eco"`, siehe unten), `#ablauf`, `#faq`. Die Show endet am Formular.
 Unter 900 px spielen nur `#warum-drohnen`, `#preise` und Formular.
 
 Die Himmelszeile (Eingabefeld nach `#kundinnen`, Besucher tippen ein Wort, der Schwarm schreibt es) ist seit Runde 5 entfernt
@@ -169,6 +170,15 @@ wie auf der Startseite sehr gut passen.“ Dieselbe Technik, `createFolge(canvas
 - **Start:** Modul lädt, wenn die Bühne näher als 300 px ist (`whenNear`); das erste Motiv entsteht in Leerlauf-Tasks; los geht es,
   wenn ein Drittel der Bühne im Bild ist: Die Drohnen steigen dunkel von unten auf und bilden das Herz. Pause-Taste und reduzierte
   Bewegung: das Herz steht. Ohne JavaScript bleibt die Bühne weg, der Text steht allein.
+
+### Nachhaltigkeit der Startseite bei `#nachhaltigkeit` (Runde 14, 21.11.2026)
+
+Statt der Scrollstory eine kompakte Section mit eigener Bühne (`show: eco` am Abschnitt, `createFolge(canvas, { variant: "eco" })`),
+dieselbe Technik und derselbe Aufbau wie die Indoor-Reihe (`mountFolge`, Bühnen-Grid `.eco-staged`). Figuren in
+`scenes/eco.js` (Schallwelle, geparkte Flotte, Blitz; 120 Drohnen, Logoverlauf), Reihe `ECO_ROW` in `folge.js`, Standzeiten
+3,2 / 2,6 / 2,4 s, Füllgrad 85 %. Die Bühne ist niedriger als die der Indoor-Reihe (`--stage-min` 18–28 rem, gestapelt 2 : 1).
+Start, Pause, reduzierte Bewegung und Ladezeitpunkt wie bei der Indoor-Reihe. Wächter: `scripts/eco-motive.test.mjs`.
+Regeln: `docs/DESIGN.md` → „Startseite: Nachhaltigkeit kompakt, Team als Collage“.
 
 ## Technik
 
