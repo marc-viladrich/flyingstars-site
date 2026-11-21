@@ -20,12 +20,12 @@ Eine Bühne spielt nur, wenn ihre ID im DOM steht und neben dem Section-Kopf Pla
 
 | Seite | Bühne | Bild | Reaktion |
 |---|---|---|---|
-| Start | `#anlaesse` | Anstoßende Gläser | Zeigen auf eine Karte: Unternehmen → Sportwagen, Agenturen → Handschlag, Gemeinden → Förderturm, Konzerte & Festivals → Mikrofon, Privat → Doppelherz, Indoor → Diskokugel. Zuordnung über Kartenkicker, dann Link-Ziel, dann Kartentitel |
+| Start | `#anlaesse` | Anstoßende Gläser | Zeigen auf eine Karte: Unternehmen → Sportwagen, Agenturen → Handschlag, Gemeinden → Kölner Dom (Runde 14, statt Förderturm), Konzerte & Festivals → Mikrofon, Privat → Doppelherz, Indoor → Diskokugel. Zuordnung über Kartenkicker, dann Link-Ziel, dann Kartentitel |
 | Start | `#warum-drohnen` | Feuerwerksblüte, danach die Show-Folge (siehe unten), auch unter 900 px | keine |
 | Start | `#projekte` | Maske der Bokkenrijders (Kundenformation aus dem ersten Referenzbild, statt der Galaxie: Marc, 18.11.: Spirale „zu lame“). Runde 5 („größer und eingedrehter“): Dreiviertelansicht (0,38 rad), schwenkt in 9 s um ±0,22 rad, Augen glühen; Bühne wächst bis 190 px über den Kopf, `#projekte` hat dafür ab 900 px 6 rem mehr Luft oben (`himmel.css`). Rund 375 statt 245 px hoch | keine |
 | Start | `#preise` | mit Paketkarten Wasserball, ohne Sonne; steht dort der Konfigurator (eigene Formation), bleibt der Himmel leer | Zeigen auf ein Paket: SPARK Stern, HORIZON Wasserball, ODYSSEY Atom → Mandala → Welle |
 | Start | `#ueber` | Lachendes Gesicht | keine |
-| alle | Formular `#inquiry-form` | „EURE SHOW“ | Anlass → Motiv, Ort → Schrift, Datum → Schrift und „NOCH n TAGE“, Paket → Drohnenzahl, `flyingstars:lead-confirmed` → „DANKE <Vorname>“, dann Stern |
+| alle | Formular `#inquiry-form` | „EURE SHOW“, einmal je Seitenaufruf mit Auftakt (siehe unten) | Anlass → Motiv (Gemeinden → Kölner Dom), Ort → Schrift, Datum → Schrift und „NOCH n TAGE“, Paket → Drohnenzahl, `flyingstars:lead-confirmed` → „DANKE <Vorname>“, dann Stern |
 | Hochzeit | `#choreografie` | Doppelherz | keine |
 | Indoor | `#unterschied` | Indoor-Reihe (eigene Bühne, siehe unten); die Diskokugel des Schwarms findet dort keinen Platz mehr | keine |
 | Marken & Werbung | `#agenturen` | Handschlag (`#marketing` ohne Schwarm, dort stehen die Logo-Shows als Bildleiter, Marc Runde 7) | keine |
@@ -35,6 +35,26 @@ Unter 900 px spielen nur `#warum-drohnen`, `#preise` und Formular.
 
 Die Himmelszeile (Eingabefeld nach `#kundinnen`, Besucher tippen ein Wort, der Schwarm schreibt es) ist seit Runde 5 entfernt
 (Marc, 18.11.: „bringt erstmal nicht so viel“; dort ruckelte der Wechsel zur nächsten Section am stärksten, siehe Performance).
+
+## Formular: Auftakt und Kirche für Gemeinden (Runde 14, 21.11.2026)
+
+- **Auftakt** (Marc: man soll sofort sehen, dass der Text variabel ist): Steht das Himmelsfenster des Formulars ganz im Blick,
+  spielt der Schwarm einmal je Seitenaufruf EURE SHOW → EUER TAG → das heutige Datum → EURE SHOW und steht dann (Standzeit
+  1,8 s, danach je 2,6 s, Wechsel wie jeder andere im Fenster). Datum je Sprache: 21.11.26, 21 NOV 2026, 21 NOV 2026 (NL mit
+  MRT, MEI, OKT); dieselbe Schreibweise gilt seit Runde 14 für das gewählte Datum. Jede Eingabe im Formular beendet den Auftakt
+  sofort; reduzierte Bewegung und Pause zeigen nur EURE SHOW. Das Fenster ist `aria-hidden`, kein `aria-live`: Screenreader
+  hören die Rotation nicht. Code: `himmel-texte.js` (Worte, Datum), `schwarm.ts` (Einmal-Folge `seq` mit `once`: Standzeit
+  zählt nur, solange das Bild ganz im Blick steht; das nächste Bild lädt erst beim Wechsel). EUER TAG liegt vorberechnet in
+  `texte-*.json`, das Datum rechnet der Textplaner im Worker (`textFormationAsync`), sobald der Auftakt läuft, ebenso jeder
+  getippte Ort und jedes gewählte Datum (vorher im Hauptthread). Wächter: `scripts/himmel-formular-auftakt.test.mjs`,
+  `tests/himmel-formular-auftakt.spec.ts` (welches Bild das Fenster trägt, steht in `data-himmel`).
+- **Kirche für Gemeinden** (Marc: jede Gemeinde hat eine Kirche, damit identifiziert man sich eher; kein neues Motiv, der
+  Kölner Dom aus dem Konfigurator): `public/media/himmel/dom-100.json`, vorberechnet aus der Linienzeichnung
+  `scenes/wahrzeichen.js → SHAPES.dom` (Stufe 1 mit Portal und Kreuzblumen) mit `tools/himmel/motive-vorberechnen.mjs`.
+  100 Drohnen, weil die Dichte zählt: Der Dom ist schmal und hoch, bei 150 verschmolzen die Lichter im Formularfenster zu
+  einem Strich (3,6 px Abstand, Nachbarmotive 5–8 px). Zuordnung an beiden Stellen in `anlass-motiv.js`; `FORM_OCCASION`
+  nutzt seitdem die heutigen Formularwerte (vorher alte Schlüssel, NL „Bedrijven“ und „Privé“ bekamen den Stern). Der
+  Förderturm bleibt im Konfigurator. Wächter: `scripts/himmel-anlass-motiv.test.mjs`.
 
 ## Show-Folge bei `#warum-drohnen` (Runde 3, 17.11.2026; Runden 4 und 5, 18.11.2026)
 
@@ -179,7 +199,8 @@ wie auf der Startseite sehr gut passen.“ Dieselbe Technik, `createFolge(canvas
   1,5). Neu angelegt wird eine Fläche nur bei neuer Pixelgröße. Stehende flache Bilder zeichnen nur beim Lichtlauf (alle 9 s),
   unter dem Zeiger und an der Maske (Schwenk) neu.
 - Feste Worte liegen vorberechnet in `public/media/himmel/texte-*.json` (`tools/himmel/texte-vorberechnen.mjs`); der Textplaner
-  (rund 43 KB gzip) lädt erst, wenn im Formular Ort oder Datum eingetragen werden.
+  (rund 43 KB gzip) lädt erst, wenn im Formular Ort oder Datum eingetragen werden oder der Auftakt beim Datum ankommt
+  (Runde 14), und rechnet im Worker (`text-worker.js`).
 - Vorgerenderte Lichtpunkte; Lichtgröße in CSS-Pixeln, jede Fläche rechnet in ihre Pixeldichte um. Pause und reduzierte
   Bewegung: jede Bühne zeigt ihr Bild, nichts fliegt; die Umschaltung greift ohne Neuladen.
 - Seitenwechsel: Lage und Farbe der Drohnen bleiben für einige Sekunden in `sessionStorage` (`flyingstars:himmel`), damit der
@@ -321,7 +342,7 @@ effect“, Punkte zu klein (sollen wie beim Lichtpunkt-Hover auf Bildern sein), 
 
 ## Offen
 
-- „EURE SHOW“, „NOCH n TAGE“ und „DANKE <Vorname>“ sind Entwürfe, nicht mit FlyingStars abgestimmt; ebenso die
+- „EURE SHOW“, „EUER TAG“, „NOCH n TAGE“ und „DANKE <Vorname>“ sind Entwürfe, nicht mit FlyingStars abgestimmt; ebenso die
   Zuordnung Anlass → Motiv.
 - Bewegte Inhalte über 5 s (drehende 3D-Motive, Lichtlauf alle 9 s): Die Pause-Taste im Seitenkopf hält sie an; ob das für
   WCAG 2.2.2 reicht, ist nicht geprüft.

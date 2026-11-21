@@ -1300,3 +1300,14 @@ Marc: „bei Bremen und Berlin die Wappenform rausnehmen … Bremen soll so nice
 
 - **Hinweis, dann Ablagefläche** (Marc: „mega awkward, dass beides gleichzeitig angezeigt wird“, besonders am Handy): Im Logo-Modus steht zuerst nur der Hinweis zum Algorithmus mit „Verstanden“ (`.is-notice`, Ablage-Zeichen, „Euer Logo hier reinziehen“ und Dateitypen ausgeblendet). Nach „Verstanden“ bleibt die Ablagefläche stehen (`.is-await`, Schleier wie die Einladung), bis ein eigenes Logo geladen ist; Beispiel-Logos zählen nicht. Ein Klick oder Tippen auf die Fläche öffnet die Dateiauswahl. Ohne Maus (`hover: none`) lautet die Zeile „Hier tippen und euer Logo wählen“ (`showconfigurator.tapToChooseYourLogo`), denn gezogen wird dort nicht. Code: `drawNotice()` in `src/scripts/show-configurator.js`, Stile in `src/styles/show-configurator.css`.
 - **REWE als Beispiel entfernt** (Marc: „mir gefällt das ehrlich gesagt nicht, so wie es da dargestellt wird“): aus `LOGO_EXAMPLES`/`CUSTOMER_EXAMPLES`, den vorberechneten Daten (`public/media/logo-modus/beispiele/`, `sizes.json`, `rasters-index.json`) und der Kundenlogo-Folge (`public/media/logo-modus/kundenlogos.json`). Das Kundenlogo in der Logo-Leiste bleibt. Wächter: `src/scripts/logo-rows.test.mjs` (REWE darf nicht zurückkommen, ohne den Test bewusst zu ändern).
+
+## Runde 14 (21.11.2026): Adventskranz dreht weniger
+
+Marc: „Es reicht, wenn er sich nur ein bisschen dreht wie alle anderen Figuren auch“. In 3D lief der Kranz wie auf einem
+Drehteller (0,32 rad/s, bei 7 s Haltezeit gut 2 rad; weil er viermal symmetrisch ist, wirkte das wie eine ganze Runde). Jetzt
+schwenkt er wie die Katalog-Körper (`catalog-3d/kit.js → turn()`): 0,32 rad hin und zurück, Periode 14 s (`SCHWENK` in
+`scenes/gross/adventskranz.js`). 3D+ behält den sanft anlaufenden Drehteller in eine Richtung, auf 40 % verkleinert (am Ende
+rund 0,5 statt 1,3 rad). Ein Hin-und-her oder Abbremsen in 3D+ schlug im Finten-Wächter an (Überschwingen der Flammen-Drohnen
+im Flug), der Drehteller in eine Richtung nicht. Gesichtet auf `/drohnenshow-preise/?anlass=silvester&motiv=adventskranz`
+in HORIZON und ODYSSEY, Chromium und WebKit, 1440 und 390 px.
+
