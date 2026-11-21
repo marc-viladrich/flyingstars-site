@@ -68,11 +68,11 @@ const withAddress = pins.some((pin) => pin.lines);
     <figure class="loc-map">
       <div class="loc-stage">
         <img src="/media/standort-nrw.svg" width={NRW_MAP.width} height={NRW_MAP.height} alt="" loading="lazy" decoding="async" />
-        {/* Wandernder Lichtkegel (Runde 9): EINE Lichtebene über der Punktkarte, die Punktkarte als Maske, geschnitten mit einem
-             Kreis an --sx/--sy. Runde 15 (Marc: „komplett kaputt“ nach dem Umbau auf eine verschobene Lichtfläche): wieder die
-             bewährte Darstellung; die Lage setzt jetzt das Skript aus der Zeigerposition statt 144 unsichtbarer Zeigezellen mit
-             :has(:hover) (die hingen in Safari nach dem Zeigen auf Post/Büro), mit kurzer Trägheit. */}
-        <span class="loc-lit" aria-hidden="true"></span>
+        {/* Wandernder Lichtkegel (Runde 9): die Punkte im Lichtkreis leuchten amberfarben, zum Rand weich auslaufend. Runde 15: Lage
+             aus der Zeigerposition per Skript, mit kurzer Trägheit. Runde 16 (Marc: in Safari „very much non-pleasant“): statt
+             einer Verbundmaske (Punktkarte × Kreisverlauf), die WebKit bei jeder Lageänderung über die ganze Fläche neu rastert,
+             zeichnet ein Canvas nur die Punkte im Kreis, gleicher Look. */}
+        <canvas class="loc-lit" aria-hidden="true"></canvas>
         {pins.map((pin, i) => <span class:list={['loc-pin', pin.tone]} data-pin={i} style={`left:${pin.x.toFixed(2)}%;top:${pin.y.toFixed(2)}%`} aria-hidden="true"></span>)}
       </div>
       <figcaption>
@@ -84,8 +84,98 @@ const withAddress = pins.some((pin) => pin.lines);
 </section>
 
 <script>
+  // Lichtkegel als Canvas (Runde 16). Gezeichnet werden nur die Punkte der Karte im Kreis um die Lichtmitte, je Punkt mit der
+  // Deckkraft, die früher der Kreisverlauf der Maske gab (voll bis 30 % des Radius, dann linear bis 0). Die Punkte liest das
+  // Skript einmal aus derselben SVG, die das Bild zeigt (liegt dann schon im Cache). Die Mitte folgt dem Zeiger mit
+  // exponentieller Glättung über --dur-follow; steht sie, hält die Schleife an und schreibt --sx/--sy an das Canvas.
+  type Dot = [x: number, y: number];
+  type DotMap = { w: number; h: number; r: number; dots: Dot[] };
+  const LIGHT_RADIUS_REM = 8.5, CORE = 0.3, LEVELS = 24;
+  const cssTime = (name: string) => { const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim(); return parseFloat(v) * (v.endsWith('ms') ? 1 : 1000) || 0; };
+  const mapDots = new Map<string, Promise<DotMap>>();
+  const loadDots = (src: string) => {
+    if (!mapDots.has(src)) mapDots.set(src, fetch(src).then((r) => r.text()).then((svg) => {
+      const [, w, h] = svg.match(/viewBox="0 0 ([\d.]+) ([\d.]+)"/)!;
+      const dots = [...svg.matchAll(/cx="([\d.]+)" cy="([\d.]+)"/g)].map((m): Dot => [+m[1], +m[2]]);
+      return { w: +w, h: +h, r: +(svg.match(/ r="([\d.]+)"/)?.[1] ?? 3.4), dots };
+    }));
+    return mapDots.get(src)!;
+  };
+
   for (const root of document.querySelectorAll<HTMLElement>('[data-loc]')) {
     const stage = root.querySelector<HTMLElement>('.loc-stage')!;
+    const img = stage.querySelector('img')!;
+    const canvas = stage.querySelector<HTMLCanvasElement>('.loc-lit')!;
+    const ctx = canvas.getContext('2d');
+    let map: DotMap | undefined;
+    // Maße und Werte aus CSS nur bei Größenänderung lesen, nicht je Bild
+    let size = { w: 0, h: 0, dpr: 1 }, radius = 0, tau = 0;
+    const pos = { x: 0, y: 0 }, goal = { x: 0, y: 0 };
+    let frame = 0, lastTime = 0, drawn: [number, number, number, number] | undefined;
+
+    const resize = () => {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2), w = canvas.clientWidth, h = canvas.clientHeight;
+      if (!w || (w === size.w && h === size.h && dpr === size.dpr)) return;
+      size = { w, h, dpr };
+      radius = LIGHT_RADIUS_REM * parseFloat(getComputedStyle(document.documentElement).fontSize);
+      tau = cssTime('--dur-follow') / 3;
+      canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
+      if (ctx) ctx.fillStyle = getComputedStyle(canvas).color;
+      drawn = undefined;
+      draw();
+    };
+    const draw = () => {
+      if (!ctx || !map || !size.w) return;
+      const { w, h, dpr } = size, sx = w / map.w, sy = h / map.h;
+      const R = radius, dot = map.r * sx;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      if (drawn) ctx.clearRect(...drawn); else ctx.clearRect(0, 0, w, h);
+      const cx = pos.x * w, cy = pos.y * h, pad = dot + 2;
+      drawn = [cx - R - pad, cy - R - pad, 2 * (R + pad), 2 * (R + pad)];
+      // Punkte nach Deckkraftstufe bündeln: ein Pfad je Stufe statt eines Füllaufrufs je Punkt
+      const paths: (Path2D | undefined)[] = [];
+      for (const [px, py] of map.dots) {
+        const x = px * sx, y = py * sy, d = Math.hypot(x - cx, y - cy);
+        if (d >= R) continue;
+        const a = d <= CORE * R ? 1 : 1 - (d - CORE * R) / ((1 - CORE) * R);
+        const level = Math.round(a * LEVELS);
+        if (!level) continue;
+        const path = (paths[level] ??= new Path2D());
+        path.moveTo(x + dot, y); path.arc(x, y, dot, 0, Math.PI * 2);
+      }
+      paths.forEach((path, level) => { if (path) { ctx.globalAlpha = level / LEVELS; ctx.fill(path); } });
+      ctx.globalAlpha = 1;
+    };
+    const settle = () => {
+      canvas.style.setProperty('--sx', `${(pos.x * 100).toFixed(2)}%`);
+      canvas.style.setProperty('--sy', `${(pos.y * 100).toFixed(2)}%`);
+    };
+    const tick = (now: number) => {
+      const dt = lastTime ? now - lastTime : 16.7;
+      lastTime = now;
+      const k = tau > 0 ? 1 - Math.exp(-dt / tau) : 1;
+      pos.x += (goal.x - pos.x) * k; pos.y += (goal.y - pos.y) * k;
+      const done = Math.hypot((goal.x - pos.x) * size.w, (goal.y - pos.y) * size.h) < 0.25;
+      if (done) Object.assign(pos, goal);
+      draw();
+      if (done) { frame = 0; lastTime = 0; settle(); } else frame = requestAnimationFrame(tick);
+    };
+    // jump: ohne Trägheit (Touch, erstes Aufleuchten), sonst gleitet die Mitte zum Ziel
+    const aim = (x: number, y: number, jump: boolean) => {
+      goal.x = x; goal.y = y;
+      if (!canvas.offsetWidth) return; // reduzierte Bewegung oder Pause: Canvas ist ausgeblendet
+      if (!map) {
+        Object.assign(pos, goal);
+        loadDots(img.currentSrc || img.src).then((m) => { map = m; resize(); Object.assign(pos, goal); draw(); settle(); });
+        return;
+      }
+      resize();
+      if (jump) {
+        cancelAnimationFrame(frame); frame = 0; lastTime = 0;
+        Object.assign(pos, goal); draw(); settle();
+      } else if (!frame) frame = requestAnimationFrame(tick);
+    };
+    new ResizeObserver(resize).observe(canvas);
     let hotPin: string | undefined;
     let touchId: number | undefined;
     let releaseLight: number | undefined;
@@ -132,8 +222,7 @@ const withAddress = pins.some((pin) => pin.lines);
         return;
       }
       window.clearTimeout(releaseLight);
-      stage.style.setProperty('--sx', `${(x / width * 100).toFixed(2)}%`);
-      stage.style.setProperty('--sy', `${(y / height * 100).toFixed(2)}%`);
+      aim(x / width, y / height, touch || !stage.classList.contains('is-lit'));
       stage.classList.toggle('is-touch', touch);
       stage.classList.add('is-lit');
     };
@@ -217,22 +306,14 @@ const withAddress = pins.some((pin) => pin.lines);
   .loc-links a :global(.ico) { flex: none; color: var(--pin); }
   @media (prefers-reduced-motion: reduce) { .loc-pin::before, .loc-pin::after, .loc-place::before, .loc-ico::after { transition: none; } }
 
-  /* Lichtkegel wie Runde 9 (Maske wie DotField: Langschreibweisen, sonst setzt WebKit das mask-composite zurück). Die Lage
-     gleitet über registrierte Eigenschaften mit kurzer Trägheit (Runde 15, Marc: „more responsive, die Inertia kann trotzdem
-     bleiben“); bei Touch ohne Nachziehen. */
-  @property --sx { syntax: '<percentage>'; inherits: true; initial-value: 50%; }
-  @property --sy { syntax: '<percentage>'; inherits: true; initial-value: 50%; }
-  .loc-lit { display: none; position: absolute; inset: 0; pointer-events: none; opacity: 0; background: var(--amber);
-    -webkit-mask-image: url(/media/standort-nrw-maske.svg), radial-gradient(circle 8.5rem at var(--sx) var(--sy), #000 30%, transparent);
-    mask-image: url(/media/standort-nrw-maske.svg), radial-gradient(circle 8.5rem at var(--sx) var(--sy), #000 30%, transparent);
-    -webkit-mask-size: 100% 100%, 100% 100%; mask-size: 100% 100%, 100% 100%; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
-    -webkit-mask-composite: source-in; mask-composite: intersect;
-    transition: opacity var(--dur-standard) var(--ease-default), --sx var(--dur-follow) var(--ease-out), --sy var(--dur-follow) var(--ease-out); }
+  /* Lichtkegel (Runde 16: Canvas statt Verbundmaske, siehe Skript). Farbe über color, Deckkraft und Ein-/Ausblenden wie
+     bisher in CSS; die Trägheit der Lage rechnet das Skript aus --dur-follow. */
+  .loc-lit { display: none; position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; opacity: 0; color: var(--amber);
+    transition: opacity var(--dur-standard) var(--ease-default); }
   @media (prefers-reduced-motion: no-preference) {
     :global(html:not(.motion-paused)) .loc-stage { touch-action: pan-y pinch-zoom; }
     :global(html:not(.motion-paused)) .loc-lit { display: block; }
     .loc-stage.is-lit .loc-lit { opacity: 0.85; }
-    .loc-stage.is-touch .loc-lit { transition: opacity var(--dur-standard) var(--ease-default); }
   }
   @media (--grid-stacked) { .loc-grid { grid-template-columns: 1fr; } .loc-map { justify-self: start; } }
 </style>
