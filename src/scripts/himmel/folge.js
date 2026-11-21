@@ -67,8 +67,14 @@ const PIECES = {
   musik: { kind: "story", tags: ["musik"], steps: [O("harpStory")] }, // Harfe, Saiten klingen, die Noten fliegen
   taenzerin: { kind: "story", tags: ["gesicht", "musik"], steps: [O("dancerStory")] }, // Tänzerin dreht sich, der Rock wird zur Blüte
   kugel: { kind: "raum", tags: ["rund"], steps: [{ build: "sphere3d", pkg: "HORIZON", n: N, swing: 0 }] }, // Kugel aus Breiten- und Längenkreisen, dreht sich selbst
-  // Schneeflocke → Runde 6: dieselbe Flocke wird räumlich (scenes/schnee.js, drei Ebenen falten sich auf) → Lichterbaum
-  baum: { kind: "esc", tags: ["hoch"], steps: [S("snow2d"), H("snow3d", 200, { swing: 0, rate: 1.6, hold: 2.2 }), H("tree3d")] },
+  // Schneeflocke → Runde 6: dieselbe Flocke wird räumlich (scenes/schnee.js, drei Ebenen falten sich auf) → Lichterbaum.
+  // Runde 11 (Marc 21.11.2026: „Schneeflocke in 2D zu 3D zu Weihnachtsbaum zu 3D-Stern forming out of it auf jeden Fall auf
+  // die Startseite … ein best of der beeindruckendsten Motive und Storylines“): die ganze Geschichte aus dem Konfigurator
+  // bis zum großen 3D-Stern; story 12 s statt der üblichen Raffung, damit das Sternwachsen Zeit hat (Rate 2 wie der 2×-Knopf)
+  baum: { kind: "story", tags: ["hoch"], steps: [O("snowTreeStarStory", { story: 12 })] },
+  // Runde 11 (Marc: „die Krake sollte da definitiv auch mit rein“): die 3D+-Geschichte ab 400 Drohnen (scenes/gross/
+  // tintenfisch.js, erst beim Bauen nachgeladen); die 100 zusätzlichen Drohnen steigen dunkel von unten auf (joinLate)
+  krake: { kind: "story", tags: ["tier", "wasser"], steps: [O("octopusStory", { n: 400, story: 10 })] },
   // Feuerwerk aus Drohnen: Leuchtspur, Sterne blühen, Finale; Runde 5 (Marc: „da fehlt dieser Feuerregen“): die ganze
   // Geschichte bis zum Goldregen (whole), der Regen steht 3 s und läuft langsamer, damit man ihn fallen sieht
   feuerwerk: { kind: "story", tags: ["feuer"], steps: [O("fireworkStory", { whole: true, rate: 1.5, hold: 3.0 })] },
@@ -76,7 +82,7 @@ const PIECES = {
 /** Erster Besuch: unser Feuerwerk (Finale), dann sofort groß. Danach die Wunschliste in dieser Reihenfolge, später gemischt.
  *  Runde 6 (Marc): der QR-Code direkt nach dem Logo (typischer Einsatz: Logo, dann „Scan me“). */
 const OPENING = { kind: "story", tags: ["feuer"], steps: [O("fireworkFinale", { story: 2.0, rate: 1.5, hold: 2.6 })] }; // Finale, dann Goldregen
-const FIRST = ["maske", "logo", "qr", "kugel", "delfine", "turm", "wappen", "musik", "kolibri", "buch", "baum", "taenzerin", "riesenrad", "feuerwerk"];
+const FIRST = ["maske", "logo", "qr", "kugel", "delfine", "turm", "baum", "wappen", "krake", "musik", "kolibri", "buch", "taenzerin", "riesenrad", "feuerwerk"];
 
 /** Indoor-Reihe (scenes/indoor.js): bis 50 Drohnen, einfache Motive, in fester Runde. */
 const NI = 50;
