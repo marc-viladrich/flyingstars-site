@@ -35,7 +35,9 @@ const SPK = [{ s: -1, c: [-1.42, 0, -0.12], turn: 0.5 }, { s: 1, c: [1.42, 0, -0
 const WOOF = { y: 0.36, R: [0.19, 0.13, 0.055] }, TWEET = { y: 0.86, r: 0.065 };
 const FIELD = { x: 0.98, y: 0.3 }; // auf Höhe der Tieftöner
 /** Feldlinien: ab Stufe 1 elf statt neun, tiefer in den Raum (größer, nicht dichter). */
-const rowsOf = (lv) => (lv ? { z0: -0.9, z1: 0.9, rows: 11 } : { z0: -0.72, z1: 0.72, rows: 9 });
+// Runde 11c (Marc: „deutlich weniger Drohnen in vergleichbarer Qualität“): bei wenigen Drohnen weniger Linien mit genug
+// Drohnen je Linie (sonst liest sich das Feld als Punktraster); mehr Drohnen kaufen mehr Linien und mehr Tiefe.
+const rowsOf = (n) => (n >= 1000 ? { z0: -0.9, z1: 0.9, rows: 11 } : n >= 800 ? { z0: -0.72, z1: 0.72, rows: 9 } : n >= 600 ? { z0: -0.66, z1: 0.66, rows: 7 } : { z0: -0.6, z1: 0.6, rows: 6 });
 /** Punkt im Rahmen eines Lautsprechers (x quer, y hoch, z nach vorn) in Weltkoordinaten. */
 const toWorld = (spk, p) => { const c = Math.cos(spk.turn), s = Math.sin(spk.turn); return [spk.c[0] + p[0] * c + p[2] * s, spk.c[1] + p[1], spk.c[2] - p[0] * s + p[2] * c]; };
 const frontOf = (spk) => [Math.sin(spk.turn), 0, Math.cos(spk.turn)];
@@ -65,7 +67,7 @@ const SOURCES = SPK.map((spk) => { const w = toWorld(spk, [0, 0, BOX.hz]); retur
 
 /** Das Modell: Lautsprecherteile | Feldlinien (Reihe, x, z, Abstände zu den Quellen). */
 export function fieldModel(n) {
-  const lv = fieldLevel(n), parts = speakerParts(), FR = rowsOf(lv);
+  const lv = fieldLevel(n), parts = speakerParts(), FR = rowsOf(n);
   const lineLen = (l) => { const p = l.closed ? [...l.pts, l.pts[0]] : l.pts; let L = 0; for (let i = 1; i < p.length; i++) L += Math.hypot(p[i][0] - p[i - 1][0], p[i][1] - p[i - 1][1], p[i][2] - p[i - 1][2]); return L; };
   const spkLen = parts.reduce((s, p) => s + (p.lines ? p.lines.reduce((a, l) => a + lineLen(l), 0) * (p.w ?? 1) : 0), 0) + 30 * 0.05;
   const fieldLen = FR.rows * 2 * FIELD.x * 1.08;

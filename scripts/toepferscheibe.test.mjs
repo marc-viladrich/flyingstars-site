@@ -1,4 +1,4 @@
-// Runde 11b (große Motive): Wächter für scenes/gross/toepferscheibe.js, die Töpferscheibe in Kultur (3D und 3D+ ab 500).
+// Runde 11b (große Motive): Wächter für scenes/gross/toepferscheibe.js, die Töpferscheibe in Kultur (3D und 3D+ ab 300, Runde 11c).
 // Genau n Drohnen bei jeder einstellbaren Zahl, keine Klumpen, keine verstreuten Punkte, Bewegung in Drohnengrenzen, das
 // Bild füllt die Bühne, die Vase wächst wirklich aus dem Klumpen (höher und mit Hals), die Scheibe dreht, mehr Drohnen
 // bringen mehr Teile.
@@ -14,7 +14,7 @@ const { droneStops } = await import('../src/content/show-packages.ts');
 const { OCCASIONS } = await import('../src/content/show-configurator.js');
 const { BUILDERS } = await import('../src/scripts/scenes/index.js');
 
-const MIN = 500, NAMES = ['potteryWheel3d', 'potteryWheelStory'];
+const MIN = 300, NAMES = ['potteryWheel3d', 'potteryWheelStory'];
 const STOPS = { potteryWheel3d: droneStops('3d').filter((n) => n >= MIN), potteryWheelStory: droneStops('story').filter((n) => n >= MIN) };
 const nearest = (pts) => pts.map((p, i) => { let m = Infinity; for (let j = 0; j < pts.length; j++) if (j !== i) m = Math.min(m, Math.hypot(p[0] - pts[j][0], p[1] - pts[j][1], (p[2] || 0) - (pts[j][2] || 0))); return m; });
 const quantile = (a, q) => { const s = [...a].sort((x, y) => x - y); return s[Math.min(s.length - 1, Math.floor(q * s.length))]; };
@@ -40,7 +40,7 @@ function motion(b, every = 1) {
 }
 const groupRange = (b, name) => { let s = 0; for (const g of b.groups) { if (g.name === name) return [s, s + g.count]; s += g.count; } return [0, 0]; };
 
-test('im Konfigurator: Kultur, 3D und 3D+ ab 500, nachgeladen', () => {
+test('im Konfigurator: Kultur, 3D und 3D+ ab 300, nachgeladen', () => {
   const kultur = OCCASIONS.find((o) => o.id === 'kultur'), m = kultur.motifs.find((x) => x.id === 'toepferscheibe');
   assert.ok(m, 'Töpferscheibe fehlt in Kultur');
   assert.deepEqual(Object.keys(m.tiers), ['HORIZON', 'ODYSSEY']);
@@ -62,7 +62,7 @@ test('genau n Drohnen in jedem Bild bei jeder einstellbaren Zahl, Punkte und Tei
 });
 
 test('keine zwei Drohnen aufeinander, keine verstreuten Punkte (Ruhe, Mitte, Ende; Stufe, Mitte, 1000)', async () => {
-  for (const name of NAMES) for (const n of [500, 700, 1000]) {
+  for (const name of NAMES) for (const n of [300, 600, 1000]) {
     const { beats } = await builders[name](n, '');
     for (const [k, b] of beats.entries()) for (const t of [0, (b.hold ?? 6) / 2, b.hold ?? 6]) {
       const nn = nearest(frame(b, t)), med = quantile(nn, 0.5);
@@ -73,7 +73,7 @@ test('keine zwei Drohnen aufeinander, keine verstreuten Punkte (Ruhe, Mitte, End
 });
 
 test('Eigenbewegung in Drohnengrenzen und ohne Sprung bei t = 0', async () => {
-  for (const name of NAMES) for (const n of [500, 1000]) {
+  for (const name of NAMES) for (const n of [300, 1000]) {
     const { beats } = await builders[name](n, '');
     for (const [k, b] of beats.entries()) {
       const m = motion(b, n > 800 ? 3 : 2);
@@ -85,7 +85,7 @@ test('Eigenbewegung in Drohnengrenzen und ohne Sprung bei t = 0', async () => {
 });
 
 test('Bilder schließen aneinander an: jedes Bild beginnt, wo das vorige endet (starre Teile, keine Wolke)', async () => {
-  for (const n of [500, 1000]) {
+  for (const n of [300, 1000]) {
     const { beats } = await builders.potteryWheelStory(n, '');
     assert.equal(beats.length, 4);
     for (let k = 1; k < beats.length; k++) {
@@ -97,7 +97,7 @@ test('Bilder schließen aneinander an: jedes Bild beginnt, wo das vorige endet (
 });
 
 test('das Bild füllt die Bühne; die Vase wächst aus dem Klumpen, mit Bauch und schmalem Hals', async () => {
-  for (const n of [500, 1000]) {
+  for (const n of [300, 1000]) {
     const { beats: [b3] } = await builders.potteryWheel3d(n, ''), all = frame(b3, 0);
     const fw = extent(b3.fitPts, 0), fh = extent(b3.fitPts, 1);
     assert.ok(extent(all, 0) >= 0.85 * fw && extent(all, 1) >= 0.85 * fh, `3D ${n}: füllt nur ${(extent(all, 0) / fw * 100).toFixed(0)} % × ${(extent(all, 1) / fh * 100).toFixed(0)} %`);

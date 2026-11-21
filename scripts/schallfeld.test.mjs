@@ -1,5 +1,5 @@
 // Runde 11b (große Motive): Wächter für scenes/gross/schallfeld.js, das Schallfeld zwischen zwei Lautsprechern (3D und 3D+
-// ab 900, dieselbe Fassung in Kultur und Stadtfest). Genau n Drohnen bei jeder einstellbaren Zahl, keine Klumpen, keine
+// ab 600, dieselbe Fassung in Kultur und Stadtfest). Genau n Drohnen bei jeder einstellbaren Zahl, keine Klumpen, keine
 // verstreuten Punkte, Bewegung in Drohnengrenzen, das Bild füllt die Bühne, die Membranen schwingen, das Feld zeigt
 // Interferenz (stille Knotenstellen neben lauten Bäuchen), mehr Drohnen machen das Feld größer, nicht dichter.
 // Aufruf: node --test scripts/schallfeld.test.mjs
@@ -14,7 +14,7 @@ const { droneStops } = await import('../src/content/show-packages.ts');
 const { OCCASIONS } = await import('../src/content/show-configurator.js');
 const { BUILDERS } = await import('../src/scripts/scenes/index.js');
 
-const MIN = 900, NAMES = ['soundField3d', 'soundFieldStory'];
+const MIN = 600, NAMES = ['soundField3d', 'soundFieldStory'];
 const STOPS = { soundField3d: droneStops('3d').filter((n) => n >= MIN), soundFieldStory: droneStops('story').filter((n) => n >= MIN) };
 const nearest = (pts) => pts.map((p, i) => { let m = Infinity; for (let j = 0; j < pts.length; j++) if (j !== i) m = Math.min(m, Math.hypot(p[0] - pts[j][0], p[1] - pts[j][1], (p[2] || 0) - (pts[j][2] || 0))); return m; });
 const quantile = (a, q) => { const s = [...a].sort((x, y) => x - y); return s[Math.min(s.length - 1, Math.floor(q * s.length))]; };
@@ -53,7 +53,7 @@ test('genau n Drohnen in jedem Bild bei jeder einstellbaren Zahl, Punkte und Tei
 });
 
 test('keine zwei Drohnen aufeinander, keine verstreuten Punkte (Ruhe, Mitte, Ende; Stufe, Mitte, 1000)', async () => {
-  for (const name of NAMES) for (const n of [900, 950, 1000]) {
+  for (const name of NAMES) for (const n of [600, 800, 1000]) {
     const { beats } = await builders[name](n, '');
     for (const [k, b] of beats.entries()) for (const t of [0, (b.hold ?? 6) / 2, b.hold ?? 6]) {
       const nn = nearest(frame(b, t)), med = quantile(nn, 0.5);
@@ -64,7 +64,7 @@ test('keine zwei Drohnen aufeinander, keine verstreuten Punkte (Ruhe, Mitte, End
 });
 
 test('Eigenbewegung in Drohnengrenzen und ohne Sprung bei t = 0', async () => {
-  for (const name of NAMES) for (const n of [900, 1000]) {
+  for (const name of NAMES) for (const n of [600, 1000]) {
     const { beats } = await builders[name](n, '');
     for (const [k, b] of beats.entries()) {
       const m = motion(b, n > 800 ? 3 : 2);
@@ -76,7 +76,7 @@ test('Eigenbewegung in Drohnengrenzen und ohne Sprung bei t = 0', async () => {
 });
 
 test('Bilder schließen aneinander an: jedes Bild beginnt, wo das vorige endet (starre Teile, keine Wolke)', async () => {
-  for (const n of [900, 1000]) {
+  for (const n of [600, 1000]) {
     const { beats } = await builders.soundFieldStory(n, '');
     assert.equal(beats.length, 4);
     for (let k = 1; k < beats.length; k++) {
@@ -88,7 +88,7 @@ test('Bilder schließen aneinander an: jedes Bild beginnt, wo das vorige endet (
 });
 
 test('das Bild füllt die Bühne; die Membranen schwingen; zwei Quellen ergeben Interferenz', async () => {
-  for (const n of [900, 1000]) {
+  for (const n of [600, 1000]) {
     const { beats: [b3] } = await builders.soundField3d(n, ''), all = frame(b3, 5);
     assert.ok(extent(all, 0) >= 0.85 * extent(b3.fitPts, 0) && extent(all, 1) >= 0.75 * extent(b3.fitPts, 1), `3D ${n}: füllt die Bühne nicht`);
     const { beats } = await builders.soundFieldStory(n, ''), [f0, f1] = groupRange(beats[0], 'feld'), [l0, l1] = groupRange(beats[0], 'lautsprecher');
@@ -122,6 +122,7 @@ test('mehr Drohnen kaufen Größe: ab 1000 ein größeres Feld mit mehr Linien, 
   const rows = (n) => new Set(fieldModel(n).slots.map((q) => q.i)).size, depth = (n) => extent(fieldModel(n).slots.map((q) => [q.x, 0, q.z]), 2);
   assert.ok(rows(1000) > rows(900) && depth(1000) > 1.15 * depth(900), `Linien ${rows(900)} → ${rows(1000)}`);
   const per = (n) => fieldModel(n).slots.length / rows(n);
+  assert.ok(rows(600) < rows(900), 'bei wenigen Drohnen weniger Linien (Runde 11c)');
   assert.ok(per(1000) <= 1.05 * per(900), `Drohnen je Linie ${per(900).toFixed(0)} → ${per(1000).toFixed(0)}`);
 });
 

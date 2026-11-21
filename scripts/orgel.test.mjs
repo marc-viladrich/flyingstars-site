@@ -1,4 +1,4 @@
-// Runde 11b (große Motive): Wächter für scenes/gross/orgel.js, die Orgel in Kultur (3D und 3D+ ab 600, direkt hinter der
+// Runde 11b (große Motive): Wächter für scenes/gross/orgel.js, die Orgel in Kultur (3D und 3D+ ab 500, direkt hinter der
 // Harfe). Genau n Drohnen bei jeder einstellbaren Zahl, keine Klumpen, keine verstreuten Punkte, Bewegung in
 // Drohnengrenzen, das Bild füllt die Bühne, der Akkord steigt wirklich in die Pfeifen, die Kränze steigen im vollen Werk
 // als Klangbögen auf, die Teile heißen wie am Ende der Harfe (Übergang mit Bezug), mehr Drohnen bringen mehr Teile.
@@ -14,7 +14,7 @@ const { droneStops } = await import('../src/content/show-packages.ts');
 const { OCCASIONS } = await import('../src/content/show-configurator.js');
 const { BUILDERS } = await import('../src/scripts/scenes/index.js');
 
-const MIN = 600, NAMES = ['organ3d', 'organStory'];
+const MIN = 500, NAMES = ['organ3d', 'organStory'];
 const STOPS = { organ3d: droneStops('3d').filter((n) => n >= MIN), organStory: droneStops('story').filter((n) => n >= MIN) };
 const nearest = (pts) => pts.map((p, i) => { let m = Infinity; for (let j = 0; j < pts.length; j++) if (j !== i) m = Math.min(m, Math.hypot(p[0] - pts[j][0], p[1] - pts[j][1], (p[2] || 0) - (pts[j][2] || 0))); return m; });
 const quantile = (a, q) => { const s = [...a].sort((x, y) => x - y); return s[Math.min(s.length - 1, Math.floor(q * s.length))]; };
@@ -40,7 +40,7 @@ function motion(b, every = 1) {
 }
 const groupRange = (b, name) => { let s = 0; for (const g of b.groups) { if (g.name === name) return [s, s + g.count]; s += g.count; } return [0, 0]; };
 
-test('im Konfigurator: Kultur, direkt hinter der Harfe (Musik), 3D und 3D+ ab 600, nachgeladen', () => {
+test('im Konfigurator: Kultur, direkt hinter der Harfe (Musik), 3D und 3D+ ab 500, nachgeladen', () => {
   const kultur = OCCASIONS.find((o) => o.id === 'kultur'), i = kultur.motifs.findIndex((x) => x.id === 'orgel'), m = kultur.motifs[i];
   assert.ok(m, 'Orgel fehlt in Kultur');
   assert.equal(kultur.motifs[i - 1].id, 'noten', 'Orgel steht nicht direkt hinter der Harfe');
@@ -63,7 +63,7 @@ test('genau n Drohnen in jedem Bild bei jeder einstellbaren Zahl, Punkte und Tei
 });
 
 test('keine zwei Drohnen aufeinander, keine verstreuten Punkte (Ruhe, Mitte, Ende; Stufe, Mitte, 1000)', async () => {
-  for (const name of NAMES) for (const n of [600, 800, 1000]) {
+  for (const name of NAMES) for (const n of [500, 800, 1000]) {
     const { beats } = await builders[name](n, '');
     for (const [k, b] of beats.entries()) for (const t of [0, (b.hold ?? 6) / 2, b.hold ?? 6]) {
       const nn = nearest(frame(b, t)), med = quantile(nn, 0.5);
@@ -74,7 +74,7 @@ test('keine zwei Drohnen aufeinander, keine verstreuten Punkte (Ruhe, Mitte, End
 });
 
 test('Eigenbewegung in Drohnengrenzen und ohne Sprung bei t = 0', async () => {
-  for (const name of NAMES) for (const n of [600, 1000]) {
+  for (const name of NAMES) for (const n of [500, 1000]) {
     const { beats } = await builders[name](n, '');
     for (const [k, b] of beats.entries()) {
       const m = motion(b, n > 800 ? 3 : 2);
@@ -86,7 +86,7 @@ test('Eigenbewegung in Drohnengrenzen und ohne Sprung bei t = 0', async () => {
 });
 
 test('Bilder schließen aneinander an: jedes Bild beginnt, wo das vorige endet (starre Teile, keine Wolke)', async () => {
-  for (const n of [600, 1000]) {
+  for (const n of [500, 1000]) {
     const { beats } = await builders.organStory(n, '');
     assert.equal(beats.length, 4);
     for (let k = 1; k < beats.length; k++) {
@@ -106,7 +106,7 @@ test('Übergang mit Bezug zur Harfe: Teile heißen wie am Ende der Harfengeschic
 });
 
 test('das Bild füllt die Bühne; der Akkord steigt in die Pfeifen, die Kränze steigen als Klangbögen auf', async () => {
-  for (const n of [600, 1000]) {
+  for (const n of [500, 1000]) {
     const { beats: [b3] } = await builders.organ3d(n, ''), all = frame(b3, 0);
     assert.ok(extent(all, 0) >= 0.85 * extent(b3.fitPts, 0) && extent(all, 1) >= 0.7 * extent(b3.fitPts, 1), `3D ${n}: füllt die Bühne nicht`);
     const { beats } = await builders.organStory(n, ''), [s0, s1] = groupRange(beats[0], 'strings'), [c0, c1] = groupRange(beats[0], 'note0');

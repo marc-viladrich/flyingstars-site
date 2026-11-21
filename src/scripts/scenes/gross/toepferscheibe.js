@@ -30,7 +30,8 @@ const circle = (r, y, k = 64, a0 = 0) => ({ pts: Array.from({ length: k }, (_, i
 /** Detailstufe nach Drohnen: 0 bis 699, 1 bis 899, 2 ab 900. */
 export const potLevel = (n) => (n >= 900 ? 2 : n >= 700 ? 1 : 0);
 const PITCH = 0.3; // leichte Aufsicht: die Ringe lesen sich als Ellipsen
-const RINGS = 10;
+/** Querschnitte: bis 449 Drohnen sieben (lockere Ringe mit genug Drohnen je Ring), darüber zehn. */
+const ringsOf = (n) => (n >= 450 ? 10 : 7);
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Profile (Radius, Höhe) vom Fuß zur Lippe; die Ringe sitzen bei gleichen Anteilen der Profillänge
@@ -68,7 +69,7 @@ function shapeAt(s, u1, u2, out, h1 = u1, h2 = u2) {
   out[0] = lerp(lerp(a[0], b[0], u1), c[0], u2); out[1] = lerp(lerp(a[1], b[1], h1), c[1], h2);
   return out;
 }
-const ringS = (k) => 0.02 + (0.96 * k) / (RINGS - 1);
+const ringS = (k, K) => 0.02 + (0.96 * k) / (K - 1);
 /** Zickzack-Ornament auf dem Bauch: Stelle s je Winkel. */
 const ZIG = { s: 0.393, amp: 0.032, teeth: 9 }; // zwischen dem vierten und fünften Ring
 const zigS = (a) => ZIG.s + ZIG.amp * (2 * Math.abs(((a / TAU) * ZIG.teeth) % 1 - 0.5) * 2 - 1);
@@ -107,14 +108,14 @@ const partsLen = (parts) => parts.reduce((s, p) => s + p.lines.reduce((a, l) => 
  */
 export function potModel(n, forms = ['vase']) {
   const lv = potLevel(n), mach = machineParts(lv), hands = handParts();
-  const rad = Array.from({ length: RINGS }, (_, k) => forms.reduce((s, f) => s + AT[f](ringS(k))[0], 0) / forms.length);
+  const K = ringsOf(n), rad = Array.from({ length: K }, (_, k) => forms.reduce((s, f) => s + AT[f](ringS(k, K))[0], 0) / forms.length);
   const ringLen = rad.map((r) => TAU * r), zigLen = lv >= 2 ? TAU * AT.vase(ZIG.s)[0] * 1.35 : 0;
   const W_VASE = 1.15, W_HAND = 1;
   const lens = [ringLen.reduce((a, b) => a + b, 0) * W_VASE + zigLen, partsLen(mach.turning), partsLen(mach.still), 2 * partsLen(hands) * W_HAND];
   const [nv, nt, ns, nh] = share(n, lens);
   const [nr, nz] = share(nv, [ringLen.reduce((a, b) => a + b, 0) * W_VASE, zigLen || 1e-9]);
   const counts = share(nr, ringLen), slots = [];
-  counts.forEach((c, k) => { const a0 = 0.37 * k; for (let q = 0; q < c; q++) slots.push({ k, a: a0 + (q / c) * TAU }); });
+  counts.forEach((c, k) => { const a0 = 0.37 * k; for (let q = 0; q < c; q++) slots.push({ k, a: a0 + (q / c) * TAU, s: ringS(k, K), f: k / (K - 1), last: k === K - 1 }); });
   for (let q = 0; q < nz; q++) slots.push({ k: -1, a: (q / nz) * TAU });
   const turning = assemble(mach.turning, nt), still = assemble(mach.still, ns);
   const [hr, hl] = share(nh, [1, 1]), handR = assemble(handParts(), hr), handL = assemble(handParts(), hl);
@@ -156,7 +157,7 @@ function scene(m, st) {
   const pose = (j, T, o) => {
     ready(T);
     if (j < V) {
-      const q = m.slots[j], x = q.k >= 0 ? ringS(q.k) : zigS(q.a);
+      const q = m.slots[j], x = q.k >= 0 ? q.s : zigS(q.a);
       profAt(x, prof);
       const a = q.a + s.phi; o[0] = prof[0] * Math.cos(a); o[1] = prof[1]; o[2] = prof[0] * Math.sin(a);
       return place(o);
@@ -175,7 +176,7 @@ function scene(m, st) {
 const CLAY = mix(ORANGE, RED, 0.18), CLAY_LIP = mix(ORANGE, GOLD, 0.35);
 function colours(m) {
   const { slots, turning, still, handR, handL } = m;
-  const ring = slots.map((q) => (q.k < 0 ? GOLD : q.k === RINGS - 1 ? CLAY_LIP : mix(CLAY, ORANGE, q.k / (RINGS - 1) * 0.4)));
+  const ring = slots.map((q) => (q.k < 0 ? GOLD : q.last ? CLAY_LIP : mix(CLAY, ORANGE, q.f * 0.4)));
   const steel = mix(BLUE, DIAMOND, 0.55);
   return [
     ...ring,
@@ -262,14 +263,14 @@ export const builders = {
     const fitPts = fitOf(at, [0, 2, 5, 8, 11, 13, 15, 17, 19, 21]);
     const light = (j, T) => {
       if (j < V) {
-        const q = m.slots[j], x = q.k >= 0 ? ringS(q.k) : zigS(q.a);
+        const q = m.slots[j], x = q.k >= 0 ? q.s : zigS(q.a);
         // Glasur: eine Lichtspirale steigt vom Fuß zur Lippe, dahinter glänzt die Vase
         const front = (T - 15.6) / 3.0, spiral = wrap(q.a + stf(T).phi - 6 * x - 2.5 * T);
         const glaze = smooth((front - x) / 0.12), wave = Math.exp(-(((front - x) / 0.09) ** 2)) * (0.6 + 0.6 * Math.exp(-((spiral / 0.9) ** 2)));
         if (q.k < 0) return 0.55 + 0.25 * ease((T - 9) / 3) + 1.1 * glaze * (0.85 + 0.2 * Math.sin(T * 3 + q.a * 4)) + wave; // Ornament: erst Ritzung, dann Gold
         // als Klumpen leuchtet nur jeder zweite Ring (lockere Linien statt einer gefüllten Kugel), bis die Hände ziehen
         const quiet = q.k % 2 ? 0.7 * (1 - ease((T - P1.t0 - 0.4) / 2.5)) : 0;
-        return groove(q) * (1 - 0.25 * glaze) * (1 - quiet) + 0.55 * glaze + wave + (q.k === RINGS - 1 ? 0.5 * glaze * (0.5 + 0.5 * Math.sin(T * 4 + q.a * 5)) : 0);
+        return groove(q) * (1 - 0.25 * glaze) * (1 - quiet) + 0.55 * glaze + wave + (q.last ? 0.5 * glaze * (0.5 + 0.5 * Math.sin(T * 4 + q.a * 5)) : 0);
       }
       if (j < S0) return m.turning.tags[j - T0] === 'scheibe' ? headMark(m.turning.pts[j - T0]) : 0.9;
       return 1;
