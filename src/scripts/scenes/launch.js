@@ -2,6 +2,8 @@ import { t as message } from '../../i18n/ui.mjs';
 // launch motifs of the eleventh version (see src/content/show-configurator.js for the build names).
 import { TAU, WARM, GOLD, VIOLET, CYAN, BLUE, mix, paint, frac, smooth, hash, yaw, pitch, roll, breathe, glint, sparkle, chase, trace, share, part, act } from "../show-motion.js";
 import { sampleOutline, evenSubset } from "../show-geometry.js";
+import { logoPoints } from "./fs-logo.js";
+import { chain } from "./umbau.js";
 
 const line = (...pts) => ({ pts, closed: false });
 const flat = (pts, z = 0) => pts.map(([x, y]) => [x, y, z]);
@@ -219,6 +221,23 @@ export const builders = {
         else o[3] = trace((j - BR) / (P - BR - SC), t, 1.6, { dim: 0.25 });
       } }),
     ] };
+  },
+
+  qrLogoStory(n) {
+    // Runde 16 (Marc 21.11.2026: „aus dem FlyingStars-Logo zerlegt sich die Formation und setzt sich zu Handy + QR-Code
+    // zusammen“): das Logo steht, dann löst es sich Stück für Stück und setzt sich ohne Wolke zum Handy zusammen, erst das
+    // Gehäuse von unten nach oben, dann der Code Zeile für Zeile von oben (scenes/umbau.js); eine Scanlinie läuft über den
+    // Code, dann wird er groß mit Scanrahmen und „Scan me“ (das Schlussbild der QR-Geschichte).
+    const story = builders.qrStory(n).beats, P = n - QR_DARK.length, scan = story[2];
+    const small = qrCode(0.05, 0, 0.05), top = small[0][1], bottom = small[small.length - 1][1];
+    const logo = { pts: logoPoints(n).map(([x, y, z, ...c]) => [x * 1.05, y * 1.05, z, ...c]), caption: message('launch.qrLogo.logo'), hold: 2.6, run: true, live: (b, j, t, o) => { yaw(o, 0.22 * Math.sin((TAU * t) / 10)); } };
+    const phoneBeat = act([part("phone", paint(phone(P), WARM)), part("code", paint(small, WARM))], { caption: message('launch.qrLogo.phone'), hold: 3.2, live: (b, j, t, o) => {
+      if (j < P) return;
+      const beam = top + 0.08 - (top - bottom + 0.16) * smooth(Math.max(0, t - 0.3) / 2.2);
+      o[3] = 1 + 0.9 * Math.exp(-(((b[1] - beam) / 0.05) ** 2));
+    } });
+    const beats = chain([logo], [phoneBeat], { frame: "qrlogo", caption: message('launch.qrLogo.becomesPhone'), spread: 2.8, fly: 2.3, order: (p, i) => (i < P ? p[1] : 10 + (top - p[1])) });
+    return { beats: [...beats, scan] };
   },
 
   // ---- Launch · Spirale ----

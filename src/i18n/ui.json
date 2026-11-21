@@ -80,14 +80,14 @@
     "nl": "Naar de showconfigurator"
   },
   "configuratorteaser.theFlyingstarsLogoBecomingSharperWithMoreDronesAHeart": {
-    "de": "das FlyingStars-Logo, das mit mehr Drohnen schärfer wird, eine 50 in 2D, in 3D und in 3D+ mit Konfetti, eine Hochzeitstorte in 2D und 3D, der Berliner Fernsehturm, ein kleiner Roboter, der zum Greifarm wird und ein Produkt aufs Förderband setzt, und eine große 3D-Maske",
-    "en": "the FlyingStars logo becoming sharper with more drones, a 50 in 2D, 3D and 3D+ with confetti, a wedding cake in 2D and 3D, the Berlin TV tower, a little robot turning into a gripper arm that puts a product on a conveyor belt, and a large 3D mask",
-    "nl": "het FlyingStars-logo dat scherper wordt met meer drones, een 50 in 2D, 3D en 3D+ met confetti, een bruidstaart in 2D en 3D, de Berlijnse tv-toren, een kleine robot die een grijparm wordt en een product op de lopende band zet, en een groot 3D-masker"
+    "de": "das FlyingStars-Logo, das mit mehr Drohnen schärfer wird, ein Herz in 2D, eine Torte in 2D und 3D, die sich zu einer 50 mit Konfetti zusammensetzt, der Bremer Schlüssel in 2D und 3D, das Logo, aus dem ein Handy mit QR-Code wird, die Elbphilharmonie, ein Drehzahlmesser, aus dem ein Sportwagen wird, der Berliner Fernsehturm, ein kleiner Roboter, der zum Greifarm wird und ein Produkt aufs Förderband setzt, und die Maske aus Bokkenrijders, die zum Totenkopf mit Zylinder wird",
+    "en": "the FlyingStars logo becoming sharper with more drones, a heart in 2D, a cake in 2D and 3D that reassembles into a 50 with confetti, the Bremen key in 2D and 3D, the logo turning into a phone with a QR code, the Elbphilharmonie, a rev counter that turns into a sports car, the Berlin TV tower, a little robot turning into a gripper arm that puts a product on a conveyor belt, and the Bokkenrijders mask turning into a skull in a top hat",
+    "nl": "het FlyingStars-logo dat scherper wordt met meer drones, een hart in 2D, een taart in 2D en 3D die zich tot een 50 met confetti vormt, de Bremer sleutel in 2D en 3D, het logo dat een telefoon met QR-code wordt, de Elbphilharmonie, een toerenteller die een sportwagen wordt, de Berlijnse tv-toren, een kleine robot die een grijparm wordt en een product op de lopende band zet, en het Bokkenrijders-masker dat een doodshoofd met hoge hoed wordt"
   },
   "configuratorteaser.aLogoBecomingSharperWithMoreDronesALightBulb": {
-    "de": "ein Logo, das mit mehr Drohnen schärfer wird, ein Drehzahlmesser, aus dem ein Sportwagen wird, eine Glühbirne in 2D und 3D, ein QR-Code und ein Satellit, der einen Lichtimpuls zur Erde sendet",
-    "en": "a logo becoming sharper with more drones, a rev counter that turns into a sports car, a light bulb in 2D and 3D, a QR code and a satellite sending a pulse of light to Earth",
-    "nl": "een logo dat scherper wordt met meer drones, een toerenteller die een sportwagen wordt, een gloeilamp in 2D en 3D, een QR-code en een satelliet die een lichtpuls naar de aarde stuurt"
+    "de": "ein Logo, das mit mehr Drohnen schärfer wird, ein Drehzahlmesser, aus dem ein Sportwagen wird, eine Glühbirne in 2D und 3D, ein Logo, aus dem ein Handy mit QR-Code wird, und ein Satellit, der einen Lichtimpuls zur Erde sendet",
+    "en": "a logo becoming sharper with more drones, a rev counter that turns into a sports car, a light bulb in 2D and 3D, a logo turning into a phone with a QR code and a satellite sending a pulse of light to Earth",
+    "nl": "een logo dat scherper wordt met meer drones, een toerenteller die een sportwagen wordt, een gloeilamp in 2D en 3D, een logo dat een telefoon met QR-code wordt en een satelliet die een lichtpuls naar de aarde stuurt"
   },
   "configuratorteaser.initialsInsideAHeartAHeartIn2dAsA": {
     "de": "Initialen, die mit mehr Drohnen schärfer werden, ein Unendlich-Zeichen in 2D und 3D, ein Schmetterling, der auf einer Blüte landet, und ein Weg durch Rosenbögen zu zwei Ringen",
@@ -5430,5 +5430,95 @@
     "de": "Am Ende des Wegs warten zwei Ringe",
     "en": "At the end of the path, two rings are waiting",
     "nl": "Aan het eind van het pad wachten twee ringen"
+  },
+  "launch.qrLogo.logo": {
+    "de": "Euer Logo am Himmel",
+    "en": "Your logo in the sky",
+    "nl": "Jullie logo aan de hemel"
+  },
+  "launch.qrLogo.becomesPhone": {
+    "de": "Das Logo zerlegt sich und setzt sich zum Handy zusammen",
+    "en": "The logo comes apart and reassembles as a phone",
+    "nl": "Het logo valt uiteen en vormt zich opnieuw tot een telefoon"
+  },
+  "launch.qrLogo.phone": {
+    "de": "Im Display steht ein QR-Code, die Scanlinie läuft darüber",
+    "en": "A QR code appears on the screen, the scan line runs across it",
+    "nl": "Op het scherm staat een QR-code, de scanlijn loopt eroverheen"
+  },
+  "umbau.cakeTurns": {
+    "de": "Die Torte dreht sich, Licht läuft die Girlanden entlang",
+    "en": "The cake turns, light runs along the garlands",
+    "nl": "De taart draait, licht loopt langs de slingers"
+  },
+  "umbau.cakeBecomesNumber": {
+    "de": "Die Torte zerlegt sich Stockwerk für Stockwerk und wird eure {v0}",
+    "en": "The cake comes apart tier by tier and becomes your {v0}",
+    "nl": "De taart valt laag voor laag uiteen en wordt jullie {v0}"
+  },
+  "umbau.needleRevs": {
+    "de": "Die Nadel dreht hoch in den roten Bereich",
+    "en": "The needle revs up into the red zone",
+    "nl": "De naald draait op tot in het rode gebied"
+  },
+  "umbau.tachoBecomesCar": {
+    "de": "Der Drehzahlmesser zerlegt sich und setzt sich zum Sportwagen zusammen",
+    "en": "The rev counter comes apart and reassembles as a sports car",
+    "nl": "De toerenteller valt uiteen en vormt zich opnieuw tot een sportwagen"
+  },
+  "bokkenrijders.mask": {
+    "de": "Die Maske aus unserer Show Bokkenrijders, eine echte 3D-Formation",
+    "en": "The mask from our Bokkenrijders show, an actual 3D formation",
+    "nl": "Het masker uit onze show Bokkenrijders, een echte 3D-formatie"
+  },
+  "bokkenrijders.maskBecomesSkull": {
+    "de": "Die Maske zerlegt sich, ein Totenkopf mit Zylinder setzt sich zusammen",
+    "en": "The mask comes apart and a skull in a top hat assembles",
+    "nl": "Het masker valt uiteen en er vormt zich een doodshoofd met hoge hoed"
+  },
+  "bokkenrijders.skullTipsHat": {
+    "de": "Der Totenkopf lüftet seinen Zylinder und lacht",
+    "en": "The skull tips its top hat and laughs",
+    "nl": "Het doodshoofd tilt zijn hoge hoed op en lacht"
+  },
+  "bokkenrijders.skullBecomesMask": {
+    "de": "Er zerlegt sich wieder, die Maske kehrt zurück",
+    "en": "It comes apart again and the mask returns",
+    "nl": "Hij valt weer uiteen en het masker keert terug"
+  },
+  "bokkenrijders.maskAgain": {
+    "de": "Die Maske, ihre Augen glühen",
+    "en": "The mask, its eyes glowing",
+    "nl": "Het masker, met gloeiende ogen"
+  },
+  "showConfigurator.qrLogoStoryCaption": {
+    "de": "Euer Logo zerlegt sich zu Handy und QR-Code, dann heißt es „Scan me“",
+    "en": "Your logo comes apart into a phone with a QR code, then it says “Scan me”",
+    "nl": "Jullie logo valt uiteen tot een telefoon met QR-code, daarna staat er „Scan me”"
+  },
+  "showConfigurator.tachoCarStoryCaption": {
+    "de": "Die Nadel dreht hoch, dann setzt sich der Drehzahlmesser zum Sportwagen zusammen",
+    "en": "The needle revs up, then the rev counter reassembles as a sports car",
+    "nl": "De naald draait op, daarna vormt de toerenteller zich tot een sportwagen"
+  },
+  "showConfigurator.bokkenrijdersStoryCaption": {
+    "de": "Die Maske aus unserer Show Bokkenrijders wird ein Totenkopf mit Zylinder und wieder Maske",
+    "en": "The mask from our Bokkenrijders show becomes a skull in a top hat, then the mask again",
+    "nl": "Het masker uit onze show Bokkenrijders wordt een doodshoofd met hoge hoed en daarna weer masker"
+  },
+  "showConfigurator.jubeltorte.label": {
+    "de": "Torte und Jahreszahl",
+    "en": "Cake and anniversary number",
+    "nl": "Taart en jubileumgetal"
+  },
+  "showConfigurator.jubeltorte.captionStory": {
+    "de": "Die Torte zerlegt sich Stockwerk für Stockwerk und wird eure Zahl, Konfetti tanzt darum",
+    "en": "The cake comes apart tier by tier and becomes your number, with confetti dancing around it",
+    "nl": "De taart valt laag voor laag uiteen en wordt jullie getal, met dansende confetti eromheen"
+  },
+  "umbau.carDrives": {
+    "de": "Der Sportwagen fährt los, die Räder drehen sich",
+    "en": "The sports car pulls away, its wheels turning",
+    "nl": "De sportwagen rijdt weg, de wielen draaien"
   }
 }

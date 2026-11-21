@@ -35,6 +35,24 @@ Leistungsvergleich) gelten nur, wenn dieser Abschnitt sie nennt.
     `lockItem`): jeder Eintrag in deren Fassung, Drohnenzahlen in deren Bereich (2D 100–300, 3D ab 200, 3D+ ab 300, nie
     unter der Schwelle der Fassung), Einträge ohne Fassung fallen weg. Die Wahl setzt beim gerade gezeigten Motiv ein, der
     Ablauf läuft danach in dieser Art weiter in Schleife. Gebaut wird je Art erst bei der Wahl.
+- Runde 16 (Marc, 21.11.2026: Folge zu kurz und repetitiv, mehr Zerlegen/Zusammensetzen wie beim Roboter):
+  - **Zerlegen und Zusammensetzen** als gemeinsamer Baustein `src/scripts/scenes/umbau.js` (`reassemble`, `chain`): ein
+    Bild steht, seine Drohnen fliegen gestaffelt nach Bauordnung auf geraden Bahnen ohne Wolke ins nächste Bild (Zuordnung
+    schichtweise, je Schicht optimal; Licht bleibt an, wo beide Bilder leuchten). Ein Bild, Teil `umbau` (`writes`), im
+    Konfigurator und im Teaser gleich. Der Roboter → Greifarm (Runde 11c) bleibt unverändert, er war das Vorbild.
+  - Neue 3D+-Fassungen im Konfigurator: Marketing `qr` → `qrLogoStory` (FlyingStars-Logo zerlegt sich zu Handy mit
+    QR-Code, dann „Scan me“; `qrStory` bleibt als Baustein), Marketing `drehzahl` → `tachoCarStory` (Drehzahlmesser →
+    Sportwagen), Jubiläum neues Motiv `jubeltorte` „Torte und Jahreszahl“ (2D/3D Katalogtorte, 3D+ `cakeNumberStory`:
+    Torte zerlegt sich zur Zahl mit Konfetti, Wert aus `version.value`, sonst 50), Kultur `teufel` →
+    `bokkenrijdersStory` (Maske → Totenkopf mit Zylinder, lüftet den Hut, lacht → Maske; `scenes/bokkenrijders.js`). Der
+    Totenkopf ist nachgebaut: im Material liegt von der Show nur die Maske als Punkte vor.
+  - `start`: Logo 100 → 600, 2D-Herz, Torte 2D → 3D → 3D+ (wird zur 50), Bremer Schlüssel 2D → 3D, QR-Geschichte,
+    Elbphilharmonie 3D, Drehzahlmesser → Sportwagen, Fernsehturm 3D+, Roboter → Greifarm → Förderband, Bokkenrijders
+    (Maske ↔ Totenkopf, 600). Show-Uhr rund 198 s statt 90 s (real rund 60 s), Tempo je Bild unverändert. Mit Pill-Wahl:
+    2D 9, 3D 8, 3D+ 11 Motive. Ein Eintrag kann mit `arts` auf Arten beschränkt sein (Herz nur 2D, in 3D+ wäre es Amors Pfeil).
+  - `marke`: Drehzahlmesser 3D → 3D+ als eine Geschichte statt zweier Einträge mit direktem Flug.
+  - Pills: ein zweiter Klick auf die gewählte Art hebt die Wahl auf, der gemischte Ablauf läuft ab dem gezeigten Motiv weiter.
+  - Wächter: `scripts/umbau.test.mjs` (Drohnenzahl je Bild, Anschluss ohne Sprung, gerade Bahnen, alle Plätze besetzt).
 
 ## Aufbau
 

@@ -44,7 +44,7 @@ test('Dekorative Regler, Wahl der Show-Art und genau ein erreichbarer Link zu Sh
 
 test('Logo, Jubiläumszahl und Roboter wechseln die sichtbare Drohnenzahl und Preisindikation', async ({ page, isMobile }) => {
   test.skip(isMobile, 'Die Euro-Skala gehört zum Desktop-Wireframe.');
-  test.setTimeout(90_000);
+  test.setTimeout(150_000); // Runde 16: die Folge ist rund doppelt so lang
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
   await page.goto(PAGE);
@@ -62,16 +62,21 @@ test('Logo, Jubiläumszahl und Roboter wechseln die sichtbare Drohnenzahl und Pr
   await expect(note).toHaveText('Platz für euer Logo');
   await expect(count).toHaveText('300', { timeout: 15_000 });
   await expect(count).toHaveText('600', { timeout: 15_000 });
-  await expect(note).toHaveCSS('opacity', '0', { timeout: 15_000 }); // Logo wechselt zur Jubiläumszahl (Runde 15)
-  await expect(count).toHaveText('200', { timeout: 10_000 }); // die 50 in 3D
-  await expect(count).toHaveText('300', { timeout: 10_000 }); // die 50 in 3D+
+  await expect(note).toHaveCSS('opacity', '0', { timeout: 15_000 }); // Logo wechselt zum Herz (Runde 16)
+  await expect(count).toHaveText('200', { timeout: 15_000 }); // die Torte in 3D
+  await expect(count).toHaveText('300', { timeout: 10_000 }); // 3D+: die Torte wird zur 50
+  await expect(count).toHaveText('150', { timeout: 15_000 }); // Bremer Schlüssel 2D
+  await expect(count).toHaveText('250', { timeout: 10_000 }); // …und 3D
+  await expect(count).toHaveText('300', { timeout: 10_000 }); // Logo → Handy mit QR-Code
+  await expect(count).toHaveText('250', { timeout: 15_000 }); // Elbphilharmonie
+  await expect(count).toHaveText('300', { timeout: 10_000 }); // Drehzahlmesser → Sportwagen, Fernsehturm
   await expect(count).toHaveText('400', { timeout: 25_000 }); // Roboter und Förderband
-  await expect(count).toHaveText('600', { timeout: 20_000 }); // Bokkenrijders
+  await expect(count).toHaveText('600', { timeout: 20_000 }); // Bokkenrijders: Maske ↔ Totenkopf
   const steps = await page.evaluate(() => (window as unknown as { __steps: [string, number][] }).__steps);
   const level = new Map<number, Set<number>>();
   for (const [n, e] of steps) if (e) { if (!level.has(+n)) level.set(+n, new Set()); level.get(+n)!.add(e); }
   const sorted = [...level.keys()].sort((a, b) => a - b), euro = sorted.map((n) => Math.max(...level.get(n)!));
-  expect(sorted).toEqual([100, 200, 300, 400, 450, 600]);
+  expect(sorted).toEqual([100, 150, 200, 250, 300, 400, 450, 600]);
   for (let i = 1; i < euro.length; i++) expect(euro[i], `${sorted[i]} Drohnen`).toBeGreaterThan(euro[i - 1]);
   expect(euro.at(-1)).toBe(8);
   expect(errors).toEqual([]);
@@ -110,6 +115,10 @@ test('Die Wahl der Show-Art spielt den Ablauf in dieser Art weiter', async ({ pa
   await expect.poll(() => page.evaluate(() => (window as unknown as { __n: number[] }).__n.length), { timeout: 20_000 }).toBeGreaterThan(1);
   expect(Math.max(...await page.evaluate(() => (window as unknown as { __n: number[] }).__n))).toBeLessThanOrEqual(300);
   await expect(r.locator('label.is-now')).toHaveCount(0);
+  // Runde 16: ein zweiter Klick auf die gewählte Art hebt die Wahl auf, die Pill zeigt wieder die Art des laufenden Bildes
+  await r.getByText('2D', { exact: true }).click();
+  await expect(r.getByRole('radio', { checked: true })).toHaveCount(0);
+  await expect(r.locator('label.is-now')).toHaveCount(1, { timeout: 20_000 });
 });
 
 test('Abläufe für die Landingpages: „marke“ beginnt mit dem Logo, „hochzeit“ mit Initialen im Herz', async ({ page }) => {
