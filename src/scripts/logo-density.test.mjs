@@ -57,7 +57,10 @@ const live = async (id) => {
   return async (n, density) => (await contentPipeline(raster, convert, { flex: 'auto', part: 'auto', drones: n, ...(density == null ? {} : { density }) }, {})).result.points.length;
 };
 // (bei 100 gewünschten Drohnen; gemessen im Browser: Bremen 266 automatisch, Stufe 0 braucht 293)
-for (const id of ['bremen']) test(`hochgeladenes Wappen ${id}: Automatik gröber als Stufe 0 → Griff ganz unten nach EINER Umrechnung`, async () => {
+// Runde 12: Bremen ist kein Wappen mehr (Schlüssel ohne Schild, Automatik innerhalb der Skala); unter den Beispielen gibt es
+// keinen Fall „Automatik gröber als Stufe 0“ mehr (geprüft bei 100: Nieheim, Lamborghini, DHL, Firefox). Die Suche dafür
+// prüft der synthetische Test unten mit den Arsenal-Zahlen.
+for (const id of []) test(`hochgeladenes Wappen ${id}: Automatik gröber als Stufe 0 → Griff ganz unten nach EINER Umrechnung`, async () => {
   const count = await live(id), auto = await count(100);
   let calls = 0;
   const { index, counts } = await searchDensityIndex(async (i) => { calls++; return count(100, DENSITIES[i]); }, auto);

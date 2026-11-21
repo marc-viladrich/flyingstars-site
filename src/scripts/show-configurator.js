@@ -382,7 +382,10 @@ if (form) {
       pts = await mod.exampleFormation(source.example, logoAnchor(), n).catch(() => null);
     }
     if (!pts) {
-      const strict = mod.logoSession(source.file, { ...options, flex: "strict", hardMax: n, density: undefined });
+      // Runde 12 (Spotify, Marc: „IMMER NOCH broken“): die knappere Show-Fassung zeigt denselben Logoteil wie die Automatik.
+      // Mit part "auto" nahm der strenge Lauf Bildmarke und Schriftzug zusammen und die Wellen zerfielen.
+      const part = lastLogoPts?.meta?.part === "mark" ? "mark" : "auto";
+      const strict = mod.logoSession(source.file, { ...options, part, flex: "strict", hardMax: n, density: undefined });
       strict.setRemoved(session.removed);
       try {
         pts = await budgetFormation(async density => {

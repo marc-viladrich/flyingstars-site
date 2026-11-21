@@ -11,12 +11,20 @@
 // Schildkante; DEU_Nieheim_COA.svg ohne schwarze Umrandungen (sonst wechselt das Kreuz die Farbe), Kugeln mit Radius 35
 // (sonst zeichnet der Konverter drei als Punktgruppe und eine als Ring). Köln geprüft und verworfen: Kronen und Flammen
 // zerfallen bei 100 Drohnen.
+// Runde 12 (Marc 21.11.2026): „bei Bremen und Berlin die Wappenform rausnehmen … Bremen soll so nice aussehen wie im
+// normalen Konfigurator. Und bei Ford bitte nur den Schriftzug, ohne umliegendes Oval. Und bei Rewe ist der Schriftzug
+// einfach nicht ganz korrekt … VW sieht scheiße aus, bitte raus.“ Seitdem: Ford = nur der Schriftzug aus Ford_logo_flat.svg
+// in Ford-Blau; Berlin = der Bär aus DEU_Berlin_COA.svg ohne Schild, ohne Zunge, Krallen, Zähne und Ohr (am Himmel
+// Punktklumpen); Bremen = eigene vereinfachte Zeichnung des Schlüssels nach dem Katalogmotiv (scenes/wahrzeichen.js, KEY):
+// dünne Striche, die der Konverter als Einzellinien zeichnet; REWE = Logo_REWE.svg für den Himmel vorbereitet (Striche je
+// Seite 3 Einheiten schmaler, damit die Schlitze im E und die Punze im R aufgelöst werden; Außenecken runder); Volkswagen
+// ist raus (das Kundenlogo in der Logo-Leiste bleibt). Details: docs/show-konfigurator.md, „Runde 12 · Beispiel-Logos“.
 /** [id, sichtbarer Name] in der Reihenfolge der Knöpfe */
 export const LOGO_EXAMPLES = [
-  ["ford", "Ford"], ["rewe", "REWE"], ["eon", "E.ON"], ["volkswagen", "Volkswagen"], ["lamborghini", "Lamborghini"], ["spotify", "Spotify"],
+  ["ford", "Ford"], ["rewe", "REWE"], ["eon", "E.ON"], ["lamborghini", "Lamborghini"], ["spotify", "Spotify"],
   ["berlin", "Berlin"], ["bremen", "Bremen"], ["nieheim", "Nieheim"],
   ["mastercard", "Mastercard"], ["ikea", "IKEA"], ["dhl", "DHL"], ["firefox", "Firefox"], ["nike", "Nike"], ["apple", "Apple"],
   ["mcdonalds", "McDonald’s"], ["adidas", "Adidas"], ["puma", "Puma"], ["cupra", "Cupra"], ["duolingo", "Duolingo"],
 ];
 /** Echte FlyingStars-Kund*innen unter den Beispielen (Wächter: public/brand/logos/kunde-<id>-weiss.svg muss existieren) */
-export const CUSTOMER_EXAMPLES = ["ford", "rewe", "eon", "volkswagen", "lamborghini", "spotify"];
+export const CUSTOMER_EXAMPLES = ["ford", "rewe", "eon", "lamborghini", "spotify"];

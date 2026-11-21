@@ -20,11 +20,6 @@
     "gzip": 7589
   },
   {
-    "id": "spotify",
-    "bytes": 43387,
-    "gzip": 8534
-  },
-  {
     "id": "nike",
     "bytes": 19996,
     "gzip": 3680
@@ -65,38 +60,38 @@
     "gzip": 20163
   },
   {
-    "id": "ford",
-    "bytes": 94131,
-    "gzip": 17271
-  },
-  {
     "id": "eon",
     "bytes": 60399,
     "gzip": 9339
   },
   {
-    "id": "volkswagen",
-    "bytes": 34946,
-    "gzip": 6483
-  },
-  {
-    "id": "berlin",
-    "bytes": 170912,
-    "gzip": 26773
-  },
-  {
-    "id": "bremen",
-    "bytes": 346252,
-    "gzip": 63022
-  },
-  {
-    "id": "rewe",
-    "bytes": 49979,
-    "gzip": 7824
-  },
-  {
     "id": "nieheim",
     "bytes": 47866,
     "gzip": 5212
+  },
+  {
+    "id": "ford",
+    "bytes": 197219,
+    "gzip": 38866
+  },
+  {
+    "id": "rewe",
+    "bytes": 56404,
+    "gzip": 9063
+  },
+  {
+    "id": "spotify",
+    "bytes": 39245,
+    "gzip": 7240
+  },
+  {
+    "id": "berlin",
+    "bytes": 31998,
+    "gzip": 5941
+  },
+  {
+    "id": "bremen",
+    "bytes": 39321,
+    "gzip": 8578
   }
 ]

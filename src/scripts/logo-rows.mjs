@@ -349,9 +349,98 @@ export function regularRibbons(pts, { ribbons = null, ...opt } = {}) {
   return out;
 }
 
-/** Die Nachbearbeitung jeder Logo-Formation: schmale Bänder neu legen, gleiche kleine Formen gleich zeichnen, dann quer
- * zur Linie glätten. */
-export function cleanRows(pts, opt) { return smoothRows(equalTwins(regularRibbons(pts, opt), opt)); }
+// ---------------------------------------------------------------------------------------------------------------------
+// Runde 12 (Marc 21.11.2026: „Spotify ist IMMER NOCH broken“). regularRibbons greift nur bei Bändern, die mindestens
+// 0,9 Punktabstände breit sind. Zieht man die Liniendichte herunter (Stufen 0–3) oder rechnet der Konverter für ein
+// kleines Budget, wird der Punktabstand größer als die Breite der Spotify-Wellen: Der Konverter legt dann beide Seiten
+// der Welle mit weniger als einem Punktabstand Abstand nebeneinander (bei Stufe 0 sogar versetzt), am Himmel ein
+// Punktgitter statt dreier Bögen. Ein Strich, der schmaler ist als der Abstand der Drohnen, ist am Himmel eine Linie.
+// thinStrokes legt solche Konturen als eine Reihe auf die Mittellinie, im Punktabstand der Kontur. Die überzähligen
+// Punkte fallen weg (dort stünden zwei Drohnen näher als ihr Abstand); die Formation braucht dann weniger Drohnen.
+
+/** Teilt einen Konturzug, der mehrere geschlossene Konturen hintereinander enthält (der Konverter gibt sie direkt
+ * nacheinander aus; bei grobem Abstand ist der Sprung zur nächsten Kontur kaum größer als ein Schritt). Schnitt nach
+ * einem Punkt, der nah am Anfang seines Stücks liegt, wenn der nächste Schritt deutlich weiter ist als dieser Rückweg. */
+export function splitLoops(pts, chain) {
+  const out = []; let start = 0;
+  for (let t = 0; t < chain.length - 1; t++) {
+    if (t - start < 4) continue;
+    const p = pts[chain[t]], s = pts[chain[start]], q = pts[chain[t + 1]];
+    const step = median(chain.slice(start + 1, t + 1).map((j, k) => hyp(pts[j].x, pts[j].y, pts[chain[start + k]].x, pts[chain[start + k]].y)));
+    const back = hyp(p.x, p.y, s.x, s.y), next = hyp(p.x, p.y, q.x, q.y);
+    if (back <= 1.3 * step && next > 1.25 * back && next > 1.1 * step) { out.push(chain.slice(start, t + 1)); start = t + 1; }
+  }
+  out.push(chain.slice(start));
+  return out;
+}
+
+/**
+ * Mittellinie einer geschlossenen schmalen Kontur Q (Punkte in Konturreihenfolge), wenn die Kontur ein Strich ist,
+ * schmaler als ihr Punktabstand: → { line: [x, y][], step } oder null.
+ */
+export function thinStroke(Q, { maxWidth = 0.9, minPoints = 8 } = {}) {
+  const N = Q.length; if (N < minPoints) return null;
+  const st = Q.map((p, i) => { const q = Q[(i + 1) % N]; return hyp(p[0], p[1], q[0], q[1]); }), h = median(st);
+  if (!(h > 0) || Math.max(...st) > 2.5 * h) return null;
+  let a = 0, b = 0, far = -1;
+  for (let i = 0; i < N; i++) for (let j = i + 1; j < N; j++) { const d = hyp(Q[i][0], Q[i][1], Q[j][0], Q[j][1]); if (d > far) { far = d; a = i; b = j; } }
+  const s1 = [], s2 = [];
+  for (let i = a; ; i = (i + 1) % N) { s1.push(Q[i]); if (i === b) break; }
+  for (let i = a; ; i = (i - 1 + N) % N) { s2.push(Q[i]); if (i === b) break; }
+  if (s1.length < 2 || s2.length < 2) return null;
+  // beide Seiten etwa gleich lang (sonst ist es eine Fläche mit einer Spitze, kein Strich)
+  const L1 = cumul(s1).at(-1), L2 = cumul(s2).at(-1);
+  if (Math.min(L1, L2) < 0.6 * Math.max(L1, L2)) return null;
+  const K = Math.max(8, 2 * N), r1 = resample(s1, K), r2 = resample(s2, K);
+  let C = taubin(r1.map((p, k) => [(p[0] + r2[k][0]) / 2, (p[1] + r2[k][1]) / 2]), 6);
+  const sC = cumul(C), L = sC.at(-1);
+  if (L < 3 * h) return null;
+  // schmal: jeder Konturpunkt höchstens 0,6 Punktabstände von der Mittellinie, im Median höchstens maxWidth / 2
+  const d = Q.map((p) => project(C, sC, p[0], p[1]).dist);
+  if (median(d) > (maxWidth / 2) * h || Math.max(...d) > 0.6 * h) return null;
+  // ein Strich biegt sich höchstens um 150° (wie bei regularRibbons: Bögen ja, S, C oder U einer Schrift nein)
+  let total = 0;
+  for (let k = 1; k < C.length - 1; k++) {
+    const ux = C[k][0] - C[k - 1][0], uy = C[k][1] - C[k - 1][1], vx = C[k + 1][0] - C[k][0], vy = C[k + 1][1] - C[k][1];
+    total += Math.abs(Math.atan2(ux * vy - uy * vx, ux * vx + uy * vy));
+  }
+  if (total > (150 * Math.PI) / 180) return null;
+  const M = Math.max(2, Math.min(N, Math.round(L / h) + 1));
+  return { line: resample(C, M), step: L / (M - 1), width: 2 * median(d), L };
+}
+
+/** Schmale Striche als eine Reihe (siehe oben). Gibt neue Punkt-Objekte zurück (weniger Punkte, wenn ein Strich
+ * zusammengelegt wurde); Eigenschaften am Array bleiben. strokes (Array) erfährt die zusammengelegten Konturen. */
+export function thinStrokes(pts, { strokes = null, ...opt } = {}) {
+  if (!pts?.length || pts.length < 6) return pts;
+  const drop = new Set(), moved = new Map(), cand = [];
+  for (const chain of contourChains(pts)) for (const part of splitLoops(pts, chain)) {
+    const r = thinStroke(part.map((i) => [pts[i].x, pts[i].y]), opt);
+    if (r) cand.push({ part, r });
+  }
+  const inCand = new Set(cand.flatMap((c) => c.part));
+  for (const { part, r } of cand) {
+    // ein Strich steht frei: kein fremder Punkt näher als 0,8 Punktabstände an seiner Mittellinie, und keine andere
+    // Mittellinie näher (die Spotify-Wellen liegen bei grober Dichte nur gut einen Punktabstand auseinander; Punkte
+    // anderer schmaler Striche zählen mit ihrer neuen Lage auf der Mittellinie)
+    const near = (x, y) => pts.some((p, j) => !inCand.has(j) && hyp(p.x, p.y, x, y) < 0.8 * r.step)
+      || cand.some((o) => o.r !== r && o.r.line.some(([u, v]) => hyp(u, v, x, y) < 0.6 * r.step));
+    if (r.line.some(([x, y]) => near(x, y))) continue;
+    // die ersten Punkte des Zugs (gleiche Farbe und Element, ein Zug ist einfarbig) bekommen die Lagen entlang der Linie,
+    // in deren Reihenfolge; die übrigen fallen weg
+    part.forEach((i, k) => { if (k < r.line.length) moved.set(i, r.line[k]); else drop.add(i); });
+    strokes?.push({ chain: part, ...r });
+  }
+  if (!drop.size && !moved.size) return pts;
+  const out = [];
+  pts.forEach((p, i) => { if (drop.has(i)) return; const m = moved.get(i); out.push(m ? { ...p, x: m[0], y: m[1] } : { ...p }); });
+  for (const key of Object.keys(pts)) if (!/^\d+$/.test(key)) out[key] = pts[key];
+  return out;
+}
+
+/** Die Nachbearbeitung jeder Logo-Formation: schmale Bänder neu legen, Striche schmaler als der Punktabstand als eine
+ * Reihe (Runde 12), gleiche kleine Formen gleich zeichnen, dann quer zur Linie glätten. */
+export function cleanRows(pts, opt) { return smoothRows(equalTwins(thinStrokes(regularRibbons(pts, opt), opt), opt)); }
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Runde 10b (Lead nach Sichtung, Nieheim: „die vier Kugeln sind nicht gleich“). Der Konverter kürzt auf ein festes

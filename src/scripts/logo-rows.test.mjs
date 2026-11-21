@@ -194,8 +194,9 @@ test('Nieheim: in jeder Fassung (Automatik und vereinfacht) vier gleiche Kugeln,
   }
 });
 test('flächige neue Beispiele ohne Mischfarben (nur die Farben des Logos)', () => {
-  for (const [id, n] of [['ford', 2], ['bremen', 2], ['nieheim', 2], ['berlin', 3]]) assert.equal(new Set(JSON.parse(fs.readFileSync(new URL(`${id}.json`, dir))).palette.map((c) => c.join())).size, n, id);
-  for (const id of ['rewe', 'eon', 'volkswagen']) { const p = JSON.parse(fs.readFileSync(new URL(`${id}.json`, dir))).palette; for (const c of p) assert.ok(Math.hypot(c[0] - p[0][0], c[1] - p[0][1], c[2] - p[0][2]) <= 8, `${id}: ${c} weicht ab`); }
+  // Runde 12: Ford nur Schriftzug, Berlin nur der Bär (ohne rote Zunge und Krallen) → je eine Farbe
+  for (const [id, n] of [['ford', 1], ['nieheim', 2], ['berlin', 1]]) assert.equal(new Set(JSON.parse(fs.readFileSync(new URL(`${id}.json`, dir))).palette.map((c) => c.join())).size, n, id);
+  for (const id of ['rewe', 'eon', 'bremen']) { const p = JSON.parse(fs.readFileSync(new URL(`${id}.json`, dir))).palette; for (const c of p) assert.ok(Math.hypot(c[0] - p[0][0], c[1] - p[0][1], c[2] - p[0][2]) <= 8, `${id}: ${c} weicht ab`); }
 });
 const ring = (cx, cy, r, n, rot = 0, c = [252, 221, 9]) => Array.from({ length: n }, (_, k) => ({ x: cx + r * Math.sin(rot + (2 * Math.PI * k) / n), y: cy - r * Math.cos(rot + (2 * Math.PI * k) / n), c }));
 test('synthetisch: vier Kugeln mit 5/4/4/4 Punkten werden gleich, ein Punkt wandert in die längste Kontur', () => {
@@ -217,4 +218,73 @@ test('synthetisch: nur zwei gleiche Formen, Dreiecke oder schon gleiche Motive b
     ['Dreiecke', [...big, ...ring(-0.4, -0.4, 0.06, 3), ...ring(0.4, -0.4, 0.06, 3, 1), ...ring(-0.4, 0.4, 0.06, 3, 2)]],
     ['schon gleich', [...big, ...ring(-0.4, -0.4, 0.06, 5), ...ring(0.4, -0.4, 0.06, 5), ...ring(-0.4, 0.4, 0.06, 5)]],
   ]) assert.deepEqual(equalTwins(pts), pts, name);
+});
+
+// ---------------------------------------------------------------------------------------------------------------------
+// Runde 12 (Marc 21.11.2026: „Spotify ist IMMER NOCH broken“; Beispiele Berlin, Bremen, Ford, REWE neu, VW raus).
+// 1) Striche, die schmaler sind als der Punktabstand (Spotify bei Liniendichte 1–3), werden eine Reihe auf der Mittellinie
+//    statt zweier Reihen, die sich zum Punktgitter vermischen (thinStrokes). 2) Die vereinfachten Fassungen für ein
+//    kleineres Show-Budget zeigen denselben Logoteil wie die Automatik (Spotify: nur die Bildmarke, nicht der Schriftzug).
+import { thinStrokes, thinStroke, splitLoops } from './logo-rows.mjs';
+
+test('Spotify live bei Liniendichte 1–3: die Wellen sind je eine Reihe, gleichmäßig, im Kreis', async () => {
+  const V = new URL('./logo-v10/', import.meta.url);
+  const { convert } = await import(new URL('converter/convert.mjs', V));
+  const { contentPipeline } = await import(new URL('content-fit.mjs', V));
+  const { fitToShow } = await import(new URL('formation-core.mjs', V));
+  const { DENSITIES } = await import('./logo-density.mjs');
+  const R = JSON.parse(fs.readFileSync(new URL('spotify.raster.json', dir)));
+  const raster = async (size) => { const im = R[size] ?? R[512]; return { width: im.width, height: im.height, data: new Uint8ClampedArray(Buffer.from(im.rgba, 'base64')) }; };
+  for (const [i, want] of [[1, 3], [2, 3], [3, 2]]) {
+    const out = await contentPipeline(raster, convert, { flex: 'auto', part: 'auto', drones: 200, density: DENSITIES[i] }, {});
+    const pts = await fitToShow(out.result, 200), strokes = [], res = cleanRows(pts, { strokes });
+    assert.ok(strokes.length >= want, `Stufe ${i}: ${strokes.length} Wellen als Reihe (vorher 0: zwei Reihen enger als der Punktabstand)`);
+    assert.equal(res.length, pts.length - strokes.reduce((t, s) => t + s.chain.length - s.line.length, 0));
+    // je Reihe gleiche Schritte, ungefähr im Punktabstand der Kontur; alle Wellen innerhalb des Kreises
+    const r = Math.max(...pts.map((p) => Math.hypot(p.x, p.y)));
+    for (const s of strokes) {
+      const st = s.line.slice(1).map((q, k) => Math.hypot(q[0] - s.line[k][0], q[1] - s.line[k][1]));
+      assert.ok(Math.max(...st) - Math.min(...st) < 0.12 * s.step, `Stufe ${i}: ungleiche Schritte`);
+      assert.ok(s.line.every(([x, y]) => Math.hypot(x, y) < 0.9 * r), `Stufe ${i}: Welle außerhalb des Kreises`);
+    }
+  }
+});
+
+test('Spotify vorberechnet: jede vereinfachte Fassung zeigt nur die Bildmarke wie die Automatik', () => {
+  const d = JSON.parse(fs.readFileSync(new URL('spotify.json', dir)));
+  for (const [n, ref] of Object.entries(d.steps)) assert.equal(d.formations[ref].part, 'mark', `Automatik ${n}`);
+  for (const [n, m] of Object.entries(d.strict)) for (const [b, ref] of Object.entries(m)) assert.equal(d.formations[ref].part, 'mark', `${n} → ${b} Drohnen: ${d.formations[ref].part}`);
+});
+
+test('schmale Striche: in keiner vorberechneten Fassung eines Beispiels (dort trägt die Kontur selbst)', () => {
+  for (const id of ids) for (const pts of allPrepared(id)) { const s = []; thinStrokes(regularRibbons(pts), { strokes: s }); assert.equal(s.length, 0, `${id} ${pts.meta.ref}`); }
+});
+
+test('synthetisch: schmaler Bogen wird eine Reihe im Punktabstand, breiter Bogen und kurze Formen bleiben', () => {
+  const thin = band(arc, () => 0.04, { n: 40 }), r = thinStroke(thin.map((p) => [p.x, p.y]));
+  const h = Math.hypot(thin[1].x - thin[0].x, thin[1].y - thin[0].y);
+  assert.ok(r, 'als Strich erkannt'); assert.ok(Math.abs(r.step - h) < 0.15 * h, `Schritt ${r.step} statt ${h}`);
+  const out = thinStrokes(thin); assert.equal(out.length, r.line.length);
+  // (die Enden liegen bis zur halben Breite neben der Mittellinie: die fernsten Konturpunkte sind Ecken einer Seite)
+  assert.ok(out.every((q) => Math.abs(Math.hypot(q.x, q.y) - 3) < 0.045), 'auf der Mittellinie');
+  for (const [name, pts] of [['breit', band(arc, () => 0.12, { n: 44 })], ['kurz', band(arc, () => 0.04, { n: 6 })]]) assert.deepEqual(thinStrokes(pts), pts, name);
+});
+
+test('synthetisch: drei hintereinander ausgegebene schmale Konturen werden getrennt (splitLoops)', () => {
+  const off = (pts, dy) => pts.map((p) => ({ ...p, y: p.y + dy }));
+  const one = band(arc, () => 0.05, { n: 10 }), pts = [...one, ...off(one, 2), ...off(one, 4)];
+  assert.deepEqual(splitLoops(pts, pts.map((_, i) => i)).map((c) => c.length), [10, 10, 10]);
+});
+
+test('Beispiel-Logos Runde 12: REWE mit Punze im R, Bremen ohne Schild, Volkswagen raus', () => {
+  // REWE bei 200: R außen, Punze des R, E, W, E = mindestens fünf geschlossene Konturen (vorher lag die Punze als ein Punkt)
+  const rewe = cleanRows(read('rewe', 200)), closed = contourChains(rewe).filter((c) => c.length >= 5);
+  assert.ok(closed.length >= 5, `REWE: ${closed.length} Konturen`);
+  // Bremen und Berlin ohne Wappenschild: kein Punkt auf einer Linie über die ganze Breite oben (die Schildkante)
+  for (const id of ['bremen', 'berlin']) {
+    const pts = read(id, 200), ys = pts.map((p) => p.y), xs = pts.map((p) => p.x), top = Math.min(...ys), w = Math.max(...xs) - Math.min(...xs);
+    const row = pts.filter((p) => Math.abs(p.y - top) < 0.02 * w);
+    assert.ok(Math.max(...row.map((p) => p.x)) - Math.min(...row.map((p) => p.x)) < 0.6 * w, `${id}: oberste Reihe über die ganze Breite (Schild?)`);
+  }
+  assert.ok(!ids.includes('volkswagen') && !fs.existsSync(new URL('volkswagen.json', dir)));
 });
