@@ -75,7 +75,7 @@ test('Jeder Anlass hat vier bis fünfzig Motive (Runde 24/10: Katalog-, Show- un
   // Runde 10b: eine Show (Anlass × Paket) zeigt keine Fassung doppelt. Über Anlässe hinweg teilen sich nur ausdrücklich
   // gewollte Fassungen (Marc: der gemischte Fernsehturm ersetzt auch das Jubiläums-Motiv); der Drache nutzt dragonRise in 3D
   // als „drache“ und in 3D+ als „drachenflug“, also nie zweimal in derselben Show.
-  const SHARED = new Set(['fernsehturm2d', 'fernsehturm3d', 'fernsehturmPlus']);
+  const SHARED = new Set(['fernsehturm2d', 'fernsehturm3d', 'fernsehturmPlus', 'cyclist3d', 'cyclistStory', 'marketSquare3d', 'marketSquareStory', 'soundField3d', 'soundFieldStory']);
   for (const o of OCCASIONS) for (const pkg of PACKAGE_ORDER) {
     const builds = o.motifs.map((m) => m.tiers[pkg]?.build).filter(Boolean);
     assert.equal(new Set(builds).size, builds.length, `${o.id} ${pkg}: eine Fassung doppelt in derselben Show`);

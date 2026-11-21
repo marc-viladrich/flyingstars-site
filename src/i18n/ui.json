@@ -2030,14 +2030,59 @@
     "nl": "Octopus"
   },
   "showConfigurator.octopus3dCaption": {
-    "de": "Ein Tintenfisch in 3D zwischen Korallen, die Arme wogen und rollen sich ein",
-    "en": "An octopus in 3D among corals, its arms sway and curl up",
-    "nl": "Een octopus in 3D tussen koralen, de armen golven en krullen zich op"
+    "de": "Ein Tintenfisch in 3D, die Arme wogen und rollen sich ein",
+    "en": "An octopus in 3D, its arms sway and curl up",
+    "nl": "Een octopus in 3D, de armen golven en krullen zich op"
   },
   "showConfigurator.octopusStoryCaption": {
-    "de": "Aus dem Riff öffnet ein Tintenfisch seine Arme, rollt sie ein und schwimmt davon",
-    "en": "An octopus opens its arms from the reef, curls them up and swims away",
-    "nl": "Een octopus opent zijn armen uit het rif, rolt ze op en zwemt weg"
+    "de": "Ein Tintenfisch öffnet seine Arme, rollt sie ein und schwimmt davon",
+    "en": "An octopus opens its arms, curls them up and swims away",
+    "nl": "Een octopus opent zijn armen, rolt ze op en zwemt weg"
+  },
+  "showConfigurator.conveyor": {
+    "de": "Förderband",
+    "en": "Conveyor belt",
+    "nl": "Lopende band"
+  },
+  "showConfigurator.conveyor3dCaption": {
+    "de": "Ein Förderband in 3D, ein Produkt fährt durch zwei Stationen",
+    "en": "A conveyor belt in 3D, a product rides through two stations",
+    "nl": "Een lopende band in 3D, een product rijdt door twee stations"
+  },
+  "showConfigurator.conveyorStoryCaption": {
+    "de": "Auf dem Band entsteht euer Produkt: Modul rein, Deckel drauf, fertig",
+    "en": "Your product is built on the belt: module in, lid on, done",
+    "nl": "Op de band ontstaat jullie product: module erin, deksel erop, klaar"
+  },
+  "showConfigurator.robotArm": {
+    "de": "Robotergreifer",
+    "en": "Robot gripper",
+    "nl": "Robotgrijper"
+  },
+  "showConfigurator.robotArm3dCaption": {
+    "de": "Ein Roboterarm in 3D, Gelenke und Greifer bewegen sich",
+    "en": "A robot arm in 3D, joints and gripper in motion",
+    "nl": "Een robotarm in 3D, gewrichten en grijper bewegen"
+  },
+  "showConfigurator.robotArmStoryCaption": {
+    "de": "Ein Roboterarm greift ein Modul, richtet es aus und setzt es ein",
+    "en": "A robot arm picks up a module, aligns it and slots it in",
+    "nl": "Een robotarm pakt een module, lijnt hem uit en zet hem erin"
+  },
+  "showConfigurator.headquarters": {
+    "de": "Firmensitz",
+    "en": "Headquarters",
+    "nl": "Hoofdkantoor"
+  },
+  "showConfigurator.headquarters3dCaption": {
+    "de": "Euer Firmensitz in 3D, die Fenster gehen Etage für Etage an",
+    "en": "Your headquarters in 3D, the windows light up floor by floor",
+    "nl": "Jullie hoofdkantoor in 3D, de ramen gaan verdieping voor verdieping aan"
+  },
+  "showConfigurator.headquartersStoryCaption": {
+    "de": "Euer Firmensitz wächst Etage für Etage, dann leuchtet die Zahl",
+    "en": "Your headquarters grows floor by floor, then the number lights up",
+    "nl": "Jullie hoofdkantoor groeit verdieping voor verdieping, dan licht het getal op"
   },
   "showConfigurator.rings": {
     "de": "Ringe",
@@ -2303,6 +2348,36 @@
     "de": "Eine warme Lichtspur zündet die vier Kerzen nacheinander an",
     "en": "A warm trail of light lights the four candles one after another",
     "nl": "Een warm lichtspoor steekt de vier kaarsen één voor één aan"
+  },
+  "showConfigurator.schlitten.label": {
+    "de": "Schlitten",
+    "en": "Sleigh",
+    "nl": "Slee"
+  },
+  "showConfigurator.schlitten.caption3d": {
+    "de": "Ein leerer Schlitten gleitet über die verschneiten Hügel",
+    "en": "An empty sleigh glides over the snowy hills",
+    "nl": "Een lege slee glijdt over de besneeuwde heuvels"
+  },
+  "showConfigurator.schlitten.captionStory": {
+    "de": "Der Schlitten gleitet über die Hügel, hebt ab und zieht zwei Lichtbahnen hinter sich her",
+    "en": "The sleigh glides over the hills, takes off and draws two trails of light behind it",
+    "nl": "De slee glijdt over de heuvels, stijgt op en trekt twee lichtsporen achter zich aan"
+  },
+  "showConfigurator.polarlicht.label": {
+    "de": "Polarlicht",
+    "en": "Northern lights",
+    "nl": "Noorderlicht"
+  },
+  "showConfigurator.polarlicht.caption3d": {
+    "de": "Polarlicht über einem Fjord, die Lichtvorhänge wogen",
+    "en": "Northern lights over a fjord, the curtains of light sway",
+    "nl": "Noorderlicht boven een fjord, de lichtgordijnen golven"
+  },
+  "showConfigurator.polarlicht.captionStory": {
+    "de": "Über dem Fjord entfalten sich Lichtvorhänge und ziehen über das Wasser, ihr Spiegelbild folgt",
+    "en": "Curtains of light unfold above the fjord and drift across the water, their reflection follows",
+    "nl": "Boven de fjord ontvouwen zich lichtgordijnen die over het water trekken, hun spiegelbeeld volgt"
   },
   "showConfigurator.theHandsRunToTwelve": {
     "de": "Die Zeiger laufen auf zwölf",
@@ -2849,6 +2924,106 @@
     "en": "A dip to finish, the lights come on all around",
     "nl": "Tot slot een dip, rondom gaan de lichtjes aan"
   },
+  "showConfigurator.radfahrer.label": {
+    "de": "Radrennen",
+    "en": "Cycle race",
+    "nl": "Wielerwedstrijd"
+  },
+  "showConfigurator.radfahrer.caption3d": {
+    "de": "Ein Radfahrer im Wiegetritt, die Straße zieht unter ihm durch",
+    "en": "A cyclist sprints out of the saddle, the road racing past beneath him",
+    "nl": "Een wielrenner sprint op de pedalen, de weg raast onder hem door"
+  },
+  "showConfigurator.radfahrer.captionStory": {
+    "de": "Ein Radfahrer sprintet durch den Zielbogen, reißt die Arme hoch, Funken sprühen",
+    "en": "A cyclist sprints through the finish arch, throws his arms up, sparks fly",
+    "nl": "Een wielrenner sprint door de finishboog, gooit zijn armen omhoog, vonken spatten"
+  },
+  "radfahrer.theArchStandsARiderApproaches": {
+    "de": "Der Zielbogen steht, ein Fahrer kommt angerollt",
+    "en": "The finish arch stands, a rider rolls in",
+    "nl": "De finishboog staat, een renner komt aanrollen"
+  },
+  "radfahrer.sprintThroughTheArch": {
+    "de": "Sprint durch den Bogen, die Ziellinie leuchtet",
+    "en": "A sprint through the arch, the finish line lights up",
+    "nl": "Sprint door de boog, de finishlijn licht op"
+  },
+  "radfahrer.armsUpSparksFly": {
+    "de": "Arme hoch, aus dem Banner sprühen Funken",
+    "en": "Arms up, sparks fly from the banner",
+    "nl": "Armen omhoog, uit het spandoek spatten vonken"
+  },
+  "showConfigurator.eislaeufer.label": {
+    "de": "Eisläuferpaar",
+    "en": "Ice-skating couple",
+    "nl": "IJsschaatspaar"
+  },
+  "showConfigurator.eislaeufer.caption3d": {
+    "de": "Ein Eisläuferpaar dreht eine Pirouette, die Kufen ziehen Lichtkreise ins Eis",
+    "en": "An ice-skating couple spins, their blades draw circles of light on the ice",
+    "nl": "Een schaatspaar draait een pirouette, de ijzers trekken lichtcirkels in het ijs"
+  },
+  "showConfigurator.eislaeufer.captionStory": {
+    "de": "Zwei Eisläufer ziehen getrennte Kurven, treffen sich zur Pirouette, ihre Spuren werden ein Herz",
+    "en": "Two skaters draw separate curves, meet for a spin, and their tracks become a heart",
+    "nl": "Twee schaatsers trekken elk een bocht, ontmoeten elkaar in een pirouette, hun sporen worden een hart"
+  },
+  "eislaeufer.theyPartAtTheTip": {
+    "de": "Zwei Eisläufer trennen sich",
+    "en": "Two skaters part ways",
+    "nl": "Twee schaatsers gaan uit elkaar"
+  },
+  "eislaeufer.eachDrawsACurve": {
+    "de": "Jeder zieht seine Kurve, sie treffen sich wieder",
+    "en": "Each draws a curve, and they meet again",
+    "nl": "Ieder trekt een bocht, en ze ontmoeten elkaar weer"
+  },
+  "eislaeufer.theyJoinHands": {
+    "de": "…und fassen sich an beiden Händen",
+    "en": "…and take each other by both hands",
+    "nl": "…en pakken elkaar bij beide handen"
+  },
+  "eislaeufer.togetherTheySpinTheHeartShines": {
+    "de": "Gemeinsam drehen sie sich, ihre Spuren leuchten als Herz",
+    "en": "Together they spin, their tracks shine as a heart",
+    "nl": "Samen draaien ze, hun sporen stralen als een hart"
+  },
+  "showConfigurator.marktplatz.label": {
+    "de": "Fest auf dem Marktplatz",
+    "en": "Party on the market square",
+    "nl": "Feest op de markt"
+  },
+  "showConfigurator.marktplatz.caption3d": {
+    "de": "Der Marktplatz mit Häuserzeile, Brunnen und Laternen, das Wasser läuft als Licht",
+    "en": "The market square with its row of houses, fountain and lanterns, the water running as light",
+    "nl": "Het marktplein met huizenrij, fontein en lantaarns, het water stroomt als licht"
+  },
+  "showConfigurator.marktplatz.captionStory": {
+    "de": "Auf dem Marktplatz gehen die Laternen an, ein Lichtkreis steigt über die Dächer und öffnet sich zum Stern",
+    "en": "On the market square the lanterns come on, a ring of light rises above the roofs and opens into a star",
+    "nl": "Op het marktplein gaan de lantaarns aan, een lichtcirkel stijgt boven de daken en opent zich tot een ster"
+  },
+  "marktplatz.nightOnTheSquare": {
+    "de": "Nacht auf dem Marktplatz",
+    "en": "Night on the market square",
+    "nl": "Nacht op het marktplein"
+  },
+  "marktplatz.lanternsComeOnFromTheEdge": {
+    "de": "Die Laternen gehen an, vom Rand zur Mitte",
+    "en": "The lanterns come on, from the edge to the middle",
+    "nl": "De lantaarns gaan aan, van de rand naar het midden"
+  },
+  "marktplatz.aRingOfLightRises": {
+    "de": "Ein Lichtkreis hebt sich über die Dächer",
+    "en": "A ring of light rises above the roofs",
+    "nl": "Een lichtcirkel stijgt boven de daken uit"
+  },
+  "marktplatz.andOpensIntoAStar": {
+    "de": "…und öffnet sich zum Stern",
+    "en": "…and opens into a star",
+    "nl": "…en opent zich tot een ster"
+  },
   "satellit.inOrbit": {
     "de": "Ein Satellit im Orbit über der Erde",
     "en": "A satellite in orbit above the Earth",
@@ -2870,9 +3045,9 @@
     "nl": "De antenne zendt een lichtpuls naar de aarde"
   },
   "tintenfisch.inTheReef": {
-    "de": "Im Riff regt sich etwas",
-    "en": "Something stirs in the reef",
-    "nl": "In het rif beweegt iets"
+    "de": "Zusammengerollt regt sich etwas",
+    "en": "Something stirs, curled up",
+    "nl": "Opgerold beweegt er iets"
   },
   "tintenfisch.armsOpen": {
     "de": "Die Arme öffnen sich",
@@ -2888,6 +3063,66 @@
     "de": "Mit einem Rückstoß schwimmt er nach oben",
     "en": "With a jet it swims upwards",
     "nl": "Met een terugstoot zwemt hij omhoog"
+  },
+  "foerderband.housingArrives": {
+    "de": "Ein Gehäuse fährt aufs Band",
+    "en": "A housing rolls onto the belt",
+    "nl": "Een behuizing rijdt de band op"
+  },
+  "foerderband.moduleIn": {
+    "de": "Der Greifer setzt das Modul ein",
+    "en": "The gripper inserts the module",
+    "nl": "De grijper plaatst de module"
+  },
+  "foerderband.lidOn": {
+    "de": "Die Presse setzt den Deckel auf",
+    "en": "The press fits the lid",
+    "nl": "De pers zet het deksel erop"
+  },
+  "foerderband.finished": {
+    "de": "Fertig: euer Produkt hebt ab",
+    "en": "Done: your product lifts off",
+    "nl": "Klaar: jullie product stijgt op"
+  },
+  "robotergreifer.grips": {
+    "de": "Der Arm greift das Modul",
+    "en": "The arm grips the module",
+    "nl": "De arm pakt de module"
+  },
+  "robotergreifer.turns": {
+    "de": "hebt es an und dreht sich zur Aufnahme",
+    "en": "lifts it and turns to the socket",
+    "nl": "tilt hem op en draait naar de houder"
+  },
+  "robotergreifer.aligns": {
+    "de": "richtet es aus",
+    "en": "aligns it",
+    "nl": "lijnt hem uit"
+  },
+  "robotergreifer.clicks": {
+    "de": "und setzt es ein: Klick",
+    "en": "and slots it in: click",
+    "nl": "en zet hem erin: klik"
+  },
+  "firmensitz.foundation": {
+    "de": "Das Fundament steht, der Kran schwenkt ein",
+    "en": "The foundation is laid, the crane swings in",
+    "nl": "Het fundament ligt, de kraan zwenkt in"
+  },
+  "firmensitz.grows": {
+    "de": "Etage für Etage wächst der Bau",
+    "en": "Floor by floor the building grows",
+    "nl": "Verdieping voor verdieping groeit het gebouw"
+  },
+  "firmensitz.windows": {
+    "de": "die Fenster folgen einen Takt später",
+    "en": "the windows follow a beat later",
+    "nl": "de ramen volgen een tel later"
+  },
+  "firmensitz.number": {
+    "de": "und der Kran wird zur Leuchtschrift: eure 25",
+    "en": "and the crane becomes a sign of light: your 25",
+    "nl": "en de kraan wordt een lichtreclame: jullie 25"
   },
   "festival.itCirclesOnce": {
     "de": "er dreht eine Runde",
@@ -4960,5 +5195,215 @@
     "de": "Licht steigt die Säule hinauf bis zur Viktoria",
     "en": "Light climbs the column up to Victoria",
     "nl": "Licht klimt langs de zuil omhoog tot Victoria"
+  },
+  "showConfigurator.potteryWheel": {
+    "de": "Töpferscheibe",
+    "en": "Potter's wheel",
+    "nl": "Pottenbakkersschijf"
+  },
+  "showConfigurator.potteryWheel3dCaption": {
+    "de": "Eine Vase in 3D dreht auf der Töpferscheibe, zwei Hände formen ihre Wand",
+    "en": "A vase in 3D turns on the potter's wheel, two hands shape its wall",
+    "nl": "Een vaas in 3D draait op de pottenbakkersschijf, twee handen vormen de wand"
+  },
+  "showConfigurator.potteryWheelStoryCaption": {
+    "de": "Auf der Töpferscheibe wächst aus einem Klumpen Ton eine Vase und bekommt ihre Glasur",
+    "en": "On the potter's wheel a lump of clay grows into a vase and gets its glaze",
+    "nl": "Op de pottenbakkersschijf groeit een klomp klei uit tot een vaas en krijgt zijn glazuur"
+  },
+  "toepferscheibe.lump": {
+    "de": "Ein Klumpen Ton dreht sich auf der Scheibe",
+    "en": "A lump of clay spins on the wheel",
+    "nl": "Een klomp klei draait op de schijf"
+  },
+  "toepferscheibe.centre": {
+    "de": "Zwei Hände ziehen ihn zum Zylinder hoch",
+    "en": "Two hands draw it up into a cylinder",
+    "nl": "Twee handen trekken hem op tot een cilinder"
+  },
+  "toepferscheibe.pull": {
+    "de": "Der Bauch wölbt sich, der Hals wächst nach oben",
+    "en": "The belly swells, the neck rises",
+    "nl": "De buik welft zich, de hals groeit omhoog"
+  },
+  "toepferscheibe.glaze": {
+    "de": "Die Vase steht, die Glasur steigt golden auf",
+    "en": "The vase is finished, the glaze rises in gold",
+    "nl": "De vaas staat, het glazuur stijgt goudkleurig op"
+  },
+  "showConfigurator.organ": {
+    "de": "Orgel",
+    "en": "Organ",
+    "nl": "Orgel"
+  },
+  "showConfigurator.organ3dCaption": {
+    "de": "Eine Orgel in 3D, ein Akkord wandert durch die Pfeifen, der Zimbelstern dreht sich",
+    "en": "An organ in 3D, a chord travels through the pipes, the cymbal star turns",
+    "nl": "Een orgel in 3D, een akkoord gaat door de pijpen, de cimbelster draait"
+  },
+  "showConfigurator.organStoryCaption": {
+    "de": "Licht steigt aus dem Spieltisch in die Pfeifen, bis die ganze Orgel klingt",
+    "en": "Light rises from the console into the pipes until the whole organ sounds",
+    "nl": "Licht stijgt uit de speeltafel de pijpen in, tot het hele orgel klinkt"
+  },
+  "orgel.console": {
+    "de": "Eine Orgel, am Spieltisch geht das Licht an",
+    "en": "An organ, the console lights up",
+    "nl": "Een orgel, bij de speeltafel gaat het licht aan"
+  },
+  "orgel.firstChord": {
+    "de": "Ein Akkord steigt in die kleinen Pfeifen",
+    "en": "A chord rises into the small pipes",
+    "nl": "Een akkoord stijgt in de kleine pijpen"
+  },
+  "orgel.wandering": {
+    "de": "Der Akkord wandert durch alle drei Register",
+    "en": "The chord travels through all three registers",
+    "nl": "Het akkoord gaat door alle drie registers"
+  },
+  "orgel.tutti": {
+    "de": "Volles Werk: der Klang hebt sich über die Türme",
+    "en": "Full organ: the sound rises above the towers",
+    "nl": "Vol werk: de klank stijgt boven de torens uit"
+  },
+  "showConfigurator.soundField": {
+    "de": "Schallfeld",
+    "en": "Sound field",
+    "nl": "Geluidsveld"
+  },
+  "showConfigurator.soundField3dCaption": {
+    "de": "Zwei Lautsprecher in 3D, ihre Wellen überlagern sich als Lichtfeld",
+    "en": "Two loudspeakers in 3D, their waves overlap into a field of light",
+    "nl": "Twee luidsprekers in 3D, hun golven overlappen tot een lichtveld"
+  },
+  "showConfigurator.soundFieldStoryCaption": {
+    "de": "Erst spielt ein Lautsprecher, dann beide, beim Drop bebt das ganze Feld",
+    "en": "First one speaker plays, then both, at the drop the whole field shakes",
+    "nl": "Eerst speelt één luidspreker, dan beide, bij de drop trilt het hele veld"
+  },
+  "schallfeld.silence": {
+    "de": "Zwei Lautsprecher, das Feld liegt still",
+    "en": "Two loudspeakers, the field lies still",
+    "nl": "Twee luidsprekers, het veld ligt stil"
+  },
+  "schallfeld.left": {
+    "de": "Der linke spielt, Wellen laufen über das Feld",
+    "en": "The left one plays, waves run across the field",
+    "nl": "De linker speelt, golven lopen over het veld"
+  },
+  "schallfeld.both": {
+    "de": "Der rechte setzt ein, die Wellen überlagern sich",
+    "en": "The right one joins in, the waves overlap",
+    "nl": "De rechter valt in, de golven overlappen"
+  },
+  "schallfeld.drop": {
+    "de": "Der Drop: das ganze Feld bebt im Takt",
+    "en": "The drop: the whole field shakes to the beat",
+    "nl": "De drop: het hele veld trilt op de maat"
+  },
+  "showConfigurator.factoryCampus": {
+    "de": "Werkhalle wird Campus",
+    "en": "Factory hall becomes campus",
+    "nl": "Fabriekshal wordt campus"
+  },
+  "showConfigurator.factoryCampus3dCaption": {
+    "de": "Ein Campus in 3D um die alte Werkhalle, die Fenster gehen nach und nach an",
+    "en": "A campus in 3D around the old factory hall, the windows light up one by one",
+    "nl": "Een campus in 3D rond de oude fabriekshal, de ramen gaan een voor een aan"
+  },
+  "showConfigurator.factoryCampusStoryCaption": {
+    "de": "Aus der alten Werkhalle baut ein Lichtstrom euren Zukunftscampus auf",
+    "en": "From the old factory hall a stream of light builds your campus of the future",
+    "nl": "Vanuit de oude fabriekshal bouwt een lichtstroom jullie campus van de toekomst"
+  },
+  "werkhalle.hall": {
+    "de": "Die alte Werkhalle mit ihrem Schornstein",
+    "en": "The old factory hall with its chimney",
+    "nl": "De oude fabriekshal met zijn schoorsteen"
+  },
+  "werkhalle.gate": {
+    "de": "Am Werktor beginnt ein Lichtstrom",
+    "en": "A stream of light begins at the factory gate",
+    "nl": "Bij de fabriekspoort begint een lichtstroom"
+  },
+  "werkhalle.rise": {
+    "de": "Entlang des Platzes wachsen die Neubauten",
+    "en": "The new buildings rise along the square",
+    "nl": "Langs het plein verrijzen de nieuwbouwen"
+  },
+  "werkhalle.campus": {
+    "de": "Euer Zukunftscampus leuchtet",
+    "en": "Your campus of the future lights up",
+    "nl": "Jullie campus van de toekomst licht op"
+  },
+  "showConfigurator.pralinen": {
+    "de": "Pralinenschachtel",
+    "en": "Box of chocolates",
+    "nl": "Bonbondoos"
+  },
+  "showConfigurator.pralinen3dCaption": {
+    "de": "Eine offene Herzschachtel voller Pralinen, eine Lichtreihe läuft über die Fächer",
+    "en": "An open heart-shaped box full of chocolates, a row of light runs across the compartments",
+    "nl": "Een open hartvormige doos vol bonbons, een rij lichtjes loopt over de vakjes"
+  },
+  "showConfigurator.pralinenStoryCaption": {
+    "de": "Der Deckel hebt sich, Licht läuft über die Pralinen, dann steigen sie auf und werden ein Herz",
+    "en": "The lid lifts, light runs over the chocolates, then they rise and become a heart",
+    "nl": "Het deksel gaat open, licht loopt over de bonbons, dan stijgen ze op en worden een hart"
+  },
+  "pralinen.aBoxWithARibbon": {
+    "de": "Eine Herzschachtel mit Band",
+    "en": "A heart-shaped box with a ribbon",
+    "nl": "Een hartvormige doos met een lint"
+  },
+  "pralinen.theLidOpens": {
+    "de": "Der Deckel hebt sich",
+    "en": "The lid lifts",
+    "nl": "Het deksel gaat omhoog"
+  },
+  "pralinen.lightRunsOverTheTreats": {
+    "de": "Licht läuft über die Fächer",
+    "en": "Light runs across the compartments",
+    "nl": "Licht loopt over de vakjes"
+  },
+  "pralinen.theTreatsRiseIntoAHeart": {
+    "de": "Die Pralinen steigen auf und werden ein Herz",
+    "en": "The chocolates rise and form a heart",
+    "nl": "De bonbons stijgen op en vormen een hart"
+  },
+  "showConfigurator.spalier": {
+    "de": "Blütenspalier",
+    "en": "Floral trellis",
+    "nl": "Bloemenpergola"
+  },
+  "showConfigurator.spalier3dCaption": {
+    "de": "Ein Weg durch Rosenbögen, die Blüten öffnen sich paarweise bis zur Mitte",
+    "en": "A path through rose arches, the flowers open in pairs towards the middle",
+    "nl": "Een pad door rozenbogen, de bloemen openen zich paarsgewijs tot het midden"
+  },
+  "showConfigurator.spalierStoryCaption": {
+    "de": "Ein Weg durch Rosenbögen, die Blüten öffnen sich paarweise, die Lichter führen zur Mitte und werden dort zwei Ringe",
+    "en": "A path through rose arches, the flowers open in pairs, the lights lead to the middle and become two rings",
+    "nl": "Een pad door rozenbogen, de bloemen openen zich paarsgewijs, de lichtjes leiden naar het midden en worden daar twee ringen"
+  },
+  "spalier.aPathBetweenVines": {
+    "de": "Ein Weg durch Rosenbögen",
+    "en": "A path through rose arches",
+    "nl": "Een pad door rozenbogen"
+  },
+  "spalier.flowersOpenInPairs": {
+    "de": "Paarweise öffnen sich die Blüten",
+    "en": "The flowers open in pairs",
+    "nl": "Paarsgewijs openen de bloemen zich"
+  },
+  "spalier.lightsLeadToTheMiddle": {
+    "de": "Die Lichter führen euch zur Mitte",
+    "en": "The lights lead you to the middle",
+    "nl": "De lichtjes leiden jullie naar het midden"
+  },
+  "spalier.twoRingsAtTheEnd": {
+    "de": "Am Ende des Wegs warten zwei Ringe",
+    "en": "At the end of the path, two rings are waiting",
+    "nl": "Aan het eind van het pad wachten twee ringen"
   }
 }

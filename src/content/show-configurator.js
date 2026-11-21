@@ -180,15 +180,28 @@ return  [
   { id: 'silvester', label: t('showConfigurator.winterAndNewYear'), season: [11, 12], motifs: [
     // Runde 9 (Marc 20.11.: „unspektakulär, wenn die erste Form die Uhr ist“): der Lichterbaum eröffnet, die Uhr folgt später
     motif('schnee', t('showConfigurator.lightTree'), v('snow2d', t('showConfigurator.aSnowflakeTurns')), v('snowTree3d', t('showConfigurator.aLightTreeAsASpiralLightAscends')), v('snowTreeStarStory', t('showConfigurator.aSnowflakeBecomesATreeOfLightsItsStarGrowsBig'))), // Runde 9: die Flocke faltet sich räumlich auf und wird zum Lichterbaum; Runde 10: in 3D+ wächst sein Stern ohne Wolke zum großen 3D-Stern (scenes/schnee.js)
-    // Runde 11 (große Motive, Kandidat FSK-001): Adventskranz mit vier Kerzen nach dem Lichterbaum (Advent vor Silvester), ab 300 in
-    // 2D, 3D und 3D+; in 3D+ hebt sich ein goldenes Band Stück für Stück zu den Flammen (scenes/gross/adventskranz.js)
-    ab(motif('adventskranz', t('showConfigurator.adventskranz.label'), v('adventskranz2d', t('showConfigurator.adventskranz.caption2d')), v('adventskranz3d', t('showConfigurator.adventskranz.caption3d')), v('adventskranzStory', t('showConfigurator.adventskranz.captionStory'))), { SPARK: 300, HORIZON: 300, ODYSSEY: 300 }),
+    // Runde 11 (große Motive, Kandidat FSK-001): Adventskranz mit vier Kerzen nach dem Lichterbaum (Advent vor Silvester); in 3D+
+    // hebt sich ein goldenes Band Stück für Stück zu den Flammen (scenes/gross/adventskranz.js). Runde 11b (Marc: „könnte auch mit
+    // deutlich weniger Drohnen auskommen“): 2D ab 200, 3D ab 250, 3D+ ab 300 (vorher alle 300)
+    ab(motif('adventskranz', t('showConfigurator.adventskranz.label'), v('adventskranz2d', t('showConfigurator.adventskranz.caption2d')), v('adventskranz3d', t('showConfigurator.adventskranz.caption3d')), v('adventskranzStory', t('showConfigurator.adventskranz.captionStory'))), { SPARK: 200, HORIZON: 250, ODYSSEY: 300 }),
+    // Runde 11b (große Motive, Kandidat FSK-006): Schlitten über einer Hügelkette, ab 500 in 3D und 3D+, nach dem Adventskranz
+    // (Winter vor Silvester); in 3D+ hebt er ab, wendet und zieht die Spuren als Lichtbahnen hoch (scenes/gross/schlitten.js)
+    ab(motif('schlitten', t('showConfigurator.schlitten.label'), null, v('sleigh3d', t('showConfigurator.schlitten.caption3d')), v('sleighStory', t('showConfigurator.schlitten.captionStory')), ['HORIZON', 0]), { HORIZON: 500, ODYSSEY: 500 }),
+    // Runde 11b (große Motive, Kandidat FSK-013): Polarlicht über einem Fjord, ab 800 in 3D und 3D+ (vier gestaffelte Lichtvorhänge,
+    // Spiegelung im Wasser; in 3D+ entfalten sie sich, wandern über den Fjord, Lichtsturm), scenes/gross/polarlicht.js
+    ab(motif('polarlicht', t('showConfigurator.polarlicht.label'), null, v('aurora3d', t('showConfigurator.polarlicht.caption3d')), v('auroraStory', t('showConfigurator.polarlicht.captionStory')), ['HORIZON', 0]), { HORIZON: 800, ODYSSEY: 800 }),
+    // Runde 11b (große Motive, FSK-012): Eisläuferpaar auf der Winterbahn, ab 700 in 3D und 3D+ (scenes/gross/eislaeufer.js)
+    ab(motif('eislaeufer', t('showConfigurator.eislaeufer.label'), null, v('skaters3d', t('showConfigurator.eislaeufer.caption3d')), v('skatersStory', t('showConfigurator.eislaeufer.captionStory')), ['HORIZON', 0]), { HORIZON: 700, ODYSSEY: 700 }),
     motif('uhr', t('showConfigurator.clock'), v('clock', t('showConfigurator.theHandsRunToTwelve')), v('clock3d', t('showConfigurator.3dWatchTheHandsAreRunning')), v('clockStory', t('showConfigurator.midnightSparksSwirlOutAndWriteTheNewYear'))),
     // Runde 11 (große Motive, Marc: Countdown ausdrücklich gewünscht): Steigerung der Uhr, direkt dahinter; aus dem Zifferblatt
-    // wird ein Sekundenring, aus den Zeigern die „10“. 3D und 3D+ ab 900; in 3D+ drehen sich die letzten Ziffern durch die
-    // Tiefe und die Null zerspringt zum Feuerwerk (scenes/gross/countdown.js)
-    ab(motif('countdown', t('showConfigurator.countdown.label'), null, v('countdown3d', t('showConfigurator.countdown.caption3d')), v('countdownStory', t('showConfigurator.countdown.captionStory')), ['HORIZON', 0]), { HORIZON: 900, ODYSSEY: 900 }),
+    // wird ein Sekundenring, aus den Zeigern die „10“. In 3D+ drehen sich die letzten Ziffern durch die Tiefe und die Null
+    // zerspringt zum Feuerwerk (scenes/gross/countdown.js). Runde 11b (Marc: „mit viiiiiel viel weniger Drohnen … geringere
+    // Liniendichte“): 3D und 3D+ ab 400 statt 900
+    ab(motif('countdown', t('showConfigurator.countdown.label'), null, v('countdown3d', t('showConfigurator.countdown.caption3d')), v('countdownStory', t('showConfigurator.countdown.captionStory')), ['HORIZON', 0]), { HORIZON: 400, ODYSSEY: 400 }),
     catalogMotif('sektflasche', 'silvester', t, locale),
+    // Runde 11b (große Motive, FSK-010): Silvesterfeier auf dem Marktplatz nach dem Countdown, geteilt mit dem Stadtfest, ab 700
+    // in 3D und 3D+; Laternen vom Rand zur Mitte, ein Lichtkreis steigt und öffnet sich zum Stern (scenes/gross/marktplatz.js)
+    ab(motif('marktplatz', t('showConfigurator.marktplatz.label'), null, v('marketSquare3d', t('showConfigurator.marktplatz.caption3d')), v('marketSquareStory', t('showConfigurator.marktplatz.captionStory')), ['HORIZON', 0]), { HORIZON: 700, ODYSSEY: 700 }),
     // Runde 10: in 3D+ wächst der Baumstern schon zum großen 3D-Stern (snowTreeStarStory), der Katalogstern käme doppelt
     withoutTier(catalogMotif('stern', 'silvester', t, locale), 'ODYSSEY', 'schnee'),
     catalogMotif('diskokugel', 'silvester', t, locale),
@@ -222,7 +235,11 @@ return  [
     catalogMotif('batterie', 'launch', t, locale),
     catalogMotif('atom', 'launch', t, locale),
     catalogMotif('roboter', 'launch', t, locale),
+    // Runde 11b (große Motive): Robotergreifer hinter dem Kleinen Roboter (vom Spielzeug zur Fertigung), ab 800 in 3D und 3D+ (scenes/gross/robotergreifer.js)
+    ab(motif('robotergreifer', t('showConfigurator.robotArm'), null, v('robotArm3d', t('showConfigurator.robotArm3dCaption')), v('robotArmStory', t('showConfigurator.robotArmStoryCaption')), ['HORIZON', 0]), { HORIZON: 800, ODYSSEY: 800 }),
     catalogMotif('zahnraeder', 'launch', t, locale),
+    // Runde 11b (große Motive): Förderband hinter den Zahnrädern (die Mechanik läuft weiter), ab 500 in 3D und 3D+ (scenes/gross/foerderband.js)
+    ab(motif('foerderband', t('showConfigurator.conveyor'), null, v('conveyor3d', t('showConfigurator.conveyor3dCaption')), v('conveyorStory', t('showConfigurator.conveyorStoryCaption')), ['HORIZON', 0]), { HORIZON: 500, ODYSSEY: 500 }),
     motif('idee', t('showConfigurator.lightBulb'), v('bulb2d', t('showConfigurator.aLightBulbTheIdea')), v('bulb3d', t('showConfigurator.theLightBulbIn3dTheLightFadeNIs')), v('bulbStory', t('showConfigurator.aLightBulbFormsAroundAFilamentAndShines'))),
     catalogMotif('drehzahl', 'launch', t, locale),
     catalogMotif('sportwagen', 'launch', t, locale),
@@ -240,6 +257,9 @@ return  [
     catalogMotif('ballons', 'jubilaeum', t, locale),
     catalogMotif('fahnen', 'jubilaeum', t, locale),
     motif('fussball', t('showConfigurator.football'), v('kick2d', t('showConfigurator.aPlayerTheBallRotatesOverHisFoot')), v('kickHorizon', t('showConfigurator.thePlayerShootsTheBallSpinsThroughTheAir')), v('kickStory', t('showConfigurator.aPlayerScoresTheBallBecomesYourNumber')), S1),
+    // Runde 11b (große Motive, FSK-038): Radfahrer im Zielbogen, geteilt mit dem Stadtfest (dort Stadtrennen, hier Ziel erreicht),
+    // ab 500 in 3D und 3D+ nach dem Fußballer (scenes/gross/radfahrer.js)
+    ab(motif('radfahrer', t('showConfigurator.radfahrer.label'), null, v('cyclist3d', t('showConfigurator.radfahrer.caption3d')), v('cyclistStory', t('showConfigurator.radfahrer.captionStory')), ['HORIZON', 0]), { HORIZON: 500, ODYSSEY: 500 }),
     catalogMotif('jubilaeum30', 'jubilaeum', t, locale),
     catalogMotif('geburtstag', 'jubilaeum', t, locale),
     catalogMotif('golfer', 'jubilaeum', t, locale),
@@ -248,6 +268,8 @@ return  [
     catalogMotif('planierraupe', 'jubilaeum', t, locale),
     catalogMotif('bagger', 'jubilaeum', t, locale),
     catalogMotif('lkw', 'jubilaeum', t, locale),
+    // Runde 11b (große Motive): Firmensitz hinter Bagger und LKW (Baustelle), ab 700 in 3D und 3D+ (scenes/gross/firmensitz.js)
+    ab(motif('firmensitz', t('showConfigurator.headquarters'), null, v('headquarters3d', t('showConfigurator.headquarters3dCaption')), v('headquartersStory', t('showConfigurator.headquartersStoryCaption')), ['HORIZON', 0]), { HORIZON: 700, ODYSSEY: 700 }),
     catalogMotif('feuerwehr', 'jubilaeum', t, locale),
     catalogMotif('schluessel', 'jubilaeum', t, locale),
     catalogMotif('sparschwein', 'jubilaeum', t, locale),
@@ -256,6 +278,8 @@ return  [
     // Runde 10b (Marc: „Eine Mischung aus beidem“): derselbe Fernsehturm wie im Stadtfest (scenes/wahrzeichen.js); die alten Szenen
     // tower/tower3d/towerStory bleiben nur für die Show-Folge der Startseite (himmel/folge.js)
     motif('wahrzeichen', t('showConfigurator.landmarks'), v('fernsehturm2d', t('showConfigurator.exampleBerlinTvTowerWithWarningLight')), v('fernsehturm3d', t('showConfigurator.wahrzeichen.fernsehturm3d')), v('fernsehturmPlus', t('showConfigurator.wahrzeichen.fernsehturmPlus'))),
+    // Runde 11b (große Motive, FSK-049): Werkhalle wird Zukunftscampus, nach den Wahrzeichen, 3D und 3D+ ab 1000
+    ab(motif('werkhalle', t('showConfigurator.factoryCampus'), null, v('factoryCampus3d', t('showConfigurator.factoryCampus3dCaption')), v('factoryCampusStory', t('showConfigurator.factoryCampusStoryCaption')), ['HORIZON', 0]), { HORIZON: 1000, ODYSSEY: 1000 }), // scenes/gross/werkhalle.js
     catalogMotif('handschlag', 'jubilaeum', t, locale),
     catalogMotif('stern', 'jubilaeum', t, locale),
     catalogMotif('atom', 'jubilaeum', t, locale),
@@ -285,8 +309,12 @@ return  [
     ab(motif('frankfurtskyline', t('showConfigurator.wahrzeichen.skyline'), v('skyline2d', t('showConfigurator.wahrzeichen.skyline2d')), v('skyline3d', t('showConfigurator.wahrzeichen.skyline3d')), v('skylinePlus', t('showConfigurator.wahrzeichen.skylinePlus'))), { SPARK: 150 }),
     ab(motif('siegessaeule', t('showConfigurator.wahrzeichen.siegessaeule'), v('siegessaeule2d', t('showConfigurator.wahrzeichen.siegessaeule2d')), v('siegessaeule3d', t('showConfigurator.wahrzeichen.siegessaeule3d')), v('siegessaeulePlus', t('showConfigurator.wahrzeichen.siegessaeulePlus'))), { SPARK: 150 }),
     catalogMotif('ballons', 'festival', t, locale),
+    // Runde 11b (große Motive, FSK-010): Fest auf dem Marktplatz nach den Wahrzeichen, geteilt mit Winter & Silvester, ab 700
+    ab(motif('marktplatz', t('showConfigurator.marktplatz.label'), null, v('marketSquare3d', t('showConfigurator.marktplatz.caption3d')), v('marketSquareStory', t('showConfigurator.marktplatz.captionStory')), ['HORIZON', 0]), { HORIZON: 700, ODYSSEY: 700 }),
     // Runde 10: das Riesenrad (2D am Kontaktbogen bei 100 geprüft) gehört an den Anfang
     motif('riesenrad', t('showConfigurator.ferrisWheel'), v('wheel2d', t('showConfigurator.aFerrisWheelTurnsItsGondolasHangStill')), v('wheel3d', t('showConfigurator.theFerrisWheelIn3dTheGondolasLightUp')), v('wheelStory', t('showConfigurator.aFerrisWheelTakesShapeAndTurnsAStarBlooms'))),
+    // Runde 11b (FSK-029): Schallfeld zwischen zwei Lautsprechern (Konzert) ab 900, dieselbe Fassung wie in Kultur
+    ab(motif('schallfeld', t('showConfigurator.soundField'), null, v('soundField3d', t('showConfigurator.soundField3dCaption')), v('soundFieldStory', t('showConfigurator.soundFieldStoryCaption')), ['HORIZON', 0]), { HORIZON: 900, ODYSSEY: 900 }), // scenes/gross/schallfeld.js
     catalogMotif('autoscooter', 'festival', t, locale),
     catalogMotif('bierkrug', 'festival', t, locale),
     catalogMotif('cocktail', 'festival', t, locale),
@@ -295,6 +323,9 @@ return  [
     // der Papierflieger setzt die Reise fort (dieselbe Karte): direkt dahinter, ab 3D+ 400 ist es wieder eine Geschichte
     motif('reise', t('showConfigurator.travel'), v('compass2d', t('showConfigurator.aCompassTheNeedleSeeksTheNorth')), v('compass3d', t('showConfigurator.theCompassIn3dTheNeedleSwingsIn')), v('travelStory', t('showConfigurator.theCityBecomesAMapPinsLightUpAndA'))),
     motif('flieger', t('showConfigurator.paperPlane'), null, null, v('planeStory', t('showConfigurator.aPaperPlaneFollowsTheRouteAndCirclesTheCompass')), O1),
+    // Runde 11b (große Motive, FSK-038): Stadtrennen, der Radfahrer sprintet durch den Zielbogen, geteilt mit dem Jubiläum,
+    // ab 500 in 3D und 3D+ (scenes/gross/radfahrer.js)
+    ab(motif('radfahrer', t('showConfigurator.radfahrer.label'), null, v('cyclist3d', t('showConfigurator.radfahrer.caption3d')), v('cyclistStory', t('showConfigurator.radfahrer.captionStory')), ['HORIZON', 0]), { HORIZON: 500, ODYSSEY: 500 }),
     catalogMotif('kind', 'festival', t, locale),
     catalogMotif('anker', 'festival', t, locale),
     catalogMotif('leuchtturm', 'festival', t, locale),
@@ -315,7 +346,7 @@ return  [
     // Runde 11b: die Delfin-Geschichte schaltet mit dem Papierflieger 3D+ 400 frei (ohne den Drachenflug, Marc: „sieht mega weird aus“,
     // stünde dort nur noch der Flieger; je Stufe mindestens zwei, scripts/show-unlock.test.mjs). In 3D spielt der Delfin nicht.
     ab(motif('delfin', t('showConfigurator.dolphin'), v('dolphin2d', t('showConfigurator.aDolphinOverAWave')), v('dolphin3d', t('showConfigurator.aDolphinJumpsOutOfTheWaterIn3d')), v('dolphinStory', t('showConfigurator.wavesOneDolphinJumpsDivesInTwoDolphinsJumpIn'))), { SPARK: 150, ODYSSEY: 400 }),
-    // Runde 11 (große Motive): Tintenfisch zwischen Korallen hinter dem Delfin (Meer), ab 400 in 3D und 3D+ (scenes/gross/tintenfisch.js)
+    // Runde 11 (große Motive): Tintenfisch hinter dem Delfin (Meer; Runde 11b ohne Korallen), ab 400 in 3D und 3D+ (scenes/gross/tintenfisch.js)
     ab(motif('tintenfisch', t('showConfigurator.octopus'), null, v('octopus3d', t('showConfigurator.octopus3dCaption')), v('octopusStory', t('showConfigurator.octopusStoryCaption')), ['HORIZON', 0]), { HORIZON: 400, ODYSSEY: 400 }),
     // Marc 20.11.: nicht streichen, ans Ende (nur 2D, ab 150; Kuh mit UFO ab 200)
     catalogMotif('elefant', 'festival', t, locale),
@@ -336,8 +367,14 @@ return  [
     ab(motif('erstertanz', t('showConfigurator.firstDance'), null, v('firstDance3d', t('showConfigurator.firstDance3dCaption')), v('firstDanceStory', t('showConfigurator.firstDanceStoryCaption')), ['HORIZON', 0]), { HORIZON: 500, ODYSSEY: 500 }),
     catalogMotif('doppelherz', 'hochzeit', t, locale),
     catalogMotif('tor', 'hochzeit', t, locale),
+    // Runde 11b (große Motive): Blütenspalier mit Lichterweg hinter dem Tor (vom Tor auf den Weg), ab 700 in 3D und 3D+;
+    // ein Tunnel aus Rosenbögen fasst den Weg, die Blüten öffnen sich paarweise zur Mitte (scenes/gross/spalier.js)
+    ab(motif('spalier', t('showConfigurator.spalier'), null, v('spalier3d', t('showConfigurator.spalier3dCaption')), v('spalierStory', t('showConfigurator.spalierStoryCaption')), ['HORIZON', 0]), { HORIZON: 700, ODYSSEY: 700 }),
     catalogMotif('eheringe', 'hochzeit', t, locale),
     catalogMotif('torte', 'hochzeit', t, locale),
+    // Runde 11b (große Motive): die geöffnete Pralinenschachtel hinter der Torte, ab 600 in 3D und 3D+; Herzschachtel mit
+    // Fächern und vier Pralinenformen, in 3D+ steigen die Pralinen ins Deckelherz (scenes/gross/pralinen.js)
+    ab(motif('pralinen', t('showConfigurator.pralinen'), null, v('pralinen3d', t('showConfigurator.pralinen3dCaption')), v('pralinenStory', t('showConfigurator.pralinenStoryCaption')), ['HORIZON', 0]), { HORIZON: 600, ODYSSEY: 600 }),
     motif('herz', t('showConfigurator.heart'), v('heart2d', t('showConfigurator.aHeartLightTravelsAlongItsOutline')), v('heartTunnel', t('showConfigurator.aTunnelOfHeartsLightFlowingThrough')), v('heartsStory', t('showConfigurator.cupidSArrowStrikesA3dHeartTwoHeartsOrbit'))),
     // Runde 10b (Marc: „die Initialen sind nicht richtig im Herz drin … das nehmen, was wir sonst dynamisch über ‚Euer Text
     // oder Logo' definieren“): Herz und Initialen über denselben Weg wie der eigene Text (scenes/text.js, Stil initials), nur 2D
@@ -360,8 +397,15 @@ return  [
   { id: 'kultur', label: t('showConfigurator.culture'), motifs: [
     // Runde 9: die Harfe (Licht zupft die Saiten) eröffnet Kultur, das Buch folgt
     motif('noten', t('packageDetails.music'), v('notes2d', t('showConfigurator.twoNotesWeighInTime')), v('harpHorizon', t('showConfigurator.aHarpLightPlucksTheStringsNotesRise')), v('harpStory', t('showConfigurator.theStringsSoundNTheNotesFlyNOfThem'))),
+    // Runde 11b (große Motive, FSK-090): Orgel als Steigerung der Harfe, direkt dahinter, 3D und 3D+ ab 600; in 3D+ werden
+    // die Notenlinien zu Pfeifen, der Notenschlüssel zum Gehäuse und die fünf Noten zu den Kränzen der Türme (gleiche Teile)
+    ab(motif('orgel', t('showConfigurator.organ'), null, v('organ3d', t('showConfigurator.organ3dCaption')), v('organStory', t('showConfigurator.organStoryCaption')), ['HORIZON', 0]), { HORIZON: 600, ODYSSEY: 600 }), // scenes/gross/orgel.js
+    // Runde 11b (FSK-029): Schallfeld zwischen zwei Lautsprechern ab 900, nach der Orgel; dieselbe Fassung auch im Stadtfest
+    ab(motif('schallfeld', t('showConfigurator.soundField'), null, v('soundField3d', t('showConfigurator.soundField3dCaption')), v('soundFieldStory', t('showConfigurator.soundFieldStoryCaption')), ['HORIZON', 0]), { HORIZON: 900, ODYSSEY: 900 }), // scenes/gross/schallfeld.js
     motif('buch', t('showConfigurator.book'), v('book2d', t('showConfigurator.anOpenBookLightFlipsThePages')), v('book3d', t('showConfigurator.theBookOpensIn3dOnePageTurns')), v('bookStory', t('showConfigurator.theBookOpensAPenWritesTheLinesRise'))),
     motif('vorhang', t('showConfigurator.curtain'), v('curtain', t('showConfigurator.theCurtainMovesInTheAirDraft')), v('curtainStar', t('showConfigurator.curtainOnA3dStarIsReleased')), v('curtainStory', t('showConfigurator.curtainOnGoldRainFallsAStarRises'))),
+    // Runde 11b (große Motive, FSK-089): Töpferscheibe, 3D und 3D+ ab 500 (scenes/gross/toepferscheibe.js)
+    ab(motif('toepferscheibe', t('showConfigurator.potteryWheel'), null, v('potteryWheel3d', t('showConfigurator.potteryWheel3dCaption')), v('potteryWheelStory', t('showConfigurator.potteryWheelStoryCaption')), ['HORIZON', 0]), { HORIZON: 500, ODYSSEY: 500 }),
     catalogMotif('taube', 'kultur', t, locale),
     catalogMotif('galaxie', 'kultur', t, locale),
     catalogMotif('mikrofon', 'kultur', t, locale),

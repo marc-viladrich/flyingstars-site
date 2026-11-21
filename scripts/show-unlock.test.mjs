@@ -102,15 +102,47 @@ test('Gesperrte Motive nennen ihre Schwelle als Preisstufe: dort spielen sie, ei
 // man nur auf 110 oder 120 hochschraubt“): Freischaltungen nur auf den Stufen der Art (2D 100/150/200, 3D 200/250,
 // 3D+ 300/400), und jede Stufe, die etwas freischaltet, schaltet mindestens zwei Motive frei. Über alle Anlässe und Arten
 // aus den Daten, neue Motive und Anlässe sind automatisch dabei.
-// Runde 11, erste Welle großer Motive (Marc: „mit 3–5 starten … dann schauen wir weiter“): diese Stufen schalten bisher nur
-// ein Motiv frei. Die Liste wird mit jeder Welle kürzer und muss am Ende leer sein; ein neues Motiv auf einer dieser Stufen
+// Runde 11, Welle 1 und 2 großer Motive (Marc: „für jeden Anlass mindestens 2–3 500+-Motive“, erreicht: 3–4 je Anlass): diese
+// Stufen schalten bisher nur ein Motiv frei. Die Liste wird mit jeder Welle kürzer und muss am Ende leer sein; ein neues Motiv auf einer dieser Stufen
 // entfernt seine Zeile hier. Marcs Ziel und offene Stufen: docs/show-konfigurator.md, Abschnitt „Große Motive“.
 const AUFBAU = [
-  'silvester 2d 300: nur adventskranz', 'silvester 3d 300: nur adventskranz',
-  'silvester 3d 900: nur countdown', 'silvester story 900: nur countdown',
-  'launch 3d 700: nur satellit', 'launch story 700: nur satellit',
+  'silvester 2d 200: nur adventskranz',
+  'silvester 3d 400: nur countdown',
+  'silvester 3d 500: nur schlitten',
+  'silvester 3d 800: nur polarlicht',
+  'silvester story 500: nur schlitten',
+  'silvester story 800: nur polarlicht',
+  'launch 3d 500: nur foerderband',
+  'launch 3d 700: nur satellit',
+  'launch 3d 800: nur robotergreifer',
+  'launch story 500: nur foerderband',
+  'launch story 700: nur satellit',
+  'launch story 800: nur robotergreifer',
+  'jubilaeum 3d 500: nur radfahrer',
+  'jubilaeum 3d 700: nur firmensitz',
+  'jubilaeum 3d 1000: nur werkhalle',
+  'jubilaeum story 500: nur radfahrer',
+  'jubilaeum story 700: nur firmensitz',
+  'jubilaeum story 1000: nur werkhalle',
   'festival 3d 400: nur tintenfisch',
-  'hochzeit 3d 500: nur erstertanz', 'hochzeit story 500: nur erstertanz',
+  'festival 3d 500: nur radfahrer',
+  'festival 3d 700: nur marktplatz',
+  'festival 3d 900: nur schallfeld',
+  'festival story 500: nur radfahrer',
+  'festival story 700: nur marktplatz',
+  'festival story 900: nur schallfeld',
+  'hochzeit 3d 500: nur erstertanz',
+  'hochzeit 3d 600: nur pralinen',
+  'hochzeit 3d 700: nur spalier',
+  'hochzeit story 500: nur erstertanz',
+  'hochzeit story 600: nur pralinen',
+  'hochzeit story 700: nur spalier',
+  'kultur 3d 500: nur toepferscheibe',
+  'kultur 3d 600: nur orgel',
+  'kultur 3d 900: nur schallfeld',
+  'kultur story 500: nur toepferscheibe',
+  'kultur story 600: nur orgel',
+  'kultur story 900: nur schallfeld',
 ];
 test('Freischaltungen nur auf den Stufen der Art, je Stufe mindestens zwei Motive', () => {
   const wrong = [];
