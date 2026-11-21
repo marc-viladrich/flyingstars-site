@@ -503,3 +503,6 @@ rechts neben dem Text; ein Teamfoto gibt es noch nicht. Marc: die Lösung aus ei
 - Der Himmel findet neben der Collage keinen freien Platz mehr (`free()`); das lachende Gesicht bei `#ueber` entfällt damit,
   es bleibt ein Bild in der Section (siehe `docs/himmel.md`).
 
+
+
+**Telefon-Knopf im Seitenkopf (Runde 16, Marc 21.11.2026):** Statt drei Porträts neben dem Knopf („zu voll“) steht Ronjas rundes Porträt IM Knopf an der Stelle des Telefon-Icons (`CallFaces.astro`), ein Element weniger. Team-Collage der Startseite: Namen unter dem Bild, fett, auf einem weichen dunklen Hof; kein Verlauf und keine Unschärfe im Foto.

@@ -118,20 +118,15 @@ const crew = await Promise.all(members.map(async item => {const member=teamMembe
   .tc-crew .member:nth-child(1) { --tx: var(--tc-over); }
   .tc-crew .member:nth-child(2) { --ty: var(--tc-drop); z-index: 1; }
   .tc-crew .member:nth-child(3) { --tx: calc(-1 * var(--tc-over)); --ty: calc(var(--tc-drop) * 0.35); }
-  .tc-crew .member:nth-child(3) .tc-name { text-align: end; }
   .tc-crew .portrait { margin: 0; }
-  /* Name im Bild (Runde 15: „Namen müssen lesbar sein“): unten auf einem dunklen, weich auslaufenden Verlauf, darunter ist
-     das Foto zusätzlich weichgezeichnet (Maske läuft nach oben aus). Der Verlauf liegt im Porträt (::after), damit der
-     Vorhang und die gerundeten Ecken ihn mitschneiden; ein Geschwister-Element ließ unten eine helle Bildkante stehen.
-     --text auf mindestens 50–80 % Schwarz über dem Foto, dazu Textschatten. Der Name erscheint erst mit dem Vorhang; Zeiger gehen durch zum
-     Lichtpunkt-Hover des Porträts. */
-  .tc-crew .portrait::before, .tc-crew .portrait::after { content: ""; position: absolute; inset: auto 0 0; height: 45%; z-index: 1; pointer-events: none; }
-  /* Weichzeichnung und Verlauf getrennt: WebKit verwirft sonst mit der Maske auch den Verlauf */
-  .tc-crew .portrait::before { -webkit-backdrop-filter: blur(0.75rem); backdrop-filter: blur(0.75rem);
-    -webkit-mask-image: linear-gradient(to bottom, transparent, #000 60%); mask-image: linear-gradient(to bottom, transparent, #000 60%); }
-  .tc-crew .portrait::after { background: linear-gradient(to bottom, rgb(var(--rgb-black) / 0), rgb(var(--rgb-black) / 0.5) 45%, rgb(var(--rgb-black) / 0.8)); }
-  .tc-name { position: absolute; z-index: 2; inset-inline: 0; bottom: 0; padding: 0 var(--space-3-5) var(--space-3);
-    font-size: var(--text-sm); font-weight: 500; line-height: 1.25; color: var(--text); text-shadow: 0 0.0625rem 0.5rem var(--shadow-ink); pointer-events: none; }
+  /* Name unter dem Bild (Runde 16, Marc: der Verlauf im Bild war „zu doll“; gemeint war ein dunkler, weicher Schatten unter
+     dem Namensfeld). Fett, auf einem weich auslaufenden dunklen Hof (radialer Verlauf, kein Weichzeichner-Filter), damit er
+     vor Punkteraster und Nachbarbild lesbar bleibt. Der Name erscheint erst mit dem Vorhang. */
+  .tc-name { position: relative; z-index: 2; display: block; width: fit-content; margin-top: var(--space-2-5); padding: var(--space-1) var(--space-2);
+    font-size: var(--text-sm); font-weight: 600; line-height: 1.25; color: var(--text); text-shadow: 0 0.0625rem 0.5rem var(--shadow-ink); pointer-events: none; }
+  .tc-name::before { content: ""; position: absolute; inset: -0.75rem -1.25rem; z-index: -1; border-radius: var(--radius-round);
+    background: radial-gradient(closest-side, rgb(var(--rgb-black) / 0.78), rgb(var(--rgb-black) / 0.45) 55%, transparent); }
+  .tc-crew .member:nth-child(3) .tc-name { margin-left: auto; }
   :global(.reveal) .tc-crew .member:not(.is-in) .tc-name { opacity: 0; }
   .tc-crew .member .tc-name { transition: opacity var(--dur-fade) var(--ease-default), transform var(--dur-reveal) var(--ease-curtain); transition-delay: calc(var(--i, 0) * var(--dur-stagger) + var(--dur-reveal) * 0.6); }
   .tc-crew .member.shown .tc-name { transition-delay: 0s; }
@@ -149,13 +144,13 @@ const crew = await Promise.all(members.map(async item => {const member=teamMembe
   .team-collage.is-leiter .tc-stage { --tc-over: 0rem; --tc-drop: 0rem; }
   .team-collage.is-leiter .tc-crew { column-gap: clamp(0.875rem, 1.4vw, 1.5rem); }
   .team-collage.is-leiter .tc-crew .member { --tx: 0rem; --ty: 0rem; margin-top: calc((2 - var(--i)) * 52.5%); }
-  .team-collage.is-leiter .tc-crew .member:nth-child(3) .tc-name { text-align: start; }
+  .team-collage.is-leiter .tc-crew .member:nth-child(3) .tc-name { margin-left: 0; }
   .team-collage.is-leiter :global(.dot-field) { inset: -10% 30% 26% 0%; }
   /* Handy: ohne Überlappung, sonst verdeckt das mittlere Porträt den Namen links; Namen dürfen umbrechen */
   @media (--compact) {
     .tc-stage { --tc-over: 0rem; --tc-drop: 2rem; }
     .tc-crew { column-gap: var(--space-2-5); }
-    .tc-name { font-size: var(--text-xs); text-wrap: balance; padding: 0 var(--space-2) var(--space-2); }
+    .tc-name { font-size: var(--text-xs); text-wrap: balance; }
   }
   @media (--grid-stacked) {
     .team-collage.is-leiter .tc-crew .member { margin-top: calc((2 - var(--i)) * 32.5%); }
