@@ -13,23 +13,13 @@ sections:
     secondary:
       label: ☎︎ {{contact.phone.international}}
       href: "{{contact.phone.href}}"
-    video: showreel
-    videoLabel: Showreel
+    show: hochzeitHero
     poster:
       src: https://flyingstars.art/wp-content/uploads/2025/07/Heiratsantrag_Headerbild.jpg
       alt: Hand with a ring made of drones in the blue evening sky above treetops, at a proposal at Schloss Hugenpoet
       width: 2063
       height: 1303
-    facts:
-      - value: from €7,900
-        label: excluding VAT with SPARK
-        _key: k_d6b481df0eeda9dbd41c
-      - value: 100 drones
-        label: in the package
-        _key: k_b54242b2d9dbb9fb4cb8
-      - value: included
-        label: Permit
-        _key: k_23f7c52d3dd38daa58dc
+    facts: []
     _key: k_683af193db254741d0d4
   - type: logoBar
     id: presse
@@ -314,12 +304,12 @@ sections:
       - hochzeit-moritz
     _key: k_9db54091e8c639b6fa66
 translationContractVersion: 2
-translationSourceHash: b8fba9bd7dfed5aef7ceb1f01c920b2bffb40359625fc9dfbbdde6efc3f8a61f
+translationSourceHash: b501a776af7c6405589ecf7d74840c23247788e3e8f1ee7ff8303de6cbdd2088
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: en
-  sourceFingerprint: b8fba9bd7dfed5aef7ceb1f01c920b2bffb40359625fc9dfbbdde6efc3f8a61f
+  sourceFingerprint: b501a776af7c6405589ecf7d74840c23247788e3e8f1ee7ff8303de6cbdd2088
   fields:
     - address: /description
       sourceFingerprint: 4733405fe5e0d5b46e7f29ad6818082582d82bdbdf1157d8086a665cbacacf6b
@@ -597,30 +587,6 @@ translationEvidence:
       sourceFingerprint: 006e366b0d4aba96b130f66e327ab9de80c0c873c7c4936d197b55f076c1b8da
       targetFingerprint: 11fdab302bfa6a3cd1b3e032a288a0070124083614c423dec605c86c113c94e7
       status: adopted-existing
-    - address: /sections/@k_683af193db254741d0d4/facts/@k_23f7c52d3dd38daa58dc/label
-      sourceFingerprint: e7cc3d3cd1ba9742b1b96d8347319578cc36e06004ef7ea519398b6bd043be58
-      targetFingerprint: f3cd83ea78c4205c705018084b0de27b50892fccd01f3beb14038f1d0387856d
-      status: adopted-existing
-    - address: /sections/@k_683af193db254741d0d4/facts/@k_23f7c52d3dd38daa58dc/value
-      sourceFingerprint: b94d0bd3af8b85f9f143ded359674e3f2de000eefa82ee4fae8fe03e67cf034b
-      targetFingerprint: 834be0fbf74098c73b3d0a7b985b5041c2eb8ce6c80e80c1c4de187d8991a8fc
-      status: adopted-existing
-    - address: /sections/@k_683af193db254741d0d4/facts/@k_b54242b2d9dbb9fb4cb8/label
-      sourceFingerprint: 9e619014ce2d29b78a8507594dd394dc3066903ace381e2405cd4cdaad64d5e0
-      targetFingerprint: 29ea1f1411c51983aa628f2747a5544b0206cf3f328b668f67e6b1a1f7dadfa3
-      status: adopted-existing
-    - address: /sections/@k_683af193db254741d0d4/facts/@k_b54242b2d9dbb9fb4cb8/value
-      sourceFingerprint: 340aacee395565287e3ca2145d0a6ca72653517ecd9481ec8c0fc0e67bbc1ae0
-      targetFingerprint: 8121f72fc6a685b5007874cfdf7077ff12ea6759d4b3a67736d9a0ba4df1da7b
-      status: adopted-existing
-    - address: /sections/@k_683af193db254741d0d4/facts/@k_d6b481df0eeda9dbd41c/label
-      sourceFingerprint: 6b016004dcc50b7d6b38f141fa53fe7b9d996a1963a362c25c98086ed1eb5677
-      targetFingerprint: 467ad4b6e3e0d582c36c3ba88d317540c5df44a17445e04c4fa0ea8e14ea907f
-      status: adopted-existing
-    - address: /sections/@k_683af193db254741d0d4/facts/@k_d6b481df0eeda9dbd41c/value
-      sourceFingerprint: 6ac8c36168f482b5d69b866c1e2f07ddda84a8cc4d37066a9ce045f3de370630
-      targetFingerprint: 1c83379a6eade6d3a0508001baf4ddd57b9d5c40ae98fea54da5f48af9da0766
-      status: adopted-existing
     - address: /sections/@k_683af193db254741d0d4/headline
       sourceFingerprint: 415376e7b92be0e2209403c8384432707377490c6a4ba146f4fb54678ed3c797
       targetFingerprint: d937e41c06ce5bfcae3377c1f1549e3d9a3109bb3725c43239b97e33203906e3
@@ -642,8 +608,8 @@ translationEvidence:
       targetFingerprint: 5a6b5f9174a1edb9352e85f266b24f28091e0335033246ca0a1cc5f8feb61003
       status: adopted-existing
     - address: /sections/@k_683af193db254741d0d4/videoLabel
-      sourceFingerprint: 090346a04e8bb77259a79f8e914da7512cc08ad5ee47026d715125f7afc40ef9
-      targetFingerprint: 1711a3f1e5c5d1ebedb38d85fd88717d7e8e70925dbe7322bf4192b0c9138a3e
+      sourceFingerprint: 7ffafa6322d3442618e28bfc08102ccb55e748938fbe73c309b011fea7077596
+      targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
     - address: /sections/@k_6e4f6206d974feea8611/additionalResponsibilities
       sourceFingerprint: 7194a92232df12e5b1278aff5adcfeda432281c61572b172aa679f5aa540d7b1

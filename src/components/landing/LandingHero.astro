@@ -16,10 +16,16 @@ import Icon from '../Icon.astro';
 import { optimizedImage } from '../../lib/media';
 import { videos, videoPath } from '../../lib/videos';
 type Props = Extract<Section, { type: 'landingHero' }> & { index: number };
-const { kicker, headline, text, cta, secondary, video, videoLabel = t('common.showreel'), poster, facts } = Astro.props;
+// Runde 14 (Marc und Moritz, 21.11.2026, Hochzeit): statt `video` kann `show` stehen, dann zeigt der Rahmen Formationen aus
+// dem Show-Konfigurator (src/scripts/hero-show.js, Ablauf in show-teaser.js). Gleicher Platz, gleiche Größe, gleicher
+// Rahmen; das Standbild bleibt LCP und steht, bis die ersten Drohnen fliegen, bei reduzierter Bewegung und ohne JavaScript.
+// Die Engine lädt erst nach dem Laden der Seite, in Stufen und im Leerlauf. Genau eins von beiden.
+const { kicker, headline, text, cta, secondary, video, show, videoLabel = t('common.showreel'), poster, facts } = Astro.props;
+if (Boolean(video) === Boolean(show)) throw new Error('landingHero braucht genau eins von video und show');
 const still = await optimizedImage(poster.src, 960);
-const src = videoPath(videos[video], 'preview');
-const small = videoPath(videos[video], 'mobile');
+const src = video && videoPath(videos[video], 'preview');
+const small = video && videoPath(videos[video], 'mobile');
+const showLabels = { hochzeitHero: t('landinghero.weddingShowLabel') };
 ---
 <section class="lh" aria-labelledby="hero-h">
   <div class="lh-copy">
@@ -28,7 +34,11 @@ const small = videoPath(videos[video], 'mobile');
     <div class="actions"><a class="btn primary" href={localHref(cta.href)}>{fact(cta.label)}</a>{secondary && <a class="btn" href={localHref(secondary.href)}>{fact(secondary.label)}</a>}</div>
     {facts.length > 0 && <FactList items={facts} variant="hero" />}
   </div>
-  <MediaFrame class="lh-media" corners="inset" data-lh-reel>
+  {show ? <MediaFrame class="lh-media lh-show" corners="inset" data-lh-show={show} data-lh-label={showLabels[show]}>
+    <img src={still.src} width={still.width} height={still.height} alt={poster.alt} loading="eager" fetchpriority="high" decoding="async" />
+    <canvas data-lh-field aria-hidden="true"></canvas>
+    <span class="lh-rec lh-art mono" aria-hidden="true" data-lh-art></span>
+  </MediaFrame> : <MediaFrame class="lh-media" corners="inset" data-lh-reel>
     <img src={still.src} width={still.width} height={still.height} alt={poster.alt} loading="eager" fetchpriority="high" decoding="async" />
     <video data-src={src} data-src-small={small} muted loop playsinline preload="none" aria-hidden="true" tabindex="-1"></video>
     <span class="lh-rec mono" aria-hidden="true">{videoLabel}</span>
@@ -36,7 +46,7 @@ const small = videoPath(videos[video], 'mobile');
       <Icon name="play" size={16} class="g i-play" /><Icon name="pause" size={16} class="g i-pause" />
       <span data-lh-label>{t('landinghero.playVideo')}</span>
     </button>
-  </MediaFrame>
+  </MediaFrame>}
 </section>
 
 <script>
@@ -66,6 +76,39 @@ const small = videoPath(videos[video], 'mobile');
   });
 </script>
 
+<script>
+  import { importInStages } from '../../scripts/when-near.mjs';
+  // Formationen statt Video (Runde 14): erst nach dem Laden der Seite und im Leerlauf, damit vor dem LCP weder Szenen noch
+  // Katalogdaten laden (tools/himmel/perf-start.mjs); die Modulkette in Stufen wie beim Konfigurator-Teaser. Reduzierte
+  // Bewegung: das Standbild bleibt, die Engine lädt nicht. Globale Pause: lädt erst, wenn die Pause aufgehoben wird.
+  const hosts = document.querySelectorAll<HTMLElement>('[data-lh-show]');
+  const idle = () => new Promise<void>((res) => ('requestIdleCallback' in window ? requestIdleCallback(() => res(), { timeout: 1200 }) : setTimeout(res, 200)));
+  const afterLoad = () => new Promise<void>((res) => (document.readyState === 'complete' ? res() : addEventListener('load', () => res(), { once: true })));
+  const paused = () => document.documentElement.classList.contains('motion-paused');
+  // der Pause-Knopf der Kopfzeile meldet jeden Wechsel (src/scripts/site.ts)
+  const whenPlaying = () => new Promise<void>((res) => {
+    if (!paused()) return res();
+    const resume = () => { if (!paused()) { document.removeEventListener('flyingstars:motion-change', resume); res(); } };
+    document.addEventListener('flyingstars:motion-change', resume);
+  });
+  if (hosts.length && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    afterLoad().then(idle).then(whenPlaying).then(() => importInStages(
+      () => import('../../scripts/show-field.js'),
+      () => import('../../scripts/show-scenes.js'),
+      () => import('../../scripts/scenes/index.js'),
+      () => import('../../content/show-configurator.js'),
+      () => import('../../scripts/formation/index.js'),
+      () => import('../../scripts/show-teaser.js'),
+      () => import('../../scripts/hero-show.js'),
+    )).then((m) => Promise.all([...hosts].map((host) => m.initHeroShow(host).then(() => {
+      // jetzt beschreibt die Bühne, was zu sehen ist; das ausgeblendete Standbild tritt zurück
+      const canvas = host.querySelector('canvas')!;
+      canvas.setAttribute('role', 'img'); canvas.setAttribute('aria-label', host.dataset.lhLabel ?? ''); canvas.removeAttribute('aria-hidden');
+      host.querySelector('img')?.setAttribute('aria-hidden', 'true');
+    })))).catch((error) => console.warn('Hero-Show konnte nicht laden', error));
+  }
+</script>
+
 <style>
   .lh { position: relative; display: grid; grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr); gap: clamp(var(--space-8), 5vw, var(--space-20)); align-items: center; padding: clamp(var(--space-9), 6vw, var(--space-22)) var(--gutter) clamp(var(--space-14), 7vw, var(--space-28)); overflow: hidden; }
   /* ruhiges Leuchten hinter dem Rahmen, wie Restlicht einer Show */
@@ -87,6 +130,15 @@ const small = videoPath(videos[video], 'mobile');
   /* Das Video blendet über das Standbild (LCP) und bleibt 1 px kleiner, damit sein erstes Bild kein neues, späteres
      LCP-Element wird (gleiche Lösung wie im Startseiten-Hero, docs/himmel.md → Performance) */
   .lh :global(.lh-media video) { clip-path: inset(var(--space-0-25)); }
+  /* Formationen statt Video (Runde 14): Nachthimmel wie die Bühne des Konfigurator-Teasers; das Standbild blendet aus, sobald
+     die ersten Drohnen fliegen. Die Ecke links oben nennt die Art der Show (2D, 3D, 3D+), ohne Aufnahmepunkt. */
+  .lh :global(.lh-show) { background: radial-gradient(ellipse at 50% 120%, var(--fill-cyan), transparent 60%), var(--media-ground); }
+  .lh :global(.lh-show canvas) { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .lh :global(.lh-show img) { transition: opacity var(--dur-image) var(--ease-default); }
+  .lh :global(.lh-show.is-live img) { opacity: 0; }
+  .lh :global(.lh-art) { opacity: 0; transition: opacity var(--dur-standard) var(--ease-default); }
+  .lh :global(.lh-show.is-live .lh-art) { opacity: 1; }
+  .lh :global(.lh-art::before) { display: none; }
   @media (--timeline-stacked) {
     .lh { grid-template-columns: 1fr; }
     /* gestapelt steht der Rahmen oben, wie das Showreel auf der Startseite (Marc, 21.11.2026) */

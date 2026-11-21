@@ -84,12 +84,27 @@ export const REELS = {
     QR,
     ...ROCKET,
   ] },
-  hochzeit: { still: 4, label: message('configuratorteaser.initialsInsideAHeartAHeartIn2dAsA'), items: [
+  // Runde 14 (Marc und Moritz, 21.11.2026): Herz, Ring an der Hand und Sektgläser spielen jetzt im Seitenkopf der
+  // Hochzeitsseite (hochzeitHero). Der Teaser weiter unten („So einzigartig wie eure Lovestory“: Initialen, Liebesschwüre)
+  // zeigt darum die übrigen Hochzeitsmotive: Initialen, Unendlich-Zeichen, Sektflasche mit Korken, Blütenspalier.
+  hochzeit: { still: 3, label: message('configuratorteaser.initialsInsideAHeartAHeartIn2dAsA'), items: [
     { occasion: "hochzeit", kind: "text", value: "Anna & Ben", style: "initials", drones: [100, 200, 300], beats: [0], note: [message('showTeaser.yourInitials'), message('showTeaser.inTheSky')] },
-    HEART,
-    { occasion: "hochzeit", motif: "glaeser", drones: [200] },
-    { occasion: "hochzeit", motif: "ring", drones: [250] },
-    { occasion: "hochzeit", motif: "antrag", drones: [450] },
+    { occasion: "hochzeit", motif: "unendlich", drones: [150, 250] },
+    { occasion: "hochzeit", motif: "sektflasche", drones: [250] },
+    { occasion: "hochzeit", motif: "spalier", drones: [500] },
+  ] },
+  // Runde 14: Seitenkopf der Hochzeitsseite statt des Showreels (Moritz und Marc: das Showreel zeigt Marken und öffentliche
+  // Feiern). Eine Steigerung 2D → 3D bei den Motiven, die es in beiden Fassungen gibt (erst die flache Formation, dann
+  // fliegt dasselbe Motiv in seine 3D-Fassung), dazwischen 3D- und 3D+-Höhepunkte. Zwischen zwei Motiven die lebendige
+  // Wolke, innerhalb eines Motivs ein direkter Flug (Übergang mit Bezug). tier: Fassung unabhängig von der Drohnenzahl
+  // (der erste Tanz spielt in 3D ab 300). Kein Wireframe, ruhiger als der Teaser (HERO_RATE).
+  hochzeitHero: { still: 1, label: "", items: [
+    { occasion: "hochzeit", motif: "herz", drones: [100, 200] }, // Herz in 2D → Herztunnel
+    { occasion: "hochzeit", motif: "antrag", drones: [300], beats: [-2, -1] }, // der Ring findet den Ringfinger, „Ja“
+    { occasion: "hochzeit", motif: "torte", drones: [100, 200] }, // Hochzeitstorte 2D → 3D
+    { occasion: "hochzeit", motif: "erstertanz", drones: [300], tier: "HORIZON" }, // erster Tanz (3D)
+    { occasion: "hochzeit", motif: "glaeser", drones: [100, 200] }, // anstoßende Gläser 2D → Sektgläser 3D mit Perlen
+    { occasion: "hochzeit", motif: "lotus", drones: [400], beats: [-1] }, // Lichtkugel aus verdrillten Bändern mit goldenem Herz
   ] },
 };
 /** Ablauf der Startseite (bleibt für bestehende Aufrufe). */
@@ -144,7 +159,7 @@ export async function buildReel(reel = REEL) {
     const occasion = OCCASIONS.find((o) => o.id === r.occasion), motif = r.motif && occasion?.motifs.find((m) => m.id === r.motif);
     for (const [step, n] of r.drones.entries()) {
       await idle(); // jedes Bild in einem eigenen Task
-      const pkg = packageForDrones(n);
+      const pkg = r.tier ?? packageForDrones(n);
       let pick;
       if (r.kind === "logo") pick = [await logoBeat(n)];
       else {

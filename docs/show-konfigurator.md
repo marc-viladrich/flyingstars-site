@@ -14,6 +14,11 @@ Leistungsvergleich) gelten nur, wenn dieser Abschnitt sie nennt.
   eingebettet.
 - Startseiten-Teaser `ConfiguratorTeaser.astro` (`show-teaser.js`, `configurator-teaser.css`): selbstlaufendes Showreel
   mit reduziertem Wireframe, ohne Paketknöpfe, Regler neutral; er verlinkt in den Konfigurator.
+- Seitenkopf der Hochzeitsseite (Runde 14, `landingHero.show: hochzeitHero`, `src/scripts/hero-show.js`): dieselbe Engine
+  und `buildReel` wie der Teaser, ohne Wireframe, Tempo `HERO_RATE` 2,2 statt 3,4, Ablauf `REELS.hochzeitHero`. Einträge
+  eines Ablaufs können mit `tier` die Fassung unabhängig von der Drohnenzahl wählen (erster Tanz in 3D bei 300). Folge und
+  Begründung: docs/DESIGN.md, „Formationen im Rahmen“. Der Teaser-Ablauf `hochzeit` zeigt seitdem Initialen, Unendlich-Zeichen
+  (2D → 3D), Sektflasche mit Korken und Blütenspalier statt Herz, Gläsern, Ringen und Antrag.
 
 ## Aufbau
 
