@@ -15,7 +15,7 @@ const { droneStops } = await import('../src/content/show-packages.ts');
 const { OCCASIONS } = await import('../src/content/show-configurator.js');
 const { BUILDERS } = await import('../src/scripts/scenes/index.js');
 
-const MIN = 900, STOPS = { s3: droneStops('3d').filter((n) => n >= MIN), plus: droneStops('story').filter((n) => n >= MIN) };
+const MIN = 400, STOPS = { s3: droneStops('3d').filter((n) => n >= MIN), plus: droneStops('story').filter((n) => n >= MIN) };
 /** Nächster Nachbar je Punkt (Gitter, sonst kostet es bei 1000 Drohnen zu lange). */
 function nearest(pts) {
   const cell = 0.06, g = new Map(), key = (a, b, c) => `${a},${b},${c}`, out = [];
@@ -46,7 +46,7 @@ function motion(b, every = 1) {
   return { v, a, jump };
 }
 
-test('im Konfigurator: Winter & Silvester, direkt hinter der Uhr (Steigerung), 3D und 3D+ ab 900, nachgeladen', () => {
+test('im Konfigurator: Winter & Silvester, direkt hinter der Uhr (Steigerung), 3D und 3D+ ab 400, nachgeladen', () => {
   const o = OCCASIONS.find((x) => x.id === 'silvester'), i = o.motifs.findIndex((m) => m.id === 'countdown'), m = o.motifs[i];
   assert.ok(m, 'Countdown fehlt');
   assert.equal(o.motifs[i - 1].id, 'uhr', 'Countdown steht nicht direkt hinter der Uhr');
@@ -69,14 +69,14 @@ test('genau n Drohnen in jedem Bild bei jeder einstellbaren Zahl, Punkte gültig
 });
 
 test('alle elf Zahlen landen in Reihenfolge, jede steht lesbar und ohne Klumpen', () => {
-  for (const flips of [new Set(), new Set([8, 9, 10])]) for (const n of [900, 1000]) {
+  for (const flips of [new Set(), new Set([8, 9, 10])]) for (const n of [400, 700, 1000]) {
     const m = countdownModel(n, flips), tl = timeline(m);
     assert.equal(m.digits.length, LABELS.length);
     for (let k = 1; k < LABELS.length; k++) assert.ok(tl.land[k] > tl.land[k - 1] + 0.7, `${n}: ${LABELS[k]} landet ${tl.land[k].toFixed(2)}`);
     for (let k = 0; k < LABELS.length; k++) {
       const pts = Array.from({ length: n }, (_, j) => [m.X[k][j], m.Y[k][j], m.Z[k][j] * 0.15]), digit = pts.filter((_, j) => m.ROLE[k][j] === 0);
       // die Ziffer trägt mindestens ein Fünftel der Drohnen, nimmt gut die Hälfte der Ringhöhe ein und steht im Ring
-      assert.ok(digit.length >= 0.2 * n, `${n} „${LABELS[k]}“: nur ${digit.length} Drohnen in der Ziffer`);
+      assert.ok(digit.length >= 0.1 * n, `${n} „${LABELS[k]}“: nur ${digit.length} Drohnen in der Ziffer`);
       assert.ok(extent(digit, 1) >= 1.0 * RING, `${n} „${LABELS[k]}“: Ziffer nur ${extent(digit, 1).toFixed(2)} hoch`);
       assert.ok(digit.every((p) => Math.hypot(p[0], p[1]) < 0.95 * RING), `${n} „${LABELS[k]}“: Ziffer berührt den Ring`);
       const nn = nearest(pts), med = quantile(nn, 0.5);
@@ -87,7 +87,7 @@ test('alle elf Zahlen landen in Reihenfolge, jede steht lesbar und ohne Klumpen'
 });
 
 test('keine Begegnung, auch mitten im Wechsel und beim Zerspringen (alle 0,1 s)', async () => {
-  for (const name of ['countdown3d', 'countdownStory']) for (const n of [900, 1000]) {
+  for (const name of ['countdown3d', 'countdownStory']) for (const n of [400, 1000]) {
     const { beats } = await builders[name](n, '');
     for (const [k, b] of beats.entries()) {
       const med = quantile(nearest(lit(frame(b, 0))), 0.5);
@@ -101,7 +101,7 @@ test('keine Begegnung, auch mitten im Wechsel und beim Zerspringen (alle 0,1 s)'
 });
 
 test('Eigenbewegung in Drohnengrenzen', async () => {
-  for (const [name, n] of [['countdown3d', 900], ['countdown3d', 1000], ['countdownStory', 900], ['countdownStory', 1000]]) {
+  for (const [name, n] of [['countdown3d', 400], ['countdown3d', 1000], ['countdownStory', 400], ['countdownStory', 1000]]) {
     const { beats } = await builders[name](n, '');
     for (const [k, b] of beats.entries()) {
       const m = motion(b, 3);
@@ -112,15 +112,15 @@ test('Eigenbewegung in Drohnengrenzen', async () => {
 });
 
 test('der Ring läuft ab wie ein Sekundenzeiger: voll bei 10, leer bei 0', async () => {
-  const { beats } = await builders.countdown3d(900, ''), b = beats[0], m = countdownModel(900), tl = timeline(m);
+  const { beats } = await builders.countdown3d(400, ''), b = beats[0], m = countdownModel(400), tl = timeline(m);
   const ringLit = (t) => { const f = frame(b, t), on = f.filter((o, j) => m.ROLE[0][j] === 2 && o[3] > 0.6).length; return on; };
-  assert.equal(ringLit(0.5), 60, 'bei 10 leuchten alle zehn Striche (je drei Drohnen, vorn und hinten)');
-  assert.ok(ringLit(tl.land[5] + 0.05) <= 33 && ringLit(tl.land[5] + 0.05) >= 27, `bei 5 leuchtet die Hälfte (${ringLit(tl.land[5] + 0.05)})`);
+  assert.equal(ringLit(0.5), 40, 'bei 10 leuchten alle zehn Striche (je zwei Drohnen, vorn und hinten)');
+  assert.ok(ringLit(tl.land[5] + 0.05) <= 22 && ringLit(tl.land[5] + 0.05) >= 18, `bei 5 leuchtet die Hälfte (${ringLit(tl.land[5] + 0.05)})`);
   assert.equal(ringLit(tl.land[10] - 0.02), 0, 'bei 0 ist kein Strich mehr hell');
 });
 
 test('3D+: die letzten drei Wechsel drehen die Ziffer durch die Tiefe, dann zerspringt die Null ohne Wolke', async () => {
-  for (const n of [900, 1000]) {
+  for (const n of [400, 1000]) {
     const { beats } = await builders.countdownStory(n, '');
     assert.equal(beats.length, 2);
     assert.deepEqual(beats.map((b) => b.groups.map((g) => [g.name, g.count, g.rigid])), [[['drohnen', n, true]], [['drohnen', n, true]]], 'dieselben Drohnen in einem starren Teil');
@@ -140,10 +140,20 @@ test('3D+: die letzten drei Wechsel drehen die Ziffer durch die Tiefe, dann zers
 });
 
 test('Tempo: zehn Sekunden Countdown machen die Show nicht zäh', async () => {
-  const a = (await builders.countdown3d(900, '')).beats, b = (await builders.countdownStory(900, '')).beats;
+  const a = (await builders.countdown3d(400, '')).beats, b = (await builders.countdownStory(400, '')).beats;
   assert.ok(a[0].hold <= 17, `3D: ${a[0].hold.toFixed(1)} s`);
   const total = b.reduce((s, x) => s + x.hold, 0);
   assert.ok(total <= 26, `3D+: ${total.toFixed(1)} s`);
+});
+
+test('Runde 11b: lockere Linie, mehr Drohnen kaufen Teile statt Dichte', () => {
+  // Abstand auf Ring und Ziffer bleibt zwischen 400 und 1000 Drohnen etwa gleich (Stand 11b: 0,046–0,072)
+  const sig = (n) => countdownModel(n).sigma[0];
+  for (const n of [400, 500, 600, 700, 800, 900, 1000]) assert.ok(sig(n) >= 0.042 && sig(n) <= 0.08, `${n}: Abstand ${sig(n).toFixed(3)}`);
+  const parts = (n) => new Set(countdownModel(n).ROLE[0]).size;
+  assert.ok(parts(400) < parts(600), 'ab 600 kommt die Lünette dazu');
+  const fixed = (n) => countdownModel(n).ROLE[0].filter((r) => r >= 2).length;
+  assert.ok(fixed(800) > fixed(700) + 100, 'ab 800 kommt der Strahlenkranz dazu');
 });
 
 test('Aufbau schnell genug für den Anlasswechsel (bester von drei)', async () => {

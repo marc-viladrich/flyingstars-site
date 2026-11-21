@@ -1,5 +1,5 @@
 import { t as message } from '../../../i18n/ui.mjs';
-// Countdown von 10 bis 0 (Runde 11, Marc 20.11.2026 ausdrücklich gewünscht), Stufe 900, Anlass Winter & Silvester. Steigerung
+// Countdown von 10 bis 0 (Runde 11, Marc 20.11.2026 ausdrücklich gewünscht), Stufe 400 (Runde 11b, vorher 900), Anlass Winter & Silvester. Steigerung
 // der Uhr: Das Motiv steht in der Motivliste direkt hinter `uhr`; aus dem Zifferblatt mit zwölf Strichen wird ein Sekundenring
 // mit zehn Strichen, aus den Zeigern die „10“. Die Engine ordnet die Drohnen dabei nach Nähe zu, der Rand bleibt Rand.
 //
@@ -7,12 +7,12 @@ import { t as message } from '../../../i18n/ui.mjs';
 // Schwenk ein Körper), keine Füllung. Die Ziffern sind FlyingStars' eigene Einstrich-Schrift „FS Einstrich“
 // (formwerk/font.js, Ziffern hier abgeschrieben, damit dieses Modul den Textplaner nicht nachlädt).
 //
-//   countdown3d (3D, ab 900): Sekundenring mit zehn Strichen, darin die Ziffer als Körper. Jede Ziffer entsteht aus der
+//   countdown3d (3D, ab 400): Sekundenring mit zehn Strichen, darin die Ziffer als Körper. Jede Ziffer entsteht aus der
 //     vorigen: Die Linie fließt in die neue Form und taucht dabei kurz in die Tiefe (die Drohnen folgen der Linie in
 //     Schreibreihenfolge, Nachbarn bleiben Nachbarn, keine Wolke). Braucht die neue Ziffer mehr Linie, fließt Licht aus dem
 //     Ring hinein, braucht sie weniger, geht es dorthin zurück. Ein Lichtkopf läuft den Ring ab wie ein Sekundenzeiger und
 //     lässt die verstrichene Zeit gedimmt zurück. Bei 0 läuft das Licht einmal festlich um den Ring.
-//   countdownStory (3D+, ab 900): zwei Akte ohne Wolke, dieselben Drohnen. Akt 1 wie 3D bis zur 3; die letzten drei Wechsel
+//   countdownStory (3D+, ab 400): zwei Akte ohne Wolke, dieselben Drohnen. Akt 1 wie 3D bis zur 3; die letzten drei Wechsel
 //     drehen die Ziffer um ihre Hochachse durch die Tiefe (die neue Form entsteht, während die Ziffer auf der Kante steht),
 //     die Ziffern werden heller und heißer, der Ring pulsiert mit jeder Sekunde. Akt 2: Die Null steht, die Kamera tritt
 //     zurück, Null und Ring falten sich zu einer Feuerwerkskugel aus Meridianen (wie die Schneeflocke, die sich räumlich
@@ -70,7 +70,14 @@ function pointAt(st, d) {
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Bühne: Ring (Radius 1) mit zehn Strichen außen, Ziffer innen. Zwei Ebenen: vorn z = +D, hinten −D (Ring ±DR).
-export const CAP = 1.4, RING = 1, TICK = [0.04, 0.115], DEPTH = 0.15, DR = 0.1;
+export const CAP = 1.4, RING = 1, TICK = [0.045, 0.105], DEPTH = 0.15, DR = 0.1, BEZEL = 1.16;
+/** Runde 11b (Marc 21.11.2026: „kann mit viiiiiel viel weniger Drohnen auch schon super funktionieren, einfach deutlich
+ * geringere Liniendichte“): ab 400 Drohnen, lockere Linie. Mehr Drohnen kaufen ein Teil (ab 600 eine Lünette außen um die
+ * Sekundenstriche, im 3D+-Feuerwerk mehr Meridiane und Strahlen), nicht dichtere Linien: der Abstand bleibt von 400 bis
+ * 1000 etwa gleich (Wächter). */
+export const level = (n) => (n >= 800 ? 2 : n >= 600 ? 1 : 0);
+/** ab 800: ein Strahlenkranz aus 60 kurzen Strahlen außen um die Lünette (wie die Minutenteilung einer Festuhr). */
+export const RAYS = 60, RAY_R = [BEZEL + 0.05, BEZEL + 0.13];
 /** Tiefe der Ziffer in 3D+: schlanker, weil sie sich dort um π dreht. Vorder- und Hinterebene laufen dabei auf Kreisen;
  * bei 0,15 begannen Drohnen nahe der Achse die Drehung sichtbar in der Gegenrichtung (Finten-Wächter), bei 0,08 bleibt das
  * unter der Schwelle, die Ziffer ist auf der Kante noch als Platte zu sehen. */
@@ -115,7 +122,7 @@ function dedupe(list, sigma) {
   }
   return out;
 }
-const TICK_N = 3; // Drohnen je Sekundenstrich
+const TICK_N = 2; // Drohnen je Sekundenstrich
 const tickPts = () => Array.from({ length: 10 }, (_, m) => { const a = Math.PI / 2 - ((m + 0.5) / 10) * TAU; /* Strich m erlischt, wenn seine Sekunde verstrichen ist */ return Array.from({ length: TICK_N }, (_, i) => { const r = RING + TICK[0] + ((TICK[1] - TICK[0]) * i) / (TICK_N - 1); return [Math.cos(a) * r, Math.sin(a) * r]; }); }).flat();
 const RING_L = TAU * RING;
 
@@ -123,11 +130,11 @@ const RING_L = TAU * RING;
  * Eine Zahl als Drohnenplätze einer Ebene: Linienstücke in allen Ausrichtungen (für die Wahl der Schreibreihenfolge),
  * Abstand sigma so, dass Ziffer, Striche und Ring zusammen genau N Drohnen ergeben (der Ring nimmt den Rest).
  */
-function numberLayout(label, N) {
+function numberLayout(label, N, fixed) {
   const strokes = numberStrokes(label), L = strokes.reduce((a, q) => a + lengthOf(q), 0);
   const flags = strokes.map((st, k) => st.closed ? [false, false] : [touches(st.pts[0], strokes, k, false), touches(st.pts.at(-1), strokes, k, true)]);
   const count = (sigma) => dedupe(strokes.flatMap((st, k) => sampleStroke(st, sigma, ...flags[k])), sigma).length;
-  const free = N - 10 * TICK_N;
+  const free = N - fixed;
   let lo = (L + RING_L) / free / 3, hi = (L + RING_L) / free * 3;
   for (let i = 0; i < 22; i++) { const mid = (lo + hi) / 2; if (count(mid) + RING_L / mid > free) lo = mid; else hi = mid; }
   const sigma = hi, pieces = strokes.map((st, k) => ({ pts: sampleStroke(st, sigma, ...flags[k]), closed: st.closed }));
@@ -148,9 +155,13 @@ const wrap = (a) => a - TAU * Math.floor((a + Math.PI) / TAU); // auf (−π, π
 export function countdownModel(n, flips = new Set()) {
   const half = [Math.ceil(n / 2), Math.floor(n / 2)], K = LABELS.length;
   const X = LABELS.map(() => new Float64Array(n)), Y = LABELS.map(() => new Float64Array(n)), Z = LABELS.map(() => new Int8Array(n)), ROLE = LABELS.map(() => new Uint8Array(n));
-  const lay = LABELS.map((l) => numberLayout(l, half[1]));
+  // feste Teile je Ebene: Sekundenstriche, ab 600 die Lünette (ihre Drohnenzahl beim Abstand, den der Rest ergibt)
+  const ticks = tickPts().map((p) => [...p, 2]), lv = level(n);
+  if (lv >= 2) for (let q = 0; q < RAYS; q++) { const a = Math.PI / 2 + ((q + 0.5) / RAYS) * TAU; for (const r of RAY_R) ticks.push([Math.cos(a) * r, Math.sin(a) * r, 3]); }
+  if (lv >= 1) { const est = (RING_L + 4.3 + TAU * BEZEL) / (half[1] - ticks.length), b = Math.round((TAU * BEZEL) / est); for (let q = 0; q < b; q++) { const a = Math.PI / 2 + ((q + 0.5) / b) * TAU; ticks.push([Math.cos(a) * BEZEL, Math.sin(a) * BEZEL, 3]); } }
+  const T = ticks.length;
+  const lay = LABELS.map((l) => numberLayout(l, half[1], T));
   const digits = lay.map((l) => dedupe(l.pieces.flatMap((p) => p.pts), l.sigma));
-  const ticks = tickPts(), T = ticks.length;
   const put = (k, j, p, L, role) => { X[k][j] = p[0]; Y[k][j] = p[1]; Z[k][j] = L ? -1 : 1; ROLE[k][j] = role; };
   const ringSlots = (r, ph) => Array.from({ length: r }, (_, q) => { const a = ph + (q / r) * TAU; return [Math.cos(a) * RING, Math.sin(a) * RING]; });
   const flat = (list) => Float64Array.from(list.flatMap((p) => [p[0], p[1], 0]));
@@ -159,7 +170,7 @@ export function countdownModel(n, flips = new Set()) {
     const N = half[L], d = digits[0].length, r = N - d - T, first = L ? half[0] : 0;
     const ids = Array.from({ length: N }, (_, i) => first + i), phase = Math.PI / 2 + Math.PI / r; // Ringplätze versetzt zu den Strichen
     const s0 = { N, digit: ids.slice(0, d), ring: ids.slice(d, d + r), phase };
-    ids.slice(d + r).forEach((j, i) => { for (let k = 0; k < K; k++) put(k, j, ticks[i], L, 2); });
+    ids.slice(d + r).forEach((j, i) => { for (let k = 0; k < K; k++) put(k, j, ticks[i], L, ticks[i][2]); });
     s0.digit.forEach((j, i) => put(0, j, digits[0][i], L, 0));
     const rs = ringSlots(r, phase); s0.ring.forEach((j, i) => put(0, j, rs[i], L, 1));
     return s0;
@@ -196,7 +207,7 @@ export function countdownModel(n, flips = new Set()) {
       st[L].digit = digit; st[L].ring = ring;
     }
   }
-  return { n, X, Y, Z, ROLE, digits, sigma: lay.map((l) => l.sigma), flips };
+  return { n, outer: lv >= 2 ? RAY_R[1] : lv >= 1 ? BEZEL : RING + TICK[1], X, Y, Z, ROLE, digits, sigma: lay.map((l) => l.sigma), flips };
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -205,10 +216,10 @@ const ease = (u) => (u <= 0 ? 0 : u >= 1 ? 1 : u * u * u * (u * (u * 6 - 15) + 1
 const cubic = (u) => (u <= 0 ? 0 : u >= 1 ? 1 : u * u * (3 - 2 * u));
 export const FIRST = 1.0, HOLD = 0.3, FLIP = 1.9, LAST = 2.2, DIP = 0.09;
 /** Maßstab der Bühne für dieses Motiv (fit() in show-field.js: Ring mit Strichen bestimmt die Höhe). */
-const KFIT = (0.9 * 0.75) / (RING + TICK[1]);
+const kfit = (outer) => (0.9 * 0.75) / outer;
 /** Dauer eines Wechsels: so kurz, wie die weiteste Drohne in den Drohnengrenzen fliegen kann (smootherstep: Spitze der
  * Beschleunigung 5,77·d/T², der Geschwindigkeit 1,875·d/T; Reserve für Tiefe und Schwenk), mindestens 0,8 s. */
-const morphTime = (d) => Math.max(0.8, Math.sqrt((5.7735 * d * KFIT) / 1.9), (1.875 * d * KFIT) / 1.2);
+const morphTime = (d, K) => Math.max(0.8, Math.sqrt((5.7735 * d * K) / 1.9), (1.875 * d * K) / 1.2);
 /** Zeitplan: Landezeit jeder Zahl; Wechsel k (zur Zahl k) läuft von start[k] bis land[k]. */
 export function timeline(model) {
   const land = [0], start = [0], { X, Y, ROLE, flips, n } = model;
@@ -216,12 +227,12 @@ export function timeline(model) {
   for (let k = 1; k < LABELS.length; k++) {
     let d = 0;
     for (let j = 0; j < n; j++) if (!(flips.has(k) && ROLE[k - 1][j] === 0 && ROLE[k][j] === 0)) d = Math.max(d, Math.hypot(X[k][j] - X[k - 1][j], Y[k][j] - Y[k - 1][j]));
-    start.push(t); t += flips.has(k) ? Math.max(FLIP, morphTime(d)) : morphTime(d); land.push(t); t += HOLD;
+    const K = kfit(model.outer); start.push(t); t += flips.has(k) ? Math.max(FLIP, morphTime(d, K)) : morphTime(d, K); land.push(t); t += HOLD;
   }
   return { start, land, end: land.at(-1) + LAST };
 }
 const STORY_FLIPS = new Set([8, 9, 10]); // 3 → 2, 2 → 1, 1 → 0
-const DIGIT = mix(WARM, GOLD, 0.55), RINGC = mix(WARM, GOLD, 0.22), TICKC = GOLD;
+const DIGIT = mix(WARM, GOLD, 0.55), RINGC = mix(WARM, GOLD, 0.22), TICKC = GOLD, BEZELC = mix(GOLD, ORANGE, 0.25);
 
 /** Gedimmter Anteil des Rings (0 … 1, im Uhrzeigersinn ab zwölf Uhr): stückweise linear zwischen den Landungen. */
 function drained(tl, t) {
@@ -265,7 +276,7 @@ function makePose(model, tl, plus) {
         // fast flach), wer dazukommt, kommt zuletzt (sie liegt wieder flach)
         // (der Ring rückt im selben Fenster nach, sonst rückt ein Nachbar auf einen Platz, der noch nicht frei ist)
         const grow = model.digits[k].length > model.digits[k - 1].length;
-        const win = flip && rA !== 2 && !(rA === 0 && rB === 0) ? (grow ? [0.5, 1] : [0, 0.5]) : [0, 1];
+        const win = flip && rA < 2 && !(rA === 0 && rB === 0) ? (grow ? [0.5, 1] : [0, 0.5]) : [0, 1];
         const w = ease((u - win[0]) / (win[1] - win[0])), dip = rA === 0 && rB === 0 ? -DIP * Math.sin(Math.PI * w) : 0;
         x += (xB - x) * w; y += (yB - y) * w; z += (zB - z) * w + dip;
       }
@@ -275,7 +286,7 @@ function makePose(model, tl, plus) {
     // Licht
     const dr = drained(tl, t);
     if (role >= 1) {
-      o[3] = ringLight(clockFrac(X[kk][j], Y[kk][j]), dr);
+      o[3] = role === 3 ? 1 : ringLight(clockFrac(X[kk][j], Y[kk][j]), dr); // die Lünette läuft nicht ab
       // 3D+: ab der Drei pulsiert der ganze Ring mit jeder Sekunde (auch der schon verstrichene Teil leuchtet kurz auf)
       if (plus) { const last = phase ? k - 1 : k; if (last >= 7) o[3] += (0.35 + 0.25 * (last - 7)) * Math.exp(-Math.max(0, t - tl.land[last]) / 0.4); }
     }
@@ -290,7 +301,7 @@ function makePose(model, tl, plus) {
   };
 }
 /** Rolle im Wechsel: Ziffer → Ring blendet das Licht über (Zwischenwerte für den Lichtübergang). */
-const w2role = (a, b, u) => (a === b ? a : a === 2 || b === 2 ? 2 : a + (b - a) * ease(u));
+const w2role = (a, b, u) => (a === b ? a : a >= 2 || b >= 2 ? Math.max(a, b) : a + (b - a) * ease(u));
 
 // Ansicht: fest leicht von der Seite (Dreiviertel), damit Vorder- und Hinterebene als Körper lesbar sind. Ein langsamer
 // Schwenk des Ganzen hielt die Drohnen nie an, zwischen zwei Wechseln gab es dann keine Ruhe, und der Finten-Wächter
@@ -301,7 +312,7 @@ const TILT = 0.09;
 function countdownBeat(n, caption, plus) {
   const flips = plus ? STORY_FLIPS : new Set(), model = countdownModel(n, flips), tl = timeline(model), pose = makePose(model, tl, plus);
   const hold = plus ? tl.land.at(-1) + 0.5 : tl.end, view = plus ? VIEW.plus : VIEW.d3;
-  const colour = (j) => { let dig = 0; for (let k = 0; k < LABELS.length; k++) if (model.ROLE[k][j] === 0) dig++; return model.ROLE[0][j] === 2 ? TICKC : dig > LABELS.length / 2 ? DIGIT : RINGC; };
+  const colour = (j) => { let dig = 0; for (let k = 0; k < LABELS.length; k++) if (model.ROLE[k][j] === 0) dig++; return model.ROLE[0][j] === 2 ? TICKC : model.ROLE[0][j] === 3 ? BEZELC : dig > LABELS.length / 2 ? DIGIT : RINGC; };
   const live = (b, j, t, o) => {
     pose(j, t, o);
     if (!plus && t > tl.land.at(-1)) { // 3D: bei Null läuft das Licht festlich einmal um den Ring, die Null funkelt
@@ -318,13 +329,16 @@ function countdownBeat(n, caption, plus) {
 
 // ---------------------------------------------------------------------------------------------------------------------
 // 3D+, Akt 2: die Null wird zur Feuerwerkskugel und zerspringt zu einem Strahlenschirm, der als Goldregen absinkt
-export const GLOBE = 0.8, MERIDIANS = 6, BURST = 1.5, RAY = 15;
+export const GLOBE = 0.8, BURST = 1.5, RAY = 12;
+/** Meridiane der Feuerwerkskugel: mehr Drohnen, mehr Meridiane (der Abstand auf einem Meridian bleibt). */
+const meridians = (count) => Math.max(4, Math.min(12, Math.round(count / 40)));
 export const FOLD = [0.4, 1.7], FUSE = 0.8, BLAST = 1.3, RAIN = 2.8;
 /** Plätze auf der Kugel aus Meridianen: vordere Halbkugel (z ≥ 0) für die vordere Ebene, hintere für die hintere. */
 function globePts(count, sign) {
   const out = [];
-  for (let i = 0; i < MERIDIANS; i++) {
-    const c = Math.floor((count * (i + 1)) / MERIDIANS) - Math.floor((count * i) / MERIDIANS), beta = ((i + 0.5) / MERIDIANS) * Math.PI, ph0 = 0.2;
+  const M = meridians(count);
+  for (let i = 0; i < M; i++) {
+    const c = Math.floor((count * (i + 1)) / M) - Math.floor((count * i) / M), beta = ((i + 0.5) / M) * Math.PI, ph0 = 0.2;
     for (let q = 0; q < c; q++) { const ph = ph0 + ((Math.PI - 2 * ph0) * (q + 0.5)) / c; out.push([Math.sin(ph) * Math.cos(beta) * GLOBE, Math.cos(ph) * GLOBE, sign * Math.sin(ph) * Math.sin(beta) * GLOBE]); }
   }
   return out;

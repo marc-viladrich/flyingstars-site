@@ -1,11 +1,11 @@
-// Adventskranz mit vier Kerzen (Runde 11, Kandidat FSK-001 der Motiv-Shortlist), Anlass Winter & Silvester, Stufe 300 in
-// 2D, 3D und 3D+. Ein liegender Kranz, wie er auf dem Tisch steht (kein Türkranz mit Schleife): Er liegt flach und wird
+// Adventskranz mit vier Kerzen (Runde 11, Kandidat FSK-001 der Motiv-Shortlist), Anlass Winter & Silvester. Runde 11b (Marc:
+// „könnte auch mit deutlich weniger Drohnen auskommen“): 2D ab 200, 3D ab 250, 3D+ ab 300, lockere Linie. Ein liegender Kranz, wie er auf dem Tisch steht (kein Türkranz mit Schleife): Er liegt flach und wird
 // leicht von oben gesehen, die vier roten Kerzen stehen senkrecht darauf.
 //
-//   adventskranz2d (2D, 300–390): Vorderansicht als Zeichnung in Linien. Der Kranz ist ein Band aus zwei Ellipsen mit
+//   adventskranz2d (2D, 200–390): Vorderansicht als Zeichnung in Linien. Der Kranz ist ein Band aus zwei Ellipsen mit
 //     Zweigspitzen nach außen, die Kerzen stehen versetzt darauf (vier verschiedene Höhen und Lagen, keine verdeckt eine
 //     andere). Ein warmer Schein wandert die Zweige entlang, die Flammen flackern in Licht.
-//   adventskranz3d (3D, 300–1000): der Kranz als Körper: ein Zweigstrang windet sich als Schraube um den Ring (ab 500 ein
+//   adventskranz3d (3D, 250–1000): der Kranz als Körper: ein Zweigstrang windet sich als Schraube um den Ring (ab 500 ein
 //     zweiter, versetzt, ab 750 ein goldenes Band und Zweigspitzen), Kerzen als Zylinder aus Mantellinien und oberem Rand,
 //     Flammen aus zwei gekreuzten Tropfen (aus jeder Richtung eine Flamme). Er dreht sich langsam wie auf einem Drehteller.
 //   adventskranzStory (3D+, 300–1000): die Kerzen sind dunkel, vorn auf dem Kranz wartet eine warme Lichtspur. Sie läuft
@@ -116,7 +116,7 @@ function flameSlots(c, f) {
 }
 /** Das Modell: Punkte mit Teilnamen; flames: Drohnen je Flamme. */
 export function wreathModel(n) {
-  const f = Math.max(10, Math.round(n * 0.042)), wick = 4, rest = n - 4 * f - wick, wg = wreathGroups(n);
+  const f = Math.max(8, Math.round(n * 0.042)), wick = 4, rest = n - 4 * f - wick, wg = wreathGroups(n);
   // wo Linien sich kreuzen oder zusammenlaufen (Zweige über den Kamm, Fuß der Zweigspitzen), fällt die spätere Drohne weg,
   // und ihr Platz geht an die Linien zurück, bis es genau passt
   let pts = [], tags = [], extra = 0;
@@ -161,7 +161,8 @@ function flat2d(n) {
   const kOut = 1 + E.band / E.rx, kIn = 1 - E.band / E.rx;
   const tufts = [];
   for (let q = 0; q < 16; q++) { const a = ((q + 0.5) / 16) * TAU, base = on2(a, kOut), nx = Math.cos(a) / E.rx, ny = Math.sin(a) / E.ry, l = Math.hypot(nx, ny), d = [nx / l, ny / l], tg = [-d[1], d[0]];
-    for (const s of [-1, 1]) tufts.push({ pts: Array.from({ length: 5 }, (_, i) => { const u = i / 4; return [base[0] + (d[0] * 0.09 + tg[0] * s * 0.05) * u, base[1] + (d[1] * 0.09 + tg[1] * s * 0.05) * u, 0]; }) }); }
+    for (const s of [-1, 1]) tufts.push({ pts: Array.from({ length: 5 }, (_, i) => { const u = (i + (s > 0 ? 0.45 : 0)) / 4.45; // die zweite Linie beginnt nicht im selben Punkt
+      return [base[0] + (d[0] * 0.09 + tg[0] * s * 0.085) * u, base[1] + (d[1] * 0.09 + tg[1] * s * 0.085) * u, 0]; }) }); }
   const W2 = 0.085, H2 = 0.58, candles = A2.map((a) => { const [x, y] = on2(a); return { x, y0: y - 0.02, y1: y + H2 }; });
   // Kerze: drei Seiten (der Fuß bleibt offen, die Zweige tragen ihn)
   const rect = ({ x, y0, y1 }) => { const c = [[x - W2, y0, 0], [x - W2, y1, 0], [x + W2, y1, 0], [x + W2, y0, 0]]; return { pts: [0, 1, 2].flatMap((i) => Array.from({ length: 10 }, (_, k) => [c[i][0] + ((c[i + 1][0] - c[i][0]) * k) / 10, c[i][1] + ((c[i + 1][1] - c[i][1]) * k) / 10, 0])).concat([c[3]]), closed: false }; };
