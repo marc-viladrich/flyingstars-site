@@ -30,9 +30,10 @@ function stack(el: HTMLElement): void {
   const m = next?.nodeType === 3 && last && el.lastChild === last ? /^[,.;:!?)»“…]+/.exec(next.textContent ?? '') : null;
   if (m && next && last) {
     next.textContent = next.textContent!.slice(m[0].length);
-    const cs = getComputedStyle(el.parentElement ?? el);
+    // Farbe malt der Hintergrund des Worts (zweite Ebene in Überschriftenfarbe, himmel.css), nicht eine eigene Füllfarbe:
+    // Safari malte das Satzzeichen bei Moritz schwarz (Runde 14, „?“ auf der Presseseite)
     const p = document.createElement('span'); p.className = 'st-p'; p.textContent = m[0];
-    p.style.fontWeight = cs.fontWeight; p.style.setProperty('-webkit-text-fill-color', cs.color); p.style.color = cs.color;
+    p.style.fontWeight = getComputedStyle(el.parentElement ?? el).fontWeight;
     last.firstElementChild!.append(p); last.dataset.t += m[0];
   }
   el.classList.add('st-bereit');
@@ -43,6 +44,7 @@ function verlauf(el: HTMLElement): void {
   const frags = [...el.getClientRects()]; if (!frags.length) return;
   const fs = parseFloat(getComputedStyle(el).fontSize) || 16;
   // ohne hereingezogenes Satzzeichen (.st-p), wie vorher
+  const ink = getComputedStyle(el.parentElement ?? el).color;
   const total = frags.reduce((n, q) => n + q.width, 0) - [...el.querySelectorAll('.st-p')].reduce((n, p) => n + p.getBoundingClientRect().width, 0);
   for (const w of el.querySelectorAll<HTMLElement>('.st-w')) {
     const q = w.getBoundingClientRect(), mid = q.top + q.height / 2;
@@ -51,6 +53,8 @@ function verlauf(el: HTMLElement): void {
     const v = w.firstElementChild as HTMLElement;
     v.style.setProperty('--st-bw', `${(total / fs).toFixed(4)}em`);
     v.style.setProperty('--st-bx', `${(PAD - offset / fs).toFixed(4)}em`);
+    // Satzzeichen (.st-p): Überschriftenfarbe, bei jedem Ausrichten neu gelesen (auch nach dem Laden der Schriften)
+    if (v.querySelector('.st-p')) v.style.setProperty('--st-ink', ink);
   }
 }
 

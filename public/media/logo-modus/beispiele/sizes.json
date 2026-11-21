@@ -75,11 +75,6 @@
     "gzip": 38866
   },
   {
-    "id": "rewe",
-    "bytes": 56404,
-    "gzip": 9063
-  },
-  {
     "id": "spotify",
     "bytes": 39245,
     "gzip": 7240

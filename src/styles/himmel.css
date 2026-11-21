@@ -106,12 +106,14 @@ main:has(+ .footer) > div:last-of-type > section:last-of-type {
    zählt auch nach dem letzten Zeichen, „r“/„e“ reichen über ihre Vorbreite; gemessen, Befund „Alternative“/„Kein Rauch.“); Innenabstand und Gegenrand heben sich
    im Layout auf. */
 .grad.st-bereit { background: none; }
-/* Satzzeichen direkt nach dem Begriff steht in der Hülle (staerke.ts, .st-p) mit Farbe und Endstärke der Überschrift als
-   Inline-Stil; keine eigene Fläche, damit nur seine Füllfarbe malt */
+/* Satzzeichen direkt nach dem Begriff steht in der Hülle (staerke.ts, .st-p) in Endstärke der Überschrift. Seine Farbe malt
+   eine zweite Hintergrundebene des Worts in Überschriftenfarbe (--st-ink), die genau hinter dem Begriff beginnt; dieselbe
+   Textmaske wie der Verlauf. Vorher trug das Zeichen eine eigene Füllfarbe, die Safari ignorierte: Moritz sah das „?“ von
+   „bereits?“ schwarz (Runde 14). Wächter: scripts/staerke-glow.test.mjs. */
 .grad .st-p { background: none; }
 .grad.st-bereit .st-v {
   box-sizing: content-box; padding-inline: 0.3em; margin-inline: -0.3em; /* content-box: sonst zieht min-width: 100% den Innenabstand ab */
-  background: var(--grad) var(--st-bx, 0) 0 / var(--st-bw, 100%) 100% no-repeat; -webkit-background-clip: text; background-clip: text; color: transparent;
+  background: var(--grad) var(--st-bx, 0) 0 / var(--st-bw, 100%) 100% no-repeat, linear-gradient(var(--st-ink, transparent), var(--st-ink, transparent)) calc(var(--st-bx, 0em) + var(--st-bw, 100%)) 0 / 2em 100% no-repeat; -webkit-background-clip: text; background-clip: text; color: transparent;
 }
 html.reveal:not(.motion-paused) :is(h1, h2, h3) .grad:not(.st-an, .st-bereit),
 html.reveal:not(.motion-paused) :is(h1, h2, h3) .grad.st-bereit:not(.st-an) .st-v { font-weight: 300; }

@@ -19,12 +19,14 @@
 // dünne Striche, die der Konverter als Einzellinien zeichnet; REWE = Logo_REWE.svg für den Himmel vorbereitet (Striche je
 // Seite 3 Einheiten schmaler, damit die Schlitze im E und die Punze im R aufgelöst werden; Außenecken runder); Volkswagen
 // ist raus (das Kundenlogo in der Logo-Leiste bleibt). Details: docs/show-konfigurator.md, „Runde 12 · Beispiel-Logos“.
+// Runde 14 (Marc 21.11.2026: „mir gefällt das ehrlich gesagt nicht, so wie es da dargestellt wird“): REWE ist als Beispiel
+// raus, das Kundenlogo in der Logo-Leiste bleibt. Die vorbereitete Quelle steht in der Git-Historie (rewe.svg, Runde 12).
 /** [id, sichtbarer Name] in der Reihenfolge der Knöpfe */
 export const LOGO_EXAMPLES = [
-  ["ford", "Ford"], ["rewe", "REWE"], ["eon", "E.ON"], ["lamborghini", "Lamborghini"], ["spotify", "Spotify"],
+  ["ford", "Ford"], ["eon", "E.ON"], ["lamborghini", "Lamborghini"], ["spotify", "Spotify"],
   ["berlin", "Berlin"], ["bremen", "Bremen"], ["nieheim", "Nieheim"],
   ["mastercard", "Mastercard"], ["ikea", "IKEA"], ["dhl", "DHL"], ["firefox", "Firefox"], ["nike", "Nike"], ["apple", "Apple"],
   ["mcdonalds", "McDonald’s"], ["adidas", "Adidas"], ["puma", "Puma"], ["cupra", "Cupra"], ["duolingo", "Duolingo"],
 ];
 /** Echte FlyingStars-Kund*innen unter den Beispielen (Wächter: public/brand/logos/kunde-<id>-weiss.svg muss existieren) */
-export const CUSTOMER_EXAMPLES = ["ford", "rewe", "eon", "lamborghini", "spotify"];
+export const CUSTOMER_EXAMPLES = ["ford", "eon", "lamborghini", "spotify"];

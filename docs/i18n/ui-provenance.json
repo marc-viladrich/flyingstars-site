@@ -49,6 +49,8 @@
   {"key":"showconfigurator.pauseThePreview","locale":"nl","origin":"machine-new","components":["src/components/configurator/ShowConfigurator.astro"]},
   {"key":"showconfigurator.dragYourLogoHere","locale":"en","origin":"machine-new","components":["src/components/configurator/ShowConfigurator.astro"]},
   {"key":"showconfigurator.dragYourLogoHere","locale":"nl","origin":"machine-new","components":["src/components/configurator/ShowConfigurator.astro"]},
+  {"key":"showconfigurator.tapToChooseYourLogo","locale":"en","origin":"machine-new","components":["src/components/configurator/ShowConfigurator.astro"]},
+  {"key":"showconfigurator.tapToChooseYourLogo","locale":"nl","origin":"machine-new","components":["src/components/configurator/ShowConfigurator.astro"]},
   {"key":"showconfigurator.svgPngOrJpg","locale":"en","origin":"machine-new","components":["src/components/configurator/ShowConfigurator.astro"]},
   {"key":"showconfigurator.svgPngOrJpg","locale":"nl","origin":"machine-new","components":["src/components/configurator/ShowConfigurator.astro"]},
   {"key":"showconfigurator.thePreviewIsCurrentlyUnavailableYouCanStillChooseA","locale":"en","origin":"editor-revised","components":["src/components/configurator/ShowConfigurator.astro"],"editorFile":"src/content/translations/site/ui/en.json","editorReviewed":false},

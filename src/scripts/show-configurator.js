@@ -909,7 +909,15 @@ if (form) {
   // direkt auf der Bühne anklicken und entfernen; Minimap mit dem Original
   // Runde 10b (Marc 20.11.2026): Hinweis zum Algorithmus über der Dropzone, im Logo-Modus von Anfang an, bis „Verstanden“;
   // die Sitzung merkt es sich (sessionStorage, ohne Speicher einfach bei jedem Aufruf erneut)
-  function drawNotice() { const on = logoMode && !noticeOk; stage.classList.toggle("is-notice", on); $("#cfg-notice").hidden = !on; }
+  // Runde 14 (Marc 21.11.): Hinweis und Ablagefläche nacheinander statt gleichzeitig. Erst steht nur der Hinweis auf der
+  // Bühne; nach „Verstanden“ bleibt die Ablagefläche („Euer Logo hier reinziehen“) stehen, bis ein eigenes Logo da ist
+  // (Beispiel-Logos zählen nicht). Ein Klick oder Tippen auf die Fläche öffnet die Dateiauswahl, am Handy der einzige Weg.
+  function drawNotice() {
+    const on = logoMode && !noticeOk;
+    stage.classList.toggle("is-notice", on); $("#cfg-notice").hidden = !on;
+    stage.classList.toggle("is-await", logoMode && noticeOk && !(logo && !logo.example));
+  }
+  $(".cfg-drop").addEventListener("click", () => { if (stage.classList.contains("is-await")) file.click(); });
   $("#cfg-notice-ok").addEventListener("click", () => { noticeOk = true; try { sessionStorage.setItem(NOTICE_KEY, "1"); } catch {} drawNotice(); });
   const tools = $("#cfg-logo-tools"), own = $("#cfg-logo-own"), detail = $("#cfg-detail"), detailAuto = $("#cfg-detail-auto"), back = $("#cfg-back"), minimap = $("#cfg-minimap");
   function drawLogoMode() {

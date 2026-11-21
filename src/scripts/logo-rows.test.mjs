@@ -196,7 +196,7 @@ test('Nieheim: in jeder Fassung (Automatik und vereinfacht) vier gleiche Kugeln,
 test('flächige neue Beispiele ohne Mischfarben (nur die Farben des Logos)', () => {
   // Runde 12: Ford nur Schriftzug, Berlin nur der Bär (ohne rote Zunge und Krallen) → je eine Farbe
   for (const [id, n] of [['ford', 1], ['nieheim', 2], ['berlin', 1]]) assert.equal(new Set(JSON.parse(fs.readFileSync(new URL(`${id}.json`, dir))).palette.map((c) => c.join())).size, n, id);
-  for (const id of ['rewe', 'eon', 'bremen']) { const p = JSON.parse(fs.readFileSync(new URL(`${id}.json`, dir))).palette; for (const c of p) assert.ok(Math.hypot(c[0] - p[0][0], c[1] - p[0][1], c[2] - p[0][2]) <= 8, `${id}: ${c} weicht ab`); }
+  for (const id of ['eon', 'bremen']) { const p = JSON.parse(fs.readFileSync(new URL(`${id}.json`, dir))).palette; for (const c of p) assert.ok(Math.hypot(c[0] - p[0][0], c[1] - p[0][1], c[2] - p[0][2]) <= 8, `${id}: ${c} weicht ab`); }
 });
 const ring = (cx, cy, r, n, rot = 0, c = [252, 221, 9]) => Array.from({ length: n }, (_, k) => ({ x: cx + r * Math.sin(rot + (2 * Math.PI * k) / n), y: cy - r * Math.cos(rot + (2 * Math.PI * k) / n), c }));
 test('synthetisch: vier Kugeln mit 5/4/4/4 Punkten werden gleich, ein Punkt wandert in die längste Kontur', () => {
@@ -276,10 +276,7 @@ test('synthetisch: drei hintereinander ausgegebene schmale Konturen werden getre
   assert.deepEqual(splitLoops(pts, pts.map((_, i) => i)).map((c) => c.length), [10, 10, 10]);
 });
 
-test('Beispiel-Logos Runde 12: REWE mit Punze im R, Bremen ohne Schild, Volkswagen raus', () => {
-  // REWE bei 200: R außen, Punze des R, E, W, E = mindestens fünf geschlossene Konturen (vorher lag die Punze als ein Punkt)
-  const rewe = cleanRows(read('rewe', 200)), closed = contourChains(rewe).filter((c) => c.length >= 5);
-  assert.ok(closed.length >= 5, `REWE: ${closed.length} Konturen`);
+test('Beispiel-Logos Runde 12/14: Bremen ohne Schild, Volkswagen und REWE raus', () => {
   // Bremen und Berlin ohne Wappenschild: kein Punkt auf einer Linie über die ganze Breite oben (die Schildkante)
   for (const id of ['bremen', 'berlin']) {
     const pts = read(id, 200), ys = pts.map((p) => p.y), xs = pts.map((p) => p.x), top = Math.min(...ys), w = Math.max(...xs) - Math.min(...xs);
@@ -287,4 +284,5 @@ test('Beispiel-Logos Runde 12: REWE mit Punze im R, Bremen ohne Schild, Volkswag
     assert.ok(Math.max(...row.map((p) => p.x)) - Math.min(...row.map((p) => p.x)) < 0.6 * w, `${id}: oberste Reihe über die ganze Breite (Schild?)`);
   }
   assert.ok(!ids.includes('volkswagen') && !fs.existsSync(new URL('volkswagen.json', dir)));
+  assert.ok(!ids.includes('rewe') && !fs.existsSync(new URL('rewe.json', dir))); // Runde 14 (Marc)
 });

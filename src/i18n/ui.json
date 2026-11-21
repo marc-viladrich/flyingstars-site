@@ -139,6 +139,11 @@
     "en": "Drag your logo here",
     "nl": "Sleep jullie logo hierheen"
   },
+  "showconfigurator.tapToChooseYourLogo": {
+    "de": "Hier tippen und euer Logo wählen",
+    "en": "Tap here to choose your logo",
+    "nl": "Tik hier en kies jullie logo"
+  },
   "showconfigurator.svgPngOrJpg": {
     "de": "SVG, PNG oder JPG",
     "en": "SVG, PNG or JPG",

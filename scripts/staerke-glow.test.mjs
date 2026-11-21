@@ -42,7 +42,10 @@ test('Verlaufsworte: Breite steht vom ersten Bild an fest, ohne Zeichenabstands-
 test('Verlaufsworte: der Verlauf malt je Wort, ausgerichtet am ganzen Begriff (WebKit malt clip: text nicht in inline-blocks)', () => {
   const css = read('src/styles/himmel.css'), ts = read('src/scripts/himmel/staerke.ts');
   assert.match(css, /\.grad\.st-bereit \{ background: none; \}/);
-  assert.match(css, /\.grad\.st-bereit \.st-v \{[^}]*background: var\(--grad\) var\(--st-bx, 0\) 0 \/ var\(--st-bw, 100%\) 100% no-repeat;[^}]*background-clip: text;/);
+  assert.match(css, /\.grad\.st-bereit \.st-v \{[^}]*background: var\(--grad\) var\(--st-bx, 0\) 0 \/ var\(--st-bw, 100%\) 100% no-repeat, linear-gradient\(var\(--st-ink[^}]*background-clip: text;/);
+  // Runde 14: Satzzeichen (.st-p) malt die zweite Ebene in Überschriftenfarbe, keine eigene Füllfarbe (Safari: schwarzes „?“)
+  assert.doesNotMatch(ts, /text-fill-color/);
+  assert.match(ts, /setProperty\('--st-ink', ink\)/);
   assert.match(ts, /setProperty\('--st-bw', `\$\{\(total \/ fs\)\.toFixed\(4\)\}em`\)/);
   // Malfläche über die Hülle hinaus: in CSS und Skript gleich; ob sie reicht, misst die Browserprüfung unten (Tinte)
   const pad = Number(ts.match(/const PAD = ([\d.]+);/)?.[1]);
