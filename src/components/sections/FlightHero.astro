@@ -5,6 +5,7 @@ import { forPath } from '../../i18n/server';
 const { t, localHref, fact } = forPath(Astro.url.pathname);
 import type { Section } from '../../content.config';
 import Accent from '../Accent.astro';
+import Icon from '../Icon.astro';
 import { videoPath, videos } from '../../lib/videos';
 import { heroVideoSources } from '../../lib/hero-video-sources';
 import { optimizedImage } from '../../lib/media';
@@ -27,6 +28,9 @@ const sources = video === videos.showreel ? heroVideoSources() : undefined;
   <div class="shade" aria-hidden="true"></div>
   <div class="rec mono" data-loop aria-hidden="true">Showreel</div>
   <MediaFrame corners="content" as="div" aria-hidden="true" />
+  {/* Handy (Marc, 21.11.2026): runder Play/Pause-Knopf ohne Beschriftung unten rechts im Bild, wie im Anlass-Seitenkopf;
+       am Desktop bleibt das Showreel ohne Knopf. hero-reel.ts zeigt ihn erst, wenn das Video steuerbar ist. */}
+  <button class="hero-toggle" type="button" data-hero-toggle aria-pressed="false" aria-label={t('landinghero.playVideo')} data-label-play={t('landinghero.playVideo')} data-label-pause={t('landinghero.pauseVideo')} hidden><Icon name="play" size={16} class="g i-play" /><Icon name="pause" size={16} class="g i-pause" /></button>
   <div class="hero-copy">
     {/* Keyword-Zeile (Moritz, 15.11.2026: „H1: Drohnenshow buchen / Gestalte dein Stück Himmel“) gehört zur h1 */}
     <h1 id="hero-h">{eyebrow && <><span class="kicker mono">{eyebrow}</span>{' '}</>}<Accent text={headline} />{words && words.length > 0 && <> <span class="word" data-rotate={words.map(word => word.value).join('|')}>{words[0].value}</span></>}</h1>
@@ -48,6 +52,16 @@ const sources = video === videos.showreel ? heroVideoSources() : undefined;
      2,1 s). docs/himmel.md → Performance */
   @media (--mobile) {
     .hero > .reel { clip-path: inset(var(--space-0-25) round var(--radius-14)); }
+  }
+  /* Knopf nur am Handy; Form, Fläche und Größe wie .lh-toggle am Handy (MediaFrame.astro), unten rechts innen an der Ecke
+     des Rahmens (gleicher Abstand wie das Showreel-Label oben rechts) */
+  .hero-toggle { display: none; }
+  @media (--mobile) {
+    .hero-toggle:not([hidden]) { grid-area: media; align-self: end; justify-self: end; z-index: 4; display: inline-grid; place-items: center; width: 2.25rem; height: 2.25rem; margin: 0 var(--space-6) calc(var(--space-2-5) + var(--fr-arm) - var(--space-2-25)) 0; padding: 0; border-radius: var(--radius-pill); border: 1px solid var(--line-bold); background: rgb(var(--rgb-ground) / 0.66); -webkit-backdrop-filter: blur(0.5rem); backdrop-filter: blur(0.5rem); color: var(--text); cursor: pointer; }
+    .hero-toggle:focus-visible { outline: 0.1875rem solid var(--cyan); outline-offset: 0.1875rem; }
+    .hero-toggle :global(.ico) { width: 1rem; height: 1rem; }
+    .hero-toggle :global(.i-pause), .hero.reel-playing .hero-toggle :global(.i-play) { display: none; }
+    .hero.reel-playing .hero-toggle :global(.i-pause) { display: inline; }
   }
 </style>
 <script>import '../../scripts/hero-reel'; import '../../scripts/css-loop';</script>

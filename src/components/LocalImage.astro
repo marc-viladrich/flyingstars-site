@@ -1,8 +1,12 @@
 ---
 import type { HTMLAttributes } from 'astro/types';
 import { localImageSize } from '../lib/local-image-size.mjs';
-type Props = Omit<HTMLAttributes<'img'>, 'width' | 'height'> & { src: string; alt: string };
-const { src, alt, ...attributes } = Astro.props;
+import { monoLogoSrc } from '../lib/mono-logo.mjs';
+// mono: einfarbig weiße Fassung eines Logos aus /brand/logos/ (knock = helle Flächen ausgespart). Ersetzt den früheren
+// CSS-Filter, den Safari 26 auf Bildern nicht mehr zuverlässig anwendet (src/lib/mono-logo.mjs).
+type Props = Omit<HTMLAttributes<'img'>, 'width' | 'height'> & { src: string; alt: string; mono?: boolean | 'knock' };
+const { src, alt, mono, ...attributes } = Astro.props;
 const { width, height } = await localImageSize(src);
+const out = mono ? monoLogoSrc(src, { knock: mono === 'knock' }) : src;
 ---
-<img {...attributes} src={src} alt={alt} width={width} height={height} />
+<img {...attributes} src={out} alt={alt} width={width} height={height} />

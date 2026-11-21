@@ -2,10 +2,12 @@
 // Vergleichstabelle Drohnenshow/Feuerwerk/Laser: EIN Besitzer für Tabelle und Handyfassung. Aufrufer sind der eigene
 // Abschnitt (sections/Comparison.astro, Indoor) und die Einbettung unter dem Kopf einer Scrollstory (Sustainability.astro,
 // Nachhaltigkeit). Beide geben die Felder aus content-schema.mjs (comparisonTableFields) unverändert weiter.
-// Statuszellen einheitlich (ComparisonCell): Einordnung als Plakette oben, Erläuterung darunter. Bis 700 px keine Reiter
-// (dort sähe man immer nur eine Technik und damit keinen Vergleich), sondern je Kriterium eine Zeile mit einer schmalen
-// Spalte je Technik unter einer gemeinsamen Kopfzeile; die Spaltenzahl kommt aus den Daten.
+// Statuszellen einheitlich (ComparisonCell): Einordnung als Plakette oben, Erläuterung darunter. Bis 700 px je Technik ein
+// Reiter (MobileTabs, wie bei den Paketen): Tippen zeigt die Spalte über die volle Breite, der Reiterstreifen klebt unter dem
+// Header, solange die Tabelle im Bild ist (Marc, 31.10./02.11. und erneut 21.11.2026, nachdem eine Vereinheitlichung die
+// Reiter durch drei schmale Spalten ersetzt hatte). Spaltenzahl und Reiter kommen aus den Daten.
 import ComparisonCell from './ComparisonCell.astro';
+import MobileTabs from './MobileTabs.astro';
 import { comparisonTone, type ComparisonValue } from '../lib/comparison';
 import { forPath } from '../i18n/server';
 interface Row { label: string; cells?: { label: string; text?: string; tone: 'y' | 'n' | 'p' }[]; values: { value: string }[] }
@@ -15,6 +17,8 @@ const { label, rowHeader = t('comparison.criterion'), columns, rows, class: cls 
 // Die erste Spalte ist die eigene Technik (Drohnenshow) und trägt die Hervorhebung
 const cols = columns.map((c, i) => ({ label: c.value, featured: i === 0 }));
 const body = rows.map((row) => ({ label: row.label, cells: (row.cells ?? row.values.map((item) => item.value)) as ComparisonValue[] }));
+// Radiogruppe je Tabelle eindeutig (zwei Vergleiche auf einer Seite dürfen sich nicht gegenseitig umschalten)
+const tabName = `cmp-${label.toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40)}`;
 ---
 <div class:list={['cmp', cls]} style={`--cmp-cols:${cols.length}`}>
   <div class="table-wrap cmp-wide" role="region" aria-label={t('comparison.table', { label })} tabindex="0">
@@ -26,12 +30,11 @@ const body = rows.map((row) => ({ label: row.label, cells: (row.cells ?? row.val
       </tr>)}</tbody>
     </table>
   </div>
-  <div class="cmp-narrow" role="table" aria-label={label}>
-    <div class="cmp-narrow-head" role="row"><span class="sr-only" role="columnheader">{rowHeader}</span>{cols.map((c) => <span role="columnheader" class:list={{ us: c.featured }}>{c.label}</span>)}</div>
-    {body.map((row) => <div class="cmp-narrow-row" role="row">
-      <span class="cmp-narrow-label" role="rowheader">{row.label}</span>
-      {row.cells.map((cell, i) => <span role="cell" class:list={['cmp-narrow-cell', comparisonTone(cell), { us: cols[i].featured }]}><ComparisonCell value={cell} mobile /></span>)}
-    </div>)}
+  <div class="cmp-narrow" data-mtabs>
+    <MobileTabs name={tabName} label={t('comparison.valueChooseATechnology', { v0: label })} tabs={cols.map((c) => ({ label: c.label, featured: c.featured }))} />
+    {cols.map((c, i) => <dl class:list={['cmp-panel', { us: c.featured }]} data-mtab={i} aria-label={c.label}>
+      {body.map((row) => <div class:list={['cmp-panel-row', comparisonTone(row.cells[i])]}><dt>{row.label}</dt><dd><ComparisonCell value={row.cells[i]} mobile /></dd></div>)}
+    </dl>)}
   </div>
 </div>
 <style>
@@ -42,16 +45,12 @@ const body = rows.map((row) => ({ label: row.label, cells: (row.cells ?? row.val
   .cmp-narrow { display: none; }
   @media (--mobile) {
     .cmp-wide { display: none; }
-    .cmp-narrow { display: grid; grid-template-columns: repeat(var(--cmp-cols), minmax(0, 1fr)); border-top: 1px solid var(--line-strong); }
-    .cmp-narrow-head, .cmp-narrow-row { display: contents; }
-    .cmp-narrow-head > [role='columnheader']:not(.sr-only) { padding: var(--space-3) var(--space-2-5); font: 500 var(--text-xs)/1.3 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint); border-bottom: 1px solid var(--line-strong); }
-    /* Hervorhebung wie die Tabellenspalte (thead th.us in global.css): Fläche und Verlaufskante über der Trennlinie */
-    .cmp-narrow-head > .us { color: var(--text); background: var(--fill-soft); position: relative; }
-    .cmp-narrow-head > .us::after { content: ""; position: absolute; left: 0; right: 0; top: 0; transform: translateY(-50%); border-top: 2px solid; border-image: var(--grad) 1; }
-    .cmp-narrow-label { grid-column: 1 / -1; padding: var(--space-4) 0 var(--space-2); color: var(--head); font-weight: 500; }
-    .cmp-narrow-cell { display: grid; align-content: start; justify-items: start; gap: var(--space-1-5); padding: var(--space-1) var(--space-2-5) var(--space-4); border-bottom: 1px solid var(--line); color: var(--muted); font-size: var(--text-label); line-height: 1.35; overflow-wrap: anywhere; }
-    .cmp-narrow-cell.us { background: var(--fill-soft); }
-    .cmp-narrow-cell :global(.m) { margin: 0; padding: var(--space-1) var(--space-1-5); font-size: var(--text-xs); letter-spacing: 0.06em; }
-    .cmp-narrow-cell :global(.t) { display: block; }
+    .cmp-narrow { display: block; }
+    .cmp-panel { margin: 0; border-top: 1px solid var(--line-strong); }
+    .cmp-panel-row { display: grid; gap: var(--space-2); padding: var(--space-4) 0; border-bottom: 1px solid var(--line); }
+    .cmp-panel dt { color: var(--head); font-weight: 500; }
+    .cmp-panel dd { margin: 0; display: grid; justify-items: start; gap: var(--space-1-5); color: var(--muted); font-size: var(--text-sm); line-height: 1.45; }
+    .cmp-panel dd :global(.m) { margin: 0; }
+    .cmp-panel dd :global(.t) { display: block; }
   }
 </style>

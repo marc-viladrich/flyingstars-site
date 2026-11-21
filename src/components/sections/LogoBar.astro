@@ -95,11 +95,11 @@ const STILL_MAX = 8;
   .band-press { display: grid; justify-items: center; }
   .band-row, .band-press ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: var(--space-6) clamp(var(--space-8), 4vw, var(--space-14)); max-width: 72rem; }
   .band-row { margin-inline: auto; }
-  .band-row img { display: block; width: auto; filter: var(--logo-mono); opacity: 0.66; }
+  .band-row img { display: block; width: auto; opacity: 0.66; }
   .band-row img.detail { filter: grayscale(1) brightness(1.15); mix-blend-mode: screen; opacity: 0.8; }
   /* Einträge: PressItem.astro besitzt Logo, Name und Hover; die beiden Listen setzen nur ihre Kontextwerte */
-  .band-press ul { --press-max: 8.5rem; --press-opacity: 0.66; --press-knock-opacity: 0.9; --press-name-size: 1rem; }
-  .press ul { --press-max: 9.375rem; --press-opacity: 0.82; --press-knock-opacity: 1; --press-name-size: 1.375rem; --press-name-tracking: -0.02em; }
+  .band-press ul { --press-max: 8.5rem; --press-opacity: 0.66; --press-name-size: 1rem; }
+  .press ul { --press-max: 9.375rem; --press-opacity: 0.82; --press-name-size: 1.375rem; --press-name-tracking: -0.02em; }
   /* Presse im Raster wie Qualität und Sicherheit: Logo, darunter leise der Anlass. Keine Kästen */
   .press ul { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(9.375rem, 100%), 1fr)); gap: var(--space-7) var(--space-6); }
 </style>
@@ -110,7 +110,7 @@ const STILL_MAX = 8;
      .proof und .proof .quality bleiben in global.css: LandingSite nutzt sie ebenfalls. */
   .logo-marquee { display: flex; overflow: hidden; padding: var(--space-1-5) 0; -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
   .logo-marquee .track { list-style: none; margin: 0; padding: 0 clamp(var(--space-11), 5vw, var(--space-19)) 0 0; display: flex; align-items: center; gap: clamp(var(--space-11), 5vw, var(--space-19)); flex: none; animation: logo-slide var(--dur-marquee) var(--ease-linear) infinite; animation-play-state: var(--loop-play, running); }
-  .logo-marquee img { display: block; width: auto; max-width: none; filter: var(--logo-mono); opacity: 0.66; }
+  .logo-marquee img { display: block; width: auto; max-width: none; opacity: 0.66; }
   .logo-marquee img.detail { filter: grayscale(1) brightness(1.15); mix-blend-mode: screen; opacity: 0.8; } /* dunkle Innendetails (Bentley) bleiben sichtbar */
   @keyframes logo-slide { to { transform: translateX(-100%); } }
   @media (prefers-reduced-motion: reduce) {

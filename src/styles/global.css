@@ -173,8 +173,6 @@
   /* Gemeinsame Schatten */
   --shadow-popover: 0 1.5rem 3rem -1.5rem var(--shadow-strong);
   /* Fremdlogos auf dem Nachthimmel: einfarbig hell; Logos mit ausgesparter Schrift (ZDF, ntv) grau, damit die Schrift bleibt */
-  --logo-mono: brightness(0) invert(1);
-  --logo-knock: grayscale(1) brightness(0.85) contrast(1.15);
 
   /* Marc, 03.11.2026: ACSS-artige globale Typo-Skala für Barrierefreiheit.
      rem folgt der Browser-Grundschrift, ohne feste html-font-size. Seltene Größen bleiben exakt in rem. */
@@ -715,7 +713,7 @@ td.us { color: var(--text); background: var(--fill-soft); }
 /* Presse und „Qualität und Sicherheit“ (Studie 6) */
 .proof { display: grid; }
 .proof .quality ul { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-6); }
-.proof .quality .q-logo { width: auto; object-fit: contain; object-position: left; filter: var(--logo-mono); opacity: 0.85; }
+.proof .quality .q-logo { width: auto; object-fit: contain; object-position: left; opacity: 0.85; }
 
 
 @media (--nav-collapsed) {
@@ -826,6 +824,8 @@ td.us { color: var(--text); background: var(--fill-soft); }
 @keyframes rec { 50% { opacity: 0.3; } }
 .hero:not(.reel-on) .rec { display: none; }
 html.motion-paused .rec::before { animation: none; }
+/* Vom Knopf angehalten (Startseite am Handy, hero-reel.ts): Punkt grau wie im Anlass-Seitenkopf (.lh-rec) */
+.hero.reel-on:not(.reel-playing) .rec::before { animation: none; background: var(--faint); box-shadow: none; }
 @media (--mobile) { .rec { display: none; } }
 
 /* Referenzkarten mit Showvideo: Video liegt über dem Titelbild und blendet ein, sobald es läuft */
@@ -864,7 +864,7 @@ html.motion-paused .rec::before { animation: none; }
 a.pack { color: inherit; cursor: pointer; transition: border-color var(--dur-color), transform var(--dur-color) var(--ease-default), background var(--dur-color), box-shadow var(--dur-color); position: relative; }
 a.pack:hover, a.pack:focus-visible { border-color: color-mix(in srgb, var(--c) 70%, transparent); transform: translateY(-0.25rem); box-shadow: 0 1.125rem 2.5rem -1.5rem color-mix(in srgb, var(--c) 60%, transparent); }
 .promise-copy { justify-items: center; gap: 0; }
-.footer .eco img { height: 1.5rem; width: auto; filter: var(--logo-mono); opacity: 0.75; }
+.footer .eco img { height: 1.5rem; width: auto; opacity: 0.75; }
 
 /* Kicker überall 14 px über der Headline (Marc 31.10.: „viel zu weit weg“). Im Fließtext entfällt dafür der obere Abstand
    der Headline; in Köpfen steht der Kicker in der Überschrift selbst (SectionHead, Seitenkopf, Showreel-Kopf). */
@@ -985,6 +985,18 @@ a.pack { grid-template-rows: auto auto 1fr; align-items: start; row-gap: var(--s
 .ic > p { margin: 0; color: var(--muted); font-size: var(--text-control); max-width: 40ch; }
 @media (--grid-stacked) { .ig, .ig.cols-4 { --ig-cols: 2; } }
 @media (--compact) { .ig, .ig.cols-4 { --ig-cols: 1; } }
+/* Handy (Marc, 21.11.2026): Icon und Text jeder Icon-Zelle stehen exakt an der Inhaltskante der Seite, ohne seitlichen
+   Innenabstand. Eine Zellfläche (--ic-fill: Hinweis in „Im Preis enthalten“, gewähltes Extra) läuft dafür als Pseudoelement
+   bis an den Bildschirmrand (--pad = Seitenrand auf dem Handy), sodass sie weiter wie eine Karte mit Innenabstand wirkt.
+   Das Raster schneidet nur noch senkrecht ab (die oberste Linie), seitlich darf die Fläche hinaus; Linien links entfallen,
+   es gibt nur eine Spalte. Wächter: tests/icon-inline.spec.ts */
+.ic { background: var(--ic-fill, none); }
+@media (--compact) {
+  .ig { overflow: visible; overflow-y: clip; }
+  .ig > .ic { margin-left: 0; border-left: 0; }
+  .ic { padding-inline: 0; background: none; isolation: isolate; }
+  .ic::after { content: ""; position: absolute; inset: 0 calc(-1 * var(--pad)); z-index: -1; background: var(--ic-fill, none); pointer-events: none; }
+}
 /* Hover im Icon-Raster (Marc, 18.11.2026): EINE dezente Fläche gleitet von Zelle zu Zelle und rastet ein, mit Kurve und
    Dauer der gleitenden Box der Navigation. Lage und Größe setzt src/scripts/grid-glide.ts als --ig-x/--ig-y/--ig-sx/--ig-sy
    (Basismaß --ig-w0/--ig-h0); animiert werden nur transform und opacity. Der transparente Rand ist der Abstand zur Zellkante. */

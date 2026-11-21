@@ -42,5 +42,12 @@ const { corners = 'none', class: cls, as: Tag = 'figure', ...rest } = Astro.prop
   @media (--timeline-stacked) {
     .lh-media { aspect-ratio: 16 / 10; }
   }
+  /* Handy (Marc, 21.11.2026): läuft das Video, bleibt der Knopf ein runder Icon-Knopf ohne „Video anhalten“, damit er nicht
+     über das halbe Showreel reicht; die Beschriftung steht weiter als aria-label am Knopf. Gleiche Form wie der Knopf im
+     Startseiten-Hero (FlightHero.astro). */
+  @media (--mobile) {
+    .lh-media.is-on .lh-toggle { padding: 0; gap: 0; }
+    .lh-toggle [data-lh-label] { max-width: 0; opacity: 0; }
+  }
 .frame { position: absolute; inset: var(--fr-t) var(--gutter) var(--fr-b); pointer-events: none; }
 </style>

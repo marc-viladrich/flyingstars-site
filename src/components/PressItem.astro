@@ -11,11 +11,12 @@ const { localHref } = forPath(Astro.url.pathname);
 const Tag = href ? 'a' : 'span';
 const attrs = href ? { href: localHref(href), rel: 'noopener', target: '_blank', title: note ? `${name}: ${note}` : undefined } : { class: 'noref', title: note };
 ---
-<li class:list={['press-entry', { 'press-cell': layout === 'cell' }]}><Tag {...attrs}>{show && logo ? <LocalImage class:list={{ knock }} src={logo} alt={name} style={`height:${height / 16}rem`} loading="lazy" decoding="async" /> : <b>{name}</b>}</Tag></li>
+<li class:list={['press-entry', { 'press-cell': layout === 'cell' }]}><Tag {...attrs}>{show && logo ? <LocalImage mono={knock ? 'knock' : true} src={logo} alt={name} style={`height:${height / 16}rem`} loading="lazy" decoding="async" /> : <b>{name}</b>}</Tag></li>
 <style>
   /* Das Bild rendert LocalImage (eigene Komponente, darum :global unter dem eigenen Eintrag) */
-  .press-entry :global(img) { width: auto; max-width: var(--press-max); object-fit: contain; filter: var(--logo-mono); opacity: var(--press-opacity); transition: opacity var(--dur-control); }
-  .press-entry :global(img.knock) { filter: var(--logo-knock); opacity: var(--press-knock-opacity); }
+  /* Einfarbig über die abgeleitete Datei (LocalImage mono), nicht über einen CSS-Filter: Safari 26 wendet ihn auf Bildern
+     nicht zuverlässig an (src/lib/mono-logo.mjs) */
+  .press-entry :global(img) { width: auto; max-width: var(--press-max); object-fit: contain; opacity: var(--press-opacity); transition: opacity var(--dur-control); }
   .press-entry a:hover :global(img) { opacity: 1; }
   .press-entry b { font: 600 var(--press-name-size)/1.1 var(--display); letter-spacing: var(--press-name-tracking, normal); color: var(--head); }
   .press-cell > :is(a, .noref) { display: grid; gap: var(--space-3); place-items: center start; align-content: center; min-height: 3rem; }

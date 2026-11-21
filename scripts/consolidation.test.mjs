@@ -49,10 +49,11 @@ test('Alle Vergleiche delegieren Tabelle, Handyfassung und Statuszeichen an dies
   assert.ok(!existsSync(new URL('../src/components/ComparisonTable.astro', import.meta.url)), 'kein zweiter Vergleichsrenderer');
   const matrix = read('src/components/ComparisonMatrix.astro');
   assert.equal((matrix.match(/<ComparisonCell /g) ?? []).length, 2, 'Tabellenzelle und Zelle der Handyfassung');
-  // Handyfassung: ein Renderpfad, Spaltenzahl aus den Daten statt fester drei Spalten, keine Reiter-Tafeln mehr
-  assert.doesNotMatch(matrix, /<MobileTabs |cmp-panel|data-mtab/);
-  assert.match(matrix, /--cmp-cols:\$\{cols\.length\}/);
-  assert.match(matrix, /repeat\(var\(--cmp-cols\), minmax\(0, 1fr\)\)/);
+  // Handyfassung (Marc, 21.11.2026, wie schon 31.10./02.11.): je Technik ein Reiter über die gemeinsame MobileTabs-Komponente,
+  // die gewählte Spalte über die volle Breite; Reiter und Tafeln kommen aus den Spalten der Daten, nicht aus festen drei
+  assert.match(matrix, /<MobileTabs name=\{tabName\}/);
+  assert.match(matrix, /tabs=\{cols\.map\(/);
+  assert.match(matrix, /\{cols\.map\(\(c, i\) => <dl[^>]*data-mtab=\{i\}/);
   assert.doesNotMatch(matrix, /repeat\(3,/);
   assert.doesNotMatch(read('src/styles/global.css'), /\.cmp-panel|\.mtab-(?:only|hide)\b/);
   // Paketkarten behalten ihre aktiven Reiter

@@ -38,14 +38,14 @@ const list = items.map((it, i) => ({ ...it, year: it.date.slice(0, 4), newYear: 
       {cta && <a class="btn primary" href={localHref(cta.href)}>{cta.label}</a>}
     </SectionHead>
     <nav class="press-logos" aria-label={headline.replace(/\*/g, '')}>
-      <ul>{list.map((it) => <li><a href={`#${it.id}`}>{it.show ? <LocalImage class:list={{ knock: it.knock }} src={it.logo!} alt={it.name} style={`height:${height(it.logo, 26) / 16}rem`} loading="eager" decoding="async" /> : <b>{it.name}</b>}</a></li>)}</ul>
+      <ul>{list.map((it) => <li><a href={`#${it.id}`}>{it.show ? <LocalImage mono={it.knock ? 'knock' : true} src={it.logo!} alt={it.name} style={`height:${height(it.logo, 26) / 16}rem`} loading="eager" decoding="async" /> : <b>{it.name}</b>}</a></li>)}</ul>
     </nav>
   </div>
 
   <ol class="press-list">
     {list.map((it) => <li class:list={['press-item', { featured: it.featured, 'new-year': it.newYear }]} id={it.id}>
       <div class="press-when">{it.newYear && <span class="press-year">{it.year}</span>}<span class="press-dot" aria-hidden="true"></span></div>
-      <div class="press-logo">{it.show ? <LocalImage class:list={{ knock: it.knock }} src={it.logo!} alt="" style={`height:${height(it.logo, it.featured ? 54 : 40) / 16}rem`} loading="lazy" decoding="async" /> : <span class="press-wordmark" aria-hidden="true">{it.name}</span>}</div>
+      <div class="press-logo">{it.show ? <LocalImage mono={it.knock ? 'knock' : true} src={it.logo!} alt="" style={`height:${height(it.logo, it.featured ? 54 : 40) / 16}rem`} loading="lazy" decoding="async" /> : <span class="press-wordmark" aria-hidden="true">{it.name}</span>}</div>
       <div class="press-body">
         <Item class="press-h"><span class="kicker mono">{it.name}</span> <span class="head-line"><Accent text={it.title} /></span></Item>
         <p class="press-date mono"><time datetime={it.date}>{fmt(it.date)}</time></p>
@@ -62,8 +62,7 @@ const list = items.map((it, i) => ({ ...it, year: it.date.slice(0, 4), newYear: 
   .press-head :global(.lead) { color: var(--muted); }
   .press-logos ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-5) var(--space-8); justify-content: flex-start; }
   .press-logos a { display: block; padding: var(--space-1) 0; }
-  .press-logos img, .press-logo img { display: block; width: auto; max-width: 100%; filter: var(--logo-mono); opacity: 0.72; transition: opacity var(--dur-control); }
-  .press-logos img.knock, .press-logo img.knock { filter: var(--logo-knock); opacity: 0.9; }
+  .press-logos img, .press-logo img { display: block; width: auto; max-width: 100%; opacity: 0.72; transition: opacity var(--dur-control); }
   .press-logos a:hover img, .press-logos a:focus-visible img { opacity: 1; }
   .press-logos b { font: 600 1.125rem/1 var(--display); color: var(--fg); }
 

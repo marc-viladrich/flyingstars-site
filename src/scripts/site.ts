@@ -33,17 +33,29 @@ import { whenNear } from './when-near.mjs';
   // schmalen Bildschirmen weicht die Kopfzeile beim Runterscrollen nach oben aus und kommt beim Hochscrollen zurück.
   // Die Klasse liegt am <html>, damit klebende Elemente (Konfigurator-Bühne) den frei werdenden Platz nutzen können.
   const narrow = matchMedia("(max-width: 62.5em)");
-  let lastY = scrollY, ticking = false, gestureAt = -Infinity;
-  for (const type of ["touchmove", "wheel", "keydown"]) addEventListener(type, () => { gestureAt = performance.now(); }, { passive: true });
+  // Runde 13 (Marc, 21.11.2026: „funktioniert sehr unregelmäßig“; Codex-Analyse): Es zählt nur Scrollen aus eigener Eingabe
+  // (Wischen, Mausrad, Scrolltasten), Sprünge zu Ankern und weiches Scrollen per Skript lassen die Kopfzeile stehen. Früher
+  // galt dafür ein festes 900-ms-Fenster ab der letzten Eingabe und eine Obergrenze von 0,8 Bildschirmhöhen je Schritt.
+  // Auf dem iPhone fiel damit die Trägheit nach dem Loslassen heraus (sie läuft oft 1–2 s weiter) und große Schritte wurden
+  // verworfen. Jetzt hält jede Scroll-Bewegung eine begonnene Geste am Leben, bis 250 ms lang nichts mehr scrollt; ein Tipp
+  // (click) beendet sie sofort, damit ein Ankersprung danach nicht als Wischen zählt. Die Position wird auf den echten
+  // Scrollbereich begrenzt, sonst meldet das Rückfedern am Seitenende eine Aufwärtsbewegung und holte die Kopfzeile zurück.
   const root = document.documentElement;
+  const SCROLL_KEYS = new Set([" ", "ArrowDown", "ArrowUp", "PageDown", "PageUp", "Home", "End"]);
+  const clampY = () => Math.min(Math.max(scrollY, 0), Math.max(0, root.scrollHeight - root.clientHeight));
+  let lastY = clampY(), ticking = false, live = false, quiet = 0;
+  const arm = () => { live = true; clearTimeout(quiet); quiet = window.setTimeout(() => { live = false; }, 250); };
+  addEventListener("touchmove", arm, { passive: true });
+  addEventListener("wheel", (e) => { if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) arm(); }, { passive: true });
+  addEventListener("keydown", (e) => { const t = e.target as HTMLElement | null; if (SCROLL_KEYS.has(e.key) && !t?.closest("input, textarea, select, [contenteditable]")) arm(); }, { passive: true });
+  addEventListener("click", () => { live = false; clearTimeout(quiet); }, { capture: true, passive: true });
   const onScroll = () => {
     ticking = false;
-    const y = scrollY, dy = y - lastY;
+    const y = clampY(), dy = y - lastY;
     if (!narrow.matches || y < 80 || document.querySelector("dialog[open]")) { root.classList.remove("nav-away"); lastY = y; return; }
-    if (Math.abs(dy) < 8) return; // kleine Zitterer (Trägheit, Adressleiste) ändern nichts
-    // nur eigenes Scrollen (Wischen, Mausrad, Tasten): Sprünge und weiches Scrollen zu einem Anker (WebKit beim Seitenaufruf
-    // mit #konfigurator) lassen Kopfzeile und Preisleiste stehen
-    if (performance.now() - gestureAt > 900 || Math.abs(dy) > innerHeight * 0.8) { lastY = y; return; }
+    if (!live) { lastY = y; return; } // Sprung oder Skript-Scrollen: Kopfzeile und Preisleiste bleiben, wie sie sind
+    arm(); // Trägheit nach dem Loslassen gehört noch zur Geste
+    if (Math.abs(dy) < 8) return; // kleine Zitterer (Adressleiste) ändern nichts, sie sammeln sich bis 8 px
     root.classList.toggle("nav-away", dy > 0);
     lastY = y;
   };

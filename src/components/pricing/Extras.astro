@@ -64,17 +64,25 @@ const { kicker = t('preise.upKicker'), headline = t('preise.upHeadline'), text =
   .xc:hover :global(.xc-ico) { transform: translateY(-0.125rem); }
   /* ohne Zeigegerät gibt es kein Hover: dort ist das leere Kästchen immer da */
   @media (hover: none) { .xc-box { opacity: 1; transform: none; } }
-  .xc:has(.xc-box:checked) { background: rgb(var(--rgb-amber) / 0.07); }
+  /* Fläche über --ic-fill (global.css „Icon-Raster“), damit sie auf dem Handy bis an den Bildschirmrand läuft */
+  .xc:has(.xc-box:checked) { --ic-fill: rgb(var(--rgb-amber) / 0.07); }
   /* Platz ist immer reserviert, damit die Zeile beim Auswählen nicht springt */
   .xc-added { display: inline-flex; align-items: center; gap: var(--space-1-5); color: var(--accent); font-size: var(--text-xs); opacity: 0; transform: translateY(0.25rem); transition: opacity var(--dur-color) var(--ease-default), transform var(--dur-color) var(--ease-default); }
   .xc:has(.xc-box:checked) .xc-added { opacity: 1; transform: none; }
   .xc-added :global(.ico) { stroke: var(--accent); }
   /* Auswahl-Leiste: klebt unten, solange das Raster im Bild ist; erscheint erst mit der ersten Auswahl */
-  .xbar { position: sticky; bottom: 1rem; z-index: 5; margin-top: clamp(var(--space-5), 2.4vw, var(--space-8)); display: flex; align-items: center; justify-content: space-between; gap: var(--space-4) var(--space-6); flex-wrap: wrap; padding: var(--space-3-5) var(--space-3-5) var(--space-3-5) var(--space-6); border: 1px solid rgb(var(--rgb-amber) / 0.35); border-radius: var(--radius); background: var(--overlay-panel); backdrop-filter: blur(0.625rem); -webkit-backdrop-filter: blur(0.625rem); box-shadow: 0 1.125rem 2.5rem var(--shadow-soft); opacity: 0; transform: translateY(0.875rem); visibility: hidden; transition: opacity var(--dur-standard) var(--ease-default), transform var(--dur-glide) var(--ease-panel), visibility 0s var(--ease-linear) var(--dur-glide); }
-  .xbar.on { opacity: 1; transform: none; visibility: visible; transition-delay: 0s; }
+  .xbar { position: sticky; bottom: 1rem; z-index: 5; margin-top: clamp(var(--space-5), 2.4vw, var(--space-8)); display: flex; align-items: center; justify-content: space-between; gap: var(--space-4) var(--space-6); flex-wrap: wrap; padding: var(--space-3-5) var(--space-3-5) var(--space-3-5) var(--space-6); border: 1px solid rgb(var(--rgb-amber) / 0.35); border-radius: var(--radius); background: var(--overlay-panel); backdrop-filter: blur(0.625rem); -webkit-backdrop-filter: blur(0.625rem); box-shadow: 0 1.125rem 2.5rem var(--shadow-soft); opacity: 0; transform: translateY(0.875rem); transition: opacity var(--dur-standard) var(--ease-default), transform var(--dur-glide) var(--ease-panel), display var(--dur-glide) allow-discrete; }
+  /* Ohne Auswahl nimmt die Leiste keinen Platz ein (Marc, 21.11.2026: großer Abstand unter den Extras am Handy; sie war nur
+     unsichtbar und reservierte rund 115 px). Ein- und Ausblenden über display mit allow-discrete und @starting-style; ohne
+     diese Unterstützung erscheint sie einfach ohne Übergang. */
+  .xbar:not(.on) { display: none; }
+  .xbar.on { opacity: 1; transform: none; }
+  @starting-style { .xbar.on { opacity: 0; transform: translateY(0.875rem); } }
   .xbar-t { margin: 0; color: var(--muted); font-size: var(--text-control); }
   .xbar-t :global(b) { color: var(--head); font-weight: 500; }
   @media (--compact) {
+    /* ohne seitlichen Innenabstand (Icon-Raster): Kästchen an der rechten Inhaltskante */
+    .xc-box { right: 0; }
     .xbar { padding: var(--space-3-5); }
     .xbar .btn { width: 100%; justify-content: center; }
   }
