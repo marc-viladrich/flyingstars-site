@@ -307,11 +307,14 @@ export function storyScene(o: { colors: string[]; zone: Record<string, string> }
   const w0 = P(inSky([0, 0])), w1 = P(inSky([1, 0])), wl = Math.hypot(w1[0] - w0[0], w1[1] - w0[1]);
   const wind: P2 = [r1(((w1[0] - w0[0]) / wl) * 1000) / 1000, r1(((w1[1] - w0[1]) / wl) * 1000) / 1000];
   // … und zwei Bahnen kommen sich zu nahe: erst nach dem Wind (late), damit der Schritt nicht auf einmal voll ist
+  // Runde 20 (Marc): Ring und Hinweis unten am Anfang der beiden orangen Bahnen, der Stern steht frei
+  const nearLow = (i: number) => P(paths[i].find((q) => q[2] >= bx.z0)!);
   const near = (() => { let best = { i: 0, d: Infinity, at: [0, 0] as P2 }; for (let i = 0; i < paths.length - 1; i++) { for (let t = 5; t < 14; t++) { const a = P(paths[i][t]), b = P(paths[i + 1][t]), d = Math.hypot(a[0] - b[0], a[1] - b[1]); if (d < best.d) best = { i, d, at: [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2] }; } } return best; })();
-  add({ key: 'warn', zc: o.zone.warn, steps: [5], late: true, origin: near.at, hide: { s: [0.1, 0.1] }, shapes: [
+  const warnAt: P2 = (() => { const a = nearLow(near.i), b = nearLow(near.i + 1); return [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2 - 7]; })();
+  add({ key: 'warn', zc: o.zone.warn, steps: [5], late: true, origin: warnAt, hide: { s: [0.1, 0.1] }, shapes: [
     // nur im Quader (die Bahnen beginnen am Boden, der in der Simulation fehlt)
     seg(paths[near.i].filter((q) => q[2] >= bx.z0), 'path-hot'), seg(paths[near.i + 1].filter((q) => q[2] >= bx.z0), 'path-hot'),
-    { t: 'circle', c: near.at, r: 9, cls: 'warn-ring' },
+    { t: 'circle', c: warnAt, r: 9, cls: 'warn-ring' },
   ] });
 
   // ---------- 6 · Live-Show: Publikum vorn ----------
@@ -352,7 +355,7 @@ export function storyScene(o: { colors: string[]; zone: Record<string, string> }
     { key: 'light', text: 'Lichtsequenz', steps: [4], p: P([sw.x1, 1, swz.light]), side: 'r', target: 'sw-light' },
     { key: 'wind', text: 'Wind', steps: [5], p: P(inSky([U0 + 1.5, -6.1 + Math.sin((U0 + 1.5) * 0.45 + 7) * 0.35], 1.2)), side: 'l', target: 'wind' },
     // Runde 20 (Marc): unten am Anfang der beiden orangen Bahnen, damit der Stern frei steht
-    { key: 'near', text: 'Zu nah: korrigieren', steps: [5], p: (() => { const a = P(paths[near.i].find((q) => q[2] >= bx.z0)!), b = P(paths[near.i + 1].find((q) => q[2] >= bx.z0)!); return [Math.max(a[0], b[0]) + 2, (a[1] + b[1]) / 2] as P2; })(), side: 'r', target: 'warn', late: true },
+    { key: 'near', text: 'Zu nah: korrigieren', steps: [5], p: [warnAt[0] + 10, warnAt[1]], side: 'r', target: 'warn', late: true },
     { key: 'gpsSignal', text: 'GPS-Signal', steps: [6], p: P([15, 3, 7]), side: 'r', check: true, row: 0 },
     { key: 'weather', text: 'Wetter', steps: [6], p: P([15, 3, 7]), side: 'r', check: true, row: 1 },
     { key: 'noFly', text: 'Flugverbotszonen', steps: [6], p: P([15, 3, 7]), side: 'r', check: true, row: 2 },

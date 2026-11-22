@@ -143,3 +143,9 @@ Sprachliste, Tastatur), `scripts/css-tokens.test.mjs`.
 - **„Zu nah: korrigieren“** steht unten am Anfang der beiden orangen Bahnen (Marc: Stern soll frei stehen).
 - **Abschluss Programmier-Artikel:** neuer Abschnitt „Wie viel Zeit ihr einplanen solltet“ vor der Logo-Formation (Marc: normaler Abschnitt als Abschluss). Fakten aus den FAQ (Moritz): 2–3 Monate ideal, Express 1–2 Wochen gegen Aufschlag, 10 % Frühbuchungsrabatt bei Buchung im Vorjahr; Musik als WAV vorab an DJ/Technik, Beschallung stellt der Veranstalter (Fragebogen).
 - **Abstände:** die Szene hat unten dieselbe Luft wie oben (`margin-block`), Zwischentitel in der Szene mit Luft vor und nach der Linie.
+
+### Runde 20d (22.11.2026): Showabend als geschlossene Schleife
+
+- **Schleife:** Stern → Herz → Kreis → Stern (je 2 s stehen, 1,4 s Wechsel), dann landen alle im Startraster (2,2 s), die Station funkt am Boden (1,6 s, Drohnen ohne Farbe, `is-signal` vom Skript), alle steigen wieder in den Stern (2,2 s) und von vorn; rund 18 s je Umlauf. Abschnitte als Tabelle `SEGS` in StoryScene.astro, Formen 0–2 aus `drone.show`, Form 3 = `drone.via[6]`. Eigenbewegung nur in der Luft.
+- **Warnung „Zu nah“:** Ring und Hinweis stehen beide unten am Anfang der orangen Bahnen (`warnAt`).
+- **Logo-Hinweis im Konfigurator:** Schrift `--text-sm` statt `--text-xs`, Knopf etwas größer (Marc: „größere Schrift“). Laptop-Test (Hinweis passt in die Ablagefläche) grün.

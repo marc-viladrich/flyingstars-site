@@ -135,6 +135,7 @@ const list = (v?: number[]) => (v?.length ? v.join(' ') : undefined);
     let W = 1000, H = 470, step = -1, exploded = true, pinned = false, visible = false, frame = 0, t0 = 0, hop = 0;
     let swept = false, ps = -1, last = 0; // Musik und Licht (sweepTo)
     let showAt = 0; // Live-Show: Zeitpunkt, ab dem die Formen wechseln (nach dem Aufstieg)
+    let loopGround = false; // Live-Show: Drohnen gerade am Boden (Schleife setzt is-signal)
     const camOf = (s: number) => { const [x, y, w, h] = frames[s], k = Math.min(W / w, H / h); return { k, tx: W / 2 - (x + w / 2) * k, ty: H / 2 - (y + h / 2) * k }; };
     const place = () => {
       const c = camOf(Math.max(0, step));
@@ -191,7 +192,7 @@ const list = (v?: number[]) => (v?.length ? v.join(' ') : undefined);
       // Vorwärts in einen Schritt mit Zwischenhalt: erst alle zugleich zum Zwischenhalt (Abheben, Sinken), dann weiter
       clearTimeout(hop);
       stage.classList.remove('is-via', 'is-signal', 'is-rise');
-      stage.classList.toggle('is-show', SHOW.has(s)); delete stage.dataset.pulse;
+      stage.classList.toggle('is-show', SHOW.has(s)); delete stage.dataset.pulse; loopGround = false;
       const at = (el: SVGGElement, x: number, y: number) => { el.style.setProperty('--dx', String(x)); el.style.setProperty('--dy', String(y)); };
       const fly = () => D.forEach((d) => { const [x, y, a] = d.pos[step]; at(d.el, x, y); d.el.style.opacity = String(a); });
       // Funk (story.motion.signal): am Boden ohne Farbe, Signallinien laufen; danach steigen alle zugleich und leuchten auf
@@ -295,29 +296,49 @@ const list = (v?: number[]) => (v?.length ? v.join(' ') : undefined);
         d.sw.style.setProperty('--wx', (a[0] + (c[0] - a[0]) * r).toFixed(2)); d.sw.style.setProperty('--wy', (a[1] + (c[1] - a[1]) * r).toFixed(2));
       });
     }
-    // Live-Show: Stern → Herz → Kreis reihum. Je Form HOLD s stehen, MOVE s Wechsel (weich); in den letzten PULSE s vor
-    // dem Wechsel sendet die Station Signale zu den Drohnen der nächsten Form (data-pulse am Stage, CSS)
-    const HOLD = 3.4, MOVE = 1.8, PULSE = 1.1;
-    function showOffset(d: (typeof D)[number], ms: number): [number, number] {
-      if (!d.show || !SHOW.has(step)) return [0, 0];
-      const ts = (ms - showAt) / 1000, F = d.show.length;
-      if (ts <= 0) return [0, 0];
-      const ph = ts % (F * (HOLD + MOVE)), i = Math.floor(ph / (HOLD + MOVE)), r = ph - i * (HOLD + MOVE);
-      const a = d.show[i], b = d.show[(i + 1) % F];
-      if (r < HOLD) return [a[0], a[1]];
-      const q = (r - HOLD) / MOVE, e = q * q * (3 - 2 * q);
-      return [a[0] + (b[0] - a[0]) * e, a[1] + (b[1] - a[1]) * e];
+    // Live-Show als geschlossene Schleife (Marc, Runde 20): Stern → Herz → Kreis → Stern, dann landen alle im Startraster,
+    // die Station funkt, alle steigen wieder in den Stern, und von vorn. Formen: 0 Stern (Lage des Schritts), 1 Herz,
+    // 2 Kreis (drone.show), 3 Startraster (drone.via). Vor jedem Formwechsel sendet die Station Signale zu den Drohnen in
+    // der nächsten Form (data-pulse); am Boden laufen die Signallinien zum Startraster (is-signal, Drohnen ohne Farbe).
+    const HOLD = 2, MOVE = 1.4, PULSE = 0.9, LAND = 2.2, GROUND = 1.6, RISE = 2.2;
+    type Seg = { a: number; b: number; dur: number; next?: number; ground?: boolean; rise?: boolean };
+    const SEGS: Seg[] = [
+      { a: 0, b: 0, dur: HOLD, next: 1 }, { a: 0, b: 1, dur: MOVE, next: 1 }, { a: 1, b: 1, dur: HOLD, next: 2 }, { a: 1, b: 2, dur: MOVE, next: 2 },
+      { a: 2, b: 2, dur: HOLD, next: 0 }, { a: 2, b: 0, dur: MOVE, next: 0 }, { a: 0, b: 0, dur: HOLD }, { a: 0, b: 3, dur: LAND },
+      { a: 3, b: 3, dur: GROUND, ground: true }, { a: 3, b: 0, dur: RISE, rise: true, next: 0 },
+    ];
+    const CYCLE = SEGS.reduce((t, g) => t + g.dur, 0);
+    const smooth = (q: number) => q * q * (3 - 2 * q);
+    /** Lage in der Schleife: Abschnitt, weicher Fortschritt, Anteil in der Luft (Eigenbewegung) und Signal */
+    function showPhase(ms: number) {
+      const ts = (ms - showAt) / 1000;
+      if (ts <= 0) return null;
+      let r = ts % CYCLE, k = 0;
+      while (r > SEGS[k].dur) r -= SEGS[k++].dur;
+      const g = SEGS[k], q = r / g.dur, e = g.a === g.b ? 0 : smooth(q);
+      const air = g.ground ? 0 : g.b === 3 ? 1 - e : g.rise ? e : 1;
+      // Signal: im letzten Stück vor einem Wechsel und in dessen erster Hälfte; beim Aufstieg in der ersten Hälfte
+      const pulse = g.next === undefined ? '' : g.a === g.b ? (r > g.dur - PULSE ? String(g.next) : '') : q < 0.5 ? String(g.next) : '';
+      return { g, e, air, pulse };
     }
-    function pulseAt(ms: number) {
-      if (!SHOW.has(step) || !D[0]?.show) return;
-      const ts = (ms - showAt) / 1000, F = D[0].show.length;
-      if (ts <= 0) { delete stage.dataset.pulse; return; }
-      const ph = ts % (F * (HOLD + MOVE)), i = Math.floor(ph / (HOLD + MOVE)), r = ph - i * (HOLD + MOVE);
-      const next = r > HOLD - PULSE && r < HOLD + MOVE * 0.5 ? String((i + 1) % F) : '';
+    const formOf = (d: (typeof D)[number], f: number): [number, number] => {
+      if (f === 3) { const v = d.via[6] ?? d.via[step], p = d.pos[step]; return v ? [v[0] - p[0], v[1] - p[1]] : [0, 0]; }
+      const o = d.show?.[f]; return o ? [o[0], o[1]] : [0, 0];
+    };
+    function showOffset(d: (typeof D)[number], ph: ReturnType<typeof showPhase>): [number, number] {
+      if (!ph || !d.show) return [0, 0];
+      const a = formOf(d, ph.g.a), b = formOf(d, ph.g.b);
+      return [a[0] + (b[0] - a[0]) * ph.e, a[1] + (b[1] - a[1]) * ph.e];
+    }
+    function pulseAt(ph: ReturnType<typeof showPhase>) {
+      const next = ph?.pulse ?? '';
       if (next) { if (stage.dataset.pulse !== next) stage.dataset.pulse = next; } else if (stage.dataset.pulse !== undefined) delete stage.dataset.pulse;
+      const ground = !!ph?.g.ground;
+      if (ground !== loopGround) { loopGround = ground; stage.classList.toggle('is-signal', ground); }
     }
     function still() {
       unsweep(); last = 0; delete stage.dataset.pulse;
+      if (loopGround) { loopGround = false; stage.classList.remove('is-signal'); }
       D.forEach((d) => { d.sw.style.removeProperty('--wx'); d.sw.style.removeProperty('--wy'); });
       streams.forEach((p) => { p.style.strokeDasharray = ''; p.style.strokeDashoffset = ''; });
       if (playhead) { playhead.style.removeProperty('--hx'); playhead.style.removeProperty('--hy'); }
@@ -337,12 +358,13 @@ const list = (v?: number[]) => (v?.length ? v.join(' ') : undefined);
         const q = ((t + 0.11 * ((i * 5) % 8)) / T) % 1, head = Math.min(1, q / 0.62), tail = Math.max(0, Math.min(1, (q - 0.34) / 0.62));
         p.style.strokeDasharray = `${Math.max(0.0001, head - tail)} 2`; p.style.strokeDashoffset = String(-tail);
       });
-      pulseAt(ms);
+      const ph = SHOW.has(step) ? showPhase(ms) : null;
+      if (SHOW.has(step)) pulseAt(ph);
       if (ALIVE.has(step) || BEAT.has(step)) {
         // Herzschlag: zwei weiche Schläge, dann Ruhe (1,8 s); Weg vom Mittelpunkt höchstens 5 %
         const bp = (t % 1.8) / 1.8, bump = (c: number, w: number) => Math.exp(-(((bp - c) / w) ** 2));
         const beat = BEAT.has(step) ? 0.05 * bump(0.12, 0.06) + 0.03 * bump(0.32, 0.07) : 0;
-        const gust = WIND.has(step), amp = gust ? 1 : ALIVE.has(step) ? 0.6 : 0, sx = Math.sin(t * 0.45) * 1.4 * amp, sy = Math.sin(t * 0.6 + 1) * 0.9 * amp;
+        const gust = WIND.has(step), amp = (gust ? 1 : ALIVE.has(step) ? 0.6 : 0) * (ph ? ph.air : 1), sx = Math.sin(t * 0.45) * 1.4 * amp, sy = Math.sin(t * 0.6 + 1) * 0.9 * amp;
         D.forEach((d) => {
           let x = sx + Math.sin(t * 1.1 + d.ph) * 0.8 * amp, y = sy + Math.cos(t * 0.9 + d.ph * 1.3) * 0.8 * amp;
           if (gust) {
@@ -352,7 +374,7 @@ const list = (v?: number[]) => (v?.length ? v.join(' ') : undefined);
             x += wx * push - wy * push * 0.25 * Math.sin(d.ph); y += wy * push + wx * push * 0.25 * Math.sin(d.ph);
           }
           if (beat) { const [px, py] = d.pos[step]; x += (px - bx) * beat; y += (py - by) * beat; }
-          if (d.show) { const [ox, oy] = showOffset(d, ms); x += ox; y += oy; }
+          if (d.show) { const [ox, oy] = showOffset(d, ph); x += ox; y += oy; }
           d.sw.style.setProperty('--wx', x.toFixed(2)); d.sw.style.setProperty('--wy', y.toFixed(2));
         });
       } else if (!swept) D.forEach((d) => { d.sw.style.removeProperty('--wx'); d.sw.style.removeProperty('--wy'); });

@@ -95,10 +95,11 @@
   .cfg-stage.is-notice .cfg-drop > :not(.cfg-notice) { display: none; }
   .cfg-stage.is-await .cfg-drop { opacity: 1; background: rgb(var(--rgb-media-ground) / 0.64); pointer-events: auto; cursor: pointer; }
   .cfg-stage.is-await.is-done .cfg-drop { opacity: 0; }
-  .cfg-notice { pointer-events: auto; display: grid; justify-items: center; gap: var(--space-2-5); max-width: 28rem; margin: 0 var(--space-3); }
-  .cfg-notice p { display: flex; gap: var(--space-2); align-items: flex-start; margin: 0; font: 400 var(--text-xs)/1.5 var(--body); color: var(--muted); text-align: left; text-wrap: pretty; }
-  .cfg-notice p svg { flex: none; width: 1rem; height: 1rem; margin-top: 0.125rem; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; }
-  .cfg-notice button { min-height: 2.25rem; padding: 0 var(--space-3); border: 1px solid var(--line-strong); border-radius: var(--radius-pill); background: transparent; color: var(--text); font: 400 var(--text-sm)/1 var(--body); cursor: pointer; transition: border-color var(--dur-quick) var(--ease-default), background var(--dur-quick) var(--ease-default); }
+  /* Runde 20 (Marc): größere Schrift im Hinweis */
+  .cfg-notice { pointer-events: auto; display: grid; justify-items: center; gap: var(--space-3); max-width: 32rem; margin: 0 var(--space-3); }
+  .cfg-notice p { display: flex; gap: var(--space-2); align-items: flex-start; margin: 0; font: 400 var(--text-sm)/1.55 var(--body); color: var(--muted); text-align: left; text-wrap: pretty; }
+  .cfg-notice p svg { flex: none; width: 1.125rem; height: 1.125rem; margin-top: 0.1875rem; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; }
+  .cfg-notice button { min-height: 2.5rem; padding: 0 var(--space-4); border: 1px solid var(--line-strong); border-radius: var(--radius-pill); background: transparent; color: var(--text); font: 400 var(--text-sm)/1 var(--body); cursor: pointer; transition: border-color var(--dur-quick) var(--ease-default), background var(--dur-quick) var(--ease-default); }
   @media (hover: hover) { .cfg-notice button:hover { border-color: var(--text); background: var(--line-soft); } }
   .cfg-notice button:focus-visible { outline: 0.125rem solid var(--cyan); outline-offset: 0.125rem; }
   .cfg-stage.is-done .cfg-notice { pointer-events: none; }
