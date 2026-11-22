@@ -1,16 +1,17 @@
 ---
-// Logo-Formation am Schluss eines Blogartikels (Labor, Runde 15). Prototyp 2 (Marc, 21.11.2026: „zu grob, in your face“):
+// Logo-Formation am Schluss eines Blogartikels (Runde 15; seit 22.11.2026 mit 260 statt 600 Drohnen, Marc: „ein bisschen
+// zu voll“). Prototyp 2 (Marc, 21.11.2026: „zu grob, in your face“):
 // klein und ruhig im Textfluss, im Stil der eingestreuten Drohnen-Elemente der Seite (Himmel: Motiv mit Luft, ohne
 // Beschriftung). Keine Knöpfe, kein Zähler, kein Kasten; die Drohnen heben einmal ab und stehen dann mit leiser Eigen-
 // bewegung, die globale Pause in der Kopfzeile hält sie an. Darunter der Schlussabschnitt des Artikels (Slot) oder ein
 // Standardtext, danach ein Link in den Konfigurator. Engine: scripts/formation-play.js (wie die Fallstudien).
 // SEO (27-blog-bilder-2026-11-21/seo-interaktive-grafiken.md): Standbild als echtes <img> (Poster, gleicher Ausschnitt wie die
-// Engine, tools/labor/blog-artikel.mjs), festes Seitenverhältnis, Engine per import() kurz vor der Sichtbarkeit; ohne
+// Engine, tools/blog/cornerstone-media.mjs), festes Seitenverhältnis, Engine per import() kurz vor der Sichtbarkeit; ohne
 // JavaScript, bei Ladefehler und bei reduzierter Bewegung bleibt das Standbild bzw. die fertige Formation.
 import { forPath } from '../../i18n/server';
 interface Props { src?: string; poster?: string; alt?: string; id?: string; more?: { label: string; href: string } | false }
-const { src = '/media/labor/artikel/flyingstars-formation.json', poster = '/media/labor/artikel/flyingstars-formation.webp', alt = 'Das FlyingStars-Logo mit Schriftzug, aus Drohnen geformt', id = 'finale', more = { label: 'Euer Logo im Konfigurator', href: '/drohnenshow-preise/#konfigurator' } } = Astro.props;
-const { localHref } = forPath(Astro.url.pathname);
+const { t, localHref } = forPath(Astro.url.pathname);
+const { src = '/media/blog/flyingstars-formation.json', poster = '/media/blog/flyingstars-formation.webp', alt = t('blogpost.finaleAlt'), id = 'finale', more = { label: t('blogpost.finaleMore'), href: '/drohnenshow-preise/#konfigurator' } } = Astro.props;
 const own = Astro.slots.has('default');
 ---
 <section class="ff" aria-labelledby={own ? undefined : `${id}-h`} data-ff>
@@ -20,8 +21,8 @@ const own = Astro.slots.has('default');
   </figure>
   <div class="ff-text post-body">
     {own ? <slot /> : <>
-      <h2 id={`${id}-h`}>Drohnenshows von FlyingStars</h2>
-      <p>Unser Logo, Drohne für Drohne. Wie euer Logo am Himmel aussieht, zeigt der Konfigurator.</p>
+      <h2 id={`${id}-h`}>{t('blogpost.finaleHeading')}</h2>
+      <p>{t('blogpost.finaleText')}</p>
     </>}
     {more && <p><a class="ff-more" href={localHref(more.href)}>{more.label} <span aria-hidden="true">→</span></a></p>}
   </div>

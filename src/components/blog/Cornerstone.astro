@@ -1,0 +1,34 @@
+---
+// Körper eines Cornerstone-Artikels (cornerstone/types.ts): ordnet die Abschnitte des unveränderten Artikeltexts mit Fotos,
+// Scroll-Szene und Logo-Formation an. Wird nur aufgerufen, wenn die Anordnung zum Text passt (BlogPost.astro prüft vorher).
+import ArticlePhotos from './ArticlePhotos.astro';
+import StoryScene from './StoryScene.astro';
+import FormationFinale from './FormationFinale.astro';
+import type { CornerstoneArticle, CornerstoneBlock, Section } from './cornerstone/types';
+import type { Story, Note } from './story-scene';
+import { forPath } from '../../i18n/server';
+interface Props { article: CornerstoneArticle; sections: Section[]; stories: Map<CornerstoneBlock, Story> }
+const { article, sections, stories } = Astro.props;
+const { t } = forPath(Astro.url.pathname);
+const k = (key: string) => t(`${article.i18n}.${key}`);
+// Szene: erster Abschnitt = Kopf (sein Zwischentitel steht über der Szene), jeder weitere ist ein Kapitel; Unterabschnitte
+// sind die Schritte. Kapitelname = Zwischentitel (in jeder Sprache aus dem Text), Kurzname aus ui.json.
+const storyBlocks = (b: Extract<CornerstoneBlock, { kind: 'story' }>) => {
+  let step = 0;
+  return b.sections.flatMap((i, g) => [
+    { html: sections[i].head + sections[i].lead },
+    ...sections[i].subs.map((sub) => ({ html: sub.html, step: step++, title: sub.title, group: sections[i].title })),
+  ]);
+};
+const note = (n: Note) => (n.key ? k(`note.${n.key}`) : n.text);
+---
+{article.blocks.map((b) => {
+  if (b.kind === 'text') return <div class="post-body cs-text" set:html={sections[b.section].html} />;
+  if (b.kind === 'photos') return <ArticlePhotos photos={b.photos.map((p) => ({ ...p, alt: k(p.alt) }))} caption={b.caption ? k(b.caption) : undefined} focus={b.focus} />;
+  if (b.kind === 'story') return <StoryScene story={stories.get(b)} note={note} blocks={storyBlocks(b)} groups={b.sections.map((i, g) => ({ name: sections[i].title, short: k(b.groups[g]) }))} label={k(b.label)} caption={k(b.caption)} />;
+  return <FormationFinale><div class="post-body" set:html={sections[b.section].html} /></FormationFinale>;
+})}
+
+<style>
+  .cs-text { width: 100%; }
+</style>

@@ -36,10 +36,16 @@ export type Piece = {
 /** w: Lage der Drohne entlang der Windrichtung (0 = Luv, 1 = Lee), für den Zeitpunkt, an dem die Böe sie trifft */
 export type StoryDrone = { pos: [number, number, number][]; c: string; k: number; w: number };
 /** x/y in Zeichnungseinheiten; row: Zeile einer Liste am selben Punkt (Prüfhäkchen der Live-Show) */
-export type Note = { text: string; steps: number[]; x: number; y: number; side: 'l' | 'r'; target?: string; check?: boolean; row?: number };
+/** key: Übersetzungsschlüssel (ui.json, unter dem Präfix des Artikels: <prefix>.note.<key>); text: deutscher Rückfall für
+ *  Szenen ohne Schlüssel */
+export type Note = { key?: string; text: string; steps: number[]; x: number; y: number; side: 'l' | 'r'; target?: string; check?: boolean; row?: number };
+/** Bewegung je Schritt (alles optional, ohne Angabe ruht die Szene): sweep = Abspielkopf läuft, wind = Windlinien und Böen,
+ *  alive = leise Eigenbewegung der Drohnen, plain = Drohnen ohne Farbe (am Boden), assemble = Schritt, in dem Teile mit
+ *  asmOnly/inner erst zusammengesetzt stehen und dann explodieren */
+export type Motion = { sweep?: number[]; wind?: number[]; alive?: number[]; plain?: number[]; assemble?: number };
 /** frames: Bildausschnitt je Schritt [x, y, b, h]; wind: Windrichtung auf dem Bildschirm (Einheitsvektor); sweep: Weg des
  *  Abspielkopfs der Zeitleiste (Verschiebung vom gezeichneten Platz zum Anfang und zum Ende) */
-export type Story = { vb: [number, number, number, number]; pieces: Piece[]; drones: StoryDrone[]; notes: Note[]; steps: number; frames: [number, number, number, number][]; wind: P2; sweep: [P2, P2] };
+export type Story = { vb: [number, number, number, number]; pieces: Piece[]; drones: StoryDrone[]; notes: Note[]; steps: number; frames: [number, number, number, number][]; wind?: P2; sweep?: [P2, P2]; motion?: Motion };
 
 /** Kamera einer Bühne W × H für einen Ausschnitt: Maßstab und Verschiebung (gleiche Rechnung im Skript der Komponente) */
 export const frameCam = ([x, y, w, h]: [number, number, number, number], W: number, H: number) => {
@@ -289,23 +295,23 @@ export function storyScene(o: { colors: string[]; zone: Record<string, string> }
   });
 
   // ---------- Annotationen (wenige: Marc „höheres Abstraktionsniveau, weniger Annotationen“) ----------
-  const notes: { text: string; steps: number[]; p: P2; side: 'l' | 'r'; target?: string; check?: boolean; row?: number }[] = [
-    { text: 'Leuchtstarke LED', steps: [0], p: P([1.7 * K, 1.3 * K, dz.led]), side: 'r', target: 'led' },
-    { text: 'GPS und Gyroskop', steps: [0], p: P([-1.3 * K, 1.3 * K, dz.gps]), side: 'l', target: 'gps' },
-    { text: 'Leichter Rahmen', steps: [0], p: P([4.2 * K, -3.2 * K, dz.frame]), side: 'r', target: 'frame' },
-    { text: 'Flugroute', steps: [1], p: P([sw.x1, 1, swz.route]), side: 'r', target: 'sw-route' },
-    { text: 'Timing', steps: [1], p: P([sw.x0, 3, swz.time]), side: 'l', target: 'sw-time' },
-    { text: 'Lichtsequenz', steps: [1], p: P([sw.x1, 1, swz.light]), side: 'r', target: 'sw-light' },
-    { text: 'Wind', steps: [2], p: P(inSky([U0 + 1.5, -6.1 + Math.sin((U0 + 1.5) * 0.45 + 7) * 0.35], 1.2)), side: 'l', target: 'wind' },
-    { text: 'Bodenstation', steps: [3], p: P([ST[0] - 1.6, ST[1], 1]), side: 'l', target: 'station' },
-    { text: '3D-Modell', steps: [4], p: P(inSky(corners[2], -1)), side: 'l', target: 'mesh' },
-    { text: 'Ein Punkt, eine Drohne', steps: [5], p: P(starSky[Math.round(N * 0.15)]), side: 'r' },
-    { text: 'Zu nah: korrigieren', steps: [6], p: [near.at[0] + 9, near.at[1]], side: 'r', target: 'warn' },
-    { text: 'Showdatei', steps: [7], p: P([ST[0] - 2.2, ST[1], fileZ[1]]), side: 'l', target: 'file-1' },
-    { text: 'Testflug', steps: [7], p: P([seeds[13][0], seeds[13][1], 4.5]), side: 'r' },
-    { text: 'GPS-Signal', steps: [8], p: P([15, 3, 0]), side: 'r', check: true, row: 0 },
-    { text: 'Wetter', steps: [8], p: P([15, 3, 0]), side: 'r', check: true, row: 1 },
-    { text: 'Flugverbotszonen', steps: [8], p: P([15, 3, 0]), side: 'r', check: true, row: 2 },
+  const notes: { key: string; text: string; steps: number[]; p: P2; side: 'l' | 'r'; target?: string; check?: boolean; row?: number }[] = [
+    { key: 'led', text: 'Leuchtstarke LED', steps: [0], p: P([1.7 * K, 1.3 * K, dz.led]), side: 'r', target: 'led' },
+    { key: 'gps', text: 'GPS und Gyroskop', steps: [0], p: P([-1.3 * K, 1.3 * K, dz.gps]), side: 'l', target: 'gps' },
+    { key: 'frame', text: 'Leichter Rahmen', steps: [0], p: P([4.2 * K, -3.2 * K, dz.frame]), side: 'r', target: 'frame' },
+    { key: 'route', text: 'Flugroute', steps: [1], p: P([sw.x1, 1, swz.route]), side: 'r', target: 'sw-route' },
+    { key: 'timing', text: 'Timing', steps: [1], p: P([sw.x0, 3, swz.time]), side: 'l', target: 'sw-time' },
+    { key: 'light', text: 'Lichtsequenz', steps: [1], p: P([sw.x1, 1, swz.light]), side: 'r', target: 'sw-light' },
+    { key: 'wind', text: 'Wind', steps: [2], p: P(inSky([U0 + 1.5, -6.1 + Math.sin((U0 + 1.5) * 0.45 + 7) * 0.35], 1.2)), side: 'l', target: 'wind' },
+    { key: 'station', text: 'Bodenstation', steps: [3], p: P([ST[0] - 1.6, ST[1], 1]), side: 'l', target: 'station' },
+    { key: 'model', text: '3D-Modell', steps: [4], p: P(inSky(corners[2], -1)), side: 'l', target: 'mesh' },
+    { key: 'point', text: 'Ein Punkt, eine Drohne', steps: [5], p: P(starSky[Math.round(N * 0.15)]), side: 'r' },
+    { key: 'near', text: 'Zu nah: korrigieren', steps: [6], p: [near.at[0] + 9, near.at[1]], side: 'r', target: 'warn' },
+    { key: 'file', text: 'Showdatei', steps: [7], p: P([ST[0] - 2.2, ST[1], fileZ[1]]), side: 'l', target: 'file-1' },
+    { key: 'test', text: 'Testflug', steps: [7], p: P([seeds[13][0], seeds[13][1], 4.5]), side: 'r' },
+    { key: 'gpsSignal', text: 'GPS-Signal', steps: [8], p: P([15, 3, 0]), side: 'r', check: true, row: 0 },
+    { key: 'weather', text: 'Wetter', steps: [8], p: P([15, 3, 0]), side: 'r', check: true, row: 1 },
+    { key: 'noFly', text: 'Flugverbotszonen', steps: [8], p: P([15, 3, 0]), side: 'r', check: true, row: 2 },
   ];
 
   // ---------- Bildausschnitt aus allem, auf (0, 0) verschoben ----------
@@ -321,7 +327,7 @@ export function storyScene(o: { colors: string[]; zone: Record<string, string> }
   });
   drones.forEach((d) => { d.pos = d.pos.map(([x, y, a]) => [r1(x - X0), r1(y - Y0), a]); });
   void boxFront;
-  const outNotes = notes.map((n) => { const [x, y] = sh(n.p); return { text: n.text, steps: n.steps, side: n.side, target: n.target, check: n.check, row: n.row, x, y }; });
+  const outNotes = notes.map((n) => { const [x, y] = sh(n.p); return { key: n.key, text: n.text, steps: n.steps, side: n.side, target: n.target, check: n.check, row: n.row, x, y }; });
 
   // ---------- Bildausschnitt je Schritt: was in dem Schritt sichtbar und nicht gedämpft ist, ohne das Feld (Boden darf
   // über den Rand laufen), mit den Ankern der Annotationen; Rand 9 %, mindestens so breit, dass nichts zu groß wird ----------
@@ -341,7 +347,10 @@ export function storyScene(o: { colors: string[]; zone: Record<string, string> }
     w *= 1.18; h *= 1.18;
     return [r1(cx - w / 2), r1(cy - h / 2), r1(w), r1(h)];
   });
-  return { vb: [0, 0, r1(W), r1(H)], pieces, drones, steps: STEPS, notes: outNotes, frames, wind, sweep };
+  // Bewegung: Abspielkopf in der Software, Wind und Böen in der Simulation, Eigenbewegung überall, wo der Stern steht;
+  // im Feldtest stehen die Drohnen weiß am Boden; die Drohne steht im ersten Schritt erst zusammen
+  const motion: Motion = { sweep: [1], wind: [2], alive: [2, 5, 6, 8], plain: [7], assemble: 0 };
+  return { vb: [0, 0, r1(W), r1(H)], pieces, drones, steps: STEPS, notes: outNotes, frames, wind, sweep, motion };
 }
 
 /** Pfad eines Teils als SVG-d */

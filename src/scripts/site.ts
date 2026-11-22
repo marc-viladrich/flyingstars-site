@@ -29,10 +29,12 @@ import { whenNear } from './when-near.mjs';
   const nav = document.querySelector("header.nav");
   const sentinel = document.querySelector(".nav-sentinel");
   if (nav && sentinel) new IntersectionObserver(([entry]) => nav.classList.toggle("scrolled", !entry.isIntersecting)).observe(sentinel);
-  // Runde 25 (Marc, 07.11.2026: am Handy „vertically ein bisschen zu eng … Header mit headroom on scroll down raus“): Auf
-  // schmalen Bildschirmen weicht die Kopfzeile beim Runterscrollen nach oben aus und kommt beim Hochscrollen zurück.
-  // Die Klasse liegt am <html>, damit klebende Elemente (Konfigurator-Bühne) den frei werdenden Platz nutzen können.
-  const narrow = matchMedia("(max-width: 62.5em)");
+  // Runde 25 (Marc, 07.11.2026: am Handy „vertically ein bisschen zu eng … Header mit headroom on scroll down raus“): Die
+  // Kopfzeile weicht beim Runterscrollen nach oben aus und kommt beim Hochscrollen zurück. Seit Runde 15 (Marc, 22.11.2026)
+  // auf allen Seiten und bei jeder Fenstergröße, nicht mehr nur schmal. Sie bleibt stehen, solange jemand mit ihr arbeitet:
+  // Zeiger über der Kopfzeile, Fokus darin (Tastatur holt sie zurück), offenes Untermenü oder offene Sprachliste.
+  // Die Klasse liegt am <html>, damit klebende Elemente (Konfigurator-Bühne, Blog-Szene) den frei werdenden Platz nutzen.
+  const busy = () => !!nav && (nav.matches(":hover") || nav.contains(document.activeElement) || !!nav.querySelector(".nav-drop.is-open"));
   // Runde 13 (Marc, 21.11.2026: „funktioniert sehr unregelmäßig“; Codex-Analyse): Es zählt nur Scrollen aus eigener Eingabe
   // (Wischen, Mausrad, Scrolltasten), Sprünge zu Ankern und weiches Scrollen per Skript lassen die Kopfzeile stehen. Früher
   // galt dafür ein festes 900-ms-Fenster ab der letzten Eingabe und eine Obergrenze von 0,8 Bildschirmhöhen je Schritt.
@@ -52,9 +54,7 @@ import { whenNear } from './when-near.mjs';
   const onScroll = () => {
     ticking = false;
     const y = clampY(), dy = y - lastY;
-    // Seiten mit data-headroom="all" (Cornerstone-Artikel, Base.astro) nutzen das Ausweichen auch auf breiten Bildschirmen
-    const away = narrow.matches || root.dataset.headroom === "all";
-    if (!away || y < 80 || document.querySelector("dialog[open]")) { root.classList.remove("nav-away"); lastY = y; return; }
+    if (y < 80 || document.querySelector("dialog[open]") || busy()) { root.classList.remove("nav-away"); lastY = y; return; }
     if (!live) { lastY = y; return; } // Sprung oder Skript-Scrollen: Kopfzeile und Preisleiste bleiben, wie sie sind
     arm(); // Trägheit nach dem Loslassen gehört noch zur Geste
     if (Math.abs(dy) < 8) return; // kleine Zitterer (Adressleiste) ändern nichts, sie sammeln sich bis 8 px
@@ -62,7 +62,6 @@ import { whenNear } from './when-near.mjs';
     lastY = y;
   };
   addEventListener("scroll", () => { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
-  narrow.addEventListener("change", onScroll);
   // Tastatur: wer per Tab in die Kopfzeile springt, holt sie zurück
   nav?.addEventListener("focusin", () => root.classList.remove("nav-away"));
   const menu = document.getElementById("mobile-menu");

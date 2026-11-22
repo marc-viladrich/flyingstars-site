@@ -3,11 +3,12 @@
 // als Prozessgrafik im Artikeltext. Je Schritt ein anderer Ausschnitt und eine andere Hervorhebung: 1 Startfeld (nah,
 // Drohnen gehen nacheinander an), 2 Aufstieg (Flugbereich, Drohnen steigen als Raster), 3 Formation (ganze Szene, das
 // Raster formt ein Herz). Läuft einmal, wenn die Grafik ins Bild kommt; bei reduzierter Bewegung steht der Endzustand.
+import { SCENE_COLORS, ABLAUF_ZONES } from '../blog/scene-palette';
 import { outdoorScene } from '../landing/site-scene';
 interface Props { step: 1 | 2 | 3; label: string }
 const { step, label } = Astro.props;
-const colors = ['#ff9e29', '#f58a5a', '#ec7f95', '#db64e8', '#b88bec', '#8aa9ee', '#6fc8ef', '#33edf2'];
-const zoneColor: Record<string, string> = { safety: '#ff7a6e', operative: '#f5b43c', drones: '#6fdc98', start: '#6aa8ff', guests: '#c49bf2' };
+const colors = SCENE_COLORS;
+const zoneColor: Record<string, string> = ABLAUF_ZONES;
 const scene = outdoorScene({ colors, horizontal: '', detail: '', motif: 'heart' });
 // Ausschnitt je Schritt: Rahmen um die Punkte, die der Schritt zeigt, auf 16:9 erweitert
 const box = (pts: number[][], pad: number) => {

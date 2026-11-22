@@ -1,0 +1,15 @@
+{
+  "_doc": "Rezepte der Cornerstone-Artikel (Runde 15, 22.11.2026). Quelle: FlyingStars-Drive-Sichtung im Kundenordner 27-blog-bilder-2026-11-21/foto-auswahl (Nummer = Kontaktbogen). Regler = Lichtraster-Labor (tools/labor/lichtraster.mjs, DEFAULTS werden überschrieben). Ausgabe: public/media/blog/<slug>/. Neu rechnen: node tools/blog/cornerstone-media.mjs [slug]",
+  "articles": {
+    "wie-programmiert-man-eine-drohnenshow": {
+      "cover": { "photo": "030", "drive": "1WQr3zoWXZXfXkGI1QvIyQyP0LIVpO0yq", "position": "centre", "lichtraster": { "gamma": 1.8, "threshold": 0.08 } },
+      "photos": [
+        { "name": "startunterlagen", "photo": "012", "drive": "1PGW9DpYEPurq3NuRQgJ9hruSEWseIXin", "width": 1600, "height": 1000 },
+        { "name": "stativ", "photo": "006", "drive": "1VwRRfSEX5IShrCoDSZwbmXiJuhmJ7PnP", "width": 960, "height": 1200 },
+        { "name": "bluete", "photo": "018", "drive": "1XGQ_NPDn4PD2utmT1SDyDZ5unTMbdTCw", "width": 960, "height": 1200, "position": "centre" },
+        { "name": "doppelherz", "photo": "034", "drive": "1VgjG974Mh0dgrp9Ujfj3d5lHqQZOQ5uS", "width": 960, "height": 1200, "position": "centre" }
+      ]
+    }
+  },
+  "formation": { "mark": 110, "text": 150 }
+}

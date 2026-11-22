@@ -39,16 +39,16 @@ const step = format === 'card' ? 9 : 16;
 ---
 <svg class="drone-still" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMid slice" role="img" aria-label={label}>
   <defs>
-    <radialGradient id={`${uid}glow`} cx={at[0]} cy={at[1]} r="0.62"><stop offset="0" stop-color="#db64e8" stop-opacity="0.16" /><stop offset="1" stop-color="#db64e8" stop-opacity="0" /></radialGradient>
-    <radialGradient id={`${uid}warm`} cx="0.5" cy="1.08" r="0.7"><stop offset="0" stop-color="#ff9e29" stop-opacity="0.12" /><stop offset="1" stop-color="#ff9e29" stop-opacity="0" /></radialGradient>
+    <radialGradient id={`${uid}glow`} cx={at[0]} cy={at[1]} r="0.62"><stop offset="0" style="stop-color: var(--logo-orchid)" stop-opacity="0.16" /><stop offset="1" style="stop-color: var(--logo-orchid)" stop-opacity="0" /></radialGradient>
+    <radialGradient id={`${uid}warm`} cx="0.5" cy="1.08" r="0.7"><stop offset="0" style="stop-color: var(--logo-amber)" stop-opacity="0.12" /><stop offset="1" style="stop-color: var(--logo-amber)" stop-opacity="0" /></radialGradient>
     {grid && <>
-      <pattern id={`${uid}grid`} width={step} height={step} patternUnits="userSpaceOnUse"><circle cx={step / 2} cy={step / 2} r={0.7 * scale * (format === 'card' ? 1 : 1.4)} fill="#ede6da" /></pattern>
-      <radialGradient id={`${uid}fade`} cx={at[0]} cy={at[1]} r="0.58"><stop offset="0.15" stop-color="#fff" stop-opacity="1" /><stop offset="1" stop-color="#fff" stop-opacity="0" /></radialGradient>
+      <pattern id={`${uid}grid`} width={step} height={step} patternUnits="userSpaceOnUse"><circle cx={step / 2} cy={step / 2} r={0.7 * scale * (format === 'card' ? 1 : 1.4)} style="fill: var(--head)" /></pattern>
+      <radialGradient id={`${uid}fade`} cx={at[0]} cy={at[1]} r="0.58"><stop offset="0.15" style="stop-color: var(--white)" stop-opacity="1" /><stop offset="1" style="stop-color: var(--white)" stop-opacity="0" /></radialGradient>
       <mask id={`${uid}mask`}><rect width={W} height={H} fill={`url(#${uid}fade)`} /></mask>
     </>}
     {palette.map((c) => <radialGradient id={gid(c)}><stop offset="0" stop-color={c} stop-opacity="0.5" /><stop offset="0.35" stop-color={c} stop-opacity="0.16" /><stop offset="1" stop-color={c} stop-opacity="0" /></radialGradient>)}
   </defs>
-  <rect width={W} height={H} fill="#0a0908" />
+  <rect width={W} height={H} style="fill: var(--media-ground)" />
   <rect width={W} height={H} fill={`url(#${uid}glow)`} />
   <rect width={W} height={H} fill={`url(#${uid}warm)`} />
   {grid && <rect width={W} height={H} fill={`url(#${uid}grid)`} mask={`url(#${uid}mask)`} opacity="0.11" />}
