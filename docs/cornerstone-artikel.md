@@ -6,7 +6,7 @@ auf den echten Blog-URLs in DE, EN und NL. Artikel:
 
 | Artikel | Szene | Besonderheit |
 |---|---|---|
-| Wie programmiert man eine Drohnenshow? | `story-scene.ts`, 9 Schritte (Bausteine, Ablauf) | Drohne explodiert, Wind und Böen |
+| Wie programmiert man eine Drohnenshow? | `story-scene.ts`, 7 Schritte (Werkzeug, Ablauf) | Drohne explodiert, Funk bringt die Drohnen in den Stern, Abspielkopf treibt Licht und Stern, Wind und Böen |
 | Wie funktioniert eine Drohnenshow? | `ablauf-scene.ts`, 4 Schritte aus der Aufzählung in „Ablauf“ | Raster → synchroner Start zum Kreis → Herz schlägt → Landung am Startpunkt |
 | Drohnen als Alternative zum Feuerwerk | keine (der Text vergleicht, er erklärt keinen Ablauf) | Vergleichstabelle der Seite Nachhaltigkeit nach dem ersten Absatz zur Umwelt |
 
@@ -28,7 +28,7 @@ export default defineCornerstone({
     { kind: 'text', section: 0 },                             // 0 = Text vor dem ersten ##
     { kind: 'photos', photos: [{ src, width, height, alt: 'photoPads' }], caption: 'photoPadsCaption' },
     { kind: 'text', section: 1 },                             // n = n-ter ## mit allem bis zum nächsten
-    { kind: 'story', sections: [2, 3], scene: () => storyScene(scenePalette), groups: ['groupBlocks', 'groupFlow'], label: 'sceneLabel', caption: 'sceneCaption' },
+    { kind: 'story', sections: [2, 3], scene: () => storyScene(scenePalette), groups: ['groupTools', 'groupFlow'], label: 'sceneLabel', caption: 'sceneCaption' },
     { kind: 'finale', section: 4 },
   ],
 });
@@ -47,7 +47,13 @@ export default defineCornerstone({
   unter `<i18n>.note.<key>` (ohne `key` gilt `text`, nur Deutsch). Bewegung je Schritt über `story.motion`: `sweep`
   (Abspielkopf), `wind` (Windlinien und Böen), `alive` (Eigenbewegung), `plain` (Drohnen ohne Farbe), `assemble` (Schritt, in
   dem Teile mit `asmOnly`/`inner` erst zusammen stehen und dann explodieren), `off`/`warm` (LEDs aus bzw. warmweiß), `beat`
-  (Formation schlägt leise um einen Mittelpunkt). Ohne `motion` ruht die Szene. Je Drohne optional `via` (Zwischenhalt beim
+  (Formation schlägt leise um einen Mittelpunkt), `signal` (Funk: im Zwischenhalt stehen die Drohnen ohne Farbe im
+  Startraster, gestrichelte Signallinien `signal-ground` laufen von der Station, danach steigen alle zugleich und die Linien
+  wechseln weich zu `signal-sky`). Bei `sweep` können Lichtblöcke einen Zeitbereich tragen (`Shape.tl`: Anfang, Ende, Spur)
+  und Drohnen einen Weg (`StoryDrone.track`, Versatz von der Startreihe bis zur Lage des Schritts): solange der Kopf läuft,
+  ist nur der Block unter ihm hell, die Drohnen folgen ihm weich nachgeführt und tragen die Farbe des Blocks ihrer Spur;
+  ohne Schleife steht der Endzustand. `Piece.late` / `Note.late`: kommt erst nach der ersten Bewegung des Schritts
+  (`--ss-late`). Ohne `motion` ruht die Szene. Je Drohne optional `via` (Zwischenhalt beim
   Vorwärtsschritt, alle zugleich: synchrones Abheben, Sinken über den Startpunkt); `story.poster` wählt den Schritt, der im
   HTML steht (sonst der letzte).
 - **Texte**: alle `UiKey`-Werte sind relativ zum Präfix. Jeder neue Schlüssel braucht DE, EN, NL in `src/i18n/ui.json` und je
@@ -94,6 +100,15 @@ export default defineCornerstone({
 - Labor-Vergleichsseite `/labor/blog-bilder/` (fünf Titelbild-Varianten je Artikel) samt `DroneStill`, `AblaufSzene`, Daten,
   Werkzeug und Labor-Bildern entfernt: die Titelbilder sind entschieden und produktiv; `tools/labor/lichtraster.mjs` bleibt
   (Rezept-Werkzeug).
+
+## Runde 19 (22.11.2026): Programmier-Szene neu geordnet
+
+Der Artikel ist neu in Wir-Form (Text-Agent, parallel): `## Womit wir arbeiten` (Showdrohne, Bodenstation) und `## Wie eure
+Show entsteht` (Idee und Motiv, Vom Motiv zur Flugbahn, Musik und Licht, Simulation und Testflug, Der Showabend). Die Szene
+folgt: 0 Explosionsansicht · 1 Bodenstation (Startraster → Funk → Stern) · 2 3D-Modell · 3 Flugbahnen · 4 Musik und Licht
+(Abspielkopf als Taktgeber für Lichtblöcke unten und Sternbildung oben, Marc) · 5 Simulation (Wind, danach „Zu nah:
+korrigieren“) · 6 Live-Show. Upload/Feldtest entfiel samt Notizen `file`/`test`. Feld und Station fehlen in Musik und Licht
+und in der Simulation (schwebende Ebenen ohne Boden, ruhiger).
 
 ## Prüfen
 

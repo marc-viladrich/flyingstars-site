@@ -11,10 +11,17 @@
 // zu seinem Ursprung (origin) oder legt sich flach (hide: [sx, sy]); ein Teil, das kommt, wächst aus demselben Punkt.
 // Gestapelte Ebenen (Drohne, Software, Showdatei) fahren je Schritt auseinander oder zusammen (shift). Die 24 Drohnen
 // sind feste Punkte mit einer Lage je Schritt. Annotationen (Note) sind HTML über der Zeichnung, wie die Maß-Pillen.
+//
+// Runde 19 (22.11.2026, Artikel neu in Wir-Form: „Womit wir arbeiten“ + „Wie eure Show entsteht“): sieben Schritte statt
+// neun. 0 Showdrohne · 1 Bodenstation (Drohnen stehen im Startraster, die Station bringt sie per Funk in den Stern) ·
+// 2 Idee (3D-Modell) · 3 Flugbahnen · 4 Musik und Licht (der Abspielkopf treibt Lichtblöcke und Sternbildung) ·
+// 5 Simulation (Wind, dann zwei zu nahe Bahnen) · 6 Live-Show. Upload und Feldtest entfallen.
 import { camera, rectZ, pair, r1, type V3, type P2 } from '../landing/site-scene';
 
+/** tl: Zeitbereich eines Lichtblocks auf der Zeitleiste [Anfang, Ende] (0–1) und seine Spur; der Abspielkopf (sweep) macht
+ *  ihn hell, solange er darüber steht */
 export type Shape =
-  | { t: 'poly'; pts: P2[]; cls: string }
+  | { t: 'poly'; pts: P2[]; cls: string; tl?: [number, number, number] }
   | { t: 'line'; pts: P2[]; cls: string }
   | { t: 'circle'; c: P2; r: number; cls: string };
 export type Piece = {
@@ -31,16 +38,20 @@ export type Piece = {
   /** nur im zusammengesetzten Zustand sichtbar (Gehäuse, Beine) bzw. dort verborgen (Innenteile, kommen beim Explodieren heraus) */
   asmOnly?: boolean;
   inner?: boolean;
+  /** kommt im Schritt erst spät (nach der ersten Bewegung des Schritts, z. B. die Warnung nach dem Wind) */
+  late?: boolean;
   shapes: Shape[];
 };
 /** w: Lage der Drohne entlang der Windrichtung (0 = Luv, 1 = Lee), für den Zeitpunkt, an dem die Böe sie trifft */
 /** via: Zwischenhalt beim Vorwärtsschritt in diesen Schritt (alle zugleich, z. B. synchrones Abheben, Sinken über den
  *  Startpunkt), danach weiter zur Lage des Schritts */
-export type StoryDrone = { pos: [number, number, number][]; c: string; k: number; w: number; via?: Record<number, P2> };
+/** track: Weg im Schritt mit Abspielkopf (motion.sweep) als Versatz zur Lage des Schritts, vom Anfang der Zeitleiste
+ *  (Startreihe) bis zum Ende (Stern, Versatz 0); die Drohne folgt dem Kopf vor und zurück */
+export type StoryDrone = { pos: [number, number, number][]; c: string; k: number; w: number; via?: Record<number, P2>; track?: P2[] };
 /** x/y in Zeichnungseinheiten; row: Zeile einer Liste am selben Punkt (Prüfhäkchen der Live-Show) */
 /** key: Übersetzungsschlüssel (ui.json, unter dem Präfix des Artikels: <prefix>.note.<key>); text: deutscher Rückfall für
  *  Szenen ohne Schlüssel */
-export type Note = { key?: string; text: string; steps: number[]; x: number; y: number; side: 'l' | 'r'; target?: string; check?: boolean; row?: number };
+export type Note = { key?: string; text: string; steps: number[]; x: number; y: number; side: 'l' | 'r'; target?: string; check?: boolean; row?: number; late?: boolean };
 /** Bewegung je Schritt (alles optional, ohne Angabe ruht die Szene): sweep = Abspielkopf läuft, wind = Windlinien und Böen,
  *  alive = leise Eigenbewegung der Drohnen, plain = Drohnen ohne Farbe (am Boden), assemble = Schritt, in dem Teile mit
  *  asmOnly/inner erst zusammengesetzt stehen und dann explodieren */
@@ -48,7 +59,10 @@ export type Motion = { sweep?: number[]; wind?: number[]; alive?: number[]; plai
   /** LEDs aus (am Boden) bzw. warmweiß statt Farbe */
   off?: number[]; warm?: number[];
   /** Herzschlag: zwei weiche Schläge je 1,8 s um center (Formation schlägt leise) */
-  beat?: { steps: number[]; center: P2 } };
+  beat?: { steps: number[]; center: P2 };
+  /** Funk: im Zwischenhalt (via) stehen die Drohnen ohne Farbe am Boden, gestrichelte Signallinien laufen von der Station
+   *  zu ihnen; danach steigen alle zugleich (ohne Versatz) und leuchten auf */
+  signal?: number[] };
 /** frames: Bildausschnitt je Schritt [x, y, b, h]; wind: Windrichtung auf dem Bildschirm (Einheitsvektor); sweep: Weg des
  *  Abspielkopfs der Zeitleiste (Verschiebung vom gezeichneten Platz zum Anfang und zum Ende) */
 /** poster: Schritt, der im HTML steht (Suche, Vorschau, ohne JavaScript); ohne Angabe der letzte */
@@ -60,9 +74,7 @@ export const frameCam = ([x, y, w, h]: [number, number, number, number], W: numb
   return { k: r1(k * 1000) / 1000, tx: r1(W / 2 - (x + w / 2) * k), ty: r1(H / 2 - (y + h / 2) * k) };
 };
 
-const STEPS = 9;
-const ALL = Array.from({ length: STEPS }, (_, i) => i);
-const from = (a: number, b = STEPS - 1) => ALL.filter((s) => s >= a && s <= b);
+const STEPS = 7;
 
 /** Stern als Umriss (10 Ecken), Punkte gleichmäßig nach Bogenlänge; u/v in der Sternebene */
 function starOutline(n: number, R: number, r: number): [number, number][] {
@@ -167,45 +179,93 @@ export function storyScene(o: { colors: string[]; zone: Record<string, string> }
   ]);
   add({ key: 'drone-axis', zc: o.zone.drone, steps: [0], origin: droneCenter, asm: 0, hide: { s: [1, 0.02] }, shapes: [seg([[0, 1.3 * K, dz.bat - 1.5], [0, 1.3 * K, dz.led + 2.4]], 'guide')] });
 
-  // ---------- 1 · Software als drei gestapelte Ebenen ----------
+  // ---------- Bodenstation und Feld (Schritte 1–3 und Live-Show; Musik und Licht und die Simulation schweben ohne Boden) ----------
+  const fieldCenter = P([0, 0, 0]);
+  add({ key: 'field', zc: o.zone.field, steps: [1, 2, 3, 6], origin: fieldCenter, hide: { s: [0.04, 0.04] }, shapes: [
+    ...plate(field.x0, field.y0, field.x1, field.y1, 0, 0.6, 'slab'),
+    ...Array.from({ length: 9 }, (_, i) => seg([[field.x0 + 4 + i * 4, field.y0, 0], [field.x0 + 4 + i * 4, field.y1, 0]], 'floor-line')),
+    ...Array.from({ length: 6 }, (_, i) => seg([[field.x0, field.y0 + 3.7 + i * 3.7, 0], [field.x1, field.y0 + 3.7 + i * 3.7, 0]], 'floor-line')),
+  ] });
+  const ST: V3 = [-15, -8, 0], mastTop: V3 = [ST[0] + 0.5, ST[1] + 0.5, 6.2];
+  add({ key: 'station', zc: o.zone.station, steps: [1, 2, 3, 6], dim: [2, 3], origin: P(ST), hide: { s: [0.04, 0.04] }, shapes: [
+    face([[ST[0] - 1.6, ST[1] - 1, 0], [ST[0] + 1.6, ST[1] - 1, 0], [ST[0] + 1.6, ST[1] - 1, 1.8], [ST[0] - 1.6, ST[1] - 1, 1.8]], 'zplate-edge'),
+    face([[ST[0] - 1.6, ST[1] - 1, 0], [ST[0] - 1.6, ST[1] + 1.4, 0], [ST[0] - 1.6, ST[1] + 1.4, 1.8], [ST[0] - 1.6, ST[1] - 1, 1.8]], 'zplate-edge'),
+    face(rectZ(ST[0] - 1.6, ST[1] - 1, ST[0] + 1.6, ST[1] + 1.4, 1.8), 'zplate'),
+    seg([[mastTop[0], mastTop[1], 1.8], mastTop], 'mast'),
+    { t: 'circle', c: P(mastTop), r: 6, cls: 'mast-glow' }, { t: 'circle', c: P(mastTop), r: 2.4, cls: 'mast-tip' },
+  ] });
+  // Startraster am Boden: von hier steigen die Drohnen auf (Bodenstation, Flugbahnen, Live-Show)
+  add({ key: 'seeds', zc: o.zone.field, steps: [1, 2, 3, 6], origin: fieldCenter, hide: { s: [0.04, 0.04] }, shapes: seeds.map((s) => ({ t: 'poly', pts: ring(s[0], s[1], 0, 0.55, 14).map(P), cls: 'seed' }) as Shape) });
+  // 1 · Funk (Marc, Runde 19: „die Kontrollstation bringt die Drohnen mit gestrichelten Linien, die die Signale darstellen, in
+  // ihre Formation“): wenige Signallinien, erst zu den Drohnen im Startraster, nach dem Aufstieg zu denselben im Stern
+  const mt = P(mastTop);
+  const linked = [3, 11, 19, 27, 35];
+  add({ key: 'radio', zc: o.zone.station, steps: [1], origin: mt, hide: { s: [0.1, 0.1] }, shapes: [
+    ...[9, 15, 21].map((rad) => ({ t: 'circle', c: mt, r: rad, cls: 'wave' }) as Shape),
+    ...linked.map((i) => ({ t: 'line', pts: [mt, P(pairs[i].start)], cls: 'signal signal-ground' }) as Shape),
+    ...linked.map((i) => ({ t: 'line', pts: [mt, P(pairs[i].motif)], cls: 'signal signal-sky' }) as Shape),
+  ] });
+
+  // ---------- 2 · Idee: Stern als 3D-Modell (Drahtgitter, extrudiert) ----------
+  const corners = starCorners(R, Ri), skyCenter = P(SC);
+  add({ key: 'mesh', zc: o.zone.idea, steps: [2, 3], dim: [3], origin: skyCenter, hide: { s: [0.04, 0.04] }, shapes: [
+    { t: 'poly', pts: corners.map((c) => P(inSky(c, 1))), cls: 'mesh-back' },
+    ...corners.map((c) => ({ t: 'line', pts: [P(inSky(c, 1)), P(inSky(c, -1))], cls: 'mesh-edge' }) as Shape),
+    ...corners.filter((_, i) => i % 2 === 0).map((c) => ({ t: 'line', pts: [P(inSky([0, 0], -1)), P(inSky(c, -1))], cls: 'mesh-edge' }) as Shape),
+    { t: 'poly', pts: corners.map((c) => P(inSky(c, -1))), cls: 'mesh-front' },
+  ] });
+
+  // ---------- 3 · Flugbahnen: vom Startraster zu den Punkten ----------
+  const pathOf = (a: V3, b: V3): V3[] => Array.from({ length: 18 }, (_, i) => {
+    const t = i / 17, c1: V3 = [a[0], a[1], 7], c2: V3 = [b[0], b[1], b[2] - 5], m = 1 - t;
+    return [0, 1, 2].map((k) => m ** 3 * a[k] + 3 * m * m * t * c1[k] + 3 * m * t * t * c2[k] + t ** 3 * b[k]) as V3;
+  });
+  const paths = pairs.map(({ start, motif }) => pathOf(start, motif));
+  add({ key: 'paths', zc: o.zone.idea, steps: [3], origin: fieldCenter, hide: { s: [1, 0.02] }, shapes: paths.map((p) => seg(p, 'path')) });
+
+  // ---------- 4 · Musik und Licht: drei gestapelte Ebenen, der Abspielkopf der Zeitleiste ist der Taktgeber ----------
+  // Marc (Runde 19): „Der Timing-Balken bewegt sich vor und zurück; das hat eine Entsprechung darunter und darüber: die
+  // Lichtstreifen gehen an und aus, die Sternformation oben bildet sich und löst sich wieder auf.“
   const sw = { x0: -8, x1: 8, y0: -4.5, y1: 6.5 };
   const swz = { light: 6, time: 10, route: 14 };
-  const swPlate = (key: string, z: number, extra: Shape[]) => add({ key, zc: o.zone.software, steps: [1], origin: droneCenter, shift: { 1: 0 }, hide: { s: [0.04, 0.04], dy: 0 }, shapes: [...plate(sw.x0, sw.y0, sw.x1, sw.y1, z, 0.3, 'zplate'), ...extra] });
-  // Licht: Spuren mit Farbblöcken im Logoverlauf
-  swPlate('sw-light', swz.light, Array.from({ length: 5 }, (_, i) => {
-    const y = sw.y0 + 1.6 + i * 2.1; return Array.from({ length: 6 }, (_, j) => { const x = sw.x0 + 1.2 + j * 2.4 + (i % 2) * 0.8; return face(rectZ(x, y - 0.35, x + 1.7, y + 0.35, swz.light), `bar bar-${(i + j) % o.colors.length}`); });
+  const tA = sw.x0 + 1, tB = sw.x1 - 1, tAt = (x: number) => r1(((x - tA) / (tB - tA)) * 1000) / 1000;
+  const swPlate = (key: string, z: number, extra: Shape[]) => add({ key, zc: o.zone.software, steps: [4], origin: P([0, 1, swz.time]), shift: { 4: 0 }, hide: { s: [0.04, 0.04], dy: 0 }, shapes: [...plate(sw.x0, sw.y0, sw.x1, sw.y1, z, 0.3, 'zplate'), ...extra] });
+  // Licht: fünf Spuren mit Farbblöcken im Logoverlauf; jeder Block kennt seinen Zeitbereich (tl)
+  const ROWS = 5;
+  swPlate('sw-light', swz.light, Array.from({ length: ROWS }, (_, i) => {
+    const y = sw.y0 + 1.6 + i * 2.1; return Array.from({ length: 6 }, (_, j): Shape => { const x = sw.x0 + 1.2 + j * 2.4 + (i % 2) * 0.8; return { ...face(rectZ(x, y - 0.35, x + 1.7, y + 0.35, swz.light), `bar bar-${(i + j) % o.colors.length}`), tl: [tAt(x), tAt(x + 1.7), i] } as Shape; });
   }).flat());
-  // Timing: Zeitleiste mit Takten und Abspielkopf
+  // Musik und Timing: Wellenform der Musik in der vorderen Spur, darüber die Spuren, Takte und der Abspielkopf
+  const audio: V3[] = Array.from({ length: 113 }, (_, i) => { const x = tA + (i / 112) * (tB - tA), a = 0.12 + 0.55 * Math.abs(Math.sin(x * 1.7) * Math.sin(x * 0.43 + 1.2)); return [x, sw.y0 + 1.6 + (i % 2 ? a : -a), swz.time]; });
   swPlate('sw-time', swz.time, [
-    ...Array.from({ length: 5 }, (_, i) => seg([[sw.x0 + 1, sw.y0 + 1.6 + i * 2.1, swz.time], [sw.x1 - 1, sw.y0 + 1.6 + i * 2.1, swz.time]], 'track')),
-    ...Array.from({ length: 13 }, (_, i) => seg([[sw.x0 + 1 + i * 1.165, sw.y0 + 0.8, swz.time], [sw.x0 + 1 + i * 1.165, sw.y1 - 0.8, swz.time]], 'tick')),
+    seg(audio, 'audio'),
+    ...Array.from({ length: ROWS - 1 }, (_, i) => seg([[tA, sw.y0 + 3.7 + i * 2.1, swz.time], [tB, sw.y0 + 3.7 + i * 2.1, swz.time]], 'track')),
+    ...Array.from({ length: 13 }, (_, i) => seg([[tA + i * 1.165, sw.y0 + 0.8, swz.time], [tA + i * 1.165, sw.y1 - 0.8, swz.time]], 'tick')),
     seg([[1.2, sw.y0 + 0.4, swz.time], [1.2, sw.y1 - 0.4, swz.time]], 'playhead'),
   ]);
-  const ph0 = P([1.2, sw.y0 + 0.4, swz.time]), phA = P([sw.x0 + 1, sw.y0 + 0.4, swz.time]), phB = P([sw.x1 - 1, sw.y0 + 0.4, swz.time]);
+  const ph0 = P([1.2, sw.y0 + 0.4, swz.time]), phA = P([tA, sw.y0 + 0.4, swz.time]), phB = P([tB, sw.y0 + 0.4, swz.time]);
   const sweep: [P2, P2] = [[r1(phA[0] - ph0[0]), r1(phA[1] - ph0[1])], [r1(phB[0] - ph0[0]), r1(phB[1] - ph0[1])]];
   // Flugrouten: von einer Startreihe vorn zu den Punkten eines Sterns in der Draufsicht
   const planStar = starOutline(N, 4.4, 1.85).map(([u, v]): V3 => [u, 1.6 + v * 0.95, swz.route]);
   const planStart: V3[] = Array.from({ length: N }, (_, i) => [sw.x0 + 1 + (i * (sw.x1 - sw.x0 - 2)) / (N - 1), sw.y0 + 0.7, swz.route]);
   const routes = pair(planStart, planStar);
-  swPlate('sw-route', swz.route, routes.filter((_, i) => i % 2 === 0).map(({ start, motif }) => {
-    const pts: V3[] = Array.from({ length: 12 }, (_, i) => { const t = i / 11, m: V3 = [start[0], (start[1] + motif[1]) / 2, swz.route]; return [(1 - t) ** 2 * start[0] + 2 * (1 - t) * t * m[0] + t * t * motif[0], (1 - t) ** 2 * start[1] + 2 * (1 - t) * t * m[1] + t * t * motif[1], swz.route]; });
-    return seg(pts, 'route');
-  }));
-  add({ key: 'sw-guides', zc: o.zone.software, steps: [1], origin: droneCenter, hide: { s: [0.04, 0.04] }, shapes: [[sw.x0, sw.y0], [sw.x1, sw.y0], [sw.x0, sw.y1]].map(([x, y]) => seg([[x, y, swz.light], [x, y, swz.route]], 'guide')) });
+  const routeAt = ({ start, motif }: { start: V3; motif: V3 }, t: number): V3 => { const m: V3 = [start[0], (start[1] + motif[1]) / 2, swz.route]; return [(1 - t) ** 2 * start[0] + 2 * (1 - t) * t * m[0] + t * t * motif[0], (1 - t) ** 2 * start[1] + 2 * (1 - t) * t * m[1] + t * t * motif[1], swz.route]; };
+  swPlate('sw-route', swz.route, routes.filter((_, i) => i % 2 === 0).map((r) => seg(Array.from({ length: 12 }, (_, i) => routeAt(r, i / 11)), 'route')));
+  add({ key: 'sw-guides', zc: o.zone.software, steps: [4], origin: P([0, 1, swz.time]), hide: { s: [0.04, 0.04] }, shapes: [[sw.x0, sw.y0], [sw.x1, sw.y0], [sw.x0, sw.y1]].map(([x, y]) => seg([[x, y, swz.light], [x, y, swz.route]], 'guide')) });
 
-  // ---------- 2 · Simulation: der Stapel legt sich auf den Boden des Glasquaders, der Quader wächst aus ihm ----------
+  // ---------- 5 · Simulation: der Stapel legt sich auf den Boden des Glasquaders, der Quader wächst aus ihm ----------
   const bx = { x0: -9.5, x1: 9.5, y0: -4, y1: 6, z0: 4, z1: 23 };
   pieces.filter((p) => p.key.startsWith('sw-')).forEach((p) => { p.after = { s: [1, 1], dy: dyBetween([0, 1, p.key === 'sw-light' ? swz.light : p.key === 'sw-time' ? swz.time : p.key === 'sw-route' ? swz.route : swz.light], [0, 1, bx.z0]) }; });
   const boxFloor = P([(bx.x0 + bx.x1) / 2, (bx.y0 + bx.y1) / 2, bx.z0]);
   const corner = (x: number, y: number, z: number): V3 => [x, y, z];
   const { x0, x1, y0, y1, z0, z1 } = bx;
-  add({ key: 'box-back', zc: o.zone.sim, steps: [2, 6], origin: boxFloor, hide: { s: [1, 0.02] }, shapes: [
+  add({ key: 'box-back', zc: o.zone.sim, steps: [5], origin: boxFloor, hide: { s: [1, 0.02] }, shapes: [
     face(rectZ(x0, y0, x1, y1, z0), 'glass-floor'),
     face([corner(x0, y1, z0), corner(x1, y1, z0), corner(x1, y1, z1), corner(x0, y1, z1)], 'glass-back'),
     face([corner(x1, y0, z0), corner(x1, y1, z0), corner(x1, y1, z1), corner(x1, y0, z1)], 'glass-back'),
     seg([corner(x1, y1, z0), corner(x0, y1, z0)], 'glass-hidden'), seg([corner(x1, y1, z0), corner(x1, y0, z0)], 'glass-hidden'), seg([corner(x1, y1, z0), corner(x1, y1, z1)], 'glass-hidden'),
   ] });
-  const boxFront = add({ key: 'box', zc: o.zone.sim, steps: [2, 6], origin: boxFloor, hide: { s: [1, 0.02] }, shapes: [
+  const boxFront = add({ key: 'box', zc: o.zone.sim, steps: [5], origin: boxFloor, hide: { s: [1, 0.02] }, shapes: [
     face([corner(x0, y0, z0), corner(x1, y0, z0), corner(x1, y0, z1), corner(x0, y0, z1)], 'glass'),
     face([corner(x0, y0, z0), corner(x0, y1, z0), corner(x0, y1, z1), corner(x0, y0, z1)], 'glass'),
     ...([
@@ -221,104 +281,56 @@ export function storyScene(o: { colors: string[]; zone: Record<string, string> }
   const streams = ([[-8.6, 1.4], [-6.1, -1.2], [-3.9, 0.8], [-1.6, -0.6], [1.6, 0.6], [3.9, -0.8], [6.1, 1.2], [8.4, -1.4]] as [number, number][]).map(([psi, d], i): Shape => ({ t: 'line', cls: 'stream', pts: Array.from({ length: 48 }, (_, j) => {
     const u = U0 + ((U1 - U0) * j) / 47; return P(inSky([u, streamV(u, psi) + Math.sin(u * 0.45 + i) * 0.35], d));
   }) }));
-  add({ key: 'wind', zc: o.zone.sim, steps: [2], origin: P(inSky([U0, 0])), hide: { s: [0.04, 1] }, shapes: [...streams.map((st) => ({ ...st, cls: 'stream-base' })), ...streams] });
+  add({ key: 'wind', zc: o.zone.sim, steps: [5], origin: P(inSky([U0, 0])), hide: { s: [0.04, 1] }, shapes: [...streams.map((st) => ({ ...st, cls: 'stream-base' })), ...streams] });
   const w0 = P(inSky([0, 0])), w1 = P(inSky([1, 0])), wl = Math.hypot(w1[0] - w0[0], w1[1] - w0[1]);
   const wind: P2 = [r1(((w1[0] - w0[0]) / wl) * 1000) / 1000, r1(((w1[1] - w0[1]) / wl) * 1000) / 1000];
-
-  // ---------- 3 · Bodenstation: das Feld breitet sich aus, die Station funkt zum Schwarm ----------
-  const fieldCenter = P([0, 0, 0]);
-  add({ key: 'field', zc: o.zone.field, steps: from(3), origin: fieldCenter, hide: { s: [0.04, 0.04] }, shapes: [
-    ...plate(field.x0, field.y0, field.x1, field.y1, 0, 0.6, 'slab'),
-    ...Array.from({ length: 9 }, (_, i) => seg([[field.x0 + 4 + i * 4, field.y0, 0], [field.x0 + 4 + i * 4, field.y1, 0]], 'floor-line')),
-    ...Array.from({ length: 6 }, (_, i) => seg([[field.x0, field.y0 + 3.7 + i * 3.7, 0], [field.x1, field.y0 + 3.7 + i * 3.7, 0]], 'floor-line')),
-  ] });
-  const ST: V3 = [-15, -8, 0], mastTop: V3 = [ST[0] + 0.5, ST[1] + 0.5, 6.2];
-  add({ key: 'station', zc: o.zone.station, steps: from(3), dim: [4, 5, 6], origin: P(ST), hide: { s: [0.04, 0.04] }, shapes: [
-    face([[ST[0] - 1.6, ST[1] - 1, 0], [ST[0] + 1.6, ST[1] - 1, 0], [ST[0] + 1.6, ST[1] - 1, 1.8], [ST[0] - 1.6, ST[1] - 1, 1.8]], 'zplate-edge'),
-    face([[ST[0] - 1.6, ST[1] - 1, 0], [ST[0] - 1.6, ST[1] + 1.4, 0], [ST[0] - 1.6, ST[1] + 1.4, 1.8], [ST[0] - 1.6, ST[1] - 1, 1.8]], 'zplate-edge'),
-    face(rectZ(ST[0] - 1.6, ST[1] - 1, ST[0] + 1.6, ST[1] + 1.4, 1.8), 'zplate'),
-    seg([[mastTop[0], mastTop[1], 1.8], mastTop], 'mast'),
-    { t: 'circle', c: P(mastTop), r: 6, cls: 'mast-glow' }, { t: 'circle', c: P(mastTop), r: 2.4, cls: 'mast-tip' },
-  ] });
-  const sky3: V3[] = Array.from({ length: N }, (_, i) => { const u = i / (N - 1); return [-12 + u * 24, 2, 14 + Math.sin(u * Math.PI) * 4]; });
-  const mt = P(mastTop);
-  add({ key: 'radio', zc: o.zone.station, steps: [3], origin: mt, hide: { s: [0.1, 0.1] }, shapes: [
-    ...[9, 15, 21].map((rad) => ({ t: 'circle', c: mt, r: rad, cls: 'wave' }) as Shape),
-    ...[0, 10, 20, 30, N - 1].map((i) => ({ t: 'line', pts: [mt, P(sky3[i])], cls: 'link' }) as Shape),
-  ] });
-
-  // ---------- 4 · Idee: Stern als 3D-Modell (Drahtgitter, extrudiert) ----------
-  const corners = starCorners(R, Ri), skyCenter = P(SC);
-  add({ key: 'mesh', zc: o.zone.idea, steps: [4, 5], dim: [5], origin: skyCenter, hide: { s: [0.04, 0.04] }, shapes: [
-    { t: 'poly', pts: corners.map((c) => P(inSky(c, 1))), cls: 'mesh-back' },
-    ...corners.map((c) => ({ t: 'line', pts: [P(inSky(c, 1)), P(inSky(c, -1))], cls: 'mesh-edge' }) as Shape),
-    ...corners.filter((_, i) => i % 2 === 0).map((c) => ({ t: 'line', pts: [P(inSky([0, 0], -1)), P(inSky(c, -1))], cls: 'mesh-edge' }) as Shape),
-    { t: 'poly', pts: corners.map((c) => P(inSky(c, -1))), cls: 'mesh-front' },
-  ] });
-
-  // ---------- 5 · Flugbahnen: vom Startraster zu den Punkten ----------
-  add({ key: 'seeds', zc: o.zone.field, steps: from(5), origin: fieldCenter, hide: { s: [0.04, 0.04] }, shapes: seeds.map((s) => ({ t: 'poly', pts: ring(s[0], s[1], 0, 0.55, 14).map(P), cls: 'seed' }) as Shape) });
-  const pathOf = (a: V3, b: V3): V3[] => Array.from({ length: 18 }, (_, i) => {
-    const t = i / 17, c1: V3 = [a[0], a[1], 7], c2: V3 = [b[0], b[1], b[2] - 5], m = 1 - t;
-    return [0, 1, 2].map((k) => m ** 3 * a[k] + 3 * m * m * t * c1[k] + 3 * m * t * t * c2[k] + t ** 3 * b[k]) as V3;
-  });
-  const paths = pairs.map(({ start, motif }) => pathOf(start, motif));
-  add({ key: 'paths', zc: o.zone.idea, steps: [5, 6], origin: fieldCenter, hide: { s: [1, 0.02] }, shapes: paths.map((p) => seg(p, 'path')) });
-  // 6 · Simulation: zwei Bahnen kommen sich nahe
+  // … und zwei Bahnen kommen sich zu nahe: erst nach dem Wind (late), damit der Schritt nicht auf einmal voll ist
   const near = (() => { let best = { i: 0, d: Infinity, at: [0, 0] as P2 }; for (let i = 0; i < paths.length - 1; i++) { for (let t = 5; t < 14; t++) { const a = P(paths[i][t]), b = P(paths[i + 1][t]), d = Math.hypot(a[0] - b[0], a[1] - b[1]); if (d < best.d) best = { i, d, at: [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2] }; } } return best; })();
-  add({ key: 'warn', zc: o.zone.warn, steps: [6], origin: near.at, hide: { s: [0.1, 0.1] }, shapes: [
-    seg(paths[near.i], 'path-hot'), seg(paths[near.i + 1], 'path-hot'),
+  add({ key: 'warn', zc: o.zone.warn, steps: [5], late: true, origin: near.at, hide: { s: [0.1, 0.1] }, shapes: [
+    // nur im Quader (die Bahnen beginnen am Boden, der in der Simulation fehlt)
+    seg(paths[near.i].filter((q) => q[2] >= bx.z0), 'path-hot'), seg(paths[near.i + 1].filter((q) => q[2] >= bx.z0), 'path-hot'),
     { t: 'circle', c: near.at, r: 9, cls: 'warn-ring' },
   ] });
 
-  // ---------- 7 · Upload und Feldtest: Showdatei als Stapel über der Station, Funk zum Raster ----------
-  const fileZ = [11, 13.2, 15.4];
-  fileZ.forEach((z, i) => add({ key: `file-${i}`, zc: o.zone.station, steps: [7], origin: P([ST[0], ST[1] + 0.2, 1.8]), shift: { 7: 0 }, hide: { s: [0.04, 0.04], dy: dyBetween([ST[0], ST[1], z], [ST[0], ST[1], 1.8]) }, shapes: plate(ST[0] - 2.2, ST[1] - 1.4, ST[0] + 2.2, ST[1] + 1.8, z, 0.25, 'file') }));
-  add({ key: 'upload', zc: o.zone.station, steps: [7], origin: mt, hide: { s: [0.1, 0.1] }, shapes: [0, 7, 32, N - 1].map((i) => ({ t: 'line', pts: [mt, P(seeds[i])], cls: 'link' }) as Shape) });
-
-  // ---------- 8 · Live-Show: Publikum vorn ----------
+  // ---------- 6 · Live-Show: Publikum vorn ----------
   const crowd: V3[] = Array.from({ length: 28 }, (_, i) => [-12 + (i % 14) * 1.85 + (Math.floor(i / 14) ? 0.9 : 0), -10.6 - Math.floor(i / 14) * 1.3, 0.5]);
-  add({ key: 'crowd', zc: o.zone.crowd, steps: [8], origin: P([0, -11, 0]), hide: { s: [0.04, 0.04] }, shapes: crowd.map((c) => ({ t: 'circle', c: P(c), r: 1.7, cls: 'guest' }) as Shape) });
-  add({ key: 'keepout', zc: o.zone.crowd, steps: [8], origin: P([0, -9, 0]), hide: { s: [0.04, 1] }, shapes: [seg([[-13, -9, 0], [13, -9, 0]], 'keepout')] });
+  add({ key: 'crowd', zc: o.zone.crowd, steps: [6], origin: P([0, -11, 0]), hide: { s: [0.04, 0.04] }, shapes: crowd.map((c) => ({ t: 'circle', c: P(c), r: 1.7, cls: 'guest' }) as Shape) });
+  add({ key: 'keepout', zc: o.zone.crowd, steps: [6], origin: P([0, -9, 0]), hide: { s: [0.04, 1] }, shapes: [seg([[-13, -9, 0], [13, -9, 0]], 'keepout')] });
 
   // ---------- Drohnen: eine Lage je Schritt ----------
-  const big = droneCenter;
-  const testLift = new Set([10, 11, 12, 13]);
   const drones: StoryDrone[] = pairs.map(({ start, motif }, k) => {
     const route = routes[k];
     const at = (p: V3, a = 1): [number, number, number] => { const q = P(p); return [r1(q[0]), r1(q[1]), a]; };
+    const plan = P(route.motif);
     const pos: [number, number, number][] = [
-      [r1(big[0]), r1(big[1]), 0], // 0: in der großen Drohne
-      at(route.motif), // 1: Draufsicht auf der Routenebene
-      at(motif), // 2: im Glasquader
-      at(sky3[k]), // 3: Linie am Himmel, verbunden mit der Station
-      at(motif, 0), // 4: unsichtbar an ihrem Punkt im Modell
-      at(motif), at(motif), // 5, 6
-      at([start[0], start[1], testLift.has(k) ? 4.5 : 0.35]), // 7: am Boden, vier im Testflug
-      at(motif), // 8: Live-Show
+      at(start, 0), // 0: unsichtbar im Startraster (die große Drohne steht allein)
+      at(motif), // 1: im Stern am Himmel; Zwischenhalt im Startraster, die Station bringt sie hoch
+      at(motif, 0), // 2: unsichtbar an ihrem Punkt im Modell
+      at(motif), // 3: Flugbahnen
+      at(route.motif), // 4: Draufsicht auf der Routenebene, folgt dem Abspielkopf (track)
+      at(motif), at(motif), // 5: Simulation, 6: Live-Show
     ];
     const m = starSky.indexOf(motif), u = m >= 0 ? starUV[m][0] : 0;
-    return { pos, c: colorAt(motif[0] - SC[0]), k, w: r1(((u + R) / (2 * R)) * 100) / 100 };
+    const track = Array.from({ length: 10 }, (_, i): P2 => { const q = P(routeAt(route, i / 9)); return [r1(q[0] - plan[0]), r1(q[1] - plan[1])]; });
+    return { pos, c: colorAt(motif[0] - SC[0]), k, w: r1(((u + R) / (2 * R)) * 100) / 100, via: { 1: P(start) }, track };
   });
 
   // ---------- Annotationen (wenige: Marc „höheres Abstraktionsniveau, weniger Annotationen“) ----------
-  const notes: { key: string; text: string; steps: number[]; p: P2; side: 'l' | 'r'; target?: string; check?: boolean; row?: number }[] = [
+  const notes: { key: string; text: string; steps: number[]; p: P2; side: 'l' | 'r'; target?: string; check?: boolean; row?: number; late?: boolean }[] = [
     { key: 'led', text: 'Leuchtstarke LED', steps: [0], p: P([1.7 * K, 1.3 * K, dz.led]), side: 'r', target: 'led' },
     { key: 'gps', text: 'GPS und Gyroskop', steps: [0], p: P([-1.3 * K, 1.3 * K, dz.gps]), side: 'l', target: 'gps' },
     { key: 'frame', text: 'Leichter Rahmen', steps: [0], p: P([4.2 * K, -3.2 * K, dz.frame]), side: 'r', target: 'frame' },
-    { key: 'route', text: 'Flugroute', steps: [1], p: P([sw.x1, 1, swz.route]), side: 'r', target: 'sw-route' },
-    { key: 'timing', text: 'Timing', steps: [1], p: P([sw.x0, 3, swz.time]), side: 'l', target: 'sw-time' },
-    { key: 'light', text: 'Lichtsequenz', steps: [1], p: P([sw.x1, 1, swz.light]), side: 'r', target: 'sw-light' },
-    { key: 'wind', text: 'Wind', steps: [2], p: P(inSky([U0 + 1.5, -6.1 + Math.sin((U0 + 1.5) * 0.45 + 7) * 0.35], 1.2)), side: 'l', target: 'wind' },
-    { key: 'station', text: 'Bodenstation', steps: [3], p: P([ST[0] - 1.6, ST[1], 1]), side: 'l', target: 'station' },
-    { key: 'model', text: '3D-Modell', steps: [4], p: P(inSky(corners[2], -1)), side: 'l', target: 'mesh' },
-    { key: 'point', text: 'Ein Punkt, eine Drohne', steps: [5], p: P(starSky[Math.round(N * 0.15)]), side: 'r' },
-    { key: 'near', text: 'Zu nah: korrigieren', steps: [6], p: [near.at[0] + 9, near.at[1]], side: 'r', target: 'warn' },
-    { key: 'file', text: 'Showdatei', steps: [7], p: P([ST[0] - 2.2, ST[1], fileZ[1]]), side: 'l', target: 'file-1' },
-    { key: 'test', text: 'Testflug', steps: [7], p: P([seeds[13][0], seeds[13][1], 4.5]), side: 'r' },
-    { key: 'gpsSignal', text: 'GPS-Signal', steps: [8], p: P([15, 3, 0]), side: 'r', check: true, row: 0 },
-    { key: 'weather', text: 'Wetter', steps: [8], p: P([15, 3, 0]), side: 'r', check: true, row: 1 },
-    { key: 'noFly', text: 'Flugverbotszonen', steps: [8], p: P([15, 3, 0]), side: 'r', check: true, row: 2 },
+    { key: 'station', text: 'Bodenstation', steps: [1], p: P([ST[0] - 1.6, ST[1], 1]), side: 'l', target: 'station' },
+    { key: 'model', text: '3D-Modell', steps: [2], p: P(inSky(corners[2], -1)), side: 'l', target: 'mesh' },
+    { key: 'point', text: 'Ein Punkt, eine Drohne', steps: [3], p: P(starSky[Math.round(N * 0.15)]), side: 'r' },
+    { key: 'route', text: 'Flugroute', steps: [4], p: P([sw.x1, 1, swz.route]), side: 'r', target: 'sw-route' },
+    { key: 'timing', text: 'Musik und Timing', steps: [4], p: P([sw.x1, 1, swz.time]), side: 'r', target: 'sw-time' }, // rechts zwischen den beiden anderen: links kollidierte die längere Pille schmal mit „Lichtsequenz“
+    { key: 'light', text: 'Lichtsequenz', steps: [4], p: P([sw.x1, 1, swz.light]), side: 'r', target: 'sw-light' },
+    { key: 'wind', text: 'Wind', steps: [5], p: P(inSky([U0 + 1.5, -6.1 + Math.sin((U0 + 1.5) * 0.45 + 7) * 0.35], 1.2)), side: 'l', target: 'wind' },
+    { key: 'near', text: 'Zu nah: korrigieren', steps: [5], p: [near.at[0] + 9, near.at[1]], side: 'r', target: 'warn', late: true },
+    { key: 'gpsSignal', text: 'GPS-Signal', steps: [6], p: P([15, 3, 0]), side: 'r', check: true, row: 0 },
+    { key: 'weather', text: 'Wetter', steps: [6], p: P([15, 3, 0]), side: 'r', check: true, row: 1 },
+    { key: 'noFly', text: 'Flugverbotszonen', steps: [6], p: P([15, 3, 0]), side: 'r', check: true, row: 2 },
   ];
 
   // ---------- Bildausschnitt aus allem, auf (0, 0) verschoben ----------
@@ -332,9 +344,12 @@ export function storyScene(o: { colors: string[]; zone: Record<string, string> }
     pc.origin = sh(pc.origin);
     pc.shapes = pc.shapes.map((s) => s.t === 'circle' ? { ...s, c: sh(s.c) } : { ...s, pts: s.pts.map(sh) });
   });
-  drones.forEach((d) => { d.pos = d.pos.map(([x, y, a]) => [r1(x - X0), r1(y - Y0), a]); });
+  drones.forEach((d) => {
+    d.pos = d.pos.map(([x, y, a]) => [r1(x - X0), r1(y - Y0), a]);
+    if (d.via) d.via = Object.fromEntries(Object.entries(d.via).map(([s, p]) => [s, sh(p)]));
+  });
   void boxFront;
-  const outNotes = notes.map((n) => { const [x, y] = sh(n.p); return { key: n.key, text: n.text, steps: n.steps, side: n.side, target: n.target, check: n.check, row: n.row, x, y }; });
+  const outNotes = notes.map((n) => { const [x, y] = sh(n.p); return { key: n.key, text: n.text, steps: n.steps, side: n.side, target: n.target, check: n.check, row: n.row, late: n.late, x, y }; });
 
   // ---------- Bildausschnitt je Schritt: was in dem Schritt sichtbar und nicht gedämpft ist, ohne das Feld (Boden darf
   // über den Rand laufen), mit den Ankern der Annotationen; Rand 9 %, mindestens so breit, dass nichts zu groß wird ----------
@@ -354,9 +369,9 @@ export function storyScene(o: { colors: string[]; zone: Record<string, string> }
     w *= 1.18; h *= 1.18;
     return [r1(cx - w / 2), r1(cy - h / 2), r1(w), r1(h)];
   });
-  // Bewegung: Abspielkopf in der Software, Wind und Böen in der Simulation, Eigenbewegung überall, wo der Stern steht;
-  // im Feldtest stehen die Drohnen weiß am Boden; die Drohne steht im ersten Schritt erst zusammen
-  const motion: Motion = { sweep: [1], wind: [2], alive: [2, 5, 6, 8], plain: [7], assemble: 0 };
+  // Bewegung: Funk und Aufstieg an der Bodenstation, Abspielkopf in Musik und Licht, Wind und Böen in der Simulation,
+  // Eigenbewegung überall, wo der Stern am Himmel steht; die Drohne steht im ersten Schritt erst zusammen
+  const motion: Motion = { signal: [1], sweep: [4], wind: [5], alive: [1, 3, 5, 6], assemble: 0 };
   return { vb: [0, 0, r1(W), r1(H)], pieces, drones, steps: STEPS, notes: outNotes, frames, wind, sweep, motion };
 }
 
