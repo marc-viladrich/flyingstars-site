@@ -113,6 +113,8 @@ main:has(+ .footer) > div:last-of-type > section:last-of-type {
 .grad .st-p { background: none; }
 .grad.st-bereit .st-v {
   box-sizing: content-box; padding-inline: 0.3em; margin-inline: -0.3em; /* content-box: sonst zieht min-width: 100% den Innenabstand ab */
+  /* Platz für Ober- und Unterlängen in der Malfläche. Der Gegenrand erhält Grundlinie und Zeilenhöhe. */
+  padding-block: 0.125em; margin-block: -0.125em;
   background: var(--grad) var(--st-bx, 0) 0 / var(--st-bw, 100%) 100% no-repeat, linear-gradient(var(--st-ink, transparent), var(--st-ink, transparent)) calc(var(--st-bx, 0em) + var(--st-bw, 100%)) 0 / 2em 100% no-repeat; -webkit-background-clip: text; background-clip: text; color: transparent;
 }
 html.reveal:not(.motion-paused) :is(h1, h2, h3) .grad:not(.st-an, .st-bereit),
