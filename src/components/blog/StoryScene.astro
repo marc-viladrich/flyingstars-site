@@ -9,6 +9,8 @@
 // reduzierte Bewegung zeigt jeden Schritt ohne Übergang und ohne Schleife.
 // Schnittstelle: story (Szene, story-scene.ts), note (Text einer Annotation, übersetzt), blocks (Textabschnitte mit Schritt),
 // groups (Kapitel). Ohne story nimmt die Komponente die Programmier-Szene (abwärtskompatibel zu den Labor-Seiten).
+// Runde 19: Funk (motion.signal: Startraster → Signallinien → synchroner Aufstieg) und Musik und Licht (der Abspielkopf
+// macht Lichtblöcke mit Zeitbereich hell und führt die Drohnen über track zwischen Startreihe und Stern, eine rAF-Schleife).
 import Icon from '../Icon.astro';
 import { storyScene, pathD, frameCam, type Piece, type Story, type Note } from './story-scene';
 import { scenePalette } from './scene-palette';
@@ -39,18 +41,18 @@ const list = (v?: number[]) => (v?.length ? v.join(' ') : undefined);
   {head && <div class="ss-head post-body" set:html={head.html} />}
   <figure class="ss-fig">
     <span class="ss-bg" aria-hidden="true"></span>
-    <div class="ss-stage" data-stage data-step={LAST} data-frames={JSON.stringify(story.frames)} data-wind={story.wind?.join(' ')} data-sweep={story.sweep?.flat().join(' ')} data-m-sweep={list(motion.sweep)} data-m-wind={list(motion.wind)} data-m-alive={list(motion.alive)} data-m-plain={list(motion.plain)} data-m-off={list(motion.off)} data-m-warm={list(motion.warm)} data-m-beat={motion.beat ? `${motion.beat.steps.join(',')} ${motion.beat.center.join(',')}` : undefined} data-m-assemble={motion.assemble}>
+    <div class="ss-stage" data-stage data-step={LAST} data-frames={JSON.stringify(story.frames)} data-wind={story.wind?.join(' ')} data-sweep={story.sweep?.flat().join(' ')} data-m-sweep={list(motion.sweep)} data-m-wind={list(motion.wind)} data-m-alive={list(motion.alive)} data-m-plain={list(motion.plain)} data-m-off={list(motion.off)} data-m-warm={list(motion.warm)} data-m-beat={motion.beat ? `${motion.beat.steps.join(',')} ${motion.beat.center.join(',')}` : undefined} data-m-assemble={motion.assemble} data-m-signal={list(motion.signal)}>
       <svg viewBox={`0 0 ${VW} ${VH}`} role="img" aria-label={caption}>
         <g class="cam" data-cam style={`--u: 1px; --cx: ${cam.tx}; --cy: ${cam.ty}; --ck: ${cam.k}`}>
-          {story.pieces.map((p, li) => { const st = stateOf(p, LAST); return <g data-key={p.key} data-steps={p.steps.join(' ')} data-dim={p.dim?.join(' ')} data-shift={p.shift ? JSON.stringify(p.shift) : undefined} data-asm={p.asm} data-asmonly={p.asmOnly ? '' : undefined} data-inner={p.inner ? '' : undefined} data-hide={p.hide ? `${p.hide.s.join(' ')} ${p.hide.dy ?? 0}` : undefined} data-after={p.after ? `${p.after.s.join(' ')} ${p.after.dy ?? 0}` : undefined} aria-hidden="true" class:list={['pc', { on: p.steps.includes(LAST) && !p.asmOnly }]} style={`--zc: ${p.zc}; --li: ${li}; --ox: ${p.origin[0]}px; --oy: ${p.origin[1]}px; --ty: ${st.ty}; --s1: ${st.s1}; --s2: ${st.s2}; opacity: ${st.o}`}>
-            {p.shapes.map((s) => s.t === 'circle' ? <circle class={s.cls} cx={s.c[0]} cy={s.c[1]} r={s.r} /> : <path class={s.cls} d={pathD(s)} pathLength={drawn(s.cls) ? 1 : undefined} />)}
+          {story.pieces.map((p, li) => { const st = stateOf(p, LAST); return <g data-key={p.key} data-steps={p.steps.join(' ')} data-dim={p.dim?.join(' ')} data-shift={p.shift ? JSON.stringify(p.shift) : undefined} data-asm={p.asm} data-asmonly={p.asmOnly ? '' : undefined} data-inner={p.inner ? '' : undefined} data-hide={p.hide ? `${p.hide.s.join(' ')} ${p.hide.dy ?? 0}` : undefined} data-after={p.after ? `${p.after.s.join(' ')} ${p.after.dy ?? 0}` : undefined} data-late={p.late ? '' : undefined} aria-hidden="true" class:list={['pc', { on: p.steps.includes(LAST) && !p.asmOnly }]} style={`--zc: ${p.zc}; --li: ${li}; --ox: ${p.origin[0]}px; --oy: ${p.origin[1]}px; --ty: ${st.ty}; --s1: ${st.s1}; --s2: ${st.s2}; opacity: ${st.o}`}>
+            {p.shapes.map((s) => s.t === 'circle' ? <circle class={s.cls} cx={s.c[0]} cy={s.c[1]} r={s.r} /> : <path class={s.cls} d={pathD(s)} pathLength={drawn(s.cls) ? 1 : undefined} data-tl={s.t === 'poly' && s.tl ? s.tl.join(' ') : undefined} />)}
           </g>; })}
           <g class:list={['ss-drones', { 'is-off': motion.off?.includes(LAST), 'is-warm': motion.warm?.includes(LAST), 'is-plain': motion.plain?.includes(LAST) }]} aria-hidden="true">
-            {story.drones.map((d) => { const [x, y, a] = d.pos[LAST]; return <g class="sd" data-pos={d.pos.map((q) => q.join(',')).join(';')} data-w={d.w} data-via={d.via ? JSON.stringify(d.via) : undefined} style={`--c: ${d.c}; --k: ${d.k}; --dx: ${x}; --dy: ${y}; opacity: ${a}`}><g class="sw"><circle class="halo" r="4.2" /><circle class="core" r="1.7" /></g></g>; })}
+            {story.drones.map((d) => { const [x, y, a] = d.pos[LAST]; return <g class="sd" data-pos={d.pos.map((q) => q.join(',')).join(';')} data-w={d.w} data-via={d.via ? JSON.stringify(d.via) : undefined} data-track={d.track?.map((q) => q.join(',')).join(';')} style={`--c: ${d.c}; --k: ${d.k}; --dx: ${x}; --dy: ${y}; opacity: ${a}`}><g class="sw"><circle class="halo" r="4.2" /><circle class="core" r="1.7" /></g></g>; })}
           </g>
         </g>
       </svg>
-      {story.notes.map((n) => <span class:list={['sn', `sn-${n.side}`, { on: n.steps.includes(LAST), 'sn-check': n.check, 'sn-list': n.row !== undefined }]} data-steps={n.steps.join(' ')} data-target={n.target} data-x={n.x} data-y={n.y} style={noteStyle(n)} aria-hidden="true"><i class="sn-dot"></i><span class="sn-pill">{n.check && <Icon name="check" size={13} />}{note(n)}</span></span>)}
+      {story.notes.map((n) => <span class:list={['sn', `sn-${n.side}`, { on: n.steps.includes(LAST), 'sn-check': n.check, 'sn-list': n.row !== undefined, 'sn-late': n.late }]} data-steps={n.steps.join(' ')} data-target={n.target} data-x={n.x} data-y={n.y} style={noteStyle(n)} aria-hidden="true"><i class="sn-dot"></i><span class="sn-pill">{n.check && <Icon name="check" size={13} />}{note(n)}</span></span>)}
     </div>
     <div class="ss-bar">
       <p class="ss-now" aria-hidden="true"><span class="ss-num mono" data-num>{String(steps.filter((b) => b.group === steps.at(-1)?.group).length).padStart(2, '0')}</span><span data-now>{steps.at(-1)?.title}</span></p>
@@ -90,6 +92,7 @@ const list = (v?: number[]) => (v?.length ? v.join(' ') : undefined);
     const OFF = new Set(nums(stage.dataset.mOff)), WARM = new Set(nums(stage.dataset.mWarm));
     const [beatSteps = '', beatAt = ''] = (stage.dataset.mBeat ?? '').split(' ');
     const BEAT = new Set(beatSteps ? beatSteps.split(',').map(Number) : []), [bx = 0, by = 0] = beatAt ? beatAt.split(',').map(Number) : [];
+    const SIGNAL = new Set(nums(stage.dataset.mSignal));
     const LOOP = new Set([...SWEEP, ...WIND, ...ALIVE, ...BEAT]);
     const dronesG = stage.querySelector<SVGGElement>('.ss-drones')!;
     const ASSEMBLE = stage.dataset.mAssemble === undefined ? -1 : Number(stage.dataset.mAssemble);
@@ -97,13 +100,18 @@ const list = (v?: number[]) => (v?.length ? v.join(' ') : undefined);
       el, steps: nums(el.dataset.steps), dim: nums(el.dataset.dim),
       shift: el.dataset.shift ? (JSON.parse(el.dataset.shift) as Record<string, number>) : {},
       hide: nums(el.dataset.hide), after: nums(el.dataset.after), asm: el.dataset.asm === undefined ? null : Number(el.dataset.asm),
-      asmOnly: el.dataset.asmonly !== undefined, inner: el.dataset.inner !== undefined,
+      asmOnly: el.dataset.asmonly !== undefined, inner: el.dataset.inner !== undefined, late: el.dataset.late !== undefined,
     }));
     const D = [...stage.querySelectorAll<SVGGElement>('.sd')].map((el, i) => ({
       el, sw: el.querySelector<SVGGElement>('.sw')!, w: Number(el.dataset.w), ph: i * 1.7, g: 0.7 + ((i * 7919) % 13) / 20,
       via: el.dataset.via ? (JSON.parse(el.dataset.via) as Record<string, [number, number]>) : {},
       pos: el.dataset.pos!.split(';').map((q) => q.split(',').map(Number)),
+      track: el.dataset.track ? el.dataset.track.split(';').map((q) => q.split(',').map(Number)) : null,
+      c0: el.style.getPropertyValue('--c'), led: '' as string | null,
     }));
+    // Lichtblöcke mit Zeitbereich (Musik und Licht): hell, solange der Abspielkopf darüber steht; Farbe für die Drohnen
+    const BARS = [...stage.querySelectorAll<SVGPathElement>('[data-tl]')].map((el) => { const [u0, u1, row] = el.dataset.tl!.split(' ').map(Number); return { el, u0, u1, row, on: false, color: '' }; });
+    const ROWS = BARS.length ? Math.max(...BARS.map((b) => b.row)) + 1 : 0;
     const N = notes.map((el) => ({ el, steps: nums(el.dataset.steps), x: Number(el.dataset.x), y: Number(el.dataset.y) }));
     const streams = [...stage.querySelectorAll<SVGPathElement>('.stream')];
     const playhead = stage.querySelector<SVGPathElement>('.playhead');
@@ -114,6 +122,7 @@ const list = (v?: number[]) => (v?.length ? v.join(' ') : undefined);
 
     // ---------- Kamera ----------
     let W = 1000, H = 470, step = -1, exploded = true, boom = 0, visible = false, frame = 0, t0 = 0, hop = 0;
+    let swept = false, ps = -1, last = 0; // Musik und Licht (sweepTo)
     const camOf = (s: number) => { const [x, y, w, h] = frames[s], k = Math.min(W / w, H / h); return { k, tx: W / 2 - (x + w / 2) * k, ty: H / 2 - (y + h / 2) * k }; };
     const place = () => {
       const c = camOf(Math.max(0, step));
@@ -138,7 +147,7 @@ const list = (v?: number[]) => (v?.length ? v.join(' ') : undefined);
     const paint = (prev: number) => {
       P.forEach((p) => {
         const on = p.steps.includes(step), was = p.steps.includes(prev);
-        p.el.style.transitionDelay = on && !was ? 'var(--ss-enter)' : '0s'; // was kommt, wartet, bis das Gehende kleiner ist
+        p.el.style.transitionDelay = on && !was ? (p.late && !held() ? 'var(--ss-late)' : 'var(--ss-enter)') : '0s'; // was kommt, wartet, bis das Gehende kleiner ist
         const { ty, s1, s2, o } = pose(p, step);
         p.el.style.setProperty('--ty', String(ty)); p.el.style.setProperty('--s1', String(s1)); p.el.style.setProperty('--s2', String(s2)); p.el.style.opacity = String(o);
         p.el.classList.toggle('on', o > 0); // sichtbare Teile tragen .on (Funkwellen, Flugbahnen zeichnen sich nur dann)
@@ -166,13 +175,15 @@ const list = (v?: number[]) => (v?.length ? v.join(' ') : undefined);
       arm(2600);
       // Vorwärts in einen Schritt mit Zwischenhalt: erst alle zugleich zum Zwischenhalt (Abheben, Sinken), dann weiter
       clearTimeout(hop);
-      stage.classList.remove('is-via');
+      stage.classList.remove('is-via', 'is-signal', 'is-rise');
       const at = (el: SVGGElement, x: number, y: number) => { el.style.setProperty('--dx', String(x)); el.style.setProperty('--dy', String(y)); };
       const fly = () => D.forEach((d) => { const [x, y, a] = d.pos[step]; at(d.el, x, y); d.el.style.opacity = String(a); });
+      // Funk (story.motion.signal): am Boden ohne Farbe, Signallinien laufen; danach steigen alle zugleich und leuchten auf
       if (prev === s - 1 && prev >= 0 && D[0]?.via[s] && !held()) {
-        stage.classList.add('is-via');
+        const radio = SIGNAL.has(s);
+        stage.classList.add('is-via'); stage.classList.toggle('is-signal', radio);
         D.forEach((d) => { const v = d.via[s]; at(d.el, v[0], v[1]); d.el.style.opacity = '1'; });
-        hop = window.setTimeout(() => { stage.classList.remove('is-via'); fly(); }, 950);
+        hop = window.setTimeout(() => { stage.classList.remove('is-via', 'is-signal'); stage.classList.toggle('is-rise', radio); fly(); }, radio ? 1700 : 950);
       } else fly();
       place();
       dots.forEach((d) => { const n = Number(d.dataset.goto); if (n === s) d.setAttribute('aria-current', 'step'); else d.removeAttribute('aria-current'); d.classList.toggle('done', n < s); });
@@ -228,7 +239,34 @@ const list = (v?: number[]) => (v?.length ? v.join(' ') : undefined);
     }));
 
     // ---------- Schleifen: Abspielkopf (Software), Wind und Böen (Simulation), leise Eigenbewegung des Sterns ----------
+    // Musik und Licht: der Abspielkopf ist der Taktgeber. Unten werden die Lichtblöcke unter ihm hell, oben folgen die Drohnen
+    // ihm entlang ihrer Bahn (vorwärts bildet sich der Stern, rückwärts löst er sich auf) und tragen die Farbe des Blocks
+    // ihrer Spur; ohne Schleife (reduzierte Bewegung, Pause) steht der Endzustand: alle Blöcke hell, der Stern fertig.
+    function unsweep() {
+      if (!swept) return;
+      swept = false; ps = -1;
+      stage.classList.remove('is-sweeping');
+      BARS.forEach((b) => { b.on = false; b.el.classList.remove('lit'); });
+      D.forEach((d) => { if (!d.track) return; d.led = ''; d.el.style.setProperty('--c', d.c0); d.el.classList.remove('is-dim'); d.sw.style.removeProperty('--wx'); d.sw.style.removeProperty('--wy'); });
+    }
+    function sweepTo(u: number, ms: number) {
+      if (!swept) { swept = true; stage.classList.add('is-sweeping'); BARS.forEach((b) => { if (!b.color) b.color = getComputedStyle(b.el).fill; }); }
+      BARS.forEach((b) => { const on = u >= b.u0 - 0.015 && u <= b.u1 + 0.015; if (on !== b.on) { b.on = on; b.el.classList.toggle('lit', on); } });
+      const lit = Array.from({ length: ROWS }, (_, r) => BARS.find((b) => b.row === r && b.on));
+      // Sternbildung folgt dem Kopf, weich nachgeführt (kein Sprung beim Richtungswechsel)
+      const goal = Math.min(1, Math.max(0, (u - 0.06) / 0.82)), target = goal * goal * (3 - 2 * goal);
+      const dt = last ? Math.min(0.1, (ms - last) / 1000) : 0; last = ms;
+      ps = ps < 0 ? target : ps + (target - ps) * (1 - Math.exp(-dt * 4));
+      D.forEach((d, i) => {
+        if (!d.track) return;
+        const b = lit[Math.floor((i * ROWS) / D.length)], key = b ? b.color : null; // Drohnen nach x sortiert: je Spur ein zusammenhängender Teil des Sterns
+        if (key !== d.led) { d.led = key; if (b) d.el.style.setProperty('--c', b.color); d.el.classList.toggle('is-dim', !b); }
+        const f = ps * (d.track.length - 1), j = Math.min(d.track.length - 2, Math.floor(f)), r = f - j, a = d.track[j], c = d.track[j + 1];
+        d.sw.style.setProperty('--wx', (a[0] + (c[0] - a[0]) * r).toFixed(2)); d.sw.style.setProperty('--wy', (a[1] + (c[1] - a[1]) * r).toFixed(2));
+      });
+    }
     function still() {
+      unsweep(); last = 0;
       D.forEach((d) => { d.sw.style.removeProperty('--wx'); d.sw.style.removeProperty('--wy'); });
       streams.forEach((p) => { p.style.strokeDasharray = ''; p.style.strokeDashoffset = ''; });
       if (playhead) { playhead.style.removeProperty('--hx'); playhead.style.removeProperty('--hy'); }
@@ -241,7 +279,8 @@ const list = (v?: number[]) => (v?.length ? v.join(' ') : undefined);
       if (SWEEP.has(step) && playhead && sweep.length === 4) {
         const u = (Math.sin(t * 0.55 - Math.PI / 2) + 1) / 2;
         playhead.style.setProperty('--hx', String(sweep[0] + (sweep[2] - sweep[0]) * u)); playhead.style.setProperty('--hy', String(sweep[1] + (sweep[3] - sweep[1]) * u));
-      }
+        sweepTo(u, ms);
+      } else { unsweep(); last = 0; }
       if (WIND.has(step)) streams.forEach((p, i) => {
         // jede Linie zeichnet sich von Luv nach Lee und läuft dann aus; leicht versetzt
         const q = ((t + 0.11 * ((i * 5) % 8)) / T) % 1, head = Math.min(1, q / 0.62), tail = Math.max(0, Math.min(1, (q - 0.34) / 0.62));
@@ -263,7 +302,7 @@ const list = (v?: number[]) => (v?.length ? v.join(' ') : undefined);
           if (beat) { const [px, py] = d.pos[step]; x += (px - bx) * beat; y += (py - by) * beat; }
           d.sw.style.setProperty('--wx', x.toFixed(2)); d.sw.style.setProperty('--wy', y.toFixed(2));
         });
-      } else D.forEach((d) => { d.sw.style.removeProperty('--wx'); d.sw.style.removeProperty('--wy'); });
+      } else if (!swept) D.forEach((d) => { d.sw.style.removeProperty('--wx'); d.sw.style.removeProperty('--wy'); });
       frame = requestAnimationFrame(loop);
     }
     function run() { if (!frame && visible && !held() && !document.hidden && LOOP.has(step)) frame = requestAnimationFrame(loop); else if (!LOOP.has(step) || held()) still(); }
@@ -277,7 +316,7 @@ const list = (v?: number[]) => (v?.length ? v.join(' ') : undefined);
   /* Zwei Formen nach Bildschirmform (Marc, Prototyp 2/3): Standard auf Desktop und Laptop ist die Szene rechts neben der
      Lesespalte, mitlaufend. Hochkant, schmal oder ab 1200 px Fensterhöhe klebt sie oben über dem Text, etwa halb so hoch
      wie in Prototyp 2 (Marc: bleibt eindrücklich, lässt mehr Raum zum Lesen). Breite wie die hervorgehobenen Elemente des Artikels (--feature-w, BlogPost). */
-  .ss { --ss-enter: var(--dur-scene-enter); --ss-stage-h: clamp(11rem, 28svh, 19rem); --ss-fade: clamp(var(--space-12), 9svh, var(--space-20, 5rem)); width: 100%; max-width: min(var(--feature-w, 76rem), 100%); display: grid; justify-items: center; margin-block: clamp(var(--space-10), 5vw, var(--space-16)) 0; }
+  .ss { --ss-enter: var(--dur-scene-enter); --ss-late: calc(var(--dur-scene-morph) + var(--dur-branch)); --ss-stage-h: clamp(11rem, 28svh, 19rem); --ss-fade: clamp(var(--space-12), 9svh, var(--space-20, 5rem)); width: 100%; max-width: min(var(--feature-w, 76rem), 100%); display: grid; justify-items: center; margin-block: clamp(var(--space-10), 5vw, var(--space-16)) 0; }
   .ss-head, .ss-text { width: 100%; max-width: var(--measure, 42rem); }
   /* Der Schritttitel in der Leiste darf die Spalte des Artikels nicht weiten (nowrap, Auslassung) */
   .ss, .ss-fig, .ss-bar, .ss-now { min-width: 0; }
@@ -315,6 +354,8 @@ const list = (v?: number[]) => (v?.length ? v.join(' ') : undefined);
   .sd { transform: translate(calc(var(--dx) * var(--u)), calc(var(--dy) * var(--u))); transition: transform var(--dur-scene-drone) var(--ease-scene) calc(var(--k) * var(--dur-stagger-drone)), opacity var(--dur-reveal) var(--ease-out) calc(var(--k) * var(--dur-stagger-drone)); }
   /* Zwischenhalt (story.drones.via): alle zugleich, ohne Versatz */
   .is-via .sd { transition: transform var(--dur-slow-long) var(--ease-scene), opacity var(--dur-underline) var(--ease-out); }
+  /* Aufstieg nach dem Funk (story.motion.signal): alle zugleich, ohne Versatz */
+  .is-rise .sd { transition: transform var(--dur-scene-drone) var(--ease-scene), opacity var(--dur-reveal) var(--ease-out); }
   .is-reset, .is-reset * { transition: none !important; }
 
   /* Zeichnung: Vokabular der Standortzeichnung (Startseite), etwas gröber und ruhiger */
@@ -344,7 +385,10 @@ const list = (v?: number[]) => (v?.length ? v.join(' ') : undefined);
   .led-core { fill: #fff3df; animation: ss-led-core var(--dur-led) var(--ease-default) infinite; }
   @keyframes ss-led { 0%, 100% { fill: var(--logo-amber); } 33% { fill: var(--logo-orchid); } 66% { fill: var(--cyan); } }
   @keyframes ss-led-core { 0%, 100% { fill: #ffe2bf; } 33% { fill: #f7d6fb; } 66% { fill: #d4fbfd; } }
-  .bar { stroke: none; }
+  .bar { stroke: none; transition: opacity var(--dur-fade) var(--ease-out); }
+  /* Musik und Licht: solange der Abspielkopf läuft, ist nur der Block unter ihm hell */
+  .is-sweeping .bar:not(.lit) { opacity: 0.22; }
+  .audio { fill: none; stroke: color-mix(in srgb, var(--zc) 55%, transparent); stroke-width: 0.5; stroke-linejoin: round; }
   .bar-0 { fill: var(--logo-amber); } .bar-1 { fill: #f58a5a; } .bar-2 { fill: #ec7f95; } .bar-3 { fill: var(--logo-orchid); } .bar-4 { fill: #b88bec; } .bar-5 { fill: var(--logo-blue); } .bar-6 { fill: #6fc8ef; } .bar-7 { fill: var(--cyan); }
   .track { fill: none; stroke: color-mix(in srgb, var(--zc) 40%, transparent); stroke-width: 0.6; }
   .tick { fill: none; stroke: color-mix(in srgb, var(--zc) 14%, transparent); stroke-width: 0.5; }
@@ -369,6 +413,14 @@ const list = (v?: number[]) => (v?.length ? v.join(' ') : undefined);
   .pc.on .wave:nth-of-type(2) { animation-delay: var(--dur-enter); } .pc.on .wave:nth-of-type(3) { animation-delay: var(--dur-slow); }
   @keyframes ss-wave { 0% { opacity: 0; transform: scale(0.6); } 25% { opacity: 1; } 100% { opacity: 0; transform: scale(1.25); } }
   .link { fill: none; stroke: color-mix(in srgb, var(--zc) 40%, transparent); stroke-width: 0.7; stroke-dasharray: 2 4; }
+  /* Signale der Bodenstation: gestrichelt, die Striche laufen von der Station zu den Drohnen. Am Boden (Funk vor dem
+     Aufstieg) zu den Drohnen im Startraster, danach weich zu denselben Drohnen im Stern */
+  .signal { fill: none; stroke: color-mix(in srgb, var(--zc) 60%, transparent); stroke-width: 0.7; stroke-dasharray: 2 4; transition: opacity var(--dur-fade) var(--ease-out) var(--dur-slow); }
+  .pc.on .signal { animation: ss-signal var(--dur-twinkle) var(--ease-linear) infinite; }
+  @keyframes ss-signal { to { stroke-dashoffset: -12; } }
+  .signal-ground { opacity: 0; transition-delay: 0s; }
+  .is-signal .signal-ground { opacity: 1; }
+  .is-signal .signal-sky { opacity: 0; transition-delay: 0s; }
   .mesh-back { fill: none; stroke: color-mix(in srgb, var(--zc) 32%, transparent); stroke-width: 0.6; stroke-dasharray: 3 3; }
   .mesh-edge { fill: none; stroke: color-mix(in srgb, var(--zc) 40%, transparent); stroke-width: 0.6; }
   .mesh-front { fill: color-mix(in srgb, var(--zc) 10%, transparent); stroke: var(--zc); stroke-width: 1.1; stroke-linejoin: round; }
@@ -392,7 +444,7 @@ const list = (v?: number[]) => (v?.length ? v.join(' ') : undefined);
   .keepout { fill: none; stroke: var(--zc); stroke-width: 0.9; stroke-dasharray: 2 3; opacity: 0.75; }
 
   /* Drohnen */
-  .sd .core { fill: var(--c); transition: fill var(--dur-slow) var(--ease-scene); }
+  .sd .core { fill: var(--c); transition: fill var(--dur-slow) var(--ease-scene), opacity var(--dur-fade) var(--ease-out); }
   .sd .halo { fill: var(--c); opacity: 0.2; transition: opacity var(--dur-slow) var(--ease-scene); }
   /* Drohnen ohne Farbe (am Boden, story.motion.plain) */
   .is-plain .sd .core { fill: var(--head); }
@@ -402,11 +454,18 @@ const list = (v?: number[]) => (v?.length ? v.join(' ') : undefined);
   .is-off .sd .halo { opacity: 0; }
   .is-warm .sd .core { fill: #fff3df; }
   .is-warm .sd .halo { fill: #fff3df; opacity: 0.14; }
+  /* Funk am Boden: gedämpft, ohne Farbe; beim Aufstieg leuchten sie auf (Übergang der Füllung) */
+  .is-signal .sd .core { fill: rgb(var(--rgb-head) / 50%); }
+  .is-signal .sd .halo { opacity: 0; }
+  /* Musik und Licht: Drohne, deren Spur gerade keinen Lichtblock unter dem Kopf hat */
+  .sd.is-dim .core { opacity: 0.4; }
+  .sd.is-dim .halo { opacity: 0.05; }
 
 
   /* Annotationen: Punkt am Teil, Pille daneben (feste Größe, lesbar auf jeder Breite); Listen stehen untereinander */
   .sn { position: absolute; left: var(--x); top: var(--y); width: 0; height: 0; opacity: 0; visibility: hidden; transition: opacity var(--dur-fade) var(--ease-out), visibility 0s var(--dur-fade); }
   .sn.on { opacity: 1; visibility: visible; transition-delay: var(--dur-note-delay), 0s; }
+  .sn.on.sn-late { transition-delay: calc(var(--ss-late) + var(--dur-note-delay)), 0s; }
   .sn-dot { position: absolute; left: -0.21875rem; top: -0.21875rem; width: 0.4375rem; height: 0.4375rem; border-radius: var(--radius-round); background: var(--head); box-shadow: 0 0 0 0.1875rem rgb(var(--rgb-head) / 16%); }
   .sn-pill { position: absolute; top: 0; transform: translateY(-50%); display: inline-flex; align-items: center; gap: var(--space-1-5); white-space: nowrap; padding: var(--space-1) var(--space-2-5); border-radius: var(--radius-pill); background: var(--ground); border: 1px solid var(--line-strong); color: var(--head); font: 500 var(--text-xs)/1.2 var(--display); }
   .sn-r .sn-pill { left: 1rem; }
@@ -457,8 +516,8 @@ const list = (v?: number[]) => (v?.length ? v.join(' ') : undefined);
   .ss-chapter { padding-top: var(--space-10); border-top: 1px solid var(--line); margin-bottom: var(--space-10); }
   .ss-chapter :global(h2) { margin: 0; }
 
-  @media (prefers-reduced-motion: reduce) { .cam, .pc, .sd, .sd *, .sn { transition: none !important; } .wave, .path, .lift, .led-glow, .led-halo, .led-core { animation: none !important; } }
-  :global(.motion-paused) :is(.wave, .path, .lift, .led-glow, .led-halo, .led-core) { animation: none !important; }
+  @media (prefers-reduced-motion: reduce) { .cam, .pc, .sd, .sd *, .sn { transition: none !important; } .wave, .path, .lift, .signal, .led-glow, .led-halo, .led-core { animation: none !important; } .sn.on.sn-late { transition-delay: 0s; } }
+  :global(.motion-paused) :is(.wave, .path, .lift, .signal, .led-glow, .led-halo, .led-core) { animation: none !important; }
 
   /* Querformat: Text in der Lesespalte links (etwa 10 Zeichen schmaler als der Artikel), die Szene rechts daneben klebt
      über die Bildschirmhöhe und läuft mit; keine Fläche, keine Verläufe nötig */

@@ -1,6 +1,7 @@
 // Cornerstone „Wie programmiert man eine Drohnenshow?“ (Runde 15, Prototypen 1–3 mit Marc, 21./22.11.2026). Medien:
 // tools/blog/cornerstone-media.json → public/media/blog/wie-programmiert-man-eine-drohnenshow/. Texte: ui.json unter
-// cornerstone.programmieren.*. Szene: story-scene.ts (neun Schritte: vier Bausteine, fünf Ablaufschritte).
+// cornerstone.programmieren.*. Szene: story-scene.ts (Runde 19: sieben Schritte, zwei Werkzeuge „Womit wir arbeiten“ und
+// fünf Schritte „Wie eure Show entsteht“).
 import { defineCornerstone } from '../types';
 import { storyScene } from '../../story-scene';
 import { scenePalette } from '../../scene-palette';
@@ -23,7 +24,7 @@ export default defineCornerstone({
       { src: `${M}bluete.webp`, width: 960, height: 1200, alt: 'photoBlossom' },
       { src: `${M}doppelherz.webp`, width: 960, height: 1200, alt: 'photoHeart' },
     ], caption: 'photoRowCaption', focus: '20% 80%' },
-    { kind: 'story', sections: [2, 3], scene: () => storyScene(scenePalette), groups: ['groupBlocks', 'groupFlow'], label: 'sceneLabel', caption: 'sceneCaption' },
+    { kind: 'story', sections: [2, 3], scene: () => storyScene(scenePalette), groups: ['groupTools', 'groupFlow'], label: 'sceneLabel', caption: 'sceneCaption' },
     { kind: 'finale', section: 4 },
   ],
 });

@@ -11,7 +11,7 @@ for (const [locale, path, led] of PAGES) {
   test(`Cornerstone ${locale}: Szene, Fotos, Formation, Suche`, async ({ page }) => {
     await page.goto(path);
     await expect(page.locator('[data-ss]')).toHaveCount(1);
-    await expect(page.locator('.ss-step')).toHaveCount(9);
+    await expect(page.locator('.ss-step')).toHaveCount(7); // Runde 19: Werkzeug (2) + Ablauf (5)
     await expect(page.locator('.ap img')).toHaveCount(4);
     await expect(page.locator('[data-ff] .ff-poster')).toHaveCount(1);
     await expect(page.locator('.sn-pill', { hasText: led })).toHaveCount(1);
@@ -58,11 +58,26 @@ test('Szene folgt dem Lesen und ruht bei reduzierter Bewegung', async ({ page })
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto(`/blog/${CS}/`);
   const stage = page.locator('[data-stage]');
-  for (const step of [0, 2, 8]) {
+  for (const step of [0, 2, 6]) {
     await page.locator('.ss-step').nth(step).scrollIntoViewIfNeeded();
     await page.evaluate((i) => { const m = document.querySelectorAll('.ss-step')[i]; scrollBy({ top: m.getBoundingClientRect().top - innerHeight * 0.3, behavior: 'instant' }); }, step);
     await expect(stage).toHaveAttribute('data-step', String(step));
   }
   // reduzierte Bewegung: keine Eigenbewegung der Drohnen
   expect(await page.locator('.sd .sw').evaluateAll((els) => els.filter((e) => (e as SVGElement).style.transform).length)).toBe(0);
+});
+
+test('Musik und Licht: der Abspielkopf treibt Lichtblöcke und Sternbildung, reduziert steht der Endzustand', async ({ page }) => {
+  await page.goto(`/blog/${CS}/`);
+  const stage = page.locator('[data-stage]');
+  await page.evaluate(() => { const m = document.querySelectorAll('.ss-step')[4]; scrollBy({ top: m.getBoundingClientRect().top - innerHeight * 0.3, behavior: 'instant' }); });
+  await expect(stage).toHaveAttribute('data-step', '4');
+  await expect(stage).toHaveClass(/is-sweeping/);
+  // ein Block je Spur höchstens hell, die Drohnen folgen dem Kopf über ihren Versatz
+  await expect.poll(() => page.locator('.bar.lit').count()).toBeGreaterThan(0);
+  expect(await page.locator('.bar.lit').count()).toBeLessThanOrEqual(5);
+  await expect.poll(() => page.locator('.sd .sw').evaluateAll((els) => els.filter((e) => (e as SVGElement).style.getPropertyValue('--wx')).length)).toBeGreaterThan(0);
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await expect(stage).not.toHaveClass(/is-sweeping/);
+  expect(await page.locator('.bar.lit').count()).toBe(0);
 });
