@@ -95,6 +95,21 @@ export default defineCornerstone({
   Werkzeug und Labor-Bildern entfernt: die Titelbilder sind entschieden und produktiv; `tools/labor/lichtraster.mjs` bleibt
   (Rezept-Werkzeug).
 
+## Runde 19 (22.11.2026): Texte in Wir-Form, Vorher-Fassungen
+
+- Alle drei Artikel neu geschrieben (DE/EN/NL) im Ton der Seite: FlyingStars als „wir“, Lesende als „ihr“, nur belegte Fakten
+  (Fragebogen 21.10. mit Korrekturen, Seitentexte, FAQ). Keine Softwarenamen (nicht belegt), kein Herstellername (Moritz,
+  Runde 14: FlyingStars prüft auch andere Hersteller). Der Programmier-Artikel erzählt einen Durchgang statt „Bausteine“ plus
+  „Ablauf“; seine Szene hat dafür 7 Schritte (Werkzeug: Drohne, Bodenstation; Ablauf: Idee, Flugbahn, Musik und Licht,
+  Simulation, Showabend). Der Feuerwerk-Artikel hat nur noch einen Schluss (5 statt 6 Zwischentitel).
+- Vorher-Fassungen zum Vergleich: alter Text unverändert in `src/labor/blog-vorher/`, Seite `/blog-vorher/<post-id>/`
+  (`src/pages/blog-vorher/[slug].astro`), nur Deutsch, normales Blogformat, noindex, nicht im Blog, nicht in der Sitemap.
+  Nach Marcs Entscheidung Ordner und Seite löschen.
+- Fotoreihe am Handy: Pfeile liegen links und rechts auf den Bildern (`SliderNav` Variante `on-media`, global.css), die
+  Bildunterschrift steht direkt unter dem Bild.
+- Zwischentitel am Anfang eines Blocks (Textblock, Szenenschritt, Kapitel) haben keinen eigenen Abstand; einspaltig stehen
+  Szenenschritte enger (vorher am iPhone 82 px vor jedem Zwischentitel, bis 167 px zwischen Schritten).
+
 ## Prüfen
 
 `tests/cornerstone.spec.ts` (alle drei Artikel in DE/EN/NL, reduzierte Bewegung), `scripts/cornerstone-plan.test.mjs`
