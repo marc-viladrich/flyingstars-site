@@ -1,0 +1,14 @@
+---
+// Labor (nur im Dev-Server, nie im Build, wie labor/blog-artikel): zwei weitere Cornerstone-Artikel im Format des Prototyps
+// „Wie programmiert man eine Drohnenshow?“ (Runde 18, 22.11.2026). Je Artikel eine eigene Komposition in
+// components/labor/cornerstone/, Begründungen dort und in der Labor-Notiz unter dem Artikel.
+import FunktionArtikel from '../../../components/labor/cornerstone/FunktionArtikel.astro';
+import FeuerwerkArtikel from '../../../components/labor/cornerstone/FeuerwerkArtikel.astro';
+
+export function getStaticPaths() {
+  if (!import.meta.env.DEV) return [];
+  return [{ params: { slug: 'wie-funktioniert-eine-drohnenshow' } }, { params: { slug: 'drohnen-als-alternative-zum-feuerwerk' } }];
+}
+const { slug } = Astro.params;
+---
+{slug === 'wie-funktioniert-eine-drohnenshow' ? <FunktionArtikel /> : <FeuerwerkArtikel />}
