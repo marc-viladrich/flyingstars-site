@@ -19,12 +19,13 @@
 //             erster und letzter Punkt saßen auf der Zahl statt auf der Linie, die Linie endete vor dem letzten Eintrag)
 //   deco      kleines Schmuckelement (Punkt, Icon, aria-hidden, ≤ 90 px) liegt auf fremdem sichtbarem Text
 //   text-overlap (Textüberlagerung) sichtbare Textrechtecke verschiedener Rasterzellen überlagern sich
+//   legal-centre rechtliche Links im Footer nicht exakt in der Seitenmitte (> 1 px; nur wenn die Fußzeile nebeneinander steht, Marc 22.11.2026)
 // Aufruf: node scripts/layout-audit.mjs [basis-url] [--start=/en/] [--widths=390,1440,1920] [--only=orphan,contain] [--browser=webkit]
 // Ohne Basis-URL: http://127.0.0.1:4391. Die Seiten kommen aus den Links der Startseite und des Footers (Crawl, max. 200; --start begrenzt auf diesen Pfadpräfix).
 import { pathToFileURL } from 'node:url';
 import { chromium, webkit } from 'playwright';
 
-const categories = ['orphan', 'contain', 'empty-h', 'overflow', 'cta', 'hero-top', 'head-gap', 'head-size', 'rail', 'deco', 'text-overlap'];
+const categories = ['orphan', 'contain', 'empty-h', 'overflow', 'cta', 'hero-top', 'head-gap', 'head-size', 'rail', 'deco', 'text-overlap', 'legal-centre'];
 
 // Self-contained so Playwright can run the same inspection in the crawl and in fixtures.
 export function inspectLayout({ checks }) {
@@ -54,11 +55,11 @@ export function inspectLayout({ checks }) {
   }
   if (checks.includes('hero-top')) { const main = document.querySelector('main.page-top'); const first = main?.querySelector('.kicker, h1');
     if (first && !main.querySelector('.page-404')) { const probe = document.createElement('div'); probe.style.height = 'var(--hero-top)'; document.body.append(probe); const want = probe.offsetHeight; probe.remove();
-      // Runde 20f (Marc, 22.11.2026): in den Bildköpfen der Anlass-Seiten und Über uns (.lh) stehen Text und Bild vertikal
-      // mittig zueinander; ist das Bild höher als der Text, beginnt die erste Zeile darum tiefer als --hero-top
-      const lh = first.closest('.lh'), cb = lh?.querySelector('.lh-copy')?.getBoundingClientRect(), mb = lh?.querySelector('.lh-media')?.getBoundingClientRect();
-      const centred = cb && mb && cb.left !== mb.left && Math.abs((cb.top + cb.bottom) / 2 - (mb.top + mb.bottom) / 2) <= 3;
-      const top = first.getBoundingClientRect().top + scrollY; if (Math.abs(top - want) > 3 && !centred) r.push({ k: 'hero-top', what: `${name(first)} beginnt bei ${Math.round(top)} statt ${want}` }); } }
+      const top = first.getBoundingClientRect().top + scrollY; if (Math.abs(top - want) > 3) r.push({ k: 'hero-top', what: `${name(first)} beginnt bei ${Math.round(top)} statt ${want}` }); } }
+  // Marc, 22.11.2026: die rechtlichen Links im Footer stehen exakt in der Seitenmitte (nebeneinander-Layout, nicht am Handy)
+  if (checks.includes('legal-centre')) { const base = document.querySelector('.footer .base'), nav = base?.querySelector('nav');
+    if (nav && getComputedStyle(base).display === 'grid') { const n = nav.getBoundingClientRect(), mid = document.documentElement.clientWidth / 2;
+      if (Math.abs((n.left + n.right) / 2 - mid) > 1) r.push({ k: 'legal-centre', what: `Footer-Links ${Math.round((n.left + n.right) / 2 - mid)} px neben der Mitte` }); } }
   if (checks.includes('empty-h')) for (const h of document.querySelectorAll('h1,h2,h3,h4')) if (!h.textContent.trim() && !h.querySelector('img,svg[aria-label]')) r.push({ k: 'empty-h', what: name(h) });
   if (checks.includes('orphan')) {
     for (const el of document.querySelectorAll('main :is(p,h1,h2,h3,h4,li,dd,figcaption,blockquote,.lead)')) {

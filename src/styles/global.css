@@ -605,7 +605,11 @@ td.us { color: var(--text); background: var(--fill-soft); }
 .footer .social a { display: inline-flex; align-items: center; gap: var(--space-2-5); }
 .footer .social .ico { width: 1.125rem; height: 1.125rem; }
 .footer address { font-style: normal; color: var(--muted); font-size: var(--text-control); display: grid; gap: var(--space-3-5); }
-.footer .base { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--space-3); padding-top: var(--space-6); border-top: 1px solid var(--line); color: var(--faint); }
+/* Rechtliche Links exakt in der Seitenmitte (Marc, 22.11.2026): zwei gleich breite Außenspalten statt space-between, das
+   ungleich breite Copyright links und der Cookie-Knopf rechts verschieben die Mitte sonst; am Handy wie bisher umbrechend */
+.footer .base { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: var(--space-3); padding-top: var(--space-6); border-top: 1px solid var(--line); color: var(--faint); }
+.footer .base > .consent-reopen { justify-self: end; }
+@media (--mobile) { .footer .base { display: flex; flex-wrap: wrap; justify-content: space-between; } }
 .footer .base nav { display: flex; flex-wrap: wrap; gap: var(--space-4-5); }
 .footer .eco { margin: 0; display: flex; align-items: center; gap: var(--space-3); color: var(--muted); font-size: var(--text-sm); }
 

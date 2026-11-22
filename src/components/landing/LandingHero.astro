@@ -114,9 +114,9 @@ const showLabels = { hochzeitHero: t('landinghero.weddingShowLabel') };
   .lh { position: relative; display: grid; grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr); gap: clamp(var(--space-8), 5vw, var(--space-20)); align-items: center; padding: clamp(var(--space-9), 6vw, var(--space-22)) var(--gutter) clamp(var(--space-14), 7vw, var(--space-28)); overflow: hidden; }
   /* ruhiges Leuchten hinter dem Rahmen, wie Restlicht einer Show */
   .lh::before { content: ""; position: absolute; right: -10%; top: 0; width: 70%; height: 100%; background: radial-gradient(closest-side, rgb(var(--rgb-logo-orchid) / 0.12), rgb(var(--rgb-cyan) / 0.04) 60%, transparent); pointer-events: none; }
-  /* Text und Bild vertikal mittig zueinander (Runde 20f, Marc 22.11.2026, löst Runde 18 „Text oben“ ab): ist das Bild höher
-     als der Text (ab etwa 1920 px), beginnt die erste Zeile tiefer als --hero-top; layout-audit prüft dann die Mitte */
-  .lh-copy { position: relative; display: grid; gap: var(--space-5-5); justify-items: start; }
+  /* Text oben am Bild, damit die erste Zeile auf jeder Seite auf --hero-top steht, auch wenn das Bild höher ist (Runde 18;
+     Runde 20f probierte „mittig“, Marc 22.11.2026: zurück auf oben) */
+  .lh-copy { position: relative; display: grid; gap: var(--space-5-5); justify-items: start; align-self: start; }
   /* Kicker in der h1 (Moritz' Keyword-Zeile), Abstand wie vorher außerhalb */
   .lh-copy h1 > .kicker { margin: 0 0 var(--space-3); }
   /* Unter 400 px folgt die Größe der Zeilenbreite (10vw), sonst setzt die Mindestgröße lange Komposita einzeln
