@@ -41,3 +41,13 @@ export async function importInStages(...loaders) {
   }
   return value;
 }
+
+/** Resolves once the page has loaded and its high-priority images (the LCP candidates) are decoded and painted (two
+ * frames later). WebKit often paints the hero still only after `load`; an engine requested in that frame counts as
+ * loading before the LCP (tests/landing-hero-show.spec.ts). Runde 20f. */
+export function afterHeroPaint() {
+  const loaded = document.readyState === 'complete' ? Promise.resolve() : new Promise((res) => addEventListener('load', () => res(), { once: true }));
+  return loaded
+    .then(() => Promise.all([...document.querySelectorAll('img[fetchpriority="high"]')].map((img) => img.decode().catch(() => undefined))))
+    .then(() => new Promise((res) => requestAnimationFrame(() => requestAnimationFrame(() => res()))));
+}

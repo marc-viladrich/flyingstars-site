@@ -96,8 +96,11 @@ const labels = {
 </div>
 
 <script>
-  import { whenNear, importInStages } from '../../scripts/when-near.mjs';
-  for (const root of document.querySelectorAll<HTMLElement>('[data-cft-root]')) {
+  import { whenNear, importInStages, afterHeroPaint } from '../../scripts/when-near.mjs';
+  // Runde 20f: erst beobachten, wenn das Standbild des Seitenkopfs gemalt ist. Liegt der Teaser innerhalb des Vorlaufs
+  // (Hochzeit: 1434 px bei 1280 × 720), lud er die Engine sonst beim ersten Bild, vor dem LCP (WebKit,
+  // tests/landing-hero-show.spec.ts „vor dem LCP“)
+  afterHeroPaint().then(() => { for (const root of document.querySelectorAll<HTMLElement>('[data-cft-root]')) {
     // 18.11.2026 (Ruckeln an der Grenze in Safari): mit großem Vorlauf laden (rund 2,5 s Lesen bei ruhigem Scrollen) und den
     // Aufbau in Stücken erledigen, bevor die Bühne ins Bild kommt; vorher waren es 300 px und ein Aufbau am Stück.
     // Runde 6: die Modulkette in Stufen auswerten (am Stück ein Long Task von 53 ms an nachhaltigkeit → ablauf, 4× Drossel)
@@ -111,5 +114,5 @@ const labels = {
       // Start im nächsten Bild: createField misst die Bühne (getBoundingClientRect); im requestAnimationFrame teilt sich das
       // die Layout-Arbeit mit dem Bild, statt mitten im Scrollen ein zusätzliches Layout zu erzwingen
     ).then((m) => new Promise((resolve) => requestAnimationFrame(() => resolve(m.initTeaser(root))))), { rootMargin: '1500px 0px' });
-  }
+  } });
 </script>

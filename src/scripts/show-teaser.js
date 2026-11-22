@@ -98,12 +98,21 @@ export const REELS = {
     QR,
     { occasion: "launch", motif: "satellit", drones: [400], beats: [0, -1] }, // im Orbit, dann der Lichtimpuls zur Erde
   ] },
-  // Runde 14 (Marc und Moritz, 21.11.2026): Herz, Ring an der Hand und Sektgläser spielen jetzt im Seitenkopf der
-  // Hochzeitsseite (hochzeitHero). Der Teaser weiter unten („So einzigartig wie eure Lovestory“: Initialen, Liebesschwüre)
-  // zeigt darum die übrigen Hochzeitsmotive. Runde 15: die Sektflasche ist raus (der Seitenkopf zeigt jetzt den Sektkorken),
-  // dafür der Schmetterling 2D → 3D+; vom Blütenspalier nur der Anfang und die Ringe am Ende des Wegs.
-  hochzeit: { still: 3, label: message('configuratorteaser.initialsInsideAHeartAHeartIn2dAsA'), items: [
+  // Runde 14 (Marc und Moritz, 21.11.2026): Herz, Ring an der Hand und Sektgläser spielten nur im Seitenkopf der
+  // Hochzeitsseite (hochzeitHero), der Teaser zeigte die übrigen Hochzeitsmotive. Runde 20f (Marc, 22.11.2026: „deutlich mehr
+  // Motive aus dem tatsächlichen Konfigurator … die unterschiedliche Range“): Doppelungen mit dem Seitenkopf sind ausdrücklich
+  // erwünscht. Der Teaser zeigt jetzt die wichtigsten Hochzeitsmotive mit ihren Steigerungen, auch 3D+, das die meisten Paare
+  // nicht wählen (die Show stellen sie sich selbst zusammen): Herz 2D → Herztunnel → Amors Pfeil, Eheringe 2D → Solitär 3D,
+  // der Ring an der Hand, Sektgläser 2D → 3D, Torte 2D → 3D, Sektflasche 3D → Korkenknall 3D+. Die Arten wechseln sich ab,
+  // damit jede Pill-Wahl („Art der Show“) genug eigene Motive behält.
+  hochzeit: { still: 1, label: message('configuratorteaser.initialsInsideAHeartAHeartIn2dAsA'), items: [
     { occasion: "hochzeit", kind: "text", value: "Anna & Ben", style: "initials", drones: [100, 200, 300], beats: [0], note: [message('showTeaser.yourInitials'), message('showTeaser.inTheSky')] },
+    { occasion: "hochzeit", motif: "herz", drones: [100, 200, 300] }, // Herz 2D → Herztunnel (3D) → Amors Pfeil (3D+)
+    { occasion: "hochzeit", motif: "ring", drones: [100, 200] }, // Eheringe 2D → Solitär 3D
+    { occasion: "hochzeit", motif: "antrag", drones: [300], beats: [-2, -1] }, // der Ring findet den Ringfinger (3D+)
+    { occasion: "hochzeit", motif: "glaeser", drones: [100, 200] }, // anstoßende Gläser 2D → Sektgläser 3D mit Perlen
+    { occasion: "hochzeit", motif: "torte", drones: [100, 200] }, // Hochzeitstorte 2D → 3D
+    { occasion: "silvester", motif: "sekt", drones: [200, 300] }, // Sektflasche 3D, dann knallt der Korken (3D+)
     { occasion: "hochzeit", motif: "unendlich", drones: [150, 250] },
     { occasion: "hochzeit", motif: "falter", drones: [150, 400] }, // Schmetterling 2D, dann landet er auf der Blüte (3D+)
     { occasion: "hochzeit", motif: "spalier", drones: [500], beats: [0, -1] },
@@ -115,7 +124,7 @@ export const REELS = {
   // (der erste Tanz spielt in 3D ab 300). Kein Wireframe, ruhiger als der Teaser (HERO_RATE).
   // Runde 15 (Marc: „zu kurz, zu klein, zu wenig abwechslungsreich“): dazu der Sektkorkenknall und die Pralinenschachtel in
   // 3D+ (die meisten Paare wählen das nicht, es zeigt aber, was möglich ist); rund 50 s statt 35 s, Motive größer (HERO_ZOOM).
-  // Kein Motiv doppelt mit dem Hochzeit-Teaser darunter (REELS.hochzeit).
+  // Runde 20f: Doppelungen mit dem Hochzeit-Teaser darunter (REELS.hochzeit) sind erwünscht.
   hochzeitHero: { still: 1, label: "", items: [
     { occasion: "hochzeit", motif: "herz", drones: [100, 200] }, // Herz in 2D → Herztunnel
     { occasion: "hochzeit", motif: "antrag", drones: [300], beats: [-2, -1] }, // der Ring findet den Ringfinger, „Ja“

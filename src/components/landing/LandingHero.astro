@@ -79,13 +79,12 @@ const showLabels = { hochzeitHero: t('landinghero.weddingShowLabel') };
 </script>
 
 <script>
-  import { importInStages } from '../../scripts/when-near.mjs';
+  import { importInStages, afterHeroPaint } from '../../scripts/when-near.mjs';
   // Formationen statt Video (Runde 14): erst nach dem Laden der Seite und im Leerlauf, damit vor dem LCP weder Szenen noch
   // Katalogdaten laden (tools/himmel/perf-start.mjs); die Modulkette in Stufen wie beim Konfigurator-Teaser. Reduzierte
   // Bewegung: das Standbild bleibt, die Engine lädt nicht. Globale Pause: lädt erst, wenn die Pause aufgehoben wird.
   const hosts = document.querySelectorAll<HTMLElement>('[data-lh-show]');
   const idle = () => new Promise<void>((res) => ('requestIdleCallback' in window ? requestIdleCallback(() => res(), { timeout: 1200 }) : setTimeout(res, 200)));
-  const afterLoad = () => new Promise<void>((res) => (document.readyState === 'complete' ? res() : addEventListener('load', () => res(), { once: true })));
   const paused = () => document.documentElement.classList.contains('motion-paused');
   // der Pause-Knopf der Kopfzeile meldet jeden Wechsel (src/scripts/site.ts)
   const whenPlaying = () => new Promise<void>((res) => {
@@ -94,7 +93,7 @@ const showLabels = { hochzeitHero: t('landinghero.weddingShowLabel') };
     document.addEventListener('flyingstars:motion-change', resume);
   });
   if (hosts.length && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    afterLoad().then(idle).then(whenPlaying).then(() => importInStages(
+    afterHeroPaint().then(idle).then(whenPlaying).then(() => importInStages(
       () => import('../../scripts/show-field.js'),
       () => import('../../scripts/show-scenes.js'),
       () => import('../../scripts/scenes/index.js'),
@@ -115,8 +114,9 @@ const showLabels = { hochzeitHero: t('landinghero.weddingShowLabel') };
   .lh { position: relative; display: grid; grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr); gap: clamp(var(--space-8), 5vw, var(--space-20)); align-items: center; padding: clamp(var(--space-9), 6vw, var(--space-22)) var(--gutter) clamp(var(--space-14), 7vw, var(--space-28)); overflow: hidden; }
   /* ruhiges Leuchten hinter dem Rahmen, wie Restlicht einer Show */
   .lh::before { content: ""; position: absolute; right: -10%; top: 0; width: 70%; height: 100%; background: radial-gradient(closest-side, rgb(var(--rgb-logo-orchid) / 0.12), rgb(var(--rgb-cyan) / 0.04) 60%, transparent); pointer-events: none; }
-  /* Text oben am Bild, damit die erste Zeile auf jeder Seite auf --hero-top steht, auch wenn das Bild höher ist (Runde 18) */
-  .lh-copy { position: relative; display: grid; gap: var(--space-5-5); justify-items: start; align-self: start; }
+  /* Text und Bild vertikal mittig zueinander (Runde 20f, Marc 22.11.2026, löst Runde 18 „Text oben“ ab): ist das Bild höher
+     als der Text (ab etwa 1920 px), beginnt die erste Zeile tiefer als --hero-top; layout-audit prüft dann die Mitte */
+  .lh-copy { position: relative; display: grid; gap: var(--space-5-5); justify-items: start; }
   /* Kicker in der h1 (Moritz' Keyword-Zeile), Abstand wie vorher außerhalb */
   .lh-copy h1 > .kicker { margin: 0 0 var(--space-3); }
   /* Unter 400 px folgt die Größe der Zeilenbreite (10vw), sonst setzt die Mindestgröße lange Komposita einzeln

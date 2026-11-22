@@ -171,7 +171,9 @@ function spalierStory(n) {
     o[0] = lerp(p[0], g[0], u); o[1] = lerp(p[1], g[1], u) + lift; o[2] = lerp(p[2], g[2], u); return o;
   };
   const open = (T) => (p) => openOf(p, T, S_OPEN.at, S_OPEN.step, S_OPEN.dur);
-  const yawAt = (T) => 0.45 * (1 - ease(T / 5)) + 0.2 * Math.sin((T * TAU) / 18) * smooth((T - 4) / 2);
+  // Ein einziger ruhiger Schwenk über die ganze Geschichte, ohne Umkehr (Runde 20f, Marc: „komischer Kameraschwenk“):
+  // vorher drehte der Tunnel in 5 s von 26° auf frontal und pendelte danach zurück, das las sich als Ruck mit Umkehr
+  const yawAt = (T) => 0.3 - 0.5 * ease(T / ACT[4]);
   const pose = (j, T, o) => { if (j >= L0) lightPose(j - L0, T, o); else basePose(m, j, open(T), o); return place(o, yawAt(T)); };
   const drawRank = m.walls.map((p) => depth(p[2]) * 0.6 + (p[1] / 2.4) * 0.4);
   const ringsOn = RINGS.at + RINGS.spread + RINGS.dur;

@@ -54,7 +54,11 @@ export function inspectLayout({ checks }) {
   }
   if (checks.includes('hero-top')) { const main = document.querySelector('main.page-top'); const first = main?.querySelector('.kicker, h1');
     if (first && !main.querySelector('.page-404')) { const probe = document.createElement('div'); probe.style.height = 'var(--hero-top)'; document.body.append(probe); const want = probe.offsetHeight; probe.remove();
-      const top = first.getBoundingClientRect().top + scrollY; if (Math.abs(top - want) > 3) r.push({ k: 'hero-top', what: `${name(first)} beginnt bei ${Math.round(top)} statt ${want}` }); } }
+      // Runde 20f (Marc, 22.11.2026): in den Bildköpfen der Anlass-Seiten und Über uns (.lh) stehen Text und Bild vertikal
+      // mittig zueinander; ist das Bild höher als der Text, beginnt die erste Zeile darum tiefer als --hero-top
+      const lh = first.closest('.lh'), cb = lh?.querySelector('.lh-copy')?.getBoundingClientRect(), mb = lh?.querySelector('.lh-media')?.getBoundingClientRect();
+      const centred = cb && mb && cb.left !== mb.left && Math.abs((cb.top + cb.bottom) / 2 - (mb.top + mb.bottom) / 2) <= 3;
+      const top = first.getBoundingClientRect().top + scrollY; if (Math.abs(top - want) > 3 && !centred) r.push({ k: 'hero-top', what: `${name(first)} beginnt bei ${Math.round(top)} statt ${want}` }); } }
   if (checks.includes('empty-h')) for (const h of document.querySelectorAll('h1,h2,h3,h4')) if (!h.textContent.trim() && !h.querySelector('img,svg[aria-label]')) r.push({ k: 'empty-h', what: name(h) });
   if (checks.includes('orphan')) {
     for (const el of document.querySelectorAll('main :is(p,h1,h2,h3,h4,li,dd,figcaption,blockquote,.lead)')) {
