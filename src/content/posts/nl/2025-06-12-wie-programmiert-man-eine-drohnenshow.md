@@ -13,20 +13,20 @@ cover:
   width: 1680
   height: 1120
 draft: false
-translationSourceHash: 9dd9bb8a10c1cd775e2660a945efc12fe3d85fc84ed2282de75e84d36392d264
+translationSourceHash: 6ffbcd27125b1f75ba9aeb07a387d48f6511c132ecafa827105f7be1755a8715
 translationContractVersion: 2
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: nl
-  sourceFingerprint: 9dd9bb8a10c1cd775e2660a945efc12fe3d85fc84ed2282de75e84d36392d264
+  sourceFingerprint: 6ffbcd27125b1f75ba9aeb07a387d48f6511c132ecafa827105f7be1755a8715
   legacy:
     provenanceFile: docs/i18n/content-provenance.json
     migration: I01-v2-2026-11-04
   fields:
     - address: /body
-      sourceFingerprint: 022ade5eb472c291851ed773ff9ade8ed37ca409c29385b3ab60dffbfcf63a3e
-      targetFingerprint: d14ea9d850fd591fb86e40d227a2868ced9867880f208d22acf99d917b26718e
+      sourceFingerprint: edb8da5e025e766ec021fd856d54a0788a3eed9394ec805438b44b3dc27a6f2b
+      targetFingerprint: a59493ec3a574a2d7444b71d62d529afdcb8da143aa11228a17f55474347d0f7
       status: adopted-existing
     - address: /cover/alt
       sourceFingerprint: debf6f3890f470655260d1c585061012aab399099fdb5f2a21f10d398a9ba7e0
@@ -80,9 +80,9 @@ Elke drone is één lichtpunt. Voor een letter hebben we zo'n 10 tot 13 drones n
 
 Langs deze ruwe animatie monteren we de muziek, met rechtenvrije nummers of jullie eigen muziekkeuze. De muziekmontage zit in het pakket. Als laatste zetten we kleuren en lichteffecten op de accenten in de muziek, zodat vliegroute, timing en licht op dezelfde tijdlijn lopen.
 
-### Simulatie en wind
+### Simulatie en testvlucht
 
-Voordat de show op de drones gaat, spelen we hem in onze software volledig af. We controleren de afstanden tussen de drones, en komen twee routes te dicht bij elkaar, dan passen we ze aan. Buiten moet de formatie ook tegen wind kunnen. Onze drones blijven stabiel in formatie tot windkracht 5 en ook bij lichte motregen.
+Voordat de show op de drones gaat, spelen we hem in onze software volledig af. We controleren de afstanden tussen de drones, en komen twee routes te dicht bij elkaar, dan passen we ze aan. Daarna doen we een testvlucht met echte drones. Buiten moet de formatie ook tegen wind kunnen. Onze drones blijven stabiel in formatie tot windkracht 5 en ook bij lichte motregen.
 
 ### De showavond
 

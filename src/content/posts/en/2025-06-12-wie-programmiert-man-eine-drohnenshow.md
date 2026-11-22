@@ -13,20 +13,20 @@ cover:
   width: 1680
   height: 1120
 draft: false
-translationSourceHash: 9dd9bb8a10c1cd775e2660a945efc12fe3d85fc84ed2282de75e84d36392d264
+translationSourceHash: 6ffbcd27125b1f75ba9aeb07a387d48f6511c132ecafa827105f7be1755a8715
 translationContractVersion: 2
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: en
-  sourceFingerprint: 9dd9bb8a10c1cd775e2660a945efc12fe3d85fc84ed2282de75e84d36392d264
+  sourceFingerprint: 6ffbcd27125b1f75ba9aeb07a387d48f6511c132ecafa827105f7be1755a8715
   legacy:
     provenanceFile: docs/i18n/content-provenance.json
     migration: I01-v2-2026-11-04
   fields:
     - address: /body
-      sourceFingerprint: 022ade5eb472c291851ed773ff9ade8ed37ca409c29385b3ab60dffbfcf63a3e
-      targetFingerprint: 7afacd1245aba75a16460d44346ddbaa7b84803815476e36c4ad91507eea755d
+      sourceFingerprint: edb8da5e025e766ec021fd856d54a0788a3eed9394ec805438b44b3dc27a6f2b
+      targetFingerprint: 35466c278fe1a46603e9c45b43e6f1e0a568433d0399dfe0eff7632c11dec8d2
       status: adopted-existing
     - address: /cover/alt
       sourceFingerprint: debf6f3890f470655260d1c585061012aab399099fdb5f2a21f10d398a9ba7e0
@@ -80,9 +80,9 @@ Each drone is one point of light. A single letter needs around 10 to 13 of them,
 
 We cut the music along this rough animation, using royalty-free tracks or the music you choose. The music edit is included in the package. Finally, we place colours and light effects on the accents in the music, so flight path, timing and light all run on the same timeline.
 
-### Simulation and wind
+### Simulation and test flight
 
-Before the show goes onto the drones, we play it through completely in our software. We check the distances between the drones, and if two paths come too close, we change them. Outdoors, the formation also has to cope with wind. Our drones hold their shape up to Beaufort force 5 and in light drizzle.
+Before the show goes onto the drones, we play it through completely in our software. We check the distances between the drones, and if two paths come too close, we change them. After that we do a test flight with real drones. Outdoors, the formation also has to cope with wind. Our drones hold their shape up to Beaufort force 5 and in light drizzle.
 
 ### The show evening
 

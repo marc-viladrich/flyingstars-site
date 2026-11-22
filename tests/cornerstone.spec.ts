@@ -81,3 +81,46 @@ test('Musik und Licht: der Abspielkopf treibt Lichtblöcke und Sternbildung, red
   await expect(stage).not.toHaveClass(/is-sweeping/);
   expect(await page.locator('.bar.lit').count()).toBe(0);
 });
+
+// Runde 20 (Marc, 22.11.2026): zwei Spalten auf jedem Querformat (auch am hohen Monitor); jede Texteinheit ist mindestens so
+// hoch wie die Szene, damit neben der Zeichnung nur ihr Text steht; Nummern im Text wie in der Schrittleiste
+for (const vp of [{ width: 2560, height: 1440 }, { width: 1280, height: 720 }]) {
+  test(`Zwei Spalten ${vp.width}×${vp.height}: Szene neben dem Text, Einheiten so hoch wie die Szene, Nummern`, async ({ page }) => {
+    await page.setViewportSize(vp);
+    await page.goto(`/blog/${CS}/`);
+    const geo = await page.evaluate(() => {
+      const fig = document.querySelector('.ss-fig')!.getBoundingClientRect(), text = document.querySelector('.ss-text')!.getBoundingClientRect();
+      const units = [...document.querySelectorAll<HTMLElement>('.ss-unit')];
+      return { beside: fig.left > text.right, figH: fig.height, minH: Math.min(...units.slice(0, -1).map((u) => u.getBoundingClientRect().height)), nums: units.map((u) => getComputedStyle(u.querySelector('.ss-step > :first-child')!, '::before').content) };
+    });
+    expect(geo.beside).toBe(true);
+    expect(geo.minH).toBeGreaterThanOrEqual(geo.figH);
+    expect(geo.figH).toBeLessThanOrEqual(vp.height);
+    expect(geo.nums).toEqual(['"01"', '"02"', '"01"', '"02"', '"03"', '"04"', '"05"']);
+  });
+}
+
+test('Drohne zerlegt sich nur auf Wunsch: Hover mit der Maus, Tippen am Handy, Knopf mit Tastatur', async ({ page, isMobile }) => {
+  await page.goto(`/blog/${CS}/`);
+  await page.evaluate(() => { const u = document.querySelector('.ss-unit')!; scrollBy({ top: u.getBoundingClientRect().top - innerHeight * 0.45, behavior: 'instant' }); });
+  const stage = page.locator('[data-stage]'), btn = page.locator('[data-explode]');
+  await expect(stage).toHaveAttribute('data-step', '0');
+  await page.waitForTimeout(3000); // früher zerfiel sie nach 2,6 s von selbst
+  await expect(page.locator('.sn.on')).toHaveCount(0);
+  await expect(btn).toHaveAttribute('aria-pressed', 'false');
+  const box = (await stage.boundingBox())!;
+  if (isMobile) {
+    await page.touchscreen.tap(box.x + box.width / 2, box.y + box.height / 2);
+    await expect(page.locator('.sn.on')).toHaveCount(3);
+    await page.touchscreen.tap(box.x + box.width / 2, box.y + box.height / 2);
+    await expect(page.locator('.sn.on')).toHaveCount(0);
+    return;
+  }
+  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+  await expect(page.locator('.sn.on')).toHaveCount(3);
+  await page.mouse.move(2, box.y + box.height / 2);
+  await expect(page.locator('.sn.on')).toHaveCount(0);
+  await btn.focus(); await page.keyboard.press('Enter');
+  await expect(btn).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.locator('.sn.on')).toHaveCount(3);
+});

@@ -13,20 +13,20 @@ cover:
   width: 1600
   height: 1067
 draft: false
-translationSourceHash: 8fb429e16fba5d900dfeaa607b758ed70bb1ff106383d2b8ab14809907d4e25e
+translationSourceHash: 2d662f5edf5d3bb89ca2b844d29ba02dd4202b563e3364e6df1c632241915b9e
 translationContractVersion: 2
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: en
-  sourceFingerprint: 8fb429e16fba5d900dfeaa607b758ed70bb1ff106383d2b8ab14809907d4e25e
+  sourceFingerprint: 2d662f5edf5d3bb89ca2b844d29ba02dd4202b563e3364e6df1c632241915b9e
   legacy:
     provenanceFile: docs/i18n/content-provenance.json
     migration: I01-v2-2026-11-04
   fields:
     - address: /body
-      sourceFingerprint: e00e79f53079ef532a471f379e0026670dc74d1aca2b4c0825530ccb2b858ade
-      targetFingerprint: b27d2a0d5c6da909dd7589eac99520daf5e930a2cdb57856b48e3cb39af724e1
+      sourceFingerprint: d40d20c71ad6c0ad21f117d9cbf7acc1fe288ada7c6545cca4ff55d70b5d3fe0
+      targetFingerprint: 0bdcffa233adf3ad29073f3ea00a4c6dd8cd4771f3d3d920a28835588b8185f8
       status: adopted-existing
     - address: /cover/alt
       sourceFingerprint: 409f5539db2fd1cfa90510b75350f3eaf95aada55b3dfa542ad516abafca4938
@@ -82,7 +82,7 @@ When outdoors is not an option, we bring the swarm into the hall, for trade fair
 
 ## What a show needs
 
-Space first. As a rule of thumb we plan a show area of about 100 × 100 metres, kept clear of anyone not involved while the show is on. The take-off and landing site sits inside it, and we close it to the public from set-up onwards. The exact size depends on the number of drones and the flight height.
+Space first. As a rule of thumb we plan a show area of about 100 × 100 metres, kept clear of anyone not involved while the show is on. The take-off and landing site of about 25 × 25 metres sits inside it, and we close it to the public from set-up onwards. The exact size depends on the number of drones and the flight height.
 
 From you, we need consent from the owners of every piece of land we fly over. For public land, that is the town or municipality. We help you with this and have a letter you can pass on, or we send it to them directly.
 

@@ -125,3 +125,14 @@ und in der Simulation (schwebende Ebenen ohne Boden, ruhiger).
 `tests/cornerstone.spec.ts` (alle drei Artikel in DE/EN/NL, reduzierte Bewegung), `scripts/cornerstone-plan.test.mjs`
 (Teilung des Texts, Rückfall), `tests/nav-headroom.spec.ts` (schmal und breit, Untermenü,
 Sprachliste, Tastatur), `scripts/css-tokens.test.mjs`.
+
+## Runde 20 (22.11.2026): zwei Spalten überall im Querformat, Nummern, Drohne auf Wunsch
+
+- **Zwei Spalten auch am hohen Monitor.** Die Höhengrenze `--story-short` (1200 px) ist weg; ab 60em Breite und Querformat steht die Szene rechts. Marc: am großen Monitor sah man mehrere Abschnitte zugleich, die Szene war keinem eindeutig zugeordnet.
+- **Zuordnung:** Zwischentitel und Schritt bilden eine Einheit (`.ss-unit`), mindestens so hoch wie die Szene (`--ss-fig-now`, vom Skript gemessen). Neben der Zeichnung steht nur ihr Text, der nächste beginnt unter ihr. Die Szene klebt oben unter der Kopfzeile und bleibt dort, wenn die Kopfzeile ausweicht. Höhe: so viel Fensterhöhe wie da ist, höchstens 40rem und 90 % der Spaltenbreite (Container-Einheit `cqi`), sonst hängt die Zeichnung am großen Monitor mitten in einer leeren Fläche. Leselinie: halbe Höhe der Szene.
+- **Kein CSS-Einrasten.** `scroll-snap-type: y proximity` ausprobiert und verworfen: in Chromium kam ein Mausrad-Schritt innerhalb einer Einheit nicht mehr von der Stelle (Rastpunkte weiter auseinander als die Fangweite). Kein Dimmen des übrigen Texts (Kontrast).
+- **Nummern:** Jeder Schritt trägt im Text dieselbe Nummer wie in der Schrittleiste (je Gruppe, `--n` per `::before`), die aktive in Akzentfarbe.
+- **Drohne:** bleibt zusammengesetzt, damit man sie als Drohne erkennt. Zerlegt sich bei Hover (Maus), per Tippen auf die Bühne (Touch) oder über den Knopf „Zerlegen“/„Zusammensetzen“ (Tastatur, `aria-pressed`). Kein Zeitauslöser mehr.
+- **Abstand vor der Logo-Formation:** `.ss-text` hatte unten 28–32svh Luft, damit der letzte Schritt die Leselinie erreicht; die Seite danach reicht dafür, jetzt `--space-4`.
+- **Fakten (Marc):** Testflug vor der Show gibt es → Programmier-Artikel „Simulation und Testflug“; Start- und Landeplatz rund 25 × 25 m (FAQ-Wert) im Funktioniert-Artikel; GPS/Wetter/Flugverbotszonen am Abend bestätigt; AA-Akkus offen.
+- Prüfen: `tests/cornerstone.spec.ts` (Zwei Spalten 2560×1440 und 1280×720, Drohne Hover/Tippen/Tastatur).

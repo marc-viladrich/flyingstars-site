@@ -3619,6 +3619,16 @@
     "en": "Programming",
     "nl": "Programmering"
   },
+  "blog.sceneExplode": {
+    "de": "Zerlegen",
+    "en": "Take apart",
+    "nl": "Uit elkaar halen"
+  },
+  "blog.sceneAssemble": {
+    "de": "Zusammensetzen",
+    "en": "Put together",
+    "nl": "In elkaar zetten"
+  },
   "contactAPI.formData": {
     "de": "Nur Formulardaten.",
     "en": "Form data only.",

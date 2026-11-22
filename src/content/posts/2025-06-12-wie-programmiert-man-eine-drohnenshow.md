@@ -51,9 +51,9 @@ Jede Drohne ist ein Lichtpunkt. Für einen Buchstaben brauchen wir etwa 10 bis 1
 
 An dieser Rohanimation entlang schneiden wir die Musik, mit GEMA-freien Titeln oder eurer Wunschmusik. Der Musikschnitt ist im Paket enthalten. Zum Schluss setzen wir Farben und Lichteffekte auf die Akzente der Musik, sodass Flugroute, Timing und Licht auf derselben Zeitachse laufen.
 
-### Simulation und Wind
+### Simulation und Testflug
 
-Bevor die Show auf die Drohnen geht, spielen wir sie in unserer Software komplett durch. Dabei prüfen wir die Abstände zwischen den Drohnen, und kommen sich zwei Bahnen zu nah, ändern wir sie. Draußen muss die Formation auch Wind aushalten. Unsere Drohnen fliegen formstabil bis Windstärke 5 und auch bei leichtem Nieselregen.
+Bevor die Show auf die Drohnen geht, spielen wir sie in unserer Software komplett durch. Dabei prüfen wir die Abstände zwischen den Drohnen, und kommen sich zwei Bahnen zu nah, ändern wir sie. Danach machen wir einen Testflug mit echten Drohnen. Draußen muss die Formation auch Wind aushalten. Unsere Drohnen fliegen formstabil bis Windstärke 5 und auch bei leichtem Nieselregen.
 
 ### Der Showabend
 

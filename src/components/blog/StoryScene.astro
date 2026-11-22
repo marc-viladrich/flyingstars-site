@@ -1,7 +1,8 @@
 ---
-// Scroll-Geschichte für Cornerstone-Artikel (Runde 15, Prototypen 1–3 mit Marc, produktiv seit 22.11.2026). Standard auf
-// Desktop und Laptop: Text in der Lesespalte links, die isometrische Szene rechts klebend; hochkant, schmal oder ab 1200 px
-// Fensterhöhe klebt sie oben über dem Text. Jeder Schritt hat einen eigenen Bildausschnitt, die Kamera fährt weich dorthin.
+// Scroll-Geschichte für Cornerstone-Artikel (Runde 15, Prototypen 1–3 mit Marc, produktiv seit 22.11.2026). Auf jedem
+// Querformat ab 60em (Runde 20: auch am hohen Monitor): Text in der Lesespalte links, die isometrische Szene rechts klebend,
+// jede Texteinheit mindestens so hoch wie die Szene; hochkant oder schmal klebt sie oben über dem Text. Schritte tragen im
+// Text dieselbe Nummer wie in der Schrittleiste. Jeder Schritt hat einen eigenen Bildausschnitt, die Kamera fährt weich dorthin.
 // Übergänge nur über transform und opacity. Schleifen laufen nur, solange ihr Schritt aktiv und die Bühne sichtbar ist, und
 // halten bei der globalen Pause (Kopfzeile) und reduzierter Bewegung.
 // SEO und Barrierefreiheit (27-blog-bilder-2026-11-21/seo-interaktive-grafiken.md): Der Text steht vollständig im HTML,
@@ -15,8 +16,8 @@ import Icon from '../Icon.astro';
 import { storyScene, pathD, frameCam, type Piece, type Story, type Note } from './story-scene';
 import { scenePalette } from './scene-palette';
 interface Block { html: string; step?: number; title?: string; group?: string }
-interface Props { blocks: Block[]; caption: string; label: string; groups: { name: string; short: string }[]; story?: Story; note?: (n: Note) => string }
-const { blocks, caption, label, groups, story = storyScene(scenePalette), note = (n: Note) => n.text } = Astro.props;
+interface Props { blocks: Block[]; caption: string; label: string; groups: { name: string; short: string }[]; story?: Story; note?: (n: Note) => string; explode?: { open: string; close: string } }
+const { blocks, caption, label, groups, story = storyScene(scenePalette), note = (n: Note) => n.text, explode = { open: 'Zerlegen', close: 'Zusammensetzen' } } = Astro.props;
 const LAST = story.poster ?? story.steps - 1; // Standbild im HTML
 const motion = story.motion ?? {};
 // Zeichenfläche im HTML (ohne JavaScript): eine breite Bühne; das Skript setzt die echte Größe
@@ -31,8 +32,15 @@ const stateOf = (p: Piece, s: number) => {
 const steps = blocks.filter((b) => b.step !== undefined);
 const head = blocks[0]?.step === undefined ? blocks[0] : undefined;
 const body = head ? blocks.slice(1) : blocks;
-// Ein Zwischentitel ohne eigenen Schritt (neuer Abschnitt) gehört zum nächsten Schritt
-const stepAfter = (i: number) => body.slice(i).find((b) => b.step !== undefined)?.step ?? LAST;
+// Runde 20: Ein Zwischentitel ohne eigenen Schritt (neuer Abschnitt) bildet mit dem nächsten Schritt eine Einheit; jede Einheit
+// trägt die Nummer ihres Schritts in der Gruppe, dieselbe wie in der Schrittleiste („01 Aufstellen“)
+const units = body.reduce<{ chapter?: string; step: Block; n: number }[]>((acc, b, i) => {
+  if (b.step === undefined) return acc;
+  const prev = body[i - 1];
+  acc.push({ chapter: prev && prev.step === undefined ? prev.html : undefined, step: b, n: steps.filter((x) => x.group === b.group).indexOf(b) + 1 });
+  return acc;
+}, []);
+const pad = (n: number) => String(n).padStart(2, '0');
 const drawn = (cls: string) => cls === 'stream' || cls === 'stream-base' || cls === 'path';
 const noteStyle = (n: { x: number; y: number; row?: number }) => `--x: ${((n.x * cam.k + cam.tx) / VW * 100).toFixed(2)}%; --y: ${((n.y * cam.k + cam.ty) / VH * 100).toFixed(2)}%; --row: ${n.row ?? 0}`;
 const list = (v?: number[]) => (v?.length ? v.join(' ') : undefined);
@@ -52,6 +60,7 @@ const list = (v?: number[]) => (v?.length ? v.join(' ') : undefined);
           </g>
         </g>
       </svg>
+      {motion.assemble !== undefined && <button type="button" class="ss-explode" data-explode data-open={explode.open} data-close={explode.close} aria-pressed="false" hidden><span class="ss-explode-ico" aria-hidden="true"></span><span data-explode-label>{explode.open}</span></button>}
       {story.notes.map((n) => <span class:list={['sn', `sn-${n.side}`, { on: n.steps.includes(LAST), 'sn-check': n.check, 'sn-list': n.row !== undefined, 'sn-late': n.late }]} data-steps={n.steps.join(' ')} data-target={n.target} data-x={n.x} data-y={n.y} style={noteStyle(n)} aria-hidden="true"><i class="sn-dot"></i><span class="sn-pill">{n.check && <Icon name="check" size={13} />}{note(n)}</span></span>)}
     </div>
     <div class="ss-bar">
@@ -66,9 +75,10 @@ const list = (v?: number[]) => (v?.length ? v.join(' ') : undefined);
     <figcaption class="sr-only">{caption}</figcaption>
   </figure>
   <div class="ss-text post-body">
-    {body.map((b, i) => b.step === undefined
-      ? <div class="ss-chapter" data-step={stepAfter(i)} set:html={b.html} />
-      : <div class="ss-step" data-step={b.step} set:html={b.html} />)}
+    {units.map((u) => <div class:list={['ss-unit', { 'is-now': u.step.step === LAST }]} data-step={u.step.step} style={`--n: '${pad(u.n)}'`}>
+      {u.chapter && <div class="ss-chapter" set:html={u.chapter} />}
+      <div class="ss-step" set:html={u.step.html} />
+    </div>)}
   </div>
 </section>
 
@@ -121,7 +131,7 @@ const list = (v?: number[]) => (v?.length ? v.join(' ') : undefined);
     const T = 3.6; // Länge einer Böe in Sekunden
 
     // ---------- Kamera ----------
-    let W = 1000, H = 470, step = -1, exploded = true, boom = 0, visible = false, frame = 0, t0 = 0, hop = 0;
+    let W = 1000, H = 470, step = -1, exploded = true, pinned = false, visible = false, frame = 0, t0 = 0, hop = 0;
     let swept = false, ps = -1, last = 0; // Musik und Licht (sweepTo)
     const camOf = (s: number) => { const [x, y, w, h] = frames[s], k = Math.min(W / w, H / h); return { k, tx: W / 2 - (x + w / 2) * k, ty: H / 2 - (y + h / 2) * k }; };
     const place = () => {
@@ -155,24 +165,27 @@ const list = (v?: number[]) => (v?.length ? v.join(' ') : undefined);
       N.forEach((n) => n.el.classList.toggle('on', n.steps.includes(step) && (step !== ASSEMBLE || exploded)));
       fitLater();
     };
-    // Die Explosion startet erst, wenn die Bühne im Blick ist und die Drohne eine Weile zusammen stand, oder wenn man im Text
-    // des ersten Schritts weitergelesen hat (Marc, Prototyp 2: „explodiert zu früh“)
-    const blast = () => { clearTimeout(boom); if (step === ASSEMBLE && !exploded) { exploded = true; paint(step); } };
-    const arm = (ms: number) => {
-      clearTimeout(boom);
-      if (step === ASSEMBLE && !exploded && visible) boom = window.setTimeout(blast, ms);
+    // Runde 20 (Marc, 22.11.): Die Drohne bleibt zusammengesetzt, damit man sie als Drohne erkennt. Sie zerfällt in ihre Teile,
+    // solange die Maus über der Bühne steht; auf Touch-Bildschirmen und mit der Tastatur über den Knopf (oder Tippen auf die Bühne)
+    const btn = stage.querySelector<HTMLButtonElement>('[data-explode]');
+    const btnLabel = btn?.querySelector<HTMLElement>('[data-explode-label]');
+    const explode = (on: boolean) => {
+      if (step !== ASSEMBLE || on === exploded) return;
+      exploded = on; paint(step);
+      if (btn && btnLabel) { btn.setAttribute('aria-pressed', String(on)); btnLabel.textContent = (on ? btn.dataset.close : btn.dataset.open) ?? ''; }
     };
     const set = (s: number) => {
       if (s === step) return;
       const prev = step; step = s;
       stage.dataset.step = String(s);
-      // Erst die zusammengesetzte Drohne, dann die Explosion (Marc: „damit man beides verknüpft“)
-      exploded = s !== ASSEMBLE || held();
+      // Zusammengesetzt beim Eintritt in den Schritt, zerlegt nur auf Wunsch (explode)
+      exploded = s !== ASSEMBLE; pinned = false;
+      if (btn) { btn.hidden = s !== ASSEMBLE; btn.setAttribute('aria-pressed', 'false'); if (btnLabel) btnLabel.textContent = btn.dataset.open ?? ''; }
+      marks.forEach((m) => m.classList.toggle('is-now', Number(m.dataset.step) === s));
       stage.classList.toggle('is-plain', PLAIN.has(s));
       dronesG.classList.remove('is-plain', 'is-off', 'is-warm'); // Standbild-Klassen aus dem HTML
       stage.classList.toggle('is-off', OFF.has(s)); stage.classList.toggle('is-warm', WARM.has(s));
       paint(prev);
-      arm(2600);
       // Vorwärts in einen Schritt mit Zwischenhalt: erst alle zugleich zum Zwischenhalt (Abheben, Sinken), dann weiter
       clearTimeout(hop);
       stage.classList.remove('is-via', 'is-signal', 'is-rise');
@@ -194,20 +207,19 @@ const list = (v?: number[]) => (v?.length ? v.join(' ') : undefined);
       run();
     };
 
-    // ---------- Auslöser: der Textblock, dessen Anfang die Leselinie überschritten hat. Querformat (Szene rechts daneben):
-    // Leselinie in der Bildschirmmitte; hochkant oder sehr hoch (Szene oben): ein Drittel in den Bereich unter der Bühne ----------
-    const side = matchMedia('(min-aspect-ratio: 5/4) and (min-width: 60em) and (max-height: 74.99em)');
-    const lineY = () => { if (side.matches) return innerHeight * 0.5; const b = stage.getBoundingClientRect().bottom; return b + (innerHeight - b) * 0.32; };
+    // ---------- Auslöser: die Texteinheit, deren Anfang die Leselinie überschritten hat. Querformat (Szene rechts daneben, jede
+    // Einheit mindestens so hoch wie die Szene, Anfang bündig mit ihrer Oberkante): Leselinie auf halber Höhe der Szene;
+    // hochkant (Szene oben): ein Drittel in den Bereich unter der Bühne ----------
     const fig = root.querySelector<HTMLElement>('.ss-fig')!;
+    const side = matchMedia('(min-aspect-ratio: 5/4) and (min-width: 60em)');
+    const topOf = () => parseFloat(getComputedStyle(fig).top) || 0;
+    const lineY = () => { if (side.matches) return topOf() + fig.offsetHeight * 0.5; const b = stage.getBoundingClientRect().bottom; return b + (innerHeight - b) * 0.32; };
     const pick = () => {
-      fig.classList.toggle('is-stuck', fig.getBoundingClientRect().top <= parseFloat(getComputedStyle(fig).top) + 1);
+      fig.classList.toggle('is-stuck', fig.getBoundingClientRect().top <= topOf() + 1);
       const line = lineY();
       let s = Number(marks[0]?.dataset.step ?? 0);
       for (const m of marks) if (m.getBoundingClientRect().top < line) s = Number(m.dataset.step);
       set(s);
-      // weitergelesen im ersten Schritt: jetzt explodieren
-      const first = marks.find((m) => Number(m.dataset.step) === ASSEMBLE);
-      if (step === ASSEMBLE && !exploded && first && first.getBoundingClientRect().top < line - innerHeight * 0.16) blast();
     };
     let ticking = false;
     addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(() => { ticking = false; pick(); }); } }, { passive: true });
@@ -222,21 +234,37 @@ const list = (v?: number[]) => (v?.length ? v.join(' ') : undefined);
       if (r.right > document.documentElement.clientWidth - 8 || r.left < 8) n.classList.add('sn-flip');
     });
     let fitLater = () => {};
-    const relayout = () => { stage.classList.add('is-reset'); measure(); place(); void stage.getBoundingClientRect(); stage.classList.remove('is-reset'); requestAnimationFrame(fit); };
+    // Höhe der Szene für die Texteinheiten (zwei Spalten: jede Einheit mindestens so hoch wie die Szene)
+    const figNow = () => root.style.setProperty('--ss-fig-now', `${fig.offsetHeight / (parseFloat(getComputedStyle(document.documentElement).fontSize) || 16)}rem`);
+    const relayout = () => { figNow(); stage.classList.add('is-reset'); measure(); place(); void stage.getBoundingClientRect(); stage.classList.remove('is-reset'); requestAnimationFrame(fit); };
 
     // Anfangszustand ohne Übergang (im HTML steht der Endzustand für Suche, Vorschau und ohne JavaScript)
     stage.classList.add('is-reset');
-    measure(); pick(); if (step < 0) set(0);
+    figNow(); measure(); pick(); if (step < 0) set(0);
     void stage.getBoundingClientRect();
     stage.classList.remove('is-reset');
     fitLater = () => requestAnimationFrame(() => setTimeout(fit, 30));
     fit();
     if ('ResizeObserver' in window) new ResizeObserver(relayout).observe(stage); else addEventListener('resize', relayout);
     dots.forEach((d) => d.addEventListener('click', () => {
-      const m = marks.find((el) => el.dataset.step === d.dataset.goto && el.classList.contains('ss-step'));
+      const m = marks.find((el) => el.dataset.step === d.dataset.goto);
       if (!m) return;
-      scrollTo({ top: scrollY + m.getBoundingClientRect().top - lineY() + 24, behavior: held() ? 'auto' : 'smooth' });
+      // zwei Spalten: Anfang der Einheit bündig mit der Szene; eine Spalte: knapp über die Leselinie
+      const at = side.matches ? topOf() : lineY() - 24;
+      scrollTo({ top: scrollY + m.getBoundingClientRect().top - at, behavior: held() ? 'auto' : 'smooth' });
     }));
+    // Drohne zerlegen: Maus über der Bühne (zurück beim Verlassen, außer per Knopf festgehalten), Tippen auf die Bühne, Knopf
+    const canHover = matchMedia('(hover: hover) and (pointer: fine)');
+    if (btn) {
+      stage.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') explode(true); });
+      stage.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse' && !pinned) explode(false); });
+      stage.addEventListener('click', (e) => {
+        if (step !== ASSEMBLE) return;
+        const viaBtn = btn.contains(e.target as Node);
+        if (!viaBtn && canHover.matches) return; // mit Maus macht das schon der Hover
+        pinned = !exploded; explode(!exploded);
+      });
+    }
 
     // ---------- Schleifen: Abspielkopf (Software), Wind und Böen (Simulation), leise Eigenbewegung des Sterns ----------
     // Musik und Licht: der Abspielkopf ist der Taktgeber. Unten werden die Lichtblöcke unter ihm hell, oben folgen die Drohnen
@@ -306,8 +334,8 @@ const list = (v?: number[]) => (v?.length ? v.join(' ') : undefined);
       frame = requestAnimationFrame(loop);
     }
     function run() { if (!frame && visible && !held() && !document.hidden && LOOP.has(step)) frame = requestAnimationFrame(loop); else if (!LOOP.has(step) || held()) still(); }
-    new IntersectionObserver((es) => { const was = visible; visible = es[es.length - 1].isIntersecting; if (visible && !was) arm(2600); run(); }, { threshold: 0.6 }).observe(stage);
-    document.addEventListener('flyingstars:motion-change', () => { if (held()) blast(); run(); });
+    new IntersectionObserver((es) => { visible = es[es.length - 1].isIntersecting; run(); }, { threshold: 0.6 }).observe(stage);
+    document.addEventListener('flyingstars:motion-change', run);
     document.addEventListener('visibilitychange', run);
   });
 </script>
@@ -503,36 +531,57 @@ const list = (v?: number[]) => (v?.length ? v.join(' ') : undefined);
   .ss-grp button:hover .ss-seg { background: rgb(var(--rgb-head) / 70%); }
   .ss-grp button:focus-visible { outline: 2px solid var(--accent); outline-offset: -0.375rem; border-radius: var(--radius-4); }
 
-  /* Text: lesbare Spalte unter der Bühne, ohne Balken; jeder Schritt hat Luft, damit die Szene dem Lesen folgt */
-  .ss-text { padding-top: var(--space-10); padding-bottom: 28svh; }
-  /* Einspaltig (Szene oben) folgt die Szene dem Lesen auch ohne Leerraum zwischen den Schritten; viel Luft brauchen nur die
-     zwei Spalten, wo die Szene neben dem Text klebt (unten). Marc, 22.11.2026: Abstände am Handy viel zu groß. */
-  .ss-step { padding-bottom: clamp(var(--space-8), 5svh, var(--space-12)); }
+  /* Text: lesbare Spalte unter der Bühne, ohne Balken. Einspaltig (Szene oben) folgt die Szene dem Lesen ohne Leerraum zwischen
+     den Schritten (Marc, 22.11.2026: Abstände am Handy viel zu groß); unten nur so viel Luft, dass der letzte Schritt die
+     Leselinie erreicht, bevor die Bühne geht (Runde 20: 28svh standen als Loch vor der Logo-Formation) */
+  .ss-text { padding-top: var(--space-10); padding-bottom: var(--space-4); }
+  .ss-unit { padding-bottom: clamp(var(--space-8), 5svh, var(--space-12)); }
   .ss-step > :global(:first-child), .ss-chapter > :global(:first-child) { margin-top: 0; }
-  .ss-text > :global(* + *) { margin-top: 0; }
+  .ss-text > :global(* + *), .ss-unit > :global(* + *) { margin-top: 0; }
   .ss-step > :global(* + *) { margin-top: 1.1em; }
   .ss-step > :global(h3 + *) { margin-top: 0.6em; }
+  /* Nummer des Schritts vor seinem Titel, dieselbe wie in der Schrittleiste; die aktive Nummer leuchtet */
+  .ss-step > :global(:first-child)::before { content: var(--n); display: inline-block; min-width: 1.75em; margin-right: 0.35em; color: var(--faint); font: 500 0.75em/1 var(--mono); letter-spacing: 0.06em; vertical-align: 0.12em; transition: color var(--dur-fade) var(--ease-out); }
+  .ss-unit.is-now .ss-step > :global(:first-child)::before { color: var(--accent); }
   /* Neuer Abschnitt (zweiter Zwischentitel): Linie und Abstand wie ein Kapitelwechsel */
   .ss-chapter { padding-top: var(--space-10); border-top: 1px solid var(--line); margin-bottom: var(--space-10); }
   .ss-chapter :global(h2) { margin: 0; }
 
+  /* Drohne zerlegen (Runde 20): ruhige Pille unten links auf der Bühne, nur im Schritt mit der zusammengesetzten Drohne */
+  .ss-explode { position: absolute; left: var(--space-2); bottom: var(--space-2); z-index: 2; display: inline-flex; align-items: center; gap: var(--space-2); min-height: 2.75rem; padding: 0 var(--space-3-5); border-radius: var(--radius-pill); border: 1px solid var(--line-strong); background: color-mix(in srgb, var(--ground) 72%, transparent); -webkit-backdrop-filter: blur(0.5rem); backdrop-filter: blur(0.5rem); color: var(--head); font: 500 var(--text-xs)/1 var(--display); cursor: pointer; transition: border-color var(--dur-control) var(--ease-default); }
+  .ss-explode[hidden] { display: none; }
+  .ss-explode:hover { border-color: rgb(var(--rgb-head) / 40%); }
+  .ss-explode:focus-visible { outline: 2px solid var(--accent); outline-offset: 0.125rem; }
+  /* Symbol: vier Punkte, die beim Zerlegen auseinanderrücken */
+  .ss-explode-ico { position: relative; width: 0.75rem; height: 0.75rem; }
+  .ss-explode-ico::before, .ss-explode-ico::after { content: ""; position: absolute; inset: 0.1875rem; border-radius: var(--radius-round); box-shadow: -0.1875rem -0.1875rem 0 -0.0625rem currentColor, 0.1875rem -0.1875rem 0 -0.0625rem currentColor, -0.1875rem 0.1875rem 0 -0.0625rem currentColor, 0.1875rem 0.1875rem 0 -0.0625rem currentColor; transition: box-shadow var(--dur-control) var(--ease-default); }
+  .ss-explode-ico::after { display: none; }
+  .ss-explode[aria-pressed="true"] .ss-explode-ico::before { box-shadow: -0.3125rem -0.3125rem 0 -0.0625rem currentColor, 0.3125rem -0.3125rem 0 -0.0625rem currentColor, -0.3125rem 0.3125rem 0 -0.0625rem currentColor, 0.3125rem 0.3125rem 0 -0.0625rem currentColor; }
+
   @media (prefers-reduced-motion: reduce) { .cam, .pc, .sd, .sd *, .sn { transition: none !important; } .wave, .path, .lift, .signal, .led-glow, .led-halo, .led-core { animation: none !important; } .sn.on.sn-late { transition-delay: 0s; } }
   :global(.motion-paused) :is(.wave, .path, .lift, .signal, .led-glow, .led-halo, .led-core) { animation: none !important; }
 
-  /* Querformat: Text in der Lesespalte links (etwa 10 Zeichen schmaler als der Artikel), die Szene rechts daneben klebt
-     über die Bildschirmhöhe und läuft mit; keine Fläche, keine Verläufe nötig */
-  @media (--story-wide) and (--story-short) and (min-aspect-ratio: 5/4) {
-    .ss { grid-template-columns: minmax(0, 37rem) minmax(0, 1fr); grid-template-areas: "head fig" "text fig"; column-gap: clamp(var(--space-8), 4vw, var(--space-16)); justify-items: stretch; align-items: start; }
+  /* Querformat, jede Höhe (Runde 20, Marc: zwei Spalten auch am großen Monitor): Text links, die Szene rechts klebt oben unter
+     der Kopfzeile, so hoch wie nötig, höchstens --ss-fig-h. Jede Texteinheit (Zwischentitel + Schritt) ist mindestens so hoch
+     wie die Szene: neben der Zeichnung steht der Text, zu dem sie gehört, der nächste Abschnitt beginnt erst unter ihr. Die
+     Schrittleiste springt bündig an den Anfang einer Einheit. Kein CSS-Einrasten (scroll-snap proximity): in Chromium kam ein
+     Mausrad-Schritt innerhalb einer Einheit nicht mehr von der Stelle, der Abstand der Rastpunkte ist größer als die
+     Fangweite. Die Szene bleibt an ihrem Platz, wenn die Kopfzeile ausweicht, sonst wäre die Bündigkeit um deren Höhe versetzt. */
+  @media (--story-wide) and (min-aspect-ratio: 5/4) {
+    .ss { --ss-top: calc(var(--nav-h) + var(--space-4)); --ss-fig-h: min(calc(100svh - var(--nav-h) - var(--space-8)), 40rem); grid-template-columns: minmax(0, 37rem) minmax(0, 1fr); grid-template-areas: "head fig" "text fig"; column-gap: clamp(var(--space-8), 4vw, var(--space-16)); justify-items: stretch; align-items: start; }
     .ss-head { grid-area: head; max-width: none; }
-    .ss-text { grid-area: text; max-width: none; padding-top: 0; padding-bottom: 32svh; }
-    .ss-fig { grid-area: fig; align-self: start; top: calc(var(--nav-h) + var(--space-4)); height: calc(100svh - var(--nav-h) - var(--space-8)); display: flex; flex-direction: column; padding: 0; }
-    :global(:root.nav-away) .ss-fig { top: var(--space-4); }
+    .ss-text { grid-area: text; max-width: none; padding-top: 0; padding-bottom: 0; }
+    /* Höhe: so viel Fensterhöhe wie da ist, aber nicht höher als die Zeichnung bei dieser Spaltenbreite braucht (90 % der Breite);
+       sonst steht die Zeichnung am großen Monitor mitten in einer hohen leeren Fläche, weit unter dem Anfang ihres Texts */
+    .ss-fig { grid-area: fig; align-self: start; top: var(--ss-top); display: flex; flex-direction: column; padding: 0; container-type: inline-size; }
+    :global(:root.nav-away) .ss-fig { top: var(--ss-top); }
     .ss-fig::before, .ss-fig::after, .ss-bg { content: none; display: none; }
-    .ss-stage { flex: 1 1 auto; height: auto; min-height: 0; }
+    .ss-stage { flex: none; height: min(calc(var(--ss-fig-h) - 4.5rem), 90cqi); }
     .ss-bar { flex-wrap: wrap; row-gap: 0; }
     .ss-now { flex: 1 1 100%; padding-top: var(--space-1); }
-    .ss-step { padding-bottom: clamp(var(--space-16), 30svh, 16rem); }
-    .ss-chapter { padding-top: var(--space-12); }
+    .ss-unit { min-height: var(--ss-fig-now, var(--ss-fig-h)); padding-bottom: var(--space-12); box-sizing: content-box; }
+    .ss-unit:last-child { padding-bottom: 0; }
+    .ss-chapter { padding-top: var(--space-8); }
   }
 
   /* Schmal: Bühne niedriger, Gruppennamen weg, nur die Striche */
@@ -550,5 +599,7 @@ const list = (v?: number[]) => (v?.length ? v.join(' ') : undefined);
     .sn-list { top: calc(var(--y) + var(--row) * 1.625rem); }
     .sn-list.sn-flip .sn-pill { left: -7.75rem; }
     .ss-text { padding-top: var(--space-6); }
+    /* Knopf oben links: unten liegt am Handy die Beschriftung des Rahmens */
+    .ss-explode { top: var(--space-1); bottom: auto; left: 0; min-height: 2.75rem; padding: 0 var(--space-3); }
   }
 </style>

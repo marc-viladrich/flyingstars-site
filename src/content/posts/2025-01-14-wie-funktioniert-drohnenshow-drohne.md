@@ -54,7 +54,7 @@ Wenn es draußen nicht geht, holen wir den Schwarm in die Halle, zu Messen, übe
 
 ## Was eine Show braucht
 
-Platz zuerst. Als Faustregel planen wir einen Showbereich von rund 100 × 100 Metern, in dem sich während der Show keine Unbeteiligten aufhalten. Darin liegt der Start- und Landeplatz, den wir ab dem Aufbau für das Publikum sperren. Die genaue Größe hängt von der Drohnenzahl und der Flughöhe ab.
+Platz zuerst. Als Faustregel planen wir einen Showbereich von rund 100 × 100 Metern, in dem sich während der Show keine Unbeteiligten aufhalten. Darin liegt der Start- und Landeplatz von rund 25 × 25 Metern, den wir ab dem Aufbau für das Publikum sperren. Die genaue Größe hängt von der Drohnenzahl und der Flughöhe ab.
 
 Von euch brauchen wir die Zustimmung der Grundstückseigentümer:innen aller Flächen, die wir überfliegen. Bei öffentlichen Flächen ist das die Stadt oder Gemeinde. Wir helfen euch dabei und haben ein Schreiben, das ihr weitergeben könnt oder das wir direkt hinschicken.
 

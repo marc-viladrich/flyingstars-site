@@ -36,7 +36,7 @@ const note = (n: Note) => (n.key ? k(`note.${n.key}`) : n.text);
   if (b.kind === 'text') return <div class="post-body cs-text" set:html={textOf(b)} />;
   if (b.kind === 'compare') return compare && <figure class="cs-compare"><ComparisonMatrix label={k(b.label)} rowHeader={compare.rowHeader} columns={compare.columns} rows={compare.rows} /><figcaption>{k(b.caption)}</figcaption></figure>;
   if (b.kind === 'photos') return <ArticlePhotos photos={b.photos.map((p) => ({ ...p, alt: k(p.alt) }))} caption={b.caption ? k(b.caption) : undefined} focus={b.focus} />;
-  if (b.kind === 'story') return <StoryScene story={stories.get(b)} note={note} blocks={storyBlocks(b)} groups={b.sections.map((i, g) => ({ name: sections[i].title, short: k(b.groups[g]) }))} label={k(b.label)} caption={k(b.caption)} />;
+  if (b.kind === 'story') return <StoryScene story={stories.get(b)} note={note} blocks={storyBlocks(b)} groups={b.sections.map((i, g) => ({ name: sections[i].title, short: k(b.groups[g]) }))} label={k(b.label)} caption={k(b.caption)} explode={{ open: t('blog.sceneExplode'), close: t('blog.sceneAssemble') }} />;
   return <FormationFinale><div class="post-body" set:html={sections[b.section].html} /></FormationFinale>;
 })}
 

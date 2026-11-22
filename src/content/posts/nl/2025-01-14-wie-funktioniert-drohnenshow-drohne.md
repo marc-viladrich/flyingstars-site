@@ -13,20 +13,20 @@ cover:
   width: 1600
   height: 1067
 draft: false
-translationSourceHash: 8fb429e16fba5d900dfeaa607b758ed70bb1ff106383d2b8ab14809907d4e25e
+translationSourceHash: 2d662f5edf5d3bb89ca2b844d29ba02dd4202b563e3364e6df1c632241915b9e
 translationContractVersion: 2
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: nl
-  sourceFingerprint: 8fb429e16fba5d900dfeaa607b758ed70bb1ff106383d2b8ab14809907d4e25e
+  sourceFingerprint: 2d662f5edf5d3bb89ca2b844d29ba02dd4202b563e3364e6df1c632241915b9e
   legacy:
     provenanceFile: docs/i18n/content-provenance.json
     migration: I01-v2-2026-11-04
   fields:
     - address: /body
-      sourceFingerprint: e00e79f53079ef532a471f379e0026670dc74d1aca2b4c0825530ccb2b858ade
-      targetFingerprint: b66467b18a3f4c5d4e5977cfa709438cf2a367a68a6f3fe5b59eaa9a06e3e3d4
+      sourceFingerprint: d40d20c71ad6c0ad21f117d9cbf7acc1fe288ada7c6545cca4ff55d70b5d3fe0
+      targetFingerprint: c7df2f38185415003c695b745e6c4dd04964f1262326352416c13f906371bd72
       status: adopted-existing
     - address: /cover/alt
       sourceFingerprint: 409f5539db2fd1cfa90510b75350f3eaf95aada55b3dfa542ad516abafca4938
@@ -82,7 +82,7 @@ Als het buiten niet kan, halen we de zwerm naar binnen, voor beurzen, overdekte 
 
 ## Wat een show nodig heeft
 
-Eerst de ruimte. Als vuistregel plannen we een showgebied van ongeveer 100 × 100 meter, waar tijdens de show geen onbetrokken personen zijn. Daarin ligt de start- en landingsplek, die we vanaf de opbouw afsluiten voor het publiek. De precieze grootte hangt af van het aantal drones en de vlieghoogte.
+Eerst de ruimte. Als vuistregel plannen we een showgebied van ongeveer 100 × 100 meter, waar tijdens de show geen onbetrokken personen zijn. Daarin ligt de start- en landingsplek van ongeveer 25 × 25 meter, die we vanaf de opbouw afsluiten voor het publiek. De precieze grootte hangt af van het aantal drones en de vlieghoogte.
 
 Van jullie hebben we de toestemming nodig van de eigenaren van alle grond waar we overheen vliegen. Bij openbare grond is dat de stad of gemeente. We helpen jullie daarbij en hebben een brief die jullie kunnen doorsturen, of die wij er direct naartoe sturen.
 
