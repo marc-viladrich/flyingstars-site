@@ -328,9 +328,9 @@ export function storyScene(o: { colors: string[]; zone: Record<string, string> }
     { key: 'light', text: 'Lichtsequenz', steps: [4], p: P([sw.x1, 1, swz.light]), side: 'r', target: 'sw-light' },
     { key: 'wind', text: 'Wind', steps: [5], p: P(inSky([U0 + 1.5, -6.1 + Math.sin((U0 + 1.5) * 0.45 + 7) * 0.35], 1.2)), side: 'l', target: 'wind' },
     { key: 'near', text: 'Zu nah: korrigieren', steps: [5], p: [near.at[0] + 9, near.at[1]], side: 'r', target: 'warn', late: true },
-    { key: 'gpsSignal', text: 'GPS-Signal', steps: [6], p: P([15, 3, 0]), side: 'r', check: true, row: 0 },
-    { key: 'weather', text: 'Wetter', steps: [6], p: P([15, 3, 0]), side: 'r', check: true, row: 1 },
-    { key: 'noFly', text: 'Flugverbotszonen', steps: [6], p: P([15, 3, 0]), side: 'r', check: true, row: 2 },
+    { key: 'gpsSignal', text: 'GPS-Signal', steps: [6], p: P([15, 3, 7]), side: 'r', check: true, row: 0 },
+    { key: 'weather', text: 'Wetter', steps: [6], p: P([15, 3, 7]), side: 'r', check: true, row: 1 },
+    { key: 'noFly', text: 'Flugverbotszonen', steps: [6], p: P([15, 3, 7]), side: 'r', check: true, row: 2 },
   ];
 
   // ---------- Bildausschnitt aus allem, auf (0, 0) verschoben ----------

@@ -1,0 +1,15 @@
+---
+// Seite einer Vorher-Fassung (siehe blog-vorher.ts): Kopf, Autor und Titelbild des Posts, Titel und Text der alten Fassung.
+import { getEntry } from 'astro:content';
+import BlogPost from '../templates/BlogPost.astro';
+import { vorher } from './blog-vorher';
+interface Props { locale: 'de' | 'en' | 'nl'; slug: string }
+const { locale, slug } = Astro.props;
+const old = vorher(locale, slug)!;
+const post = (await getEntry('posts', locale === 'de' ? slug : `${locale}/${slug}`))!;
+const before = { ...post, data: { ...post.data, title: old.frontmatter.title, description: old.frontmatter.description } } as typeof post;
+const { Content } = old;
+---
+<BlogPost post={before} noindex>
+  <div class="post-body" slot="body"><Content /></div>
+</BlogPost>

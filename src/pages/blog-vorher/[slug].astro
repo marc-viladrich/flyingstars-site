@@ -1,23 +1,7 @@
 ---
-// Vorher-Fassungen der drei Cornerstone-Artikel (Marc, 22.11.2026: „mach die neuen Artikel als Duplikate der alten, damit wir den
-// Vorher/Nachher-Vergleich später machen können“). Die Artikel in der Collection tragen seit Runde 19 den neuen Text in Wir-Form;
-// der alte Text liegt unverändert in src/labor/blog-vorher/ und erscheint hier im normalen Blogformat unter
-// /blog-vorher/<post-id>/, nur Deutsch, noindex, nicht im Blog, nicht in der Sitemap (astro.config.mjs), nirgends verlinkt.
-// Nach der Entscheidung: diese Datei und den Ordner src/labor/blog-vorher/ löschen.
-import { getEntry } from 'astro:content';
-import BlogPost from '../../templates/BlogPost.astro';
-
-const files = import.meta.glob<{ frontmatter: { title: string; description: string }; Content: any }>('../../labor/blog-vorher/*.md', { eager: true });
-export async function getStaticPaths() {
-  const old = import.meta.glob<{ frontmatter: { title: string; description: string } }>('../../labor/blog-vorher/*.md', { eager: true });
-  return Object.keys(old).map((file) => ({ params: { slug: file.split('/').pop()!.replace(/\.md$/, '') } }));
-}
-const { slug } = Astro.params;
-const old = Object.entries(files).find(([file]) => file.endsWith(`/${slug}.md`))![1];
-const post = (await getEntry('posts', slug!))!;
-const before = { ...post, data: { ...post.data, title: old.frontmatter.title, description: old.frontmatter.description } } as typeof post;
-const { Content } = old;
+// Vorher-Fassung (de), siehe src/labor/blog-vorher.ts
+import BlogVorher from '../../labor/BlogVorher.astro';
+import { vorherPaths } from '../../labor/blog-vorher';
+export const getStaticPaths = () => vorherPaths('de');
 ---
-<BlogPost post={before} noindex>
-  <div class="post-body" slot="body"><Content /></div>
-</BlogPost>
+<BlogVorher locale="de" slug={Astro.params.slug!} />
