@@ -2,7 +2,16 @@
 
 Stand 22.11.2026 (Runde 15). Hochwertige Darstellung für ausgewählte Blogartikel: Titelbild im Lichtraster, eigene Fotos,
 isometrische Scroll-Szene, ruhige Logo-Formation am Schluss. Entstanden in drei Labor-Prototypen mit Marc (21./22.11.), jetzt
-auf den echten Blog-URLs in DE, EN und NL. Erster Artikel: „Wie programmiert man eine Drohnenshow?“.
+auf den echten Blog-URLs in DE, EN und NL. Artikel:
+
+| Artikel | Szene | Besonderheit |
+|---|---|---|
+| Wie programmiert man eine Drohnenshow? | `story-scene.ts`, 9 Schritte (Bausteine, Ablauf) | Drohne explodiert, Wind und Böen |
+| Wie funktioniert eine Drohnenshow? | `ablauf-scene.ts`, 4 Schritte aus der Aufzählung in „Ablauf“ | Raster → synchroner Start zum Kreis → Herz schlägt → Landung am Startpunkt |
+| Drohnen als Alternative zum Feuerwerk | keine (der Text vergleicht, er erklärt keinen Ablauf) | Vergleichstabelle der Seite Nachhaltigkeit nach dem ersten Absatz zur Umwelt |
+
+Die beiden letzten hat ein zweiter Agent im Labor entworfen (Runde 18, Branch `r18/cornerstone`), danach über diese Schnittstelle
+produktiv gemacht; eine Szenen-Komponente (`StoryScene.astro`) für alle.
 
 ## Schnittstelle: einen Artikel einhängen
 
@@ -25,6 +34,11 @@ export default defineCornerstone({
 });
 ```
 
+- **Weitere Bausteine**: `{ kind: 'text', section, split: { after: n, part: 0 | 1 } }` teilt einen Abschnitt nach dem n-ten
+  Absatz (beide Teile müssen vorkommen); `{ kind: 'compare', label, caption }` setzt die Vergleichstabelle der Seite
+  Nachhaltigkeit (`pages/nachhaltigkeit`, Abschnitt `alternative`) in der Sprache des Artikels; bei `story` liest
+  `steps: 'list'` die Schritte aus der ersten Aufzählung des Abschnitts (Titel = fetter Anfang) statt aus `###`. Text nach
+  der Aufzählung gilt als Abweichung (Rückfall), damit nichts verloren geht.
 - **Abschnitte** kommen aus dem gerenderten Artikeltext (`splitSections` in `cornerstone/types.ts`). Jeder Abschnitt muss genau
   einmal vorkommen. Bei `story` ist jeder genannte Abschnitt ein Kapitel, seine `###`-Unterabschnitte sind die Schritte, in
   Reihenfolge. Die Szene muss genau so viele Schritte haben (`Story.steps`).
@@ -32,7 +46,10 @@ export default defineCornerstone({
   `Motion`, Helfer `frameCam`, `pathD`). Farben aus `scene-palette.ts`. Annotationen tragen `key`; der Text steht in `ui.json`
   unter `<i18n>.note.<key>` (ohne `key` gilt `text`, nur Deutsch). Bewegung je Schritt über `story.motion`: `sweep`
   (Abspielkopf), `wind` (Windlinien und Böen), `alive` (Eigenbewegung), `plain` (Drohnen ohne Farbe), `assemble` (Schritt, in
-  dem Teile mit `asmOnly`/`inner` erst zusammen stehen und dann explodieren). Ohne `motion` ruht die Szene.
+  dem Teile mit `asmOnly`/`inner` erst zusammen stehen und dann explodieren), `off`/`warm` (LEDs aus bzw. warmweiß), `beat`
+  (Formation schlägt leise um einen Mittelpunkt). Ohne `motion` ruht die Szene. Je Drohne optional `via` (Zwischenhalt beim
+  Vorwärtsschritt, alle zugleich: synchrones Abheben, Sinken über den Startpunkt); `story.poster` wählt den Schritt, der im
+  HTML steht (sonst der letzte).
 - **Texte**: alle `UiKey`-Werte sind relativ zum Präfix. Jeder neue Schlüssel braucht DE, EN, NL in `src/i18n/ui.json` und je
   einen EN- und NL-Eintrag in `docs/i18n/ui-provenance.json` (`origin: machine-new`, `components`: die Artikeldatei bzw.
   Szene). Kapitelnamen der Schrittleiste kommen aus den `##`-Titeln des Texts, also automatisch in jeder Sprache.
@@ -66,7 +83,13 @@ export default defineCornerstone({
 - Desktop-Klebeköpfe mit fester Höhe (Konfigurator-Bühne, FAQ-Einleitung, Ablauf-Kopf) bleiben beim Ausweichen der Kopfzeile
   an ihrer Stelle; nur „Im Preis enthalten“ rückt nach.
 
+- Labor-Route `/labor/cornerstone/` des zweiten Agenten und ihre Medien entfernt; seine Labor-Komponenten (`AblaufStory`,
+  `split.ts`) gingen in `StoryScene.astro` und `cornerstone/types.ts` auf, die Bilder rechnet jetzt dasselbe Rezept.
+- Feuerwerk: die drei Werbemotive stammen aus dem Jubiläumsordner; ihre Herkunft vor der Veröffentlichung bei FlyingStars
+  bestätigen (Hinweis des zweiten Agenten, steht auch im Rezept).
+
 ## Prüfen
 
-`tests/cornerstone.spec.ts` (DE/EN/NL, Rückfall, reduzierte Bewegung), `tests/nav-headroom.spec.ts` (schmal und breit, Untermenü,
+`tests/cornerstone.spec.ts` (alle drei Artikel in DE/EN/NL, reduzierte Bewegung), `scripts/cornerstone-plan.test.mjs`
+(Teilung des Texts, Rückfall), `tests/nav-headroom.spec.ts` (schmal und breit, Untermenü,
 Sprachliste, Tastatur), `scripts/css-tokens.test.mjs`.

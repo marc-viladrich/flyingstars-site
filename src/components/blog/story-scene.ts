@@ -34,7 +34,9 @@ export type Piece = {
   shapes: Shape[];
 };
 /** w: Lage der Drohne entlang der Windrichtung (0 = Luv, 1 = Lee), für den Zeitpunkt, an dem die Böe sie trifft */
-export type StoryDrone = { pos: [number, number, number][]; c: string; k: number; w: number };
+/** via: Zwischenhalt beim Vorwärtsschritt in diesen Schritt (alle zugleich, z. B. synchrones Abheben, Sinken über den
+ *  Startpunkt), danach weiter zur Lage des Schritts */
+export type StoryDrone = { pos: [number, number, number][]; c: string; k: number; w: number; via?: Record<number, P2> };
 /** x/y in Zeichnungseinheiten; row: Zeile einer Liste am selben Punkt (Prüfhäkchen der Live-Show) */
 /** key: Übersetzungsschlüssel (ui.json, unter dem Präfix des Artikels: <prefix>.note.<key>); text: deutscher Rückfall für
  *  Szenen ohne Schlüssel */
@@ -42,10 +44,15 @@ export type Note = { key?: string; text: string; steps: number[]; x: number; y: 
 /** Bewegung je Schritt (alles optional, ohne Angabe ruht die Szene): sweep = Abspielkopf läuft, wind = Windlinien und Böen,
  *  alive = leise Eigenbewegung der Drohnen, plain = Drohnen ohne Farbe (am Boden), assemble = Schritt, in dem Teile mit
  *  asmOnly/inner erst zusammengesetzt stehen und dann explodieren */
-export type Motion = { sweep?: number[]; wind?: number[]; alive?: number[]; plain?: number[]; assemble?: number };
+export type Motion = { sweep?: number[]; wind?: number[]; alive?: number[]; plain?: number[]; assemble?: number;
+  /** LEDs aus (am Boden) bzw. warmweiß statt Farbe */
+  off?: number[]; warm?: number[];
+  /** Herzschlag: zwei weiche Schläge je 1,8 s um center (Formation schlägt leise) */
+  beat?: { steps: number[]; center: P2 } };
 /** frames: Bildausschnitt je Schritt [x, y, b, h]; wind: Windrichtung auf dem Bildschirm (Einheitsvektor); sweep: Weg des
  *  Abspielkopfs der Zeitleiste (Verschiebung vom gezeichneten Platz zum Anfang und zum Ende) */
-export type Story = { vb: [number, number, number, number]; pieces: Piece[]; drones: StoryDrone[]; notes: Note[]; steps: number; frames: [number, number, number, number][]; wind?: P2; sweep?: [P2, P2]; motion?: Motion };
+/** poster: Schritt, der im HTML steht (Suche, Vorschau, ohne JavaScript); ohne Angabe der letzte */
+export type Story = { vb: [number, number, number, number]; pieces: Piece[]; drones: StoryDrone[]; notes: Note[]; steps: number; frames: [number, number, number, number][]; wind?: P2; sweep?: [P2, P2]; motion?: Motion; poster?: number };
 
 /** Kamera einer Bühne W × H für einen Ausschnitt: Maßstab und Verschiebung (gleiche Rechnung im Skript der Komponente) */
 export const frameCam = ([x, y, w, h]: [number, number, number, number], W: number, H: number) => {

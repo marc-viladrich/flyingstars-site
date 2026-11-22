@@ -4,7 +4,10 @@
 import ArticlePhotos from './ArticlePhotos.astro';
 import StoryScene from './StoryScene.astro';
 import FormationFinale from './FormationFinale.astro';
-import type { CornerstoneArticle, CornerstoneBlock, Section } from './cornerstone/types';
+import ComparisonMatrix from '../ComparisonMatrix.astro';
+import { stepsOf, splitAfter, type CornerstoneArticle, type CornerstoneBlock, type Section } from './cornerstone/types';
+import { localizedCollection } from '../../i18n/content';
+import { localeFromPath, sourceId } from '../../i18n/routing.mjs';
 import type { Story, Note } from './story-scene';
 import { forPath } from '../../i18n/server';
 interface Props { article: CornerstoneArticle; sections: Section[]; stories: Map<CornerstoneBlock, Story> }
@@ -15,15 +18,23 @@ const k = (key: string) => t(`${article.i18n}.${key}`);
 // sind die Schritte. Kapitelname = Zwischentitel (in jeder Sprache aus dem Text), Kurzname aus ui.json.
 const storyBlocks = (b: Extract<CornerstoneBlock, { kind: 'story' }>) => {
   let step = 0;
-  return b.sections.flatMap((i, g) => [
-    { html: sections[i].head + sections[i].lead },
-    ...sections[i].subs.map((sub) => ({ html: sub.html, step: step++, title: sub.title, group: sections[i].title })),
-  ]);
+  return b.sections.flatMap((i) => {
+    const part = stepsOf(sections[i], b.steps)!;
+    return [{ html: part.head }, ...part.steps.map((sub) => ({ html: sub.html, step: step++, title: sub.title, group: sections[i].title }))];
+  });
 };
+const textOf = (b: Extract<CornerstoneBlock, { kind: 'text' }>) => (b.split ? splitAfter(sections[b.section].html, b.split.after)![b.split.part] : sections[b.section].html);
+// Vergleichstabelle aus der Seite „Nachhaltigkeit“ in der Sprache des Artikels (eine Quelle für beide Stellen)
+type Compare = { rowHeader?: string; columns: { value: string }[]; rows: never[] };
+const compare = article.blocks.some((b) => b.kind === 'compare')
+  ? ((await localizedCollection('pages', localeFromPath(Astro.url.pathname), (e) => sourceId(e.id) === 'nachhaltigkeit'))[0]?.data.sections as { type: string; id?: string; comparison?: Compare }[] | undefined)
+      ?.find((s) => s.type === 'sustainability' && s.id === 'alternative')?.comparison
+  : undefined;
 const note = (n: Note) => (n.key ? k(`note.${n.key}`) : n.text);
 ---
 {article.blocks.map((b) => {
-  if (b.kind === 'text') return <div class="post-body cs-text" set:html={sections[b.section].html} />;
+  if (b.kind === 'text') return <div class="post-body cs-text" set:html={textOf(b)} />;
+  if (b.kind === 'compare') return compare && <figure class="cs-compare"><ComparisonMatrix label={k(b.label)} rowHeader={compare.rowHeader} columns={compare.columns} rows={compare.rows} /><figcaption>{k(b.caption)}</figcaption></figure>;
   if (b.kind === 'photos') return <ArticlePhotos photos={b.photos.map((p) => ({ ...p, alt: k(p.alt) }))} caption={b.caption ? k(b.caption) : undefined} focus={b.focus} />;
   if (b.kind === 'story') return <StoryScene story={stories.get(b)} note={note} blocks={storyBlocks(b)} groups={b.sections.map((i, g) => ({ name: sections[i].title, short: k(b.groups[g]) }))} label={k(b.label)} caption={k(b.caption)} />;
   return <FormationFinale><div class="post-body" set:html={sections[b.section].html} /></FormationFinale>;
@@ -31,4 +42,9 @@ const note = (n: Note) => (n.key ? k(`note.${n.key}`) : n.text);
 
 <style>
   .cs-text { width: 100%; }
+  /* Zwei Textabschnitte direkt nacheinander: Luft wie vor einem Bild */
+  .cs-text + .cs-text { margin-top: var(--space-10); }
+  /* Vergleich: etwas breiter als die Lesespalte, wie ein einzelnes Foto */
+  .cs-compare { width: 100%; max-width: min(56rem, 100%); margin: clamp(var(--space-8), 4vw, var(--space-12)) 0; }
+  .cs-compare figcaption { margin-top: var(--space-4); color: var(--faint); font-size: var(--text-sm); }
 </style>

@@ -29,13 +29,30 @@ for (const [locale, path, led] of PAGES) {
   });
 }
 
-test('Normale Artikel bleiben im normalen Format', async ({ page }) => {
-  await page.goto('/blog/2025-03-31-drohnen-feuerwerk-als-alternative/');
-  await expect(page.locator('[data-ss]')).toHaveCount(0);
-  await expect(page.locator('article .post-body')).toHaveCount(1);
-  const ld = JSON.parse(await page.locator('script[type="application/ld+json"]').first().textContent() ?? '{}');
-  expect(ld['@type']).toBe('BlogPosting');
-});
+// Weitere Cornerstone-Artikel (Runde 18): Ablauf-Szene aus der Aufzählung, Vergleichstabelle der Nachhaltigkeitsseite
+const FUNKTION = '2025-01-14-wie-funktioniert-drohnenshow-drohne', FEUERWERK = '2025-03-31-drohnen-feuerwerk-als-alternative';
+for (const [locale, prefix, landing, compare] of [['de', '', 'Landung am Startpunkt', 'Lasershow'], ['en', '/en', 'Landing at the starting point', 'Laser show'], ['nl', '/nl', 'Landing op het startpunt', 'Lasershow']] as const) {
+  test(`Wie funktioniert eine Drohnenshow ${locale}: Ablauf-Szene in vier Schritten, Fotos, Formation`, async ({ page }) => {
+    await page.goto(`${prefix}/blog/${FUNKTION}/`);
+    await expect(page.locator('[data-ss]')).toHaveCount(1);
+    await expect(page.locator('.ss-step')).toHaveCount(4);
+    await expect(page.locator('.ap img')).toHaveCount(4);
+    await expect(page.locator('.sn-pill', { hasText: landing })).toHaveCount(1);
+    await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', /\/media\/blog\/wie-funktioniert-eine-drohnenshow\/titel-16x9\.jpg$/);
+    await expect(page.locator('[data-ff]')).toHaveCount(1);
+  });
+  test(`Feuerwerk ${locale}: Vergleichstabelle statt Szene, Fotos, Formation`, async ({ page }) => {
+    await page.goto(`${prefix}/blog/${FEUERWERK}/`);
+    await expect(page.locator('[data-ss]')).toHaveCount(0);
+    await expect(page.locator('.cs-compare')).toBeVisible(); // breit Tabelle, schmal Karten (ComparisonMatrix)
+    await expect(page.locator('.cs-compare')).toContainText(compare);
+    await expect(page.locator('.ap img')).toHaveCount(5);
+    await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', /\/media\/blog\/drohnen-als-alternative-zum-feuerwerk\/titel-16x9\.jpg$/);
+    await expect(page.locator('[data-ff]')).toHaveCount(1);
+  });
+}
+
+// Rückfall ins normale Format: scripts/cornerstone-plan.test.mjs (alle veröffentlichten Artikel sind Cornerstones)
 
 test('Szene folgt dem Lesen und ruht bei reduzierter Bewegung', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });

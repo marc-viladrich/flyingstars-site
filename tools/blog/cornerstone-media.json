@@ -2,14 +2,151 @@
   "_doc": "Rezepte der Cornerstone-Artikel (Runde 15, 22.11.2026). Quelle: FlyingStars-Drive-Sichtung im Kundenordner 27-blog-bilder-2026-11-21/foto-auswahl (Nummer = Kontaktbogen). Regler = Lichtraster-Labor (tools/labor/lichtraster.mjs, DEFAULTS werden überschrieben). Ausgabe: public/media/blog/<slug>/. Neu rechnen: node tools/blog/cornerstone-media.mjs [slug]",
   "articles": {
     "wie-programmiert-man-eine-drohnenshow": {
-      "cover": { "photo": "030", "drive": "1WQr3zoWXZXfXkGI1QvIyQyP0LIVpO0yq", "position": "centre", "lichtraster": { "gamma": 1.8, "threshold": 0.08 } },
+      "cover": {
+        "photo": "030",
+        "drive": "1WQr3zoWXZXfXkGI1QvIyQyP0LIVpO0yq",
+        "position": "centre",
+        "lichtraster": {
+          "gamma": 1.8,
+          "threshold": 0.08
+        }
+      },
       "photos": [
-        { "name": "startunterlagen", "photo": "012", "drive": "1PGW9DpYEPurq3NuRQgJ9hruSEWseIXin", "width": 1600, "height": 1000 },
-        { "name": "stativ", "photo": "006", "drive": "1VwRRfSEX5IShrCoDSZwbmXiJuhmJ7PnP", "width": 960, "height": 1200 },
-        { "name": "bluete", "photo": "018", "drive": "1XGQ_NPDn4PD2utmT1SDyDZ5unTMbdTCw", "width": 960, "height": 1200, "position": "centre" },
-        { "name": "doppelherz", "photo": "034", "drive": "1VgjG974Mh0dgrp9Ujfj3d5lHqQZOQ5uS", "width": 960, "height": 1200, "position": "centre" }
+        {
+          "name": "startunterlagen",
+          "photo": "012",
+          "drive": "1PGW9DpYEPurq3NuRQgJ9hruSEWseIXin",
+          "width": 1600,
+          "height": 1000
+        },
+        {
+          "name": "stativ",
+          "photo": "006",
+          "drive": "1VwRRfSEX5IShrCoDSZwbmXiJuhmJ7PnP",
+          "width": 960,
+          "height": 1200
+        },
+        {
+          "name": "bluete",
+          "photo": "018",
+          "drive": "1XGQ_NPDn4PD2utmT1SDyDZ5unTMbdTCw",
+          "width": 960,
+          "height": 1200,
+          "position": "centre"
+        },
+        {
+          "name": "doppelherz",
+          "photo": "034",
+          "drive": "1VgjG974Mh0dgrp9Ujfj3d5lHqQZOQ5uS",
+          "width": 960,
+          "height": 1200,
+          "position": "centre"
+        }
+      ]
+    },
+    "wie-funktioniert-eine-drohnenshow": {
+      "_doc": "Runde 18 (zweiter Agent, Labor), produktiv 22.11.: Titel Doppelherz #034 im Lichtraster (Zuschnitt oben, Gamma/Schwelle höher gegen den verrauschten Vordergrund; #010 im Raster nur Striche, verworfen). Fotos: echte Showdrohnen statt Zeichnung, Ortsname, Startraster im Park.",
+      "cover": {
+        "photo": "034",
+        "drive": "1VgjG974Mh0dgrp9Ujfj3d5lHqQZOQ5uS",
+        "position": "top",
+        "lichtraster": {
+          "gamma": 2.2,
+          "threshold": 0.12
+        }
+      },
+      "photos": [
+        {
+          "name": "showdrohne",
+          "photo": "002",
+          "drive": "15V-mPGjAMZdL0esWuJt2FpeKOvfX1AUp",
+          "width": 960,
+          "height": 1200,
+          "position": "south"
+        },
+        {
+          "name": "startunterlagen",
+          "photo": "013",
+          "drive": "1PdBmCV4cFQ88VocqMK51TegCL_k5C-J3",
+          "width": 960,
+          "height": 1200,
+          "position": "centre"
+        },
+        {
+          "name": "nieheim",
+          "photo": "030",
+          "drive": "1WQr3zoWXZXfXkGI1QvIyQyP0LIVpO0yq",
+          "width": 1600,
+          "height": 1000,
+          "position": "centre"
+        },
+        {
+          "name": "startraster-park",
+          "photo": "015",
+          "drive": "1kjg_SZxocOtW0FUnq1F69Sf3FDeXTcme",
+          "width": 1600,
+          "height": 1000,
+          "position": "centre"
+        }
+      ]
+    },
+    "drohnen-als-alternative-zum-feuerwerk": {
+      "_doc": "Runde 18 (zweiter Agent, Labor), produktiv 22.11.: Titel Peace-Zeichen #044 im Lichtraster (klarste Figur der Sichtung). Fotos: Blüte, Transportkoffer, drei Werbemotive aus dem Jubiläumsordner (quadratisch, sonst schneidet der Zuschnitt die Schrift; Herkunft vor Veröffentlichung bestätigen).",
+      "cover": {
+        "photo": "044",
+        "drive": "1V2EWw2RJK6evpg8O23uUn58Nw7UtHj7N",
+        "position": "centre",
+        "lichtraster": {
+          "gamma": 1.8,
+          "threshold": 0.08
+        }
+      },
+      "photos": [
+        {
+          "name": "bluete",
+          "photo": "018",
+          "drive": "1XGQ_NPDn4PD2utmT1SDyDZ5unTMbdTCw",
+          "width": 1600,
+          "height": 1000,
+          "position": "centre"
+        },
+        {
+          "name": "transportkoffer",
+          "photo": "014",
+          "drive": "1opGjUGO_0GuDc4x1go9xpPEy_59hwjhP",
+          "width": 1600,
+          "height": 1000,
+          "position": "centre"
+        },
+        {
+          "name": "markenzeichen",
+          "photo": "052",
+          "drive": "1XlSULaRKYqo3dwJOUwd7KoX4367mCv64",
+          "width": 1000,
+          "height": 1000,
+          "position": "centre"
+        },
+        {
+          "name": "schriftzug",
+          "photo": "055",
+          "drive": "1PlmZVorzWy2shZrpsxd4t9k6zNzzbksJ",
+          "width": 1000,
+          "height": 1000,
+          "position": "centre"
+        },
+        {
+          "name": "jubilaeum",
+          "photo": "048",
+          "drive": "1MWT6cpBUU0EWk8G1gk8FetTukdaSuGvG",
+          "width": 1000,
+          "height": 1000,
+          "position": "centre"
+        }
       ]
     }
   },
-  "formation": { "mark": 110, "text": 150 }
+  "formation": {
+    "mark": 110,
+    "text": 150
+  }
 }

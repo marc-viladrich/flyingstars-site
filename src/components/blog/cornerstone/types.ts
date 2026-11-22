@@ -4,20 +4,26 @@
 // passt, bleiben im normalen Blogformat (BlogPost.astro).
 //
 // Abschnitte (section): 0 = Text vor dem ersten Zwischentitel (##), n = n-ter Zwischentitel mit allem bis zum nächsten,
-// darin die Unterabschnitte (###). Die Anordnung muss jeden Abschnitt genau einmal verwenden, sonst gilt sie nicht.
+// darin die Unterabschnitte (###). Die Anordnung muss jeden Abschnitt genau einmal verwenden (oder zweimal als die beiden
+// Teile einer Teilung nach einem Absatz), sonst gilt sie nicht.
 import type { Story } from '../story-scene';
 
 /** Übersetzungsschlüssel relativ zum Präfix des Artikels (CornerstoneArticle.i18n), Texte in src/i18n/ui.json */
 export type UiKey = string;
 export type CornerstonePhoto = { src: string; width: number; height: number; alt: UiKey };
 export type CornerstoneBlock =
-  /** ein Abschnitt als Fließtext */
-  | { kind: 'text'; section: number }
+  /** ein Abschnitt als Fließtext; split: nur der Teil bis einschließlich Absatz `after` (part 0) bzw. danach (part 1), etwa
+   *  für eine Tabelle zwischen zwei Absätzen. Beide Teile müssen vorkommen. */
+  | { kind: 'text'; section: number; split?: { after: number; part: 0 | 1 } }
+  /** Vergleichstabelle Drohnenshow · Feuerwerk · Lasershow aus der Seite „Nachhaltigkeit“ (pages/nachhaltigkeit, Abschnitt
+   *  „alternative“), in der Sprache des Artikels; eine Quelle für beide Stellen */
+  | { kind: 'compare'; label: UiKey; caption: UiKey }
   /** ein Foto über die Artikelbreite oder eine Reihe (Handy: Slider), mit Leuchtpunkt-Unterlage (ArticlePhotos.astro) */
   | { kind: 'photos'; photos: CornerstonePhoto[]; caption?: UiKey; focus?: string }
   /** Scroll-Szene: jeder genannte Abschnitt ist ein Kapitel, seine Unterabschnitte (###) sind die Schritte der Szene, in
-   *  dieser Reihenfolge. Die Szene muss genau so viele Schritte haben. groups: Kurzname je Kapitel für die Schrittleiste. */
-  | { kind: 'story'; sections: number[]; scene: () => Story; groups: UiKey[]; label: UiKey; caption: UiKey }
+   *  dieser Reihenfolge (steps: 'list': die Punkte der ersten Aufzählung im Abschnitt, Titel = fetter Anfang). Die Szene muss
+   *  genau so viele Schritte haben. groups: Kurzname je Kapitel für die Schrittleiste. */
+  | { kind: 'story'; sections: number[]; steps?: 'h3' | 'list'; scene: () => Story; groups: UiKey[]; label: UiKey; caption: UiKey }
   /** Schlussabschnitt mit der Logo-Formation (FormationFinale.astro) */
   | { kind: 'finale'; section: number };
 export interface CornerstoneArticle {
@@ -53,15 +59,44 @@ export function splitSections(html: string, dropImages = false): Section[] {
   });
 }
 
-/** Prüft die Anordnung gegen den Text: jeder Abschnitt genau einmal, Szenen mit passender Schrittzahl */
+export type Step = { html: string; title: string };
+/** Schritte eines Abschnitts: Unterabschnitte (###) oder die Punkte der ersten Aufzählung; head = alles davor */
+export function stepsOf(section: Section, mode: 'h3' | 'list' = 'h3'): { head: string; steps: Step[]; rest: string } | undefined {
+  if (mode === 'h3') return { head: section.head + section.lead, steps: section.subs, rest: '' };
+  const at = section.html.search(/<ul[\s>]/), end = section.html.indexOf('</ul>', at);
+  if (at < 0 || end < 0) return undefined;
+  const items = [...section.html.slice(at, end).matchAll(/<li>([\s\S]*?)<\/li>/g)].map((m) => m[1].trim());
+  return {
+    head: section.html.slice(0, at).trim(), rest: section.html.slice(end + 5).trim(),
+    steps: items.map((html) => ({ html: /^<p[\s>]/.test(html) ? html : `<p>${html}</p>`, title: strip(html.match(/<strong>([\s\S]*?)<\/strong>/)?.[1] ?? '').replace(/:$/, '') })),
+  };
+}
+/** Abschnitt nach dem n-ten Absatz teilen: [bis einschließlich Absatz n, Rest] */
+export function splitAfter(html: string, n: number): [string, string] | undefined {
+  let i = 0;
+  for (const m of html.matchAll(/<\/p>/g)) if (++i === n) { const at = m.index! + 4; return [html.slice(0, at).trim(), html.slice(at).trim()]; }
+}
+
+/** Prüft die Anordnung gegen den Text: jeder Abschnitt genau einmal (Teilungen: beide Teile), Szenen mit passender Schrittzahl */
 export function checkPlan(article: CornerstoneArticle, sections: Section[], stories: Map<CornerstoneBlock, Story>): string | undefined {
-  const used = article.blocks.flatMap((b) => b.kind === 'text' || b.kind === 'finale' ? [b.section] : b.kind === 'story' ? b.sections : []);
+  type Use = { i: number; split?: { after: number; part: 0 | 1 } };
+  const uses: Use[] = article.blocks.flatMap((b): Use[] => b.kind === 'text' ? [{ i: b.section, split: b.split }] : b.kind === 'finale' ? [{ i: b.section }] : b.kind === 'story' ? b.sections.map((i) => ({ i })) : []);
+  const used = uses.map((u) => u.i);
   const missing = sections.map((s, i) => (s.html.trim() ? i : -1)).filter((i) => i >= 0 && !used.includes(i));
   if (used.some((i) => i >= sections.length)) return `Abschnitt ${Math.max(...used)} fehlt im Text (${sections.length} Abschnitte)`;
-  if (new Set(used).size !== used.length) return 'Abschnitt doppelt angeordnet';
+  for (const i of new Set(used)) {
+    const here = uses.filter((u) => u.i === i);
+    if (here.length === 1 && !here[0].split) continue;
+    const [a, b] = here;
+    if (here.length !== 2 || !a.split || !b.split || a.split.after !== b.split.after || a.split.part === b.split.part) return `Abschnitt ${i} doppelt oder unvollständig geteilt`;
+    if (!splitAfter(sections[i].html, a.split.after)) return `Abschnitt ${i} hat weniger als ${a.split.after} Absätze`;
+  }
   if (missing.length) return `Abschnitte ${missing.join(', ')} kommen in der Anordnung nicht vor`;
   for (const b of article.blocks) if (b.kind === 'story') {
-    const n = b.sections.reduce((sum, i) => sum + sections[i].subs.length, 0), story = stories.get(b)!;
+    const parts = b.sections.map((i) => stepsOf(sections[i], b.steps));
+    if (parts.some((p) => !p)) return 'Aufzählung für die Szene fehlt';
+    if (parts.some((p) => p!.rest)) return 'Text nach der Aufzählung der Szene (ginge verloren)';
+    const n = parts.reduce((sum, p) => sum + p!.steps.length, 0), story = stories.get(b)!;
     if (n !== story.steps) return `Szene hat ${story.steps} Schritte, der Text ${n} Unterabschnitte`;
     if (b.groups.length !== b.sections.length) return 'groups und sections sind verschieden lang';
   }

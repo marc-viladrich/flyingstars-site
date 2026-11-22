@@ -1,4 +1,5 @@
-// Isometrische Scroll-Szene für den Artikel „Wie funktioniert eine Drohnenshow?“ (Labor, Runde 18, 22.11.2026).
+// Isometrische Scroll-Szene für den Artikel „Wie funktioniert eine Drohnenshow?“ (Runde 18 im Labor, seit 22.11.2026
+// produktiv über cornerstone/articles/wie-funktioniert-eine-drohnenshow.ts und dieselbe StoryScene wie alle Artikel).
 // Nach dem Muster von blog/story-scene.ts („Wie programmiert man eine Drohnenshow?“), aber nur für den Abschnitt „Ablauf
 // einer Drohnenshow“ mit seinen vier Schlüsselschritten. Bewusst KEINE Drohne in Explosionsansicht, Software oder
 // Simulation: das zeigt schon der Programmier-Artikel. Hier geht es um das, was das Publikum erlebt, als ein Bogen:
@@ -7,15 +8,8 @@
 //   2 Animation        der Kreis wird zum Herz, das leise schlägt (Bild aus Lichtpunkten, Bewegung als Animation)
 //   3 Rückkehr         jede Drohne sinkt über ihren eigenen Startpunkt und landet dort
 // Dieselbe Kamera und dasselbe Feld wie der Prototyp, wenige Annotationen (eine je Schritt), Vibe der Startseiten-Grafiken.
-import { camera, rectZ, pair, r1, type V3, type P2 } from '../../landing/site-scene';
-import type { Piece, Shape } from '../../blog/story-scene';
-
-/** pos: Lage je Schritt [x, y, sichtbar]; via: Zwischenhalt beim Vorwärtsschritt in diesen Schritt (synchrones Abheben,
- *  Sinken über den Startpunkt); c: Farbe in der Animation; k: Reihenfolge für den Versatz */
-export type FlowDrone = { pos: [number, number, number][]; via: Record<number, [number, number]>; c: string; k: number };
-export type FlowNote = { text: string; steps: number[]; x: number; y: number; side: 'l' | 'r' };
-/** beat: Mittelpunkt des Herzens, um den der Herzschlag skaliert */
-export type FlowStory = { vb: [number, number, number, number]; pieces: Piece[]; drones: FlowDrone[]; notes: FlowNote[]; steps: number; frames: [number, number, number, number][]; beat: P2 };
+import { camera, rectZ, pair, r1, type V3, type P2 } from '../landing/site-scene';
+import type { Piece, Shape, Story, StoryDrone } from './story-scene';
 
 export const STEPS = 4;
 const ALL = [0, 1, 2, 3];
@@ -42,7 +36,7 @@ const heartUV = (n: number, w: number, h: number) => {
   return resample(dense, n);
 };
 
-export function ablaufScene(o: { colors: string[]; zone: Record<string, string> }): FlowStory {
+export function ablaufScene(o: { colors: string[]; zone: Record<string, string> }): Story {
   const cam = camera([0, 0, 8], -36, 26, 200);
   const field = { x0: -20, x1: 20, y0: -13, y1: 13 };
   cam.fit([...rectZ(field.x0, field.y0, field.x1, field.y1, 0), [0, 1, 23], [-9.5, -4, 23], [9.5, 6, 23]], 400);
@@ -99,23 +93,23 @@ export function ablaufScene(o: { colors: string[]; zone: Record<string, string> 
   // ---------- Drohnen: eine Lage je Schritt ----------
   const colorAt = (u: number) => o.colors[Math.max(0, Math.min(o.colors.length - 1, Math.round(u * (o.colors.length - 1))))];
   const hx = heart.map((h) => P(h)[0]), hx0 = Math.min(...hx), hx1 = Math.max(...hx);
-  const drones: FlowDrone[] = pairs.map(({ start, ring: r, heart: h }, k) => {
+  const drones: (StoryDrone & { via: Record<number, P2> })[] = pairs.map(({ start, ring: r, heart: h }, k) => {
     const at = (p: V3, a = 1): [number, number, number] => { const q = P(p); return [r1(q[0]), r1(q[1]), a]; };
     const v = (p: V3): [number, number] => { const q = P(p); return [r1(q[0]), r1(q[1])]; };
     const ground: V3 = [start[0], start[1], 0.35];
     return {
       pos: [at(ground), at(r), at(h), at(ground)],
       via: { 1: v([start[0], start[1], LIFT]), 3: v([start[0], start[1], 5]) },
-      c: colorAt((P(h)[0] - hx0) / (hx1 - hx0 || 1)), k,
+      c: colorAt((P(h)[0] - hx0) / (hx1 - hx0 || 1)), k, w: 0,
     };
   });
 
   // ---------- Annotationen: eine je Schritt ----------
-  const notes: { text: string; steps: number[]; p: P2; side: 'l' | 'r' }[] = [
-    { text: 'Animationsraster', steps: [0], p: P([gx0 - m, gy0 + GAP, 0]), side: 'l' },
-    { text: 'Synchroner Start', steps: [1], p: P([gx0, gy0, LIFT * 0.6]), side: 'l' },
-    { text: 'Formationswechsel', steps: [2], p: P(inSky([7.7, 4.3])), side: 'r' },
-    { text: 'Landung am Startpunkt', steps: [3], p: P([gx0, gy0, 0.35]), side: 'l' },
+  const notes: { key: string; text: string; steps: number[]; p: P2; side: 'l' | 'r' }[] = [
+    { key: 'grid', text: 'Animationsraster', steps: [0], p: P([gx0 - m, gy0 + GAP, 0]), side: 'l' },
+    { key: 'sync', text: 'Synchroner Start', steps: [1], p: P([gx0, gy0, LIFT * 0.6]), side: 'l' },
+    { key: 'change', text: 'Formationswechsel', steps: [2], p: P(inSky([7.7, 4.3])), side: 'r' },
+    { key: 'landing', text: 'Landung am Startpunkt', steps: [3], p: P([gx0, gy0, 0.35]), side: 'l' },
   ];
 
   // ---------- auf (0, 0) verschieben ----------
@@ -133,7 +127,7 @@ export function ablaufScene(o: { colors: string[]; zone: Record<string, string> 
     d.pos = d.pos.map(([x, y, a]) => [r1(x - X0), r1(y - Y0), a]);
     d.via = Object.fromEntries(Object.entries(d.via).map(([s, p]) => [s, sh(p)]));
   });
-  const outNotes = notes.map((n) => { const [x, y] = sh(n.p); return { text: n.text, steps: n.steps, side: n.side, x, y }; });
+  const outNotes = notes.map((n) => { const [x, y] = sh(n.p); return { key: n.key, text: n.text, steps: n.steps, side: n.side, x, y }; });
   const hc = P(inSky([0, 0])), beat = sh(hc);
 
   // ---------- Bildausschnitt je Schritt: sichtbare Teile (ohne Feld und Startunterlagen, die dürfen über den Rand laufen),
@@ -153,5 +147,6 @@ export function ablaufScene(o: { colors: string[]; zone: Record<string, string> 
     w *= 1.18; h *= 1.18;
     return [r1(cx - w / 2), r1(cy - h / 2), r1(w), r1(h)];
   });
-  return { vb: [0, 0, r1(W), r1(H)], pieces, drones, notes: outNotes, steps: STEPS, frames, beat };
+  // Bewegung: leises Schweben in Kreis und Herz, das Herz schlägt; im HTML steht die Formation (Schritt 2), um die es geht
+  return { vb: [0, 0, r1(W), r1(H)], pieces, drones, notes: outNotes, steps: STEPS, frames, poster: 2, motion: { alive: [1, 2], beat: { steps: [2], center: beat }, off: [0, 3], warm: [1] } };
 }
