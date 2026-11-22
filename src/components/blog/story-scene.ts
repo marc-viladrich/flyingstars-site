@@ -47,7 +47,8 @@ export type Piece = {
  *  Startpunkt), danach weiter zur Lage des Schritts */
 /** track: Weg im Schritt mit Abspielkopf (motion.sweep) als Versatz zur Lage des Schritts, vom Anfang der Zeitleiste
  *  (Startreihe) bis zum Ende (Stern, Versatz 0); die Drohne folgt dem Kopf vor und zurück */
-export type StoryDrone = { pos: [number, number, number][]; c: string; k: number; w: number; via?: Record<number, P2>; track?: P2[] };
+/** show: weitere Formen der Live-Show als Versatz zur Lage des Schritts (motion.show), die Drohnen wechseln reihum */
+export type StoryDrone = { pos: [number, number, number][]; c: string; k: number; w: number; via?: Record<number, P2>; track?: P2[]; show?: P2[] };
 /** x/y in Zeichnungseinheiten; row: Zeile einer Liste am selben Punkt (Prüfhäkchen der Live-Show) */
 /** key: Übersetzungsschlüssel (ui.json, unter dem Präfix des Artikels: <prefix>.note.<key>); text: deutscher Rückfall für
  *  Szenen ohne Schlüssel */
@@ -62,7 +63,10 @@ export type Motion = { sweep?: number[]; wind?: number[]; alive?: number[]; plai
   beat?: { steps: number[]; center: P2 };
   /** Funk: im Zwischenhalt (via) stehen die Drohnen ohne Farbe am Boden, gestrichelte Signallinien laufen von der Station
    *  zu ihnen; danach steigen alle zugleich (ohne Versatz) und leuchten auf */
-  signal?: number[] };
+  signal?: number[];
+  /** Live-Show (Runde 20, Marc): die Drohnen wechseln reihum zwischen Stern und den Formen in drone.show; kurz vor jedem
+   *  Wechsel sendet die Station Signale zu den Drohnen der nächsten Form (Teile mit Klasse pulse-<Form>) */
+  show?: number[] };
 /** frames: Bildausschnitt je Schritt [x, y, b, h]; wind: Windrichtung auf dem Bildschirm (Einheitsvektor); sweep: Weg des
  *  Abspielkopfs der Zeitleiste (Verschiebung vom gezeichneten Platz zum Anfang und zum Ende) */
 /** poster: Schritt, der im HTML steht (Suche, Vorschau, ohne JavaScript); ohne Angabe der letzte */
@@ -89,6 +93,18 @@ function starOutline(n: number, R: number, r: number): [number, number][] {
   }
   return out;
 }
+/** Herz als Umriss, Punkte gleichmäßig nach Bogenlänge, oben in der Mitte beginnend und gegen den Uhrzeigersinn wie der
+ *  Stern (so wandert jede Drohne am Umriss entlang zur nächsten Form); size = halbe Höhe */
+function heartOutline(n: number, size: number): [number, number][] {
+  const raw = Array.from({ length: 720 }, (_, i): [number, number] => { const t = -(i / 720) * Math.PI * 2; return [16 * Math.sin(t) ** 3, 13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t)]; });
+  const ys = raw.map((p) => p[1]), k = (2 * size) / (Math.max(...ys) - Math.min(...ys)), cy = (Math.max(...ys) + Math.min(...ys)) / 2;
+  const pts = raw.map(([x, y]): [number, number] => [x * k, (y - cy) * k]);
+  const len = pts.map((p, i) => Math.hypot(pts[(i + 1) % pts.length][0] - p[0], pts[(i + 1) % pts.length][1] - p[1]));
+  const total = len.reduce((a, b) => a + b, 0), out: [number, number][] = [];
+  for (let i = 0; i < n; i++) { let goal = (i / n) * total, j = 0; while (goal > len[j]) goal -= len[j++]; const a = pts[j], b = pts[(j + 1) % pts.length], u = goal / len[j]; out.push([a[0] + (b[0] - a[0]) * u, a[1] + (b[1] - a[1]) * u]); }
+  return out;
+}
+const circleOutline = (n: number, r: number) => Array.from({ length: n }, (_, i): [number, number] => { const a = Math.PI / 2 + (i / n) * Math.PI * 2; return [Math.cos(a) * r, Math.sin(a) * r]; });
 const starCorners = (R: number, r: number) => Array.from({ length: 10 }, (_, i) => { const a = Math.PI / 2 + (i * Math.PI) / 5, q = i % 2 ? r : R; return [Math.cos(a) * q, Math.sin(a) * q] as [number, number]; });
 
 export function storyScene(o: { colors: string[]; zone: Record<string, string> }): Story {
@@ -200,11 +216,17 @@ export function storyScene(o: { colors: string[]; zone: Record<string, string> }
   // ihre Formation“): wenige Signallinien, erst zu den Drohnen im Startraster, nach dem Aufstieg zu denselben im Stern
   const mt = P(mastTop);
   const linked = [3, 11, 19, 27, 35];
-  add({ key: 'radio', zc: o.zone.station, steps: [1], origin: mt, hide: { s: [0.1, 0.1] }, shapes: [
+  add({ key: 'radio', zc: o.zone.station, steps: [1, 6], origin: mt, hide: { s: [0.1, 0.1] }, shapes: [
     ...[9, 15, 21].map((rad) => ({ t: 'circle', c: mt, r: rad, cls: 'wave' }) as Shape),
     ...linked.map((i) => ({ t: 'line', pts: [mt, P(pairs[i].start)], cls: 'signal signal-ground' }) as Shape),
     ...linked.map((i) => ({ t: 'line', pts: [mt, P(pairs[i].motif)], cls: 'signal signal-sky' }) as Shape),
   ] });
+
+  // Live-Show (Marc, Runde 20): Stern → Herz → Kreis im Wechsel; vor jedem Wechsel Signale zu denselben Drohnen in der
+  // nächsten Form. showSky[f][m] = Punkt der Form f für die Drohne, die im Stern an Punkt m steht
+  const showSky: V3[][] = [starSky, heartOutline(N, R * 0.95).map((p) => inSky(p)), circleOutline(N, R * 0.82).map((p) => inSky(p))];
+  const linkedSky = linked.map((i) => starSky.indexOf(pairs[i].motif));
+  showSky.forEach((form, f) => add({ key: `pulse-${f}`, zc: o.zone.station, steps: [6], origin: mt, hide: { s: [0.1, 0.1] }, shapes: linkedSky.map((m) => ({ t: 'line', pts: [mt, P(form[m])], cls: `signal pulse pulse-${f}` }) as Shape) }));
 
   // ---------- 2 · Idee: Stern als 3D-Modell (Drahtgitter, extrudiert) ----------
   const corners = starCorners(R, Ri), skyCenter = P(SC);
@@ -312,7 +334,9 @@ export function storyScene(o: { colors: string[]; zone: Record<string, string> }
     ];
     const m = starSky.indexOf(motif), u = m >= 0 ? starUV[m][0] : 0;
     const track = Array.from({ length: 10 }, (_, i): P2 => { const q = P(routeAt(route, i / 9)); return [r1(q[0] - plan[0]), r1(q[1] - plan[1])]; });
-    return { pos, c: colorAt(motif[0] - SC[0]), k, w: r1(((u + R) / (2 * R)) * 100) / 100, via: { 1: P(start) }, track };
+    // Live-Show: wie an der Bodenstation erst ins Startraster, die Station bringt sie hoch; dann die weiteren Formen
+    const sky = P(motif), show = showSky.slice(1).map((form): P2 => { const q = P(form[m]); return [r1(q[0] - sky[0]), r1(q[1] - sky[1])]; });
+    return { pos, c: colorAt(motif[0] - SC[0]), k, w: r1(((u + R) / (2 * R)) * 100) / 100, via: { 1: P(start), 6: P(start) }, track, show };
   });
 
   // ---------- Annotationen (wenige: Marc „höheres Abstraktionsniveau, weniger Annotationen“) ----------
@@ -327,7 +351,8 @@ export function storyScene(o: { colors: string[]; zone: Record<string, string> }
     { key: 'timing', text: 'Musik und Timing', steps: [4], p: P([sw.x1, 1, swz.time]), side: 'r', target: 'sw-time' }, // rechts zwischen den beiden anderen: links kollidierte die längere Pille schmal mit „Lichtsequenz“
     { key: 'light', text: 'Lichtsequenz', steps: [4], p: P([sw.x1, 1, swz.light]), side: 'r', target: 'sw-light' },
     { key: 'wind', text: 'Wind', steps: [5], p: P(inSky([U0 + 1.5, -6.1 + Math.sin((U0 + 1.5) * 0.45 + 7) * 0.35], 1.2)), side: 'l', target: 'wind' },
-    { key: 'near', text: 'Zu nah: korrigieren', steps: [5], p: [near.at[0] + 9, near.at[1]], side: 'r', target: 'warn', late: true },
+    // Runde 20 (Marc): unten am Anfang der beiden orangen Bahnen, damit der Stern frei steht
+    { key: 'near', text: 'Zu nah: korrigieren', steps: [5], p: (() => { const a = P(paths[near.i].find((q) => q[2] >= bx.z0)!), b = P(paths[near.i + 1].find((q) => q[2] >= bx.z0)!); return [Math.max(a[0], b[0]) + 2, (a[1] + b[1]) / 2] as P2; })(), side: 'r', target: 'warn', late: true },
     { key: 'gpsSignal', text: 'GPS-Signal', steps: [6], p: P([15, 3, 7]), side: 'r', check: true, row: 0 },
     { key: 'weather', text: 'Wetter', steps: [6], p: P([15, 3, 7]), side: 'r', check: true, row: 1 },
     { key: 'noFly', text: 'Flugverbotszonen', steps: [6], p: P([15, 3, 7]), side: 'r', check: true, row: 2 },
@@ -360,7 +385,7 @@ export function storyScene(o: { colors: string[]; zone: Record<string, string> }
       const dy = pc.shift?.[st] ?? 0;
       pc.shapes.forEach((s) => { if (s.t === 'circle') q.push([s.c[0] - s.r, s.c[1] - s.r + dy], [s.c[0] + s.r, s.c[1] + s.r + dy]); else s.pts.forEach((p) => q.push([p[0], p[1] + dy])); });
     });
-    drones.forEach((d) => { const [x, y, a] = d.pos[st]; if (a > 0) q.push([x, y]); });
+    drones.forEach((d) => { const [x, y, a] = d.pos[st]; if (a > 0) q.push([x, y]); if (a > 0 && st === 6) d.show?.forEach(([ox, oy]) => q.push([x + ox, y + oy])); });
     outNotes.forEach((n) => { if (n.steps.includes(st)) q.push([n.x, n.y]); });
     const fx0 = Math.min(...q.map((p) => p[0])), fx1 = Math.max(...q.map((p) => p[0])), fy0 = Math.min(...q.map((p) => p[1])), fy1 = Math.max(...q.map((p) => p[1]));
     let w = fx1 - fx0, h = fy1 - fy0;
@@ -371,7 +396,7 @@ export function storyScene(o: { colors: string[]; zone: Record<string, string> }
   });
   // Bewegung: Funk und Aufstieg an der Bodenstation, Abspielkopf in Musik und Licht, Wind und Böen in der Simulation,
   // Eigenbewegung überall, wo der Stern am Himmel steht; die Drohne steht im ersten Schritt erst zusammen
-  const motion: Motion = { signal: [1], sweep: [4], wind: [5], alive: [1, 3, 5, 6], assemble: 0 };
+  const motion: Motion = { signal: [1, 6], sweep: [4], wind: [5], alive: [1, 3, 5, 6], assemble: 0, show: [6] };
   return { vb: [0, 0, r1(W), r1(H)], pieces, drones, steps: STEPS, notes: outNotes, frames, wind, sweep, motion };
 }
 

@@ -130,3 +130,18 @@ test('Drohne zerlegt sich nur auf Wunsch: Hover mit der Maus, Tippen am Handy, K
   await expect(btn).toHaveAttribute('aria-pressed', 'true');
   await expect(page.locator('.sn.on')).toHaveCount(3);
 });
+
+test('Showabend: Startraster, Funk, dann Stern → Herz → Kreis mit Signalen vor jedem Wechsel; reduziert ruht der Stern', async ({ page }) => {
+  await page.goto(`/blog/${CS}/`);
+  const stage = page.locator('[data-stage]');
+  await page.evaluate(() => { const u = document.querySelectorAll('.ss-unit')[5]; scrollBy({ top: u.getBoundingClientRect().top - innerHeight * 0.3, behavior: 'instant' }); });
+  await expect(stage).toHaveAttribute('data-step', '5');
+  await page.evaluate(() => { const u = document.querySelectorAll('.ss-unit')[6]; scrollBy({ top: u.getBoundingClientRect().top - innerHeight * 0.3, behavior: 'instant' }); });
+  await expect(stage).toHaveAttribute('data-step', '6');
+  await expect(stage).toHaveClass(/is-signal/); // erst am Boden, Funk
+  await expect(stage).toHaveAttribute('data-pulse', /[0-2]/, { timeout: 12_000 }); // Signal vor dem ersten Wechsel
+  await expect.poll(() => page.locator('.sd .sw').evaluateAll((els) => els.filter((e) => Math.abs(parseFloat((e as SVGElement).style.getPropertyValue('--wx') || '0')) > 3).length), { timeout: 8_000 }).toBeGreaterThan(10);
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.evaluate(() => document.dispatchEvent(new Event('flyingstars:motion-change')));
+  await expect(stage).not.toHaveAttribute('data-pulse', /.*/);
+});

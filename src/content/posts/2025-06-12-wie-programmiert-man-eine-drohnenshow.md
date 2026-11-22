@@ -59,6 +59,12 @@ Bevor die Show auf die Drohnen geht, spielen wir sie in unserer Software komplet
 
 Am Showtag beginnen wir rund dreieinhalb Stunden vor dem Start mit dem Aufbau. Den Sicherheitsbereich von etwa 100 × 100 Metern halten wir während der Show frei von Unbeteiligten, und kurz vorher prüfen wir GPS-Empfang, Wetter und Flugverbotszonen. Dann geben wir eurem DJ oder eurer Technik per Funk oder Telefon den Countdown durch. Bei null drückt jemand auf „Play“, und die Drohnen steigen auf.
 
+## Wie viel Zeit ihr einplanen solltet
+
+Fragt am besten so früh wie möglich an. Zwei bis drei Monate Vorbereitungszeit sind ideal, vor allem wenn der Showort aufwendige Genehmigungen braucht. Wenn es eilt, planen wir eure Show gegen einen Express-Aufschlag auch in ein bis zwei Wochen.
+
+Die Beschallung vor Ort stellt ihr oder eure Technik. Die fertig geschnittene Musik schicken wir vorab, zum Beispiel als WAV-Datei, damit am Abend nur noch der Countdown fehlt. Bucht ihr schon im Vorjahr, bekommt ihr 10 % Frühbuchungsrabatt.
+
 ## Eure Show mit FlyingStars
 
 Eine Show dauert bei uns meist rund 13 Minuten, bis zu 25 sind möglich. Wie viele Drohnen eure Motive brauchen und was das kostet, seht ihr auf unserer [Preisseite](/drohnenshow-preise/). Oder ihr [erzählt uns direkt von eurer Idee](/kontakt/), wir antworten innerhalb von 48 Stunden.

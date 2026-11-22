@@ -13,20 +13,20 @@ cover:
   width: 1680
   height: 1120
 draft: false
-translationSourceHash: 6ffbcd27125b1f75ba9aeb07a387d48f6511c132ecafa827105f7be1755a8715
+translationSourceHash: e934b97e1b18e74081de6964972674f1dfa34fc566331e5f74bb1a771cd4f1d7
 translationContractVersion: 2
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: en
-  sourceFingerprint: 6ffbcd27125b1f75ba9aeb07a387d48f6511c132ecafa827105f7be1755a8715
+  sourceFingerprint: e934b97e1b18e74081de6964972674f1dfa34fc566331e5f74bb1a771cd4f1d7
   legacy:
     provenanceFile: docs/i18n/content-provenance.json
     migration: I01-v2-2026-11-04
   fields:
     - address: /body
-      sourceFingerprint: edb8da5e025e766ec021fd856d54a0788a3eed9394ec805438b44b3dc27a6f2b
-      targetFingerprint: 35466c278fe1a46603e9c45b43e6f1e0a568433d0399dfe0eff7632c11dec8d2
+      sourceFingerprint: c14f32eb8e8fbafe46a8bc2138bd9ca8bacf5714779c5d47584b41904852c5cd
+      targetFingerprint: 124c0d03ad58e659c8c4698b5d198c8d167d23c5056b3862a085cb24978f67ab
       status: adopted-existing
     - address: /cover/alt
       sourceFingerprint: debf6f3890f470655260d1c585061012aab399099fdb5f2a21f10d398a9ba7e0
@@ -87,6 +87,12 @@ Before the show goes onto the drones, we play it through completely in our softw
 ### The show evening
 
 On the day, we start setting up around three and a half hours before the show. We keep the safety area of roughly 100 × 100 metres clear of anyone not involved while the show runs, and shortly before it we check GPS reception, weather and no-fly zones. Then we give your DJ or sound crew the countdown by radio or phone. At zero, someone presses "Play" and the drones lift off.
+
+## How much time to plan for
+
+Get in touch as early as you can. Two to three months of preparation are ideal, especially if the venue needs complex permits. If it is urgent, we can plan your show within one or two weeks for an express surcharge.
+
+You or your technical crew provide the sound system on site. We send the finished, edited music in advance, for example as a WAV file, so on the evening only the countdown is left. If you book in the previous year, you get a 10 % early-booking discount.
 
 ## Your show with FlyingStars
 

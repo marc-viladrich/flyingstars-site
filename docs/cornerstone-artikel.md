@@ -136,3 +136,10 @@ Sprachliste, Tastatur), `scripts/css-tokens.test.mjs`.
 - **Abstand vor der Logo-Formation:** `.ss-text` hatte unten 28–32svh Luft, damit der letzte Schritt die Leselinie erreicht; die Seite danach reicht dafür, jetzt `--space-4`.
 - **Fakten (Marc):** Testflug vor der Show gibt es → Programmier-Artikel „Simulation und Testflug“; Start- und Landeplatz rund 25 × 25 m (FAQ-Wert) im Funktioniert-Artikel; GPS/Wetter/Flugverbotszonen am Abend bestätigt; AA-Akkus offen.
 - Prüfen: `tests/cornerstone.spec.ts` (Zwei Spalten 2560×1440 und 1280×720, Drohne Hover/Tippen/Tastatur).
+
+### Runde 20c (22.11.2026): Showabend als Show, Abschluss, Abstände
+
+- **Showabend (Programmier-Szene, Schritt 6):** wie an der Bodenstation erst ins Startraster (ohne Farbe), Funk von der Station, synchroner Aufstieg in den Stern (`motion.signal` enthält 6, `drone.via[6]`). Danach wechseln die Drohnen reihum Stern → Herz → Kreis (`motion.show`, `drone.show` = Versatz je Form, gleiche Umlaufrichtung, damit jede Drohne am Umriss entlang wandert; je Form 3,4 s stehen, 1,8 s Wechsel). In den letzten 1,1 s vor jedem Wechsel sendet die Station gestrichelte Signale zu denselben fünf Drohnen in der nächsten Form (`pulse-<Form>`, `data-pulse` am Stage), die Funkwellen laufen nur dann. Reduzierte Bewegung: Stern steht.
+- **„Zu nah: korrigieren“** steht unten am Anfang der beiden orangen Bahnen (Marc: Stern soll frei stehen).
+- **Abschluss Programmier-Artikel:** neuer Abschnitt „Wie viel Zeit ihr einplanen solltet“ vor der Logo-Formation (Marc: normaler Abschnitt als Abschluss). Fakten aus den FAQ (Moritz): 2–3 Monate ideal, Express 1–2 Wochen gegen Aufschlag, 10 % Frühbuchungsrabatt bei Buchung im Vorjahr; Musik als WAV vorab an DJ/Technik, Beschallung stellt der Veranstalter (Fragebogen).
+- **Abstände:** die Szene hat unten dieselbe Luft wie oben (`margin-block`), Zwischentitel in der Szene mit Luft vor und nach der Linie.

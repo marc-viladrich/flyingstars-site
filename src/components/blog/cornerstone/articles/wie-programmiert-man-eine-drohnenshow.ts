@@ -25,6 +25,7 @@ export default defineCornerstone({
       { src: `${M}doppelherz.webp`, width: 960, height: 1200, alt: 'photoHeart' },
     ], caption: 'photoRowCaption', focus: '20% 80%' },
     { kind: 'story', sections: [2, 3], scene: () => storyScene(scenePalette), groups: ['groupTools', 'groupFlow'], label: 'sceneLabel', caption: 'sceneCaption' },
-    { kind: 'finale', section: 4 },
+    { kind: 'text', section: 4 }, // Runde 20 (Marc): ein normaler Abschnitt als Abschluss, bevor Logo und Einladung kommen
+    { kind: 'finale', section: 5 },
   ],
 });

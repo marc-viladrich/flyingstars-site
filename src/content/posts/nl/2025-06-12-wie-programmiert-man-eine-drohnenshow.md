@@ -13,20 +13,20 @@ cover:
   width: 1680
   height: 1120
 draft: false
-translationSourceHash: 6ffbcd27125b1f75ba9aeb07a387d48f6511c132ecafa827105f7be1755a8715
+translationSourceHash: e934b97e1b18e74081de6964972674f1dfa34fc566331e5f74bb1a771cd4f1d7
 translationContractVersion: 2
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: nl
-  sourceFingerprint: 6ffbcd27125b1f75ba9aeb07a387d48f6511c132ecafa827105f7be1755a8715
+  sourceFingerprint: e934b97e1b18e74081de6964972674f1dfa34fc566331e5f74bb1a771cd4f1d7
   legacy:
     provenanceFile: docs/i18n/content-provenance.json
     migration: I01-v2-2026-11-04
   fields:
     - address: /body
-      sourceFingerprint: edb8da5e025e766ec021fd856d54a0788a3eed9394ec805438b44b3dc27a6f2b
-      targetFingerprint: a59493ec3a574a2d7444b71d62d529afdcb8da143aa11228a17f55474347d0f7
+      sourceFingerprint: c14f32eb8e8fbafe46a8bc2138bd9ca8bacf5714779c5d47584b41904852c5cd
+      targetFingerprint: fc5a79096dbe93d427759bf124bddaca9e503e1235e69536b9aa9e17ced314b3
       status: adopted-existing
     - address: /cover/alt
       sourceFingerprint: debf6f3890f470655260d1c585061012aab399099fdb5f2a21f10d398a9ba7e0
@@ -87,6 +87,12 @@ Voordat de show op de drones gaat, spelen we hem in onze software volledig af. W
 ### De showavond
 
 Op de dag zelf beginnen we zo'n drieënhalf uur voor de show met de opbouw. Het veiligheidsgebied van ongeveer 100 × 100 meter houden we tijdens de show vrij van onbevoegden, en kort ervoor controleren we de GPS-ontvangst, het weer en de vliegverbodzones. Dan geven we jullie dj of technici via portofoon of telefoon het aftellen door. Bij nul drukt iemand op “Play” en stijgen de drones op.
+
+## Hoeveel tijd jullie moeten inplannen
+
+Vraag zo vroeg mogelijk aan. Twee tot drie maanden voorbereidingstijd is ideaal, vooral als de showlocatie ingewikkelde vergunningen nodig heeft. Als het haast heeft, plannen we jullie show tegen een expresstoeslag ook binnen een of twee weken.
+
+Het geluid ter plaatse regelen jullie of jullie technici. De afgemonteerde muziek sturen we vooraf, bijvoorbeeld als WAV-bestand, zodat er op de avond alleen nog de countdown overblijft. Boeken jullie al in het jaar ervoor, dan krijgen jullie 10 % vroegboekkorting.
 
 ## Jullie show met FlyingStars
 
