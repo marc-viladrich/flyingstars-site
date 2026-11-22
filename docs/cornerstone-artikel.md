@@ -88,6 +88,13 @@ export default defineCornerstone({
 - Feuerwerk: die drei Werbemotive stammen aus dem Jubiläumsordner; ihre Herkunft vor der Veröffentlichung bei FlyingStars
   bestätigen (Hinweis des zweiten Agenten, steht auch im Rezept).
 
+- Bewegung der Szene ohne CSS-px im Code (scripts/no-px.test.mjs): Lagen sind Zahlen in Custom Properties (`--cx/--cy/--ck`
+  Kamera, `--ty/--s1/--s2` Teile, `--dx/--dy` Drohnen, `--wx/--wy` Eigenbewegung, `--hx/--hy` Abspielkopf), die Einheit ist
+  einmal `--u: 1px` an der Kamera-Gruppe (SVG-Benutzereinheit; die Bühne ist ein viewBox in Pixelgröße). Unschärfen in rem.
+- Labor-Vergleichsseite `/labor/blog-bilder/` (fünf Titelbild-Varianten je Artikel) samt `DroneStill`, `AblaufSzene`, Daten,
+  Werkzeug und Labor-Bildern entfernt: die Titelbilder sind entschieden und produktiv; `tools/labor/lichtraster.mjs` bleibt
+  (Rezept-Werkzeug).
+
 ## Prüfen
 
 `tests/cornerstone.spec.ts` (alle drei Artikel in DE/EN/NL, reduzierte Bewegung), `scripts/cornerstone-plan.test.mjs`

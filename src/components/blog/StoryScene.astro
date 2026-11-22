@@ -20,10 +20,11 @@ const motion = story.motion ?? {};
 // Zeichenfläche im HTML (ohne JavaScript): eine breite Bühne; das Skript setzt die echte Größe
 const VW = 1000, VH = 470;
 const cam = frameCam(story.frames[LAST], VW, VH);
+// Lage eines Teils: Verschiebung ty und Maßstab s1/s2 als Zahlen in SVG-Benutzereinheiten (die Einheit --u setzt die Kamera)
 const stateOf = (p: Piece, s: number) => {
-  if (p.steps.includes(s) && !p.asmOnly) return { t: `translate(0px, ${p.shift?.[s] ?? 0}px)`, o: p.dim?.includes(s) ? 0.32 : 1 };
+  if (p.steps.includes(s) && !p.asmOnly) return { ty: p.shift?.[s] ?? 0, s1: 1, s2: 1, o: p.dim?.includes(s) ? 0.32 : 1 };
   const h = (s > Math.max(...p.steps) && p.after) || p.hide || { s: [0.04, 0.04] as [number, number] };
-  return { t: `translate(0px, ${h.dy ?? 0}px) scale(${h.s[0]}, ${h.s[1]})`, o: 0 };
+  return { ty: h.dy ?? 0, s1: h.s[0], s2: h.s[1], o: 0 };
 };
 const steps = blocks.filter((b) => b.step !== undefined);
 const head = blocks[0]?.step === undefined ? blocks[0] : undefined;
@@ -40,12 +41,12 @@ const list = (v?: number[]) => (v?.length ? v.join(' ') : undefined);
     <span class="ss-bg" aria-hidden="true"></span>
     <div class="ss-stage" data-stage data-step={LAST} data-frames={JSON.stringify(story.frames)} data-wind={story.wind?.join(' ')} data-sweep={story.sweep?.flat().join(' ')} data-m-sweep={list(motion.sweep)} data-m-wind={list(motion.wind)} data-m-alive={list(motion.alive)} data-m-plain={list(motion.plain)} data-m-off={list(motion.off)} data-m-warm={list(motion.warm)} data-m-beat={motion.beat ? `${motion.beat.steps.join(',')} ${motion.beat.center.join(',')}` : undefined} data-m-assemble={motion.assemble}>
       <svg viewBox={`0 0 ${VW} ${VH}`} role="img" aria-label={caption}>
-        <g class="cam" data-cam style={`transform: translate(${cam.tx}px, ${cam.ty}px) scale(${cam.k})`}>
-          {story.pieces.map((p, li) => { const st = stateOf(p, LAST); return <g data-key={p.key} data-steps={p.steps.join(' ')} data-dim={p.dim?.join(' ')} data-shift={p.shift ? JSON.stringify(p.shift) : undefined} data-asm={p.asm} data-asmonly={p.asmOnly ? '' : undefined} data-inner={p.inner ? '' : undefined} data-hide={p.hide ? `${p.hide.s.join(' ')} ${p.hide.dy ?? 0}` : undefined} data-after={p.after ? `${p.after.s.join(' ')} ${p.after.dy ?? 0}` : undefined} aria-hidden="true" class:list={['pc', { on: p.steps.includes(LAST) && !p.asmOnly }]} style={`--zc: ${p.zc}; --li: ${li}; transform-origin: ${p.origin[0]}px ${p.origin[1]}px; transform: ${st.t}; opacity: ${st.o}`}>
+        <g class="cam" data-cam style={`--u: 1px; --cx: ${cam.tx}; --cy: ${cam.ty}; --ck: ${cam.k}`}>
+          {story.pieces.map((p, li) => { const st = stateOf(p, LAST); return <g data-key={p.key} data-steps={p.steps.join(' ')} data-dim={p.dim?.join(' ')} data-shift={p.shift ? JSON.stringify(p.shift) : undefined} data-asm={p.asm} data-asmonly={p.asmOnly ? '' : undefined} data-inner={p.inner ? '' : undefined} data-hide={p.hide ? `${p.hide.s.join(' ')} ${p.hide.dy ?? 0}` : undefined} data-after={p.after ? `${p.after.s.join(' ')} ${p.after.dy ?? 0}` : undefined} aria-hidden="true" class:list={['pc', { on: p.steps.includes(LAST) && !p.asmOnly }]} style={`--zc: ${p.zc}; --li: ${li}; --ox: ${p.origin[0]}px; --oy: ${p.origin[1]}px; --ty: ${st.ty}; --s1: ${st.s1}; --s2: ${st.s2}; opacity: ${st.o}`}>
             {p.shapes.map((s) => s.t === 'circle' ? <circle class={s.cls} cx={s.c[0]} cy={s.c[1]} r={s.r} /> : <path class={s.cls} d={pathD(s)} pathLength={drawn(s.cls) ? 1 : undefined} />)}
           </g>; })}
           <g class:list={['ss-drones', { 'is-off': motion.off?.includes(LAST), 'is-warm': motion.warm?.includes(LAST), 'is-plain': motion.plain?.includes(LAST) }]} aria-hidden="true">
-            {story.drones.map((d) => { const [x, y, a] = d.pos[LAST]; return <g class="sd" data-pos={d.pos.map((q) => q.join(',')).join(';')} data-w={d.w} data-via={d.via ? JSON.stringify(d.via) : undefined} style={`--c: ${d.c}; --k: ${d.k}; transform: translate(${x}px, ${y}px); opacity: ${a}`}><g class="sw"><circle class="halo" r="4.2" /><circle class="core" r="1.7" /></g></g>; })}
+            {story.drones.map((d) => { const [x, y, a] = d.pos[LAST]; return <g class="sd" data-pos={d.pos.map((q) => q.join(',')).join(';')} data-w={d.w} data-via={d.via ? JSON.stringify(d.via) : undefined} style={`--c: ${d.c}; --k: ${d.k}; --dx: ${x}; --dy: ${y}; opacity: ${a}`}><g class="sw"><circle class="halo" r="4.2" /><circle class="core" r="1.7" /></g></g>; })}
           </g>
         </g>
       </svg>
@@ -116,7 +117,7 @@ const list = (v?: number[]) => (v?.length ? v.join(' ') : undefined);
     const camOf = (s: number) => { const [x, y, w, h] = frames[s], k = Math.min(W / w, H / h); return { k, tx: W / 2 - (x + w / 2) * k, ty: H / 2 - (y + h / 2) * k }; };
     const place = () => {
       const c = camOf(Math.max(0, step));
-      camG.style.transform = `translate(${c.tx}px, ${c.ty}px) scale(${c.k})`;
+      camG.style.setProperty('--cx', String(c.tx)); camG.style.setProperty('--cy', String(c.ty)); camG.style.setProperty('--ck', String(c.k));
       N.forEach((n) => { n.el.style.setProperty('--x', `${((n.x * c.k + c.tx) / W) * 100}%`); n.el.style.setProperty('--y', `${((n.y * c.k + c.ty) / H) * 100}%`); });
     };
     const measure = () => { const r = stage.getBoundingClientRect(); W = Math.max(1, r.width); H = Math.max(1, r.height); svg.setAttribute('viewBox', `0 0 ${W} ${H}`); };
@@ -125,20 +126,21 @@ const list = (v?: number[]) => (v?.length ? v.join(' ') : undefined);
     const pose = (p: (typeof P)[number], s: number) => {
       const together = s === ASSEMBLE && !exploded;
       // Gehäuse und Beine nur zusammengesetzt; die Innenteile liegen dann unsichtbar im Gehäuse
-      if (p.asmOnly && together) return { t: 'translate(0px, 0px)', o: 1 };
-      if (p.inner && together) return { t: `translate(0px, ${p.asm ?? 0}px)`, o: 0 };
+      if (p.asmOnly && together) return { ty: 0, s1: 1, s2: 1, o: 1 };
+      if (p.inner && together) return { ty: p.asm ?? 0, s1: 1, s2: 1, o: 0 };
       if (p.steps.includes(s) && !p.asmOnly) {
         const dy = together && p.asm !== null ? p.asm : p.shift[s] ?? 0;
-        return { t: `translate(0px, ${dy}px)`, o: p.dim.includes(s) ? 0.32 : together && p.asm === 0 ? 0 : 1 };
+        return { ty: dy, s1: 1, s2: 1, o: p.dim.includes(s) ? 0.32 : together && p.asm === 0 ? 0 : 1 };
       }
       const h = s > Math.max(...p.steps) && p.after.length ? p.after : p.hide.length ? p.hide : [0.04, 0.04, 0];
-      return { t: `translate(0px, ${h[2] ?? 0}px) scale(${h[0]}, ${h[1]})`, o: 0 };
+      return { ty: h[2] ?? 0, s1: h[0], s2: h[1], o: 0 };
     };
     const paint = (prev: number) => {
       P.forEach((p) => {
         const on = p.steps.includes(step), was = p.steps.includes(prev);
         p.el.style.transitionDelay = on && !was ? 'var(--ss-enter)' : '0s'; // was kommt, wartet, bis das Gehende kleiner ist
-        const { t, o } = pose(p, step); p.el.style.transform = t; p.el.style.opacity = String(o);
+        const { ty, s1, s2, o } = pose(p, step);
+        p.el.style.setProperty('--ty', String(ty)); p.el.style.setProperty('--s1', String(s1)); p.el.style.setProperty('--s2', String(s2)); p.el.style.opacity = String(o);
         p.el.classList.toggle('on', o > 0); // sichtbare Teile tragen .on (Funkwellen, Flugbahnen zeichnen sich nur dann)
       });
       N.forEach((n) => n.el.classList.toggle('on', n.steps.includes(step) && (step !== ASSEMBLE || exploded)));
@@ -165,10 +167,11 @@ const list = (v?: number[]) => (v?.length ? v.join(' ') : undefined);
       // Vorwärts in einen Schritt mit Zwischenhalt: erst alle zugleich zum Zwischenhalt (Abheben, Sinken), dann weiter
       clearTimeout(hop);
       stage.classList.remove('is-via');
-      const fly = () => D.forEach((d) => { const [x, y, a] = d.pos[step]; d.el.style.transform = `translate(${x}px, ${y}px)`; d.el.style.opacity = String(a); });
+      const at = (el: SVGGElement, x: number, y: number) => { el.style.setProperty('--dx', String(x)); el.style.setProperty('--dy', String(y)); };
+      const fly = () => D.forEach((d) => { const [x, y, a] = d.pos[step]; at(d.el, x, y); d.el.style.opacity = String(a); });
       if (prev === s - 1 && prev >= 0 && D[0]?.via[s] && !held()) {
         stage.classList.add('is-via');
-        D.forEach((d) => { const v = d.via[s]; d.el.style.transform = `translate(${v[0]}px, ${v[1]}px)`; d.el.style.opacity = '1'; });
+        D.forEach((d) => { const v = d.via[s]; at(d.el, v[0], v[1]); d.el.style.opacity = '1'; });
         hop = window.setTimeout(() => { stage.classList.remove('is-via'); fly(); }, 950);
       } else fly();
       place();
@@ -226,9 +229,9 @@ const list = (v?: number[]) => (v?.length ? v.join(' ') : undefined);
 
     // ---------- Schleifen: Abspielkopf (Software), Wind und Böen (Simulation), leise Eigenbewegung des Sterns ----------
     function still() {
-      D.forEach((d) => { d.sw.style.transform = ''; });
+      D.forEach((d) => { d.sw.style.removeProperty('--wx'); d.sw.style.removeProperty('--wy'); });
       streams.forEach((p) => { p.style.strokeDasharray = ''; p.style.strokeDashoffset = ''; });
-      if (playhead) playhead.style.transform = '';
+      if (playhead) { playhead.style.removeProperty('--hx'); playhead.style.removeProperty('--hy'); }
     }
     function loop(ms: number) {
       frame = 0;
@@ -237,7 +240,7 @@ const list = (v?: number[]) => (v?.length ? v.join(' ') : undefined);
       const t = (ms - t0) / 1000;
       if (SWEEP.has(step) && playhead && sweep.length === 4) {
         const u = (Math.sin(t * 0.55 - Math.PI / 2) + 1) / 2;
-        playhead.style.transform = `translate(${sweep[0] + (sweep[2] - sweep[0]) * u}px, ${sweep[1] + (sweep[3] - sweep[1]) * u}px)`;
+        playhead.style.setProperty('--hx', String(sweep[0] + (sweep[2] - sweep[0]) * u)); playhead.style.setProperty('--hy', String(sweep[1] + (sweep[3] - sweep[1]) * u));
       }
       if (WIND.has(step)) streams.forEach((p, i) => {
         // jede Linie zeichnet sich von Luv nach Lee und läuft dann aus; leicht versetzt
@@ -258,9 +261,9 @@ const list = (v?: number[]) => (v?.length ? v.join(' ') : undefined);
             x += wx * push - wy * push * 0.25 * Math.sin(d.ph); y += wy * push + wx * push * 0.25 * Math.sin(d.ph);
           }
           if (beat) { const [px, py] = d.pos[step]; x += (px - bx) * beat; y += (py - by) * beat; }
-          d.sw.style.transform = `translate(${x.toFixed(2)}px, ${y.toFixed(2)}px)`;
+          d.sw.style.setProperty('--wx', x.toFixed(2)); d.sw.style.setProperty('--wy', y.toFixed(2));
         });
-      } else D.forEach((d) => { d.sw.style.transform = ''; });
+      } else D.forEach((d) => { d.sw.style.removeProperty('--wx'); d.sw.style.removeProperty('--wy'); });
       frame = requestAnimationFrame(loop);
     }
     function run() { if (!frame && visible && !held() && !document.hidden && LOOP.has(step)) frame = requestAnimationFrame(loop); else if (!LOOP.has(step) || held()) still(); }
@@ -287,7 +290,7 @@ const list = (v?: number[]) => (v?.length ? v.join(' ') : undefined);
   .ss-fig { position: sticky; top: var(--nav-h); z-index: 3; width: 100%; margin: 0; padding-block: var(--space-3) 0; transition: top var(--dur-standard) var(--ease-default); }
   :global(:root.nav-away) .ss-fig { top: 0; }
   /* Weiche Kanten: unten ein Verlauf mit leichter Unschärfe, oben derselbe nach oben (wenn die Kopfzeile ausweicht) */
-  .ss-fig::before, .ss-fig::after { content: ""; position: absolute; left: calc(50% - 50vw); right: calc(50% - 50vw); height: var(--ss-fade); pointer-events: none; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+  .ss-fig::before, .ss-fig::after { content: ""; position: absolute; left: calc(50% - 50vw); right: calc(50% - 50vw); height: var(--ss-fade); pointer-events: none; -webkit-backdrop-filter: blur(0.375rem); backdrop-filter: blur(0.375rem); }
   /* Verlauf mit weicher Kurve (nicht linear), die Unschärfe läuft über die Maske mit aus: der Text wird erst weich, dann blass,
      dann verschwindet er; keine sichtbare Linie an der Unterkante der Schrittleiste (Marc, 22.11.) */
   .ss-fig::after { top: 100%; background: linear-gradient(var(--ground) 0%, color-mix(in srgb, var(--ground) 92%, transparent) 18%, color-mix(in srgb, var(--ground) 70%, transparent) 42%, color-mix(in srgb, var(--ground) 30%, transparent) 72%, transparent 100%); -webkit-mask-image: linear-gradient(#000 0%, rgb(0 0 0 / 0.75) 45%, transparent 100%); mask-image: linear-gradient(#000 0%, rgb(0 0 0 / 0.75) 45%, transparent 100%); }
@@ -303,11 +306,13 @@ const list = (v?: number[]) => (v?.length ? v.join(' ') : undefined);
     -webkit-mask-image: linear-gradient(to bottom, transparent, #000 4%, #000 86%, transparent), linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
     mask-image: linear-gradient(to bottom, transparent, #000 4%, #000 86%, transparent), linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
     -webkit-mask-composite: source-in; mask-composite: intersect; }
-  .cam { transform-origin: 0 0; transition: transform var(--dur-scene-camera) var(--ease-scene); }
+  /* Bewegung in SVG-Benutzereinheiten: Zahlen (--cx, --ty, --dx …) mal --u (1px, an der Kamera-Gruppe gesetzt); die Bühne ist
+     ein viewBox in Pixelgröße, eine Einheit ist also genau ein Bildpunkt, unabhängig von der Grundschrift */
+  .cam { transform: translate(calc(var(--cx) * var(--u)), calc(var(--cy) * var(--u))) scale(var(--ck)); transform-origin: 0 0; transition: transform var(--dur-scene-camera) var(--ease-scene); }
 
   /* Teile: weich wachsen und schrumpfen, nur transform und opacity */
-  .pc { transform-box: view-box; transition: transform var(--dur-scene-morph) var(--ease-scene), opacity var(--dur-reveal-move) var(--ease-out); }
-  .sd { transition: transform var(--dur-scene-drone) var(--ease-scene) calc(var(--k) * var(--dur-stagger-drone)), opacity var(--dur-reveal) var(--ease-out) calc(var(--k) * var(--dur-stagger-drone)); }
+  .pc { transform: translate(0, calc(var(--ty, 0) * var(--u))) scale(var(--s1, 1), var(--s2, 1)); transform-origin: var(--ox) var(--oy); transform-box: view-box; transition: transform var(--dur-scene-morph) var(--ease-scene), opacity var(--dur-reveal-move) var(--ease-out); }
+  .sd { transform: translate(calc(var(--dx) * var(--u)), calc(var(--dy) * var(--u))); transition: transform var(--dur-scene-drone) var(--ease-scene) calc(var(--k) * var(--dur-stagger-drone)), opacity var(--dur-reveal) var(--ease-out) calc(var(--k) * var(--dur-stagger-drone)); }
   /* Zwischenhalt (story.drones.via): alle zugleich, ohne Versatz */
   .is-via .sd { transition: transform var(--dur-slow-long) var(--ease-scene), opacity var(--dur-underline) var(--ease-out); }
   .is-reset, .is-reset * { transition: none !important; }
@@ -334,8 +339,8 @@ const list = (v?: number[]) => (v?.length ? v.join(' ') : undefined);
   /* LED: leuchtet sanft im Logoverlauf (Orange → Orchidee → Cyan), langsam und ohne Blinken */
   .led-base { fill: color-mix(in srgb, var(--zc) 18%, var(--ground)); stroke: color-mix(in srgb, var(--zc) 70%, transparent); stroke-width: 0.8; }
   .led-halo, .led-glow { fill: var(--logo-amber); animation: ss-led var(--dur-led) var(--ease-default) infinite; }
-  .led-halo { opacity: 0.1; filter: blur(6px); }
-  .led-glow { opacity: 0.3; filter: blur(2.5px); }
+  .led-halo { opacity: 0.1; filter: blur(0.375rem); }
+  .led-glow { opacity: 0.3; filter: blur(0.15625rem); }
   .led-core { fill: #fff3df; animation: ss-led-core var(--dur-led) var(--ease-default) infinite; }
   @keyframes ss-led { 0%, 100% { fill: var(--logo-amber); } 33% { fill: var(--logo-orchid); } 66% { fill: var(--cyan); } }
   @keyframes ss-led-core { 0%, 100% { fill: #ffe2bf; } 33% { fill: #f7d6fb; } 66% { fill: #d4fbfd; } }
@@ -343,7 +348,8 @@ const list = (v?: number[]) => (v?.length ? v.join(' ') : undefined);
   .bar-0 { fill: var(--logo-amber); } .bar-1 { fill: #f58a5a; } .bar-2 { fill: #ec7f95; } .bar-3 { fill: var(--logo-orchid); } .bar-4 { fill: #b88bec; } .bar-5 { fill: var(--logo-blue); } .bar-6 { fill: #6fc8ef; } .bar-7 { fill: var(--cyan); }
   .track { fill: none; stroke: color-mix(in srgb, var(--zc) 40%, transparent); stroke-width: 0.6; }
   .tick { fill: none; stroke: color-mix(in srgb, var(--zc) 14%, transparent); stroke-width: 0.5; }
-  .playhead { fill: none; stroke: var(--accent); stroke-width: 1.2; }
+  .playhead { fill: none; stroke: var(--accent); stroke-width: 1.2; transform: translate(calc(var(--hx, 0) * var(--u)), calc(var(--hy, 0) * var(--u))); }
+  .sw { transform: translate(calc(var(--wx, 0) * var(--u)), calc(var(--wy, 0) * var(--u))); }
   .route { fill: none; stroke: color-mix(in srgb, var(--zc) 70%, transparent); stroke-width: 0.7; }
   .guide { fill: none; stroke: rgb(var(--rgb-head) / 20%); stroke-width: 0.6; stroke-dasharray: 1.5 3.5; }
   .glass-floor, .glass-back { fill: color-mix(in srgb, var(--zc) 4%, transparent); }
@@ -432,7 +438,7 @@ const list = (v?: number[]) => (v?.length ? v.join(' ') : undefined);
   .ss-grp.on .ss-glab { color: var(--head); }
   .ss-grp ol { list-style: none; display: flex; margin: 0; padding: 0; }
   .ss-grp button { width: 1.375rem; height: 2.75rem; border: 0; padding: 0; background: none; cursor: pointer; display: grid; place-items: center; }
-  .ss-seg { width: 0.875rem; height: 2px; border-radius: 1px; background: rgb(var(--rgb-head) / 16%); transition: background var(--dur-control) var(--ease-default), width var(--dur-control) var(--ease-default); }
+  .ss-seg { width: 0.875rem; height: 0.125rem; border-radius: 0.0625rem; background: rgb(var(--rgb-head) / 16%); transition: background var(--dur-control) var(--ease-default), width var(--dur-control) var(--ease-default); }
   .ss-grp button.done .ss-seg { background: rgb(var(--rgb-head) / 42%); }
   .ss-grp button[aria-current] .ss-seg { width: 1.125rem; background: var(--head); }
   .ss-grp button:hover .ss-seg { background: rgb(var(--rgb-head) / 70%); }
@@ -479,7 +485,7 @@ const list = (v?: number[]) => (v?.length ? v.join(' ') : undefined);
     .ss-grp button { width: 1rem; }
     .ss-seg { width: 0.625rem; }
     .ss-grp button[aria-current] .ss-seg { width: 0.875rem; }
-    .sn-pill { font-size: 0.6875rem; padding: 0.125rem var(--space-2); }
+    .sn-pill { padding: var(--space-0-5) var(--space-2); }
     .sn-list { top: calc(var(--y) + var(--row) * 1.625rem); }
     .sn-list.sn-flip .sn-pill { left: -7.75rem; }
     .ss-text { padding-top: var(--space-6); }

@@ -35,7 +35,7 @@ const row = photos.length > 1;
   @media (max-width: 45em) {
     .ap img { border-radius: var(--radius-12); }
     /* Reihe als Slider: das nächste Bild schaut hervor, Einrasten je Bild, volle Breite des Inhalts */
-    .ap-row .ap-track { grid-auto-columns: 78%; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; }
+    .ap-row .ap-track { grid-auto-columns: 78%; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; }
     .ap-row .ap-track::-webkit-scrollbar { display: none; }
     .ap-row .ap-item { scroll-snap-align: start; }
     .ap-row :global(.ap-nav) { display: flex; margin-top: var(--space-3); }

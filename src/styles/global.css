@@ -73,7 +73,6 @@
   --dur-stagger-reveal: 0.06s;
   --dur-delay-popover: 0.12s;
   --dur-quick: 0.15s;
-  --dur-follow: 0.16s; /* Lichtpunkt folgt dem Zeiger (Location.astro) */
   --dur-control: 0.2s;
   --dur-control-soft: 0.22s;
   --dur-color: 0.25s;
