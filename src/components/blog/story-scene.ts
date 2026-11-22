@@ -69,8 +69,10 @@ export type Motion = { sweep?: number[]; wind?: number[]; alive?: number[]; plai
   show?: number[] };
 /** frames: Bildausschnitt je Schritt [x, y, b, h]; wind: Windrichtung auf dem Bildschirm (Einheitsvektor); sweep: Weg des
  *  Abspielkopfs der Zeitleiste (Verschiebung vom gezeichneten Platz zum Anfang und zum Ende) */
-/** poster: Schritt, der im HTML steht (Suche, Vorschau, ohne JavaScript); ohne Angabe der letzte */
-export type Story = { vb: [number, number, number, number]; pieces: Piece[]; drones: StoryDrone[]; notes: Note[]; steps: number; frames: [number, number, number, number][]; wind?: P2; sweep?: [P2, P2]; motion?: Motion; poster?: number };
+/** poster: Schritt, der im HTML steht (Suche, Vorschau, ohne JavaScript); ohne Angabe der letzte; focus: [Schritt, Mitte der
+ *  zusammengesetzten Drohne, Ober- und Unterkante der zerlegten samt Beschriftungen] (y), die Kamera rückt die Drohne damit
+ *  in die Bühnenmitte, soweit die zerlegte Fassung auf die Bühne passt (Rechnung im Skript, sie hängt von der Bühnengröße ab) */
+export type Story = { vb: [number, number, number, number]; pieces: Piece[]; drones: StoryDrone[]; notes: Note[]; steps: number; frames: [number, number, number, number][]; wind?: P2; sweep?: [P2, P2]; motion?: Motion; poster?: number; focus?: [number, number, number, number] };
 
 /** Kamera einer Bühne W × H für einen Ausschnitt: Maßstab und Verschiebung (gleiche Rechnung im Skript der Komponente) */
 export const frameCam = ([x, y, w, h]: [number, number, number, number], W: number, H: number) => {
@@ -78,7 +80,7 @@ export const frameCam = ([x, y, w, h]: [number, number, number, number], W: numb
   return { k: r1(k * 1000) / 1000, tx: r1(W / 2 - (x + w / 2) * k), ty: r1(H / 2 - (y + h / 2) * k) };
 };
 
-const STEPS = 7;
+const STEPS = 7, ASSEMBLE = 0;
 
 /** Stern als Umriss (10 Ecken), Punkte gleichmäßig nach Bogenlänge; u/v in der Sternebene */
 function starOutline(n: number, R: number, r: number): [number, number][] {
@@ -381,6 +383,7 @@ export function storyScene(o: { colors: string[]; zone: Record<string, string> }
 
   // ---------- Bildausschnitt je Schritt: was in dem Schritt sichtbar und nicht gedämpft ist, ohne das Feld (Boden darf
   // über den Rand laufen), mit den Ankern der Annotationen; Rand 9 %, mindestens so breit, dass nichts zu groß wird ----------
+  let focus: Story['focus'];
   const frames = Array.from({ length: STEPS }, (_, st): [number, number, number, number] => {
     const q: P2[] = [];
     pieces.forEach((pc) => {
@@ -395,12 +398,21 @@ export function storyScene(o: { colors: string[]; zone: Record<string, string> }
     const minW = W * 0.42; if (w < minW) w = minW; if (h < minW * 0.6) h = minW * 0.6;
     const cx = (fx0 + fx1) / 2, cy = (fy0 + fy1) / 2;
     w *= 1.18; h *= 1.18;
+    if (st === ASSEMBLE) {
+      const ys: number[] = [];
+      pieces.forEach((pc) => {
+        if (!pc.steps.includes(st) || pc.inner || (!pc.asmOnly && !pc.asm)) return;
+        const dy = pc.asmOnly ? 0 : pc.asm!;
+        pc.shapes.forEach((s) => { if (s.t === 'circle') ys.push(s.c[1] - s.r + dy, s.c[1] + s.r + dy); else s.pts.forEach((p) => ys.push(p[1] + dy)); });
+      });
+      if (ys.length) focus = [st, r1((Math.min(...ys) + Math.max(...ys)) / 2), r1(fy0), r1(fy1)];
+    }
     return [r1(cx - w / 2), r1(cy - h / 2), r1(w), r1(h)];
   });
   // Bewegung: Funk und Aufstieg an der Bodenstation, Abspielkopf in Musik und Licht, Wind und Böen in der Simulation,
   // Eigenbewegung überall, wo der Stern am Himmel steht; die Drohne steht im ersten Schritt erst zusammen
-  const motion: Motion = { signal: [1, 6], sweep: [4], wind: [5], alive: [1, 3, 5, 6], assemble: 0, show: [6] };
-  return { vb: [0, 0, r1(W), r1(H)], pieces, drones, steps: STEPS, notes: outNotes, frames, wind, sweep, motion };
+  const motion: Motion = { signal: [1, 6], sweep: [4], wind: [5], alive: [1, 3, 5, 6], assemble: ASSEMBLE, show: [6] };
+  return { vb: [0, 0, r1(W), r1(H)], pieces, drones, steps: STEPS, notes: outNotes, frames, wind, sweep, motion, focus };
 }
 
 /** Pfad eines Teils als SVG-d */

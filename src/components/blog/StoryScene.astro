@@ -49,7 +49,7 @@ const list = (v?: number[]) => (v?.length ? v.join(' ') : undefined);
   {head && <div class="ss-head post-body" set:html={head.html} />}
   <figure class="ss-fig">
     <span class="ss-bg" aria-hidden="true"></span>
-    <div class="ss-stage" data-stage data-step={LAST} data-frames={JSON.stringify(story.frames)} data-wind={story.wind?.join(' ')} data-sweep={story.sweep?.flat().join(' ')} data-m-sweep={list(motion.sweep)} data-m-wind={list(motion.wind)} data-m-alive={list(motion.alive)} data-m-plain={list(motion.plain)} data-m-off={list(motion.off)} data-m-warm={list(motion.warm)} data-m-beat={motion.beat ? `${motion.beat.steps.join(',')} ${motion.beat.center.join(',')}` : undefined} data-m-assemble={motion.assemble} data-m-signal={list(motion.signal)} data-m-show={list(motion.show)}>
+    <div class="ss-stage" data-stage data-step={LAST} data-frames={JSON.stringify(story.frames)} data-focus={story.focus?.join(' ')} data-wind={story.wind?.join(' ')} data-sweep={story.sweep?.flat().join(' ')} data-m-sweep={list(motion.sweep)} data-m-wind={list(motion.wind)} data-m-alive={list(motion.alive)} data-m-plain={list(motion.plain)} data-m-off={list(motion.off)} data-m-warm={list(motion.warm)} data-m-beat={motion.beat ? `${motion.beat.steps.join(',')} ${motion.beat.center.join(',')}` : undefined} data-m-assemble={motion.assemble} data-m-signal={list(motion.signal)} data-m-show={list(motion.show)}>
       <svg viewBox={`0 0 ${VW} ${VH}`} role="img" aria-label={caption}>
         <g class="cam" data-cam style={`--u: 1px; --cx: ${cam.tx}; --cy: ${cam.ty}; --ck: ${cam.k}`}>
           {story.pieces.map((p, li) => { const st = stateOf(p, LAST); return <g data-key={p.key} data-steps={p.steps.join(' ')} data-dim={p.dim?.join(' ')} data-shift={p.shift ? JSON.stringify(p.shift) : undefined} data-asm={p.asm} data-asmonly={p.asmOnly ? '' : undefined} data-inner={p.inner ? '' : undefined} data-hide={p.hide ? `${p.hide.s.join(' ')} ${p.hide.dy ?? 0}` : undefined} data-after={p.after ? `${p.after.s.join(' ')} ${p.after.dy ?? 0}` : undefined} data-late={p.late ? '' : undefined} aria-hidden="true" class:list={['pc', { on: p.steps.includes(LAST) && !p.asmOnly }]} style={`--zc: ${p.zc}; --li: ${li}; --ox: ${p.origin[0]}px; --oy: ${p.origin[1]}px; --ty: ${st.ty}; --s1: ${st.s1}; --s2: ${st.s2}; opacity: ${st.o}`}>
@@ -136,7 +136,18 @@ const list = (v?: number[]) => (v?.length ? v.join(' ') : undefined);
     let swept = false, ps = -1, last = 0; // Musik und Licht (sweepTo)
     let showAt = 0; // Live-Show: Zeitpunkt, ab dem die Formen wechseln (nach dem Aufstieg)
     let loopGround = false; // Live-Show: Drohnen gerade am Boden (Schleife setzt is-signal)
-    const camOf = (s: number) => { const [x, y, w, h] = frames[s], k = Math.min(W / w, H / h); return { k, tx: W / 2 - (x + w / 2) * k, ty: H / 2 - (y + h / 2) * k }; };
+    const focus = nums(stage.dataset.focus);
+    const camOf = (s: number) => {
+      const [x, y, w, h] = frames[s], k = Math.min(W / w, H / h);
+      let ty = H / 2 - (y + h / 2) * k;
+      // Zusammenbau: die zusammengesetzte Drohne in die Bühnenmitte (auf Höhe des Texts), so weit die zerlegte samt
+      // Beschriftungen mit etwas Rand auf der Bühne bleibt
+      if (focus.length && s === focus[0]) {
+        const [, cy, y0, y1] = focus, m = Math.max(20, H * 0.06), lo = m - y0 * k, hi = H - m - y1 * k; // Ober-, Unterkante
+        if (lo <= hi) ty = Math.min(Math.max(H / 2 - cy * k, Math.min(ty, lo)), Math.max(ty, hi));
+      }
+      return { k, tx: W / 2 - (x + w / 2) * k, ty };
+    };
     const place = () => {
       const c = camOf(Math.max(0, step));
       camG.style.setProperty('--cx', String(c.tx)); camG.style.setProperty('--cy', String(c.ty)); camG.style.setProperty('--ck', String(c.k));
