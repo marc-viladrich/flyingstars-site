@@ -623,3 +623,134 @@ test('Runde 10b: im Logo-Modus steht jedes Beispiel-Logo mittig, Luft oben ≈ L
   }
 });
 
+
+// ---------- Runde 20 (22.11.2026): Logo-Modus, Klicks gescoped, Schleier nur ohne Logo ----------
+// Marc: „Klickt man auf Verstanden, öffnet sich sofort der Datei-Upload“ und nach Spotify/Puma „bleibt die Bühne
+// verschwommen hinter ‚Euer Logo hier reinziehen‘“. Ursachenanalyse: der Klick auf „Verstanden“ stieg zur Ablagefläche auf,
+// die schon is-await war und file.click() rief; is-await blieb über Beispiel-Logos stehen (docs/show-konfigurator.md).
+const WAPPEN = `<svg xmlns="http://www.w3.org/2000/svg" width="500" height="500" viewBox="0 0 500 500"><path d="M35 25H465L437 315Q420 438 250 478Q80 438 63 315Z" fill="#ad1b23" stroke="#ffe66c" stroke-width="16"/><path d="M220 58H280V180H412V240H280V420H220V240H88V180H220Z" fill="#ffe66c"/></svg>`;
+/** Logo-Anlass frisch öffnen: Hinweis unbestätigt, Show-Uhr für die Anflugzeit mitlesen. */
+const openLogoMode = async (page: Page) => {
+  await page.addInitScript(() => {
+    const w = window as unknown as { __frameClock: number; __showTrace: { push: (x: number[]) => void } };
+    w.__frameClock = 0; w.__showTrace = { push([t]) { w.__frameClock = t; } };
+  });
+  await page.goto(`${CFG}?drohnen=200&art=2d#konfigurator`);
+  await expect(field(page)).toHaveAttribute('data-points', /[0-9]+/);
+  await tap(page, page.locator('[data-occasion="logo"]'));
+  await expect(page.locator('#cfg-notice')).toBeVisible();
+};
+const chooserCount = (page: Page) => { const n = { v: 0 }; page.on('filechooser', () => { n.v++; }); return n; };
+/** Das Bild auf der Bühne ist fertig angeflogen (Show-Uhr über die gemessene Flugdauer hinaus). */
+const settled = async (page: Page, example: string) => {
+  await page.waitForFunction((id) => {
+    const form = document.querySelector<HTMLElement>('#cfg')!;
+    return form.dataset.logoExample === id && form.dataset.logoState === 'ready' && !/berechnet/.test(document.querySelector('#cfg-scene')!.textContent ?? '');
+  }, example, { timeout: 20_000 });
+  const mark = await page.evaluate(() => ({ now: (window as unknown as { __frameClock: number }).__frameClock, flight: +(document.querySelector<HTMLElement>('#cfg-field')!.dataset.flight || 0) }));
+  await page.waitForFunction(({ now, flight }) => (window as unknown as { __frameClock: number }).__frameClock - now > flight + 0.3, mark, { timeout: 20_000 });
+};
+/** Zustand der Ablagefläche und Farben auf dem Canvas (rot = Testwappen, grün = Spotify). */
+const stageState = (page: Page) => page.evaluate(() => {
+  const stage = document.querySelector('.cfg-stage')!, drop = getComputedStyle(document.querySelector('.cfg-drop')!);
+  const c = document.querySelector<HTMLCanvasElement>('#cfg-field')!, d = c.getContext('2d')!.getImageData(0, 0, c.width, c.height).data;
+  let green = 0, red = 0, white = 0;
+  for (let i = 0; i < d.length; i += 4) {
+    if (d[i + 3] < 80) continue;
+    if (d[i + 1] > d[i] + 25 && d[i + 1] > d[i + 2] + 25) green++;
+    if (d[i] > d[i + 1] + 30 && d[i] > d[i + 2] + 30) red++;
+    if (Math.min(d[i], d[i + 1], d[i + 2]) > 180) white++;
+  }
+  return { classes: [...stage.classList], opacity: drop.opacity, pointer: drop.pointerEvents, backdrop: drop.backdropFilter || 'none', green, red, white };
+});
+/** Minimap zeigt genau die Datei des Beispiels. */
+const minimapIs = (page: Page, id: string) => page.evaluate(async (example) => {
+  const src = document.querySelector<HTMLImageElement>('#cfg-minimap-img')!.getAttribute('src');
+  if (!src) return false;
+  const [a, b] = await Promise.all([fetch(src).then((r) => r.text()), fetch(`/media/logo-modus/beispiele/${example}.svg`).then((r) => r.text())]);
+  return a === b;
+}, id);
+
+for (const how of ['Maus', 'Enter', 'Leertaste'] as const) {
+  test(`Runde 20: „Verstanden“ per ${how} öffnet keine Dateiauswahl, danach öffnet der Upload-Knopf genau eine`, async ({ page }) => {
+    await openLogoMode(page);
+    const chooser = chooserCount(page), ok = page.locator('#cfg-notice-ok');
+    if (how === 'Maus') await ok.click();
+    else { await ok.focus(); await page.keyboard.press(how === 'Enter' ? 'Enter' : 'Space'); }
+    await expect(page.locator('#cfg-notice')).toBeHidden();
+    await expect(page.locator('.cfg-stage')).toHaveClass(/is-await/);
+    await page.waitForTimeout(600); // ein verspäteter Dialog hätte jetzt Zeit gehabt
+    expect(chooser.v, 'Dateiauswahl nach „Verstanden“').toBe(0);
+    await reach(page, page.locator('#cfg-upload'));
+    await Promise.all([page.waitForEvent('filechooser'), page.locator('#cfg-upload').click()]);
+    await page.waitForTimeout(300);
+    expect(chooser.v, 'Upload-Knopf öffnet genau einen Dialog').toBe(1);
+  });
+}
+
+test('Runde 20: ein Klick auf die leere Ablagefläche öffnet die Dateiauswahl, ein Druck auf „Verstanden“ mit Loslassen auf der Fläche nicht', async ({ page }, info) => {
+  await openLogoMode(page);
+  const chooser = chooserCount(page), ok = page.locator('#cfg-notice-ok');
+  if (!info.project.use.isMobile) {
+    // gedrückt auf „Verstanden“, losgelassen auf der Fläche (der Klick landet dann beim gemeinsamen Vorfahren)
+    const b = (await ok.boundingBox())!, d = (await page.locator('.cfg-drop').boundingBox())!;
+    await page.mouse.move(b.x + b.width / 2, b.y + b.height / 2); await page.mouse.down();
+    await page.mouse.move(d.x + 30, d.y + 30, { steps: 3 }); await page.mouse.up();
+    await page.waitForTimeout(400);
+    expect(chooser.v, 'Druck auf „Verstanden“ endet auf der Fläche').toBe(0);
+  }
+  if (await ok.isVisible()) await ok.click();
+  await expect(page.locator('.cfg-stage')).toHaveClass(/is-await/);
+  expect(chooser.v).toBe(0);
+  const d = (await page.locator('.cfg-drop').boundingBox())!;
+  await Promise.all([page.waitForEvent('filechooser'), page.mouse.click(d.x + 30, d.y + 30)]);
+  expect(chooser.v, 'Klick auf die leere Fläche').toBe(1);
+});
+
+for (const start of ['ohne Upload', 'nach Datei-Drop'] as const) {
+  test(`Runde 20: Spotify und Puma ${start} stehen frei, ohne Schleier, × bringt die Aufforderung zurück`, async ({ page }) => {
+    test.setTimeout(90_000);
+    await openLogoMode(page);
+    await page.locator('#cfg-notice-ok').click();
+    await expect(page.locator('.cfg-stage')).toHaveClass(/is-await/);
+    if (start === 'nach Datei-Drop') {
+      await page.evaluate((markup) => {
+        const dt = new DataTransfer();
+        dt.items.add(new File([markup], 'test-wappen.svg', { type: 'image/svg+xml' }));
+        const stage = document.querySelector('.cfg-stage')!;
+        for (const type of ['dragenter', 'dragover']) stage.dispatchEvent(new DragEvent(type, { bubbles: true, cancelable: true, dataTransfer: dt }));
+        if (!stage.classList.contains('is-page-drag')) throw new Error('Drag zeigt die Ablagefläche nicht');
+        stage.dispatchEvent(new DragEvent('drop', { bubbles: true, cancelable: true, dataTransfer: dt }));
+      }, WAPPEN);
+      await settled(page, '');
+      const s = await stageState(page);
+      expect(s.classes, 'nach dem Drop').not.toContain('is-page-drag');
+      expect(s.classes).not.toContain('is-drag');
+      expect(s.classes).not.toContain('is-await');
+      expect(s.red, 'Testwappen auf der Bühne').toBeGreaterThan(50);
+    }
+    for (const id of ['spotify', 'puma']) {
+      await tap(page, page.locator(`#cfg-examples [data-example="${id}"]`));
+      await settled(page, id);
+      await expect(page.locator('.cfg-drop')).toHaveCSS('opacity', '0');
+      const s = await stageState(page);
+      expect(s.classes, `${id}: kein Schleier, kein Hinweis`).not.toContain('is-await');
+      expect(s.classes).not.toContain('is-notice');
+      expect(s.classes).not.toContain('is-page-drag');
+      expect(s.pointer, `${id}: Fläche fängt keine Klicks`).toBe('none');
+      expect(s.backdrop, `${id}: kein Weichzeichner`).toBe('none');
+      expect(s.red, `${id}: kein Testwappen mehr`).toBe(0);
+      if (id === 'spotify') expect(s.green, 'Spotify grün am Himmel').toBeGreaterThan(100);
+      else { expect(s.green, 'Puma: kein Spotify mehr').toBe(0); expect(s.white, 'Puma weiß am Himmel').toBeGreaterThan(100); }
+      expect(await minimapIs(page, id), `${id}: Minimap`).toBe(true);
+      await expect(page.locator('#cfg-logo-n')).toHaveText(/^[0-9]+$/);
+    }
+    // der Upload-Knopf bleibt über dem Beispiel erreichbar
+    await reach(page, page.locator('#cfg-upload'));
+    await expect(page.locator('#cfg-upload')).toBeVisible();
+    await tap(page, page.locator('#cfg-logo-off'));
+    await expect(page.locator('.cfg-stage')).toHaveClass(/is-await/);
+    await expect(page.locator('.cfg-drop')).toHaveCSS('opacity', '1');
+    await expect(page.locator('.cfg-drop')).toHaveCSS('pointer-events', 'auto');
+  });
+}

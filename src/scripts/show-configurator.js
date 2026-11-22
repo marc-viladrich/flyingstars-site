@@ -851,7 +851,9 @@ if (form) {
       off.hidden = false; upload.classList.add("has-logo");
       leavePreset(); logoMode = true; occRadio("logo").checked = true; // Runde 27: ein eigenes Logo öffnet den Anlass „Euer Logo“
       if (source.file) { minimapURL = URL.createObjectURL(source.file); $("#cfg-minimap-img").src = minimapURL; }
-      drawLogoMode(); showCloud(); // sofort die lebendige Wolke, bis das Logo gerechnet ist
+      // sofort die lebendige Wolke, bis das Logo gerechnet ist. Runde 20: nicht bei Beispielen. Ihre Formation liegt
+      // vorberechnet bereit (loadExample ist vor takeFile abgewartet), sie fliegen direkt aus dem alten Bild ins neue.
+      drawLogoMode(); if (!example) showCloud();
       first = false; fresh = []; unlockTo = null; tour = false; // the logo comes now; the text run-through is over
       update(true, LOGO_SEGMENT, { cloud: true });
     };
@@ -912,14 +914,34 @@ if (form) {
   // Runde 10b (Marc 20.11.2026): Hinweis zum Algorithmus über der Dropzone, im Logo-Modus von Anfang an, bis „Verstanden“;
   // die Sitzung merkt es sich (sessionStorage, ohne Speicher einfach bei jedem Aufruf erneut)
   // Runde 14 (Marc 21.11.): Hinweis und Ablagefläche nacheinander statt gleichzeitig. Erst steht nur der Hinweis auf der
-  // Bühne; nach „Verstanden“ bleibt die Ablagefläche („Euer Logo hier reinziehen“) stehen, bis ein eigenes Logo da ist
-  // (Beispiel-Logos zählen nicht). Ein Klick oder Tippen auf die Fläche öffnet die Dateiauswahl, am Handy der einzige Weg.
+  // Bühne; nach „Verstanden“ die Ablagefläche („Euer Logo hier reinziehen“). Ein Klick oder Tippen auf die Fläche öffnet
+  // die Dateiauswahl, am Handy der einzige Weg auf der Bühne.
+  // Runde 20 (Marc 22.11.: nach Spotify/Puma „bleibt die Bühne verschwommen“): Schleier nur, solange nichts gewählt ist.
+  // Ein Beispiel zählt jetzt wie ein eigenes Logo (die Runde-14-Regel „Beispiel-Logos zählen nicht“ ist ersetzt); mit
+  // gewähltem Logo ist die Bühne frei und fängt keine Klicks. Der Hinweis zum Algorithmus tritt dann ebenfalls zurück und
+  // kommt mit × wieder, solange er nicht bestätigt ist. Ein laufender Datei-Drag zeigt die Ablagefläche weiterhin
+  // (is-page-drag/is-drag), der Upload-Knopf im Bedienfeld bleibt immer erreichbar.
   function drawNotice() {
-    const on = logoMode && !noticeOk;
+    const empty = logoMode && !logo, on = empty && !noticeOk;
     stage.classList.toggle("is-notice", on); $("#cfg-notice").hidden = !on;
-    stage.classList.toggle("is-await", logoMode && noticeOk && !(logo && !logo.example));
+    stage.classList.toggle("is-await", empty && noticeOk);
   }
-  $(".cfg-drop").addEventListener("click", () => { if (stage.classList.contains("is-await")) file.click(); });
+  // Runde 20 (Marc: „Klickt man auf Verstanden, öffnet sich sofort der Datei-Upload“): Klicks sind gescoped. Der Klick auf
+  // „Verstanden“ stieg zur Ablagefläche auf, die zu diesem Zeitpunkt schon is-await war und file.click() rief. Die Fläche
+  // öffnet die Dateiauswahl jetzt nur für einen Klick, der auf ihr selbst begonnen hat (pointerdown in is-await, nicht auf
+  // einem Bedienelement darin) und auf ihr endet. Bedienelemente in Hinweis und Schleier (Knöpfe, Links, Felder, auch
+  // künftige) lösen nie eine Aktion der Fläche aus; Tastatur-Klicks (Enter, Leertaste) kommen ohne pointerdown und öffnen
+  // deshalb nie die Dateiauswahl über die Fläche.
+  const drop = $(".cfg-drop");
+  const DROP_CONTROLS = "button, a, input, select, textarea, label, [role='note']";
+  const ownDropClick = (e) => e.target instanceof Element && drop.contains(e.target) && !e.target.closest(DROP_CONTROLS);
+  let dropPress = false;
+  drop.addEventListener("pointerdown", (e) => { dropPress = e.isPrimary && e.button === 0 && stage.classList.contains("is-await") && ownDropClick(e); });
+  drop.addEventListener("click", (e) => {
+    const press = dropPress; dropPress = false;
+    if (!press || !ownDropClick(e) || !stage.classList.contains("is-await")) return;
+    file.click();
+  });
   $("#cfg-notice-ok").addEventListener("click", () => { noticeOk = true; try { sessionStorage.setItem(NOTICE_KEY, "1"); } catch {} drawNotice(); });
   const tools = $("#cfg-logo-tools"), own = $("#cfg-logo-own"), detail = $("#cfg-detail"), detailAuto = $("#cfg-detail-auto"), back = $("#cfg-back"), minimap = $("#cfg-minimap");
   function drawLogoMode() {

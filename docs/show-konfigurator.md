@@ -1389,7 +1389,7 @@ Marc: „bei Bremen und Berlin die Wappenform rausnehmen … Bremen soll so nice
 
 ## Runde 14 (21.11.2026) · Logo-Hinweis nacheinander, REWE raus
 
-- **Hinweis, dann Ablagefläche** (Marc: „mega awkward, dass beides gleichzeitig angezeigt wird“, besonders am Handy): Im Logo-Modus steht zuerst nur der Hinweis zum Algorithmus mit „Verstanden“ (`.is-notice`, Ablage-Zeichen, „Euer Logo hier reinziehen“ und Dateitypen ausgeblendet). Nach „Verstanden“ bleibt die Ablagefläche stehen (`.is-await`, Schleier wie die Einladung), bis ein eigenes Logo geladen ist; Beispiel-Logos zählen nicht. Ein Klick oder Tippen auf die Fläche öffnet die Dateiauswahl. Ohne Maus (`hover: none`) lautet die Zeile „Hier tippen und euer Logo wählen“ (`showconfigurator.tapToChooseYourLogo`), denn gezogen wird dort nicht. Code: `drawNotice()` in `src/scripts/show-configurator.js`, Stile in `src/styles/show-configurator.css`.
+- **Hinweis, dann Ablagefläche** (Marc: „mega awkward, dass beides gleichzeitig angezeigt wird“, besonders am Handy): Im Logo-Modus steht zuerst nur der Hinweis zum Algorithmus mit „Verstanden“ (`.is-notice`, Ablage-Zeichen, „Euer Logo hier reinziehen“ und Dateitypen ausgeblendet). Nach „Verstanden“ bleibt die Ablagefläche stehen (`.is-await`, Schleier wie die Einladung), bis ein eigenes Logo geladen ist; Beispiel-Logos zählen nicht. **Ersetzt in Runde 20 (22.11.2026):** Beispiele zählen wie ein eigenes Logo, der Schleier steht nur ohne gewähltes Logo (siehe unten). Ein Klick oder Tippen auf die Fläche öffnet die Dateiauswahl. Ohne Maus (`hover: none`) lautet die Zeile „Hier tippen und euer Logo wählen“ (`showconfigurator.tapToChooseYourLogo`), denn gezogen wird dort nicht. Code: `drawNotice()` in `src/scripts/show-configurator.js`, Stile in `src/styles/show-configurator.css`.
 - **REWE als Beispiel entfernt** (Marc: „mir gefällt das ehrlich gesagt nicht, so wie es da dargestellt wird“): aus `LOGO_EXAMPLES`/`CUSTOMER_EXAMPLES`, den vorberechneten Daten (`public/media/logo-modus/beispiele/`, `sizes.json`, `rasters-index.json`) und der Kundenlogo-Folge (`public/media/logo-modus/kundenlogos.json`). Das Kundenlogo in der Logo-Leiste bleibt. Wächter: `src/scripts/logo-rows.test.mjs` (REWE darf nicht zurückkommen, ohne den Test bewusst zu ändern).
 - **Bremen = der Schlüssel aus dem Stadtfest** (Marc: Bremen im Logo-Modus „janky“, im Stadtfest „mega clean“; „Wir haben ja schon diese sehr gut funktionierende Variante des Bremer Schlüssels im Stadtfest drin. Lass uns das doch einfach nehmen.“). Ursache des Wackelns: `bremen.svg` war eine zweite, eigene Nachzeichnung, die der Logo-Konverter als Kontur abtastete (zwei Punktreihen je Strich, Punkte auf der Pixeltreppe, die Bartquadrate dadurch unruhig). Jetzt gilt eine Regel: **das Beispiel Bremen bei m Drohnen = `flat('schluessel', m)`** aus `src/scripts/scenes/wahrzeichen.js`, dieselben Punkte, Teile und Farben wie im Anlass Stadtfest (2D), also bis 199 Drohnen Raster, ab 200 Haken und gelbes Kreuz, ab 280 Mäander und gelbes Ornament. Bremen läuft nicht durch den Konverter und hat keine vorberechneten Daten mehr (`bremen.svg/.json/.raster.json` sowie die Einträge in `sizes.json` und `rasters-index.json` sind gelöscht; die übrigen Beispiele sind byte-gleich, Wächter mit Hash).
   - Code: `src/scripts/logo-landmark.mjs` (Formation, Sitzung, Liniendichte, Minimap-Bild); Liste `LANDMARK_EXAMPLES` in `src/scripts/logo-examples.mjs` (`shape`, `max`, `apart`, Minimap-Farben); `logo-mode.js` gibt mit `exampleFile(id)` die Beispiel-Datei aus und erkennt sie in `logoSession()` wieder (ein hochgeladenes SVG mit denselben Bytes ist ein anderes Objekt und läuft durch den Konverter); `exampleFormation`, `preparedDensity` und `loadExample` rechnen Wahrzeichen direkt. `COLOURS` in `wahrzeichen.js` ist dafür exportiert, sonst ist das Stadtfest unverändert.
@@ -1410,3 +1410,40 @@ rund 0,5 statt 1,3 rad). Ein Hin-und-her oder Abbremsen in 3D+ schlug im Finten-
 im Flug), der Drehteller in eine Richtung nicht. Gesichtet auf `/drohnenshow-preise/?anlass=silvester&motiv=adventskranz`
 in HORIZON und ODYSSEY, Chromium und WebKit, 1440 und 390 px.
 
+## Runde 20 (22.11.2026) · Logo-Modus: Klicks gescoped, Schleier nur ohne Logo
+
+Marc (Aufnahme in Safari 18.6): „Klickt man auf Verstanden, öffnet sich sofort der Datei-Upload. Es scheint irgendwie alles
+blockiert zu sein.“ Nach dem Wechsel auf Spotify oder Puma blieb die Bühne verschwommen hinter „Euer Logo hier reinziehen“,
+darunter stand in Safari noch das alte Wappen.
+
+- **Ursache 1, Klick ging tiefer:** „Verstanden“ liegt in `.cfg-drop`. Sein Handler setzte `is-await` synchron, derselbe
+  Klick stieg zur Fläche auf, deren Handler den schon geänderten Zustand sah und `file.click()` rief. Per Enter und
+  Leertaste genauso (Tastatur-Klick ist ein `click`-Ereignis).
+- **Regel, Klicks gescoped:** Die Fläche öffnet die Dateiauswahl nur für einen Klick, der auf ihr selbst begonnen hat
+  (`pointerdown` im Zustand `is-await`, nicht auf einem Bedienelement) und auf ihr endet. Bedienelemente in Hinweis und
+  Schleier (`button, a, input, select, textarea, label, [role=note]`, auch künftige) lösen nie eine Aktion der Fläche aus;
+  Tastatur-Klicks kommen ohne `pointerdown` und öffnen dort nie einen Dialog. Bewusste Wege zur Dateiauswahl: der
+  Upload-Knopf im Bedienfeld oder Klick/Tippen auf die leere Ablagefläche. Code: `drawNotice()` und die Handler darunter in
+  `src/scripts/show-configurator.js`.
+- **Ursache 2, Schleier über Beispielen:** Die Runde-14-Auslegung „Beispiel-Logos zählen nicht“ (Bedingung
+  `!(logo && !logo.example)`) legte `is-await` mit Weichzeichner und `pointer-events: auto` über genau die Vorschau, die
+  man gerade gewählt hatte.
+- **Regel, Schleier nur ohne Logo (ersetzt Runde 14):** Hinweis und Aufforderung stehen nur, solange weder Beispiel noch
+  eigenes Logo gewählt ist (`empty = logoMode && !logo`). Mit gewähltem Logo ist die Bühne frei, `.cfg-drop` hat Deckkraft 0
+  und `pointer-events: none`. Ein noch nicht bestätigter Hinweis tritt mit einem gewählten Logo ebenfalls zurück und kommt
+  mit × wieder. × bringt auch die Aufforderung zurück. Ein laufender Datei-Drag zeigt die Ablagefläche weiterhin
+  (`is-page-drag`/`is-drag`), der Upload-Knopf im Bedienfeld bleibt immer erreichbar. Das Zeigen auf den Upload-Knopf mit der
+  Maus (`is-target`, fünfzehnte Fassung) ist unverändert.
+- **Safari, stehen gebliebenes Bild:** Alle Zustände von `.cfg-drop` sind jetzt getönte Flächen ohne `backdrop-filter`
+  (0,64 statt 0,42 mit Weichzeichner, beim Ziehen über der Fläche 0,72, Hinweis unverändert 0,82). Hypothese aus der
+  Ursachenanalyse: Safari 18.6 hielt über dem animierten Canvas ein veraltetes Backdrop-Bild fest. Beispiele zeigen vor dem
+  Anflug keine lebendige Wolke mehr (`takeFile`: `showCloud()` nur ohne Beispiel); ihre Formation liegt vorberechnet bereit,
+  sie fliegen direkt aus dem alten Bild ins neue. Die Zahlen 200/350/450 in der Aufnahme sind die buchbaren Empfehlungen je
+  Liniendichte (`logoAdvice`), keine Änderung.
+- **Prüfung:** `tests/show-configurator.spec.ts`, Tests „Runde 20: …“ in allen vier Projekten (Chromium, WebKit, Pixel 7,
+  iPhone 13): „Verstanden“ per Maus, Enter und Leertaste ohne `filechooser`, danach genau einer über den Upload-Knopf; Druck
+  auf „Verstanden“ mit Loslassen auf der Fläche öffnet nichts, ein Klick auf die leere Fläche genau einen Dialog; Spotify und
+  Puma ohne Upload und nach simuliertem Drop: Schleier Deckkraft 0, `pointer-events: none`, kein `backdrop-filter`, Canvas
+  ohne Testwappen, Spotify grün, Puma weiß, Minimap = Beispieldatei; × bringt `is-await` zurück. Gegenprobe auf dem alten
+  Stand: alle sechs Desktop-Tests schlagen fehl. Gesichtet bei 1300 × 900 (Chromium, WebKit) und im iPhone-Profil (WebKit).
+  Nicht geprüft: Marcs Safari 18.6 mit Finder-Drop und Originaldatei, iOS-Simulator.
