@@ -207,13 +207,13 @@ const list = (v?: number[]) => (v?.length ? v.join(' ') : undefined);
       run();
     };
 
-    // ---------- Auslöser: die Texteinheit, deren Anfang die Leselinie überschritten hat. Querformat (Szene rechts daneben, jede
-    // Einheit mindestens so hoch wie die Szene, Anfang bündig mit ihrer Oberkante): Leselinie auf halber Höhe der Szene;
-    // hochkant (Szene oben): ein Drittel in den Bereich unter der Bühne ----------
+    // ---------- Auslöser: die Texteinheit, deren Anfang die Leselinie überschritten hat. Querformat (Szene rechts daneben):
+    // Leselinie auf halber Höhe der Szene, am hohen Monitor mindestens 40 % der Fensterhöhe (sonst läge sie im oberen
+    // Viertel); hochkant (Szene oben): ein Drittel in den Bereich unter der Bühne ----------
     const fig = root.querySelector<HTMLElement>('.ss-fig')!;
     const side = matchMedia('(min-aspect-ratio: 5/4) and (min-width: 60em)');
     const topOf = () => parseFloat(getComputedStyle(fig).top) || 0;
-    const lineY = () => { if (side.matches) return topOf() + fig.offsetHeight * 0.5; const b = stage.getBoundingClientRect().bottom; return b + (innerHeight - b) * 0.32; };
+    const lineY = () => { if (side.matches) return Math.max(topOf() + fig.offsetHeight * 0.5, innerHeight * 0.4); const b = stage.getBoundingClientRect().bottom; return b + (innerHeight - b) * 0.32; };
     const pick = () => {
       fig.classList.toggle('is-stuck', fig.getBoundingClientRect().top <= topOf() + 1);
       const line = lineY();
@@ -234,13 +234,11 @@ const list = (v?: number[]) => (v?.length ? v.join(' ') : undefined);
       if (r.right > document.documentElement.clientWidth - 8 || r.left < 8) n.classList.add('sn-flip');
     });
     let fitLater = () => {};
-    // Höhe der Szene für die Texteinheiten (zwei Spalten: jede Einheit mindestens so hoch wie die Szene)
-    const figNow = () => root.style.setProperty('--ss-fig-now', `${fig.offsetHeight / (parseFloat(getComputedStyle(document.documentElement).fontSize) || 16)}rem`);
-    const relayout = () => { figNow(); stage.classList.add('is-reset'); measure(); place(); void stage.getBoundingClientRect(); stage.classList.remove('is-reset'); requestAnimationFrame(fit); };
+    const relayout = () => { stage.classList.add('is-reset'); measure(); place(); void stage.getBoundingClientRect(); stage.classList.remove('is-reset'); requestAnimationFrame(fit); };
 
     // Anfangszustand ohne Übergang (im HTML steht der Endzustand für Suche, Vorschau und ohne JavaScript)
     stage.classList.add('is-reset');
-    figNow(); measure(); pick(); if (step < 0) set(0);
+    measure(); pick(); if (step < 0) set(0);
     void stage.getBoundingClientRect();
     stage.classList.remove('is-reset');
     fitLater = () => requestAnimationFrame(() => setTimeout(fit, 30));
@@ -535,7 +533,7 @@ const list = (v?: number[]) => (v?.length ? v.join(' ') : undefined);
      den Schritten (Marc, 22.11.2026: Abstände am Handy viel zu groß); unten nur so viel Luft, dass der letzte Schritt die
      Leselinie erreicht, bevor die Bühne geht (Runde 20: 28svh standen als Loch vor der Logo-Formation) */
   .ss-text { padding-top: var(--space-10); padding-bottom: var(--space-4); }
-  .ss-unit { padding-bottom: clamp(var(--space-8), 5svh, var(--space-12)); }
+  .ss-unit { padding-bottom: clamp(var(--space-4), 3svh, var(--space-8)); }
   .ss-step > :global(:first-child), .ss-chapter > :global(:first-child) { margin-top: 0; }
   .ss-text > :global(* + *), .ss-unit > :global(* + *) { margin-top: 0; }
   .ss-step > :global(* + *) { margin-top: 1.1em; }
@@ -543,6 +541,13 @@ const list = (v?: number[]) => (v?.length ? v.join(' ') : undefined);
   /* Nummer des Schritts vor seinem Titel, dieselbe wie in der Schrittleiste; die aktive Nummer leuchtet */
   .ss-step > :global(:first-child)::before { content: var(--n); display: inline-block; min-width: 1.75em; margin-right: 0.35em; color: var(--faint); font: 500 0.75em/1 var(--mono); letter-spacing: 0.06em; vertical-align: 0.12em; transition: color var(--dur-fade) var(--ease-out); }
   .ss-unit.is-now .ss-step > :global(:first-child)::before { color: var(--accent); }
+  /* Runde 20b (Marc, 22.11.2026): der aktive Schritt trägt die Fläche der Icon-Karten (--ig-mark, global.css) statt
+     künstlich langer Wege zwischen den Abschnitten. Der Innenabstand steht immer (sonst springt der Text beim Wechsel), der
+     seitliche wird über einen negativen Außenabstand ausgeglichen: die Zeilen umbrechen genau wie ohne Fläche. Die Fläche
+     blendet nur über opacity ein. */
+  .ss-step { --ss-mark-x: var(--space-6); position: relative; isolation: isolate; padding: var(--space-5) var(--ss-mark-x); margin-inline: calc(-1 * var(--ss-mark-x)); }
+  .ss-step::before { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: var(--radius-16); background: var(--ig-mark); box-shadow: var(--ig-mark-shadow); opacity: 0; pointer-events: none; transition: opacity var(--dur-standard) var(--ease-default); }
+  .ss-unit.is-now .ss-step::before { opacity: 1; }
   /* Neuer Abschnitt (zweiter Zwischentitel): Linie und Abstand wie ein Kapitelwechsel */
   .ss-chapter { padding-top: var(--space-10); border-top: 1px solid var(--line); margin-bottom: var(--space-10); }
   .ss-chapter :global(h2) { margin: 0; }
@@ -562,15 +567,13 @@ const list = (v?: number[]) => (v?.length ? v.join(' ') : undefined);
   :global(.motion-paused) :is(.wave, .path, .lift, .signal, .led-glow, .led-halo, .led-core) { animation: none !important; }
 
   /* Querformat, jede Höhe (Runde 20, Marc: zwei Spalten auch am großen Monitor): Text links, die Szene rechts klebt oben unter
-     der Kopfzeile, so hoch wie nötig, höchstens --ss-fig-h. Jede Texteinheit (Zwischentitel + Schritt) ist mindestens so hoch
-     wie die Szene: neben der Zeichnung steht der Text, zu dem sie gehört, der nächste Abschnitt beginnt erst unter ihr. Die
-     Schrittleiste springt bündig an den Anfang einer Einheit. Kein CSS-Einrasten (scroll-snap proximity): in Chromium kam ein
-     Mausrad-Schritt innerhalb einer Einheit nicht mehr von der Stelle, der Abstand der Rastpunkte ist größer als die
-     Fangweite. Die Szene bleibt an ihrem Platz, wenn die Kopfzeile ausweicht, sonst wäre die Bündigkeit um deren Höhe versetzt. */
+     der Kopfzeile, so hoch wie nötig, höchstens --ss-fig-h und 90 % der Spaltenbreite. Zuordnung über die Fläche am aktiven
+     Schritt und seine Nummer (oben). Verworfen: Einheiten so hoch wie die Szene (Marc: Scrollweg „mega künstlich lang“) und
+     CSS-Einrasten (Mausrad blieb in Chromium hängen). Die Szene bleibt an ihrem Platz, wenn die Kopfzeile ausweicht. */
   @media (--story-wide) and (min-aspect-ratio: 5/4) {
     .ss { --ss-top: calc(var(--nav-h) + var(--space-4)); --ss-fig-h: min(calc(100svh - var(--nav-h) - var(--space-8)), 40rem); grid-template-columns: minmax(0, 37rem) minmax(0, 1fr); grid-template-areas: "head fig" "text fig"; column-gap: clamp(var(--space-8), 4vw, var(--space-16)); justify-items: stretch; align-items: start; }
     .ss-head { grid-area: head; max-width: none; }
-    .ss-text { grid-area: text; max-width: none; padding-top: 0; padding-bottom: 0; }
+    .ss-text { grid-area: text; max-width: none; padding-top: 0; }
     /* Höhe: so viel Fensterhöhe wie da ist, aber nicht höher als die Zeichnung bei dieser Spaltenbreite braucht (90 % der Breite);
        sonst steht die Zeichnung am großen Monitor mitten in einer hohen leeren Fläche, weit unter dem Anfang ihres Texts */
     .ss-fig { grid-area: fig; align-self: start; top: var(--ss-top); display: flex; flex-direction: column; padding: 0; container-type: inline-size; }
@@ -579,8 +582,8 @@ const list = (v?: number[]) => (v?.length ? v.join(' ') : undefined);
     .ss-stage { flex: none; height: min(calc(var(--ss-fig-h) - 4.5rem), 90cqi); }
     .ss-bar { flex-wrap: wrap; row-gap: 0; }
     .ss-now { flex: 1 1 100%; padding-top: var(--space-1); }
-    .ss-unit { min-height: var(--ss-fig-now, var(--ss-fig-h)); padding-bottom: var(--space-12); box-sizing: content-box; }
-    .ss-unit:last-child { padding-bottom: 0; }
+    /* der letzte Schritt muss die Leselinie (halbe Höhe der Szene) erreichen, solange die Szene noch klebt */
+    .ss-text { padding-bottom: calc(var(--ss-fig-h) * 0.4); }
     .ss-chapter { padding-top: var(--space-8); }
   }
 
@@ -599,6 +602,8 @@ const list = (v?: number[]) => (v?.length ? v.join(' ') : undefined);
     .sn-list { top: calc(var(--y) + var(--row) * 1.625rem); }
     .sn-list.sn-flip .sn-pill { left: -7.75rem; }
     .ss-text { padding-top: var(--space-6); }
+    /* Fläche am aktiven Schritt: schmaler Rand, die Fläche reicht bis knapp an den Bildschirmrand (Seitenrand --pad ≥ 1,25rem) */
+    .ss-step { --ss-mark-x: var(--space-3); padding-block: var(--space-4); }
     /* Knopf oben links: unten liegt am Handy die Beschriftung des Rahmens */
     .ss-explode { top: var(--space-1); bottom: auto; left: 0; min-height: 2.75rem; padding: 0 var(--space-3); }
   }

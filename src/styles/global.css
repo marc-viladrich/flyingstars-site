@@ -1021,9 +1021,10 @@ a.pack { grid-template-rows: auto auto 1fr; align-items: start; row-gap: var(--s
 /* Hover im Icon-Raster (Marc, 18.11.2026): EINE dezente Fläche gleitet von Zelle zu Zelle und rastet ein, mit Kurve und
    Dauer der gleitenden Box der Navigation. Lage und Größe setzt src/scripts/grid-glide.ts als --ig-x/--ig-y/--ig-sx/--ig-sy
    (Basismaß --ig-w0/--ig-h0); animiert werden nur transform und opacity. Der transparente Rand ist der Abstand zur Zellkante. */
-.ig { position: relative; --ig-gap: var(--space-1-5);
-  --ig-mark: radial-gradient(85% 75% at 0% 0%, rgb(var(--rgb-logo-amber) / 0.06), transparent 70%), var(--fill-quiet);
+/* Fläche für das Hervorgehobene (Hover im Icon-Raster, aktiver Schritt der Blog-Szene): eine Quelle, :root */
+:root { --ig-mark: radial-gradient(85% 75% at 0% 0%, rgb(var(--rgb-logo-amber) / 0.06), transparent 70%), var(--fill-quiet);
   --ig-mark-shadow: inset 0 1px 0 rgb(var(--rgb-logo-amber) / 0.08), inset 0 0 0 1px var(--line-soft); }
+.ig { position: relative; --ig-gap: var(--space-1-5); }
 .ig::before { content: ""; position: absolute; top: 0; left: 0; width: var(--ig-w0, 0); height: var(--ig-h0, 0); box-sizing: border-box; border: var(--ig-gap) solid transparent; border-radius: calc(var(--radius-12) + var(--ig-gap)); background: var(--ig-mark); background-clip: padding-box; box-shadow: var(--ig-mark-shadow); transform-origin: 0 0; transform: translate(var(--ig-x, 0), var(--ig-y, 0)) scale(var(--ig-sx, 1), var(--ig-sy, 1)); opacity: 0; pointer-events: none; transition: transform var(--dur-glide) var(--ease-glide), opacity var(--dur-standard) var(--ease-default); }
 .ig.ig-on::before { opacity: 1; }
 .ig.ig-snap::before { transition: opacity var(--dur-standard) var(--ease-default); }

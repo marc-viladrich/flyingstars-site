@@ -82,20 +82,26 @@ test('Musik und Licht: der Abspielkopf treibt Lichtblöcke und Sternbildung, red
   expect(await page.locator('.bar.lit').count()).toBe(0);
 });
 
-// Runde 20 (Marc, 22.11.2026): zwei Spalten auf jedem Querformat (auch am hohen Monitor); jede Texteinheit ist mindestens so
-// hoch wie die Szene, damit neben der Zeichnung nur ihr Text steht; Nummern im Text wie in der Schrittleiste
+// Runde 20 (Marc, 22.11.2026): zwei Spalten auf jedem Querformat (auch am hohen Monitor); Zuordnung über die Fläche am
+// aktiven Schritt (wie Icon-Karten) und Nummern wie in der Schrittleiste. Die Fläche verändert keine Zeilenumbrüche.
 for (const vp of [{ width: 2560, height: 1440 }, { width: 1280, height: 720 }]) {
-  test(`Zwei Spalten ${vp.width}×${vp.height}: Szene neben dem Text, Einheiten so hoch wie die Szene, Nummern`, async ({ page }) => {
+  test(`Zwei Spalten ${vp.width}×${vp.height}: Szene neben dem Text, Fläche am aktiven Schritt, Nummern`, async ({ page }) => {
     await page.setViewportSize(vp);
     await page.goto(`/blog/${CS}/`);
+    await page.evaluate(() => { const u = document.querySelectorAll('.ss-unit')[2]; scrollBy({ top: u.getBoundingClientRect().top - innerHeight * 0.3, behavior: 'instant' }); });
+    await expect(page.locator('[data-stage]')).toHaveAttribute('data-step', '2');
     const geo = await page.evaluate(() => {
-      const fig = document.querySelector('.ss-fig')!.getBoundingClientRect(), text = document.querySelector('.ss-text')!.getBoundingClientRect();
+      const fig = document.querySelector('.ss-fig')!.getBoundingClientRect(), text = document.querySelector('.ss-text')!;
       const units = [...document.querySelectorAll<HTMLElement>('.ss-unit')];
-      return { beside: fig.left > text.right, figH: fig.height, minH: Math.min(...units.slice(0, -1).map((u) => u.getBoundingClientRect().height)), nums: units.map((u) => getComputedStyle(u.querySelector('.ss-step > :first-child')!, '::before').content) };
+      const steps = units.map((u) => u.querySelector<HTMLElement>('.ss-step')!);
+      const inner = (el: HTMLElement) => { const cs = getComputedStyle(el); return el.getBoundingClientRect().width - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight); };
+      return { beside: fig.left > text.getBoundingClientRect().right, figH: fig.height, textW: text.getBoundingClientRect().width, stepW: steps.map(inner),
+        mark: steps.map((st) => Number(getComputedStyle(st, '::before').opacity)), nums: steps.map((st) => getComputedStyle(st.firstElementChild!, '::before').content) };
     });
     expect(geo.beside).toBe(true);
-    expect(geo.minH).toBeGreaterThanOrEqual(geo.figH);
     expect(geo.figH).toBeLessThanOrEqual(vp.height);
+    for (const w of geo.stepW) expect(Math.abs(w - geo.textW)).toBeLessThan(1); // Textbreite wie ohne Fläche
+    await expect.poll(() => page.locator('.ss-step').evaluateAll((els) => els.map((e) => Number(getComputedStyle(e, '::before').opacity)))).toEqual([0, 0, 1, 0, 0, 0, 0]);
     expect(geo.nums).toEqual(['"01"', '"02"', '"01"', '"02"', '"03"', '"04"', '"05"']);
   });
 }
