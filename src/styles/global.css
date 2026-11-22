@@ -961,6 +961,13 @@ a.pack:hover, a.pack:focus-visible { border-color: color-mix(in srgb, var(--c) 7
 .slider-btn { padding: 0; background: transparent; transition: border-color var(--dur-control), opacity var(--dur-control); }
 .slider-btn:hover:not(:disabled) { border-color: var(--text); }
 .slider-btn:disabled { opacity: 0.35; cursor: default; }
+/* Variante auf Fotos (Blog-Fotoreihe, Marc, 22.11.2026: „die Pfeile nicht unter die Bilder, sondern rechts und links auf die
+   Bilder, mit einem tasteful, smooth, blurred and slightly darkened background“): die Bildunterschrift steht so direkt unter dem
+   Bild. Die Leiste liegt über dem Slider (Eltern-Element positioniert), nur die Knöpfe nehmen Zeiger an; am Anfang bzw. Ende
+   blendet der jeweilige Pfeil ganz aus statt gedämpft über dem Bild zu stehen. */
+.slider-nav.on-media { position: absolute; inset: 0; z-index: 2; margin: 0; justify-content: space-between; align-items: center; padding-inline: var(--space-2-5); pointer-events: none; }
+.slider-nav.on-media .slider-btn { pointer-events: auto; width: 2.5rem; height: 2.5rem; border-color: rgb(var(--rgb-text) / 0.16); background: rgb(var(--rgb-ground) / 0.42); color: var(--text); -webkit-backdrop-filter: blur(0.5rem) saturate(1.2); backdrop-filter: blur(0.5rem) saturate(1.2); box-shadow: 0 0.25rem 1rem rgb(var(--rgb-black) / 0.25); }
+.slider-nav.on-media .slider-btn:disabled { opacity: 0; pointer-events: none; }
 @media (--grid-stacked) { .occasions.occ-slider { grid-auto-columns: calc((100% - 1rem) / 2.3); } }
 @media (--compact) { .occasions.occ-slider { grid-auto-columns: 82%; } }
 

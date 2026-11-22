@@ -1,9 +1,9 @@
 ---
 authorId: florian-becker
-title: "Drohnen als Alternative zum Feuerwerk: Ein umweltschonendes Lichtspektakel"
-description: "Drohnenshows als Alternative zum Feuerwerk: Funktionsweise, Umweltaspekte, Einsatzmöglichkeiten und Sicherheitsmaßnahmen."
+title: "Drohnen als Alternative zum Feuerwerk: leise, ohne Rauch und Müll vor Ort"
+description: "Wie unsere Drohnenshows im Vergleich zum Feuerwerk abschneiden: Lautstärke, Rauch und Müll, Logos am Himmel und Sicherheit, aus über 150 Shows."
 date: 2025-03-31
-updated: 2026-09-22
+updated: 2026-11-22
 tags: ["Drohnenshow", "Feuerwerk", "Nachhaltigkeit"]
 cover:
   src: "https://flyingstars.art/wp-content/uploads/2025/03/drohnen-feuerwerk-alternative.jpg"
@@ -13,102 +13,44 @@ cover:
 draft: false
 ---
 
-Feuerwerke sind seit Jahrhunderten ein fester Bestandteil von Feierlichkeiten – ob an Silvester, bei Hochzeiten oder großen Events. Doch während die bunten Explosionen den Himmel erleuchten, bringen sie auch erhebliche Nachteile mit sich: Lärm, Feinstaub und chemische Rückstände belasten Umwelt und Gesundheit. Besonders für Tiere bedeutet der laute Knall enormen Stress. Drohnen-Feuerwerke bieten hier eine umweltfreundliche Alternative ohne Lärm und Müll, die dennoch beeindruckende visuelle Effekte erzielt.
+Ein Feuerwerk knallt, raucht und hinterlässt Reste auf dem Platz. Hunde verkriechen sich, kleine Kinder halten sich die Ohren zu, und bei Trockenheit ist es oft ganz verboten. Unsere Drohnenshows dürfen häufig genau dort fliegen, wo Feuerwerk wegen Lärmschutz, Feinstaub oder Brandgefahr verboten oder unerwünscht ist.
 
-Diese Lichtshows mit Drohnen bieten spektakuläre Effekte am [Nachthimmel](https://flyingstars.art/drohnen-fliegen-nachts-dunkel) – ganz ohne schädliche Emissionen oder Lärm. Die Planung und Durchführung einer Drohnen-Show ist zudem kosteneffizient und sicher, was sie zu einer attraktiven Option für viele Veranstalter macht.
+Veranstalter:innen fragen uns oft, wie sich eine Drohnenshow im Vergleich zum Feuerwerk schlägt. Hier antworten wir mit dem, was wir belegen können, und nennen auch die Stellen, an denen eine Drohnenshow Spuren hinterlässt.
 
- 
+## Was eine Drohnenshow ist
 
-![Drohnenshow bie Nacht als Feuerwerk Alternative](https://flyingstars.art/wp-content/uploads/2025/03/drohnen-feuerwerk-alternative-1024x781.jpg)
+Bei einer Drohnenshow fliegen zwischen 100 und über 1000 leuchtende Drohnen eine gemeinsame Choreografie. Jede Drohne ist ein Lichtpunkt. Zusammen ergeben sie Bilder, Schriftzüge und Figuren in 2D und 3D, die sich bewegen und ineinander übergehen.
 
- 
+Die Flugbahnen stehen vor der Show fest, in Echtzeit lenken wir die Drohnen nicht. Unser Design-Team baut zuerst die Animation von Start bis Landung, noch ohne Farbe, dann schneiden wir die Musik daran entlang und setzen zum Schluss Farben und Lichteffekte auf ihre Akzente. Eine Show dauert bei uns meist rund 13 Minuten, bis zu 25 Minuten sind möglich. In der Regel bleiben die Drohnen unter 120 Metern Höhe.
 
-## Was sind Drohnenshows?
+Was in einer einzelnen Drohne steckt, erklären wir im Artikel [wie eine Drohnenshow funktioniert](/blog/2025-01-14-wie-funktioniert-drohnenshow-drohne/). Wie aus einer Idee eine Choreografie wird, steht in [wie wir eine Drohnenshow programmieren](/blog/2025-06-12-wie-programmiert-man-eine-drohnenshow/).
 
- 
+## Lärm, Rauch und Müll im Vergleich
 
-Anstelle von Feuerwerkskörpern, die explodieren und verglühen, setzen Drohnenshows auf modernste Technologie. Hunderte oder sogar tausende Drohnen fliegen synchron und erschaffen beeindruckende Muster, Figuren und Animationen am Himmel.
+Am deutlichsten zeigt sich der Unterschied am Abend selbst, dort, wo euer Publikum steht. Unsere Drohnen surren leise, die Lautstärke bestimmt eure Musik. Der TÜV NORD bestätigt unseren Schallschutz in einem Gutachten. Vor Ort entstehen weder Feinstaub noch Stickoxide oder Schwermetalle, und es brennt keine offene Flamme. Wie Drohnenshow, Feuerwerk und Lasershow nebeneinander abschneiden, seht ihr in der Übersicht.
 
-Jede Drohne ist mit leistungsstarken Lichtern ausgestattet, die in verschiedenen Farben leuchten und präzise [programmiert](https://flyingstars.art/wie-programmiert-man-eine-drohnenshow) werden, um atemberaubende Choreografien zu erschaffen. Drohnenshows können alles bieten, was für eine beeindruckende visuelle Darstellung notwendig ist. So entstehen faszinierende Bilder, Schriftzüge oder sogar bewegte Animationen, die mit klassischem Feuerwerk kaum realisierbar wären.
+Nach der Show packen wir die Drohnen wieder ein, und bei der nächsten Show fliegen sie erneut. Eine Drohne ist so mehrere Jahre im Einsatz. Verschleißt ein Teil, tauschen wir es einzeln aus, etwa einen Motor oder einen Rotor. Das gilt auch für die Akkus. In jeder Drohne stecken zwei handelsübliche AA-Akkus, wie ihr sie aus dem Haushalt kennt. Lässt ihre Leistung nach, wechseln wir die Akkus und behalten die Drohne.
 
- 
+Jede Drohne wiegt nur rund 300 Gramm. Wir laden sie mit 100 % Ökostrom von naturstrom, den auch unser Büro bezieht. Zu den Shows fahren wir mit einem elektrischen Transporter.
 
-## Umweltfreundlichkeit von Drohnenshows
+Spurlos ist auch eine Drohnenshow nicht. Die Drohnen brauchen Strom, ihre Herstellung braucht Rohstoffe, und der Weg zum Einsatzort zählt mit. Eine Studie, die Feuerwerk und Drohnenshow über alle Umweltfolgen hinweg vergleicht, kennen wir bisher nicht. Wir empfehlen unsere Shows deshalb vor allem dort, wo euch Lärmschutz, saubere Luft vor Ort und Wiederverwendbarkeit wichtig sind. Mehr dazu findet ihr auf unserer Seite zur [Nachhaltigkeit](/nachhaltigkeit/).
 
- 
+## Logos und Schriftzüge am Himmel
 
-Ein großer Vorteil von Drohnenshows ist ihre **Nachhaltigkeit**. Während herkömmliche Feuerwerke durch die Verbrennung von Chemikalien Feinstaub und CO₂ freisetzen, bleibt die Luft bei einer Drohnenshow sauber. Auch die Lärmbelastung entfällt fast komplett – ein Segen für Wildtiere, Haustiere und geräuschempfindliche Menschen.
+Ein Feuerwerk kann kein Logo zeigen. Mit Drohnen schreiben wir euren Markennamen in den Himmel, zeigen euer Produkt in 3D oder erzählen eine Geschichte in mehreren Bildern. Für einen Buchstaben brauchen wir etwa 10 bis 13 Drohnen. Für Logos und Schriftzüge reichen meist 100 bis 200, für detailreiche 3D-Bilder planen wir 300 und mehr.
 
-Ein weiterer Pluspunkt ist die **Wiederverwendbarkeit**. Während klassische Feuerwerkskörper nach einmaligem Gebrauch zu Müll werden, lassen sich Drohnen für unzählige Shows einsetzen. Dies spart langfristig Ressourcen und reduziert Abfall.
+Zum Start des neuen Ford Explorer haben 350 unserer Drohnen den Schriftzug über das Electric Vehicle Center in Köln geschrieben. Bei PUMA kam die Anfrage 14 Tage vor dem Derby, und das Logo stand mit 100 Drohnen pünktlich zum Anstoß über dem Borussia-Park. Jedes Motiv gebt ihr vorher frei, und für Agenturen unterschreiben wir gern ein NDA. Wie Kampagnen mit Drohnen ablaufen, zeigen wir auf unserer Seite zur [Drohnenshow als Werbung](/drohnenshow-werbung/).
 
- 
+Marken sind nur ein Teil unserer Arbeit. Wir fliegen genauso für Städte und Gemeinden, Festivals und Konzerte und für private Feiern wie [Hochzeiten](/drohnenshow-hochzeit/), Heiratsanträge oder Geburtstage.
 
-## Drohnenshows als spektakuläre Werbung
+## Sicherheit bei unseren Shows
 
- 
+Seit unserer Gründung 2021 hatten wir in über 150 Shows keinen Unfall. Für jede Show sperren wir einen Sicherheitsbereich von rund 100 × 100 Metern ab, über dem die Drohnen fliegen und in dem sie starten und landen. Während der Show hält sich dort niemand aus dem Publikum auf. Ein Geofence, eine Art digitaler Zaun, hält die Drohnen in diesem Bereich.
 
-Drohnen eröffnen völlig neue kreative Möglichkeiten: Dank modernster 3D-Technologie können sie beeindruckende Animationen am Himmel darstellen – von leuchtenden Schriftzügen über Markenlogos bis hin zu beweglichen Figuren. Diese Technologie bietet enormes Potenzial für Werbung, da individuell gestaltete Animationen und Logos die Markenbotschaft auf einzigartige Weise vermitteln und die Aufmerksamkeit der Zielgruppe anziehen können.
+Fällt eine Drohne aus, was selten vorkommt, fliegt sie meist automatisch zurück. Im Notfall landet sie in der Sicherheitszone, und sie wiegt nur rund 300 Gramm. Automatische und manuelle Sicherheitssysteme überwachen jeden Flug, mehrfach abgesichert. Unsere zertifizierten Pilot:innen und Techniker:innen sind bei jeder Show vor Ort. Kameras tragen unsere Showdrohnen keine.
 
- 
+Jedes Paket enthält eine Haftpflichtversicherung bis 1,3 Millionen Euro. Die Genehmigungen holen wir ein. Wir haben eine generische Genehmigung des Luftfahrt-Bundesamts und eine EU-weite Betriebslizenz, weitere Anträge, etwa bei der Deutschen Flugsicherung, übernehmen wir. Von euch brauchen wir nur die Zustimmung der Grundstückseigentümer:innen.
 
-### Weitere Einsatzgebiete von Drohnenshows:
+## Plant eure Show mit uns
 
- 
-
-**Großveranstaltungen**: Stadtfeste, Konzerte, Sportevents
-
-**Private Feiern**: Hochzeiten, Geburtstage, Jubiläen
-
-**Firmenevents**: Produktpräsentationen, Firmenjubiläen, Feste
-
-**Nationale Feierlichkeiten**: Silvester, Nationalfeiertage
-
- 
-
-## Sicherheit und Risiken bei Drohnen-Shows
-
- 
-
-Drohnenshows gelten als sehr sicher, wenn sie von erfahrenen und qualifizierten Anbietern durchgeführt werden. Dennoch gibt es einige Sicherheitsaspekte und Risiken, die berücksichtigt werden müssen, um eine reibungslose und sichere Durchführung zu gewährleisten.
-
-Risiken, die mit Drohnenshows verbunden sind.:
-
-- **Abstürze**: Drohnen können abstürzen oder verloren gehen, wenn sie nicht richtig gesteuert werden.
-
-- **Kollisionen**: Drohnen können Menschen oder andere Objekte treffen, wenn sie nicht sicher fliegen.
-
-Diese Risiken sind jedoch sehr gering, wenn die Drohnenshows von erfahrenen und qualifizierten Anbietern durchgeführt werden.
-
-Zu den wichtigsten Sicherheitsmaßnahmen gehören:
-
-- **Regelmäßige Wartung**: Die Drohnen müssen regelmäßig gewartet und überprüft werden, um sicherzustellen, dass sie in einwandfreiem Zustand sind und keine technischen Probleme aufweisen.
-
-- **Sicherer Abstand**: Die Drohnen müssen in einem sicheren Abstand von Menschen und anderen Objekten fliegen, um Kollisionen zu vermeiden.
-
-- **Sicherheitsfunktionen**: Drohnen sollten mit Sicherheitsfunktionen wie einem automatischen Notlandemodus ausgestattet sein, um sicherzustellen, dass sie sicher landen können, falls ein Problem auftritt.
-
-- **Genehmigungen und Regulierungen**: Der Einsatz von Drohnen unterliegt strengen Vorschriften. Die Anbieter müssen sicherstellen, dass sie die erforderlichen Genehmigungen und Erlaubnisse haben, um Drohnenshows in bestimmten Gebieten durchzuführen.
-
- 
-
-## FlyingStars für unvergessliche Events
-
- 
-
-Als Experten für **hochwertige Drohnen-Lichtshows** bringen wir innovative Technologie und kreative Konzepte zusammen, um spektakuläre visuelle Erlebnisse zu schaffen. Ob für Firmen-Events, Sport-Events, große Stadtfeste oder auch private Feiern.
-
-Jetzt Preise entdecken und Drohnenshow buchen.
-
- 
-
-![FlyingStars Logo schwarz-lila-türkis](https://flyingstars.art/wp-content/uploads/2025/02/was-kostet-eine-drohne-flyingstars-logo-1024x499.jpg)
-
- 
-
-## Drohnenshows von Flyingstars
-
- 
-
-Neben dem privaten und gewerblichen Einsatz von Drohnen erfreuen sich spektakuläre Drohnenshows immer größerer Beliebtheit. FlyingStars ist führender Anbieter in diesem Bereich und kreiert Lichtshows mit synchronisierten Drohnen. Diese Shows werden für Events, Firmenfeiern, Hochzeiten und große Festivals eingesetzt und bieten eine nachhaltige Alternative zu klassischen Feuerwerken.
-
-Die [Kosten für eine Drohnenshow](https://flyingstars.art/drohnenshow-preise/) variieren je nach Umfang, Anzahl der Drohnen und individuellen Anforderungen.
+Wenn ihr statt eines Feuerwerks über Drohnen nachdenkt, erzählt uns von Datum, Ort und Anlass. Wir prüfen, ob eine Show dort möglich ist, und antworten euch spätestens in 48 Stunden. Was eure Show ungefähr kostet, probiert ihr vorab in unserem [Konfigurator](/drohnenshow-preise/#konfigurator) aus. Oder ihr schreibt uns direkt über das [Kontaktformular](/kontakt/).

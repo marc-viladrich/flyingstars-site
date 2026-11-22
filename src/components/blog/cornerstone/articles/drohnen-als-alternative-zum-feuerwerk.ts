@@ -28,7 +28,6 @@ export default defineCornerstone({
       { src: `${M}jubilaeum.webp`, width: 1000, height: 1000, alt: 'photoAnniversary' },
     ], caption: 'photoAdsCaption', focus: '20% 80%' },
     { kind: 'text', section: 4 },
-    { kind: 'text', section: 5 },
-    { kind: 'finale', section: 6 },
+    { kind: 'finale', section: 5 },
   ],
 });

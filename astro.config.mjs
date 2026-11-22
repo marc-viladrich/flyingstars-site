@@ -20,7 +20,7 @@ export default defineConfig({
   trailingSlash: 'always',
   cacheDir: process.env.FLYINGSTARS_IMAGE_CACHE_DIR ?? './.astro/cache',
   i18n: { defaultLocale: 'de', locales: [...LOCALES], routing: { prefixDefaultLocale: false } },
-  integrations: [...editorIntegrations, routeCss(), sitemap({ i18n: { defaultLocale: 'de', locales: { de: 'de', en: 'en', nl: 'nl' } } })],
+  integrations: [...editorIntegrations, routeCss(), sitemap({ i18n: { defaultLocale: 'de', locales: { de: 'de', en: 'en', nl: 'nl' } }, filter: (page) => !page.includes('/blog-vorher/') })],
   image: {
     ...(process.env.FLYINGSTARS_OFFLINE_MEDIA === '1' ? { service: { entrypoint: 'astro/assets/services/noop' } } : {}),
     // Nur der zentrale Medienspeicher darf als Remote-Bildquelle dienen.

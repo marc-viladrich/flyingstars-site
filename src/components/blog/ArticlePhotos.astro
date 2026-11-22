@@ -3,7 +3,8 @@
 // Hintergrund als Rahmung/Bühne“, die Galerie nicht als Zwei-Spalten-Element neben dem Text, auf dem Handy als Slider.
 // Ein Baustein für jeden Artikel (auch normale ohne Szene): ein Foto über die Artikelbreite oder eine Reihe aus zwei bis
 // vier Fotos; darunter schaut die Leuchtpunkt-Unterlage (DotField) hervor. Schmal wird die Reihe zum Wisch-Slider mit
-// den Pfeilen der Seite (SliderNav). Echte <img> mit Breite, Höhe und Alternativtext, ab dem zweiten Bild lazy.
+// den Pfeilen der Seite (SliderNav, seit 22.11. rechts und links auf den Bildern, damit die Bildunterschrift direkt unter dem
+// Bild steht). Echte <img> mit Breite, Höhe und Alternativtext, ab dem zweiten Bild lazy.
 import DotField from '../DotField.astro';
 import SliderNav from '../SliderNav.astro';
 type Photo = { src: string; width: number; height: number; alt: string };
@@ -19,7 +20,7 @@ const row = photos.length > 1;
         <img src={p.src} width={p.width} height={p.height} alt={p.alt} loading="lazy" decoding="async" style={`aspect-ratio: ${p.width} / ${p.height}`} />
       </div>)}
     </div>
-    {row && <SliderNav class="ap-nav" />}
+    {row && <SliderNav class="ap-nav on-media" />}
   </div>
   {caption && <figcaption>{caption}</figcaption>}
 </figure>
@@ -38,6 +39,6 @@ const row = photos.length > 1;
     .ap-row .ap-track { grid-auto-columns: 78%; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; }
     .ap-row .ap-track::-webkit-scrollbar { display: none; }
     .ap-row .ap-item { scroll-snap-align: start; }
-    .ap-row :global(.ap-nav) { display: flex; margin-top: var(--space-3); }
+    .ap-row :global(.ap-nav:not([hidden])) { display: flex; }
   }
 </style>

@@ -1,10 +1,9 @@
 ---
 authorId: florian-becker
-title: How do you programme a drone show?
-description: "How a drone show is programmed: show drones, choreography software, flight paths, simulations
-  and tests before the live show."
+title: "How do you programme a drone show? Here is how we do it"
+description: "How we programme a drone show: your idea, flight paths, music and light, simulation and the countdown on the show evening."
 date: "2025-06-12T00:00:00.000Z"
-updated: "2026-09-18T00:00:00.000Z"
+updated: "2026-11-22T00:00:00.000Z"
 tags:
   - Drohnenshow
   - Programmierung
@@ -14,92 +13,81 @@ cover:
   width: 1680
   height: 1120
 draft: false
-translationSourceHash: a9cb9784d8d7ff2f6aa88248cd4c3947aef7edbb3c5559ec0422331ed87562ac
+translationSourceHash: 9dd9bb8a10c1cd775e2660a945efc12fe3d85fc84ed2282de75e84d36392d264
 translationContractVersion: 2
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: en
-  sourceFingerprint: a9cb9784d8d7ff2f6aa88248cd4c3947aef7edbb3c5559ec0422331ed87562ac
+  sourceFingerprint: 9dd9bb8a10c1cd775e2660a945efc12fe3d85fc84ed2282de75e84d36392d264
   legacy:
     provenanceFile: docs/i18n/content-provenance.json
     migration: I01-v2-2026-11-04
   fields:
     - address: /body
-      sourceFingerprint: c79ec3ff088d883dc33e6dc5979080142566bcfd106b4c761dd70a2b8d421fc9
-      targetFingerprint: 61060236dc74c707ae80aeaf9b9d11aa3a76ce11b0bd8eb931b48924c3bfbcde
+      sourceFingerprint: 022ade5eb472c291851ed773ff9ade8ed37ca409c29385b3ab60dffbfcf63a3e
+      targetFingerprint: 7afacd1245aba75a16460d44346ddbaa7b84803815476e36c4ad91507eea755d
       status: adopted-existing
     - address: /cover/alt
       sourceFingerprint: debf6f3890f470655260d1c585061012aab399099fdb5f2a21f10d398a9ba7e0
       targetFingerprint: 66de5e7d066e16815d3df572eba7d85a358df7d066b6773e2777d10a15bfecfa
       status: adopted-existing
     - address: /description
-      sourceFingerprint: 38d43f2fc28bccd663971bca98a13a681d2dfde58118b59adb61d6e422e423ee
-      targetFingerprint: e68c49e2535f793b23ce32ffba3751a221b2205c2d10e87fb30e4991603f2e3b
+      sourceFingerprint: ec73ddf113c81d097787533321cbb94cac55eb0747a126404baa1f4214dba455
+      targetFingerprint: adda4b0661abae996e0a457f658f0ccce9274472eb9f68b8526d76e5686d1c4a
       status: adopted-existing
     - address: /title
-      sourceFingerprint: c153a5e4fc5aec4040559ab0c9340446275f8cd711bc424059596bf39240faa0
-      targetFingerprint: e330e7c53c81817c6f6ec6917a2e432f4ac6642bbe0de725d28e2c1d9e111254
+      sourceFingerprint: 1b4fdd2bc73c1bbd4c5f94bcf1174c0656341a727461852a1cf64e5351b0e1e2
+      targetFingerprint: 591cd345a77ddf026d96bb52bb3ac25bd8ebc4b5ea734242e61a47fdb0ae5b4f
       status: adopted-existing
 ---
-At city festivals, company anniversaries and music festivals, drone shows draw audiences around the world. Illuminated drones rise into the sky and form logos, hearts and moving animations. How is a show like this made? What technology is involved, and how does drone programming work?
 
-This article explains how a drone show is programmed, from the initial idea to a formation flying in sync.
+At a show, hundreds of drones draw a logo, a line of lettering or a whole story across the sky. For each of them to light up in the right place at the right moment, we programme every drone individually beforehand.
 
-![A man holds a drone beside a laptop while a woman stands next to him with a tablet.](https://flyingstars.art/wp-content/uploads/2025/05/drohnenprogrammierung-1-1024x683.jpg)
+We are FlyingStars, and we have been flying drone shows since 2021, more than 150 so far. Here we show you what we work with and how your show takes shape with us. For more on how a single drone works within the swarm, read [How does a drone show work?](/en/blog/2025-01-14-wie-funktioniert-drohnenshow-drohne/)
 
-## What is drone programming?
+## What does "programming" mean for us?
 
-Drone programming is the technical basis of every drone show. It covers the **precise planning, synchronisation and execution** of an entire performance, usually involving dozens or hundreds of drones, as well as the control of individual aircraft.
+Every drone gets its own flight path from us. Our show software fixes it in advance to the centimetre, along with its timing and light sequence. Nobody flies the drones by remote control during the show, and there is no real-time steering. Each drone flies exactly what we planned beforehand.
 
-A show drone follows a **predefined GPS-based flight path**, rather than being flown with a remote control. These paths are programmed and simulated on a computer in advance, then transferred to each drone.
+We do this planning ourselves. Alejandro from our design team turns your story into a choreography in 2D and 3D, and Patrick puts the fleet together and looks after the technical side. We don't bring in outside contractors for any of it.
 
-## The main building blocks of a drone show
+## What we work with
 
-### 1. Dedicated show drones
+Out on the show site, two things matter: our drones and the ground station.
 
-[Show drones](/en/blog/2025-03-31-drohnen-feuerwerk-als-alternative/) are **smaller and lighter** than conventional camera drones. They have bright LEDs and are designed to fly in sync. They usually have **GPS, an altimeter and a gyroscope**, and some also use RTK, or Real Time Kinematics, for very precise positioning.
+### Our show drone
 
-### 2. Planning and choreography software
+Each of our drones weighs only around 300 grams. The LED sits on top and becomes a point of light in the sky. GPS and a gyroscope keep the drone on its path and in balance. They carry no cameras, and their power comes from two ordinary AA rechargeable batteries, which we can swap individually, just like the motors and rotors.
 
-Software such as **[DroneShowSoftware](https://www.droneshowsoftware.com/)**, **Blender** with suitable plugins, or manufacturer solutions from **Verity** or Intel is used to design every flight movement.
+### The ground station
 
-Each drone receives its own route, timing and lighting sequence. The challenge is to avoid collisions, create smooth transitions and readable shapes, all coordinated with music and lighting.
+Before take-off, all the drones stand in a grid on the ground. From the ground station we load the show onto every single one, give the start signal and keep an eye on the whole swarm. Each drone flies its path on its own. A digital fence, the geofence, keeps them inside the show area. If a drone has a problem, it usually flies back automatically. In an emergency it lands in the safety zone, where nobody is standing.
 
-### 3. Simulation and tests
+## How your show comes together
 
-Before flying outdoors, everything is simulated on a computer. Data from the drone hardware is assessed to check the reliability of the show. Wind, flight speed and starting positions are checked before testing can begin.
+Your show comes together in five steps, and you can be as involved as you like.
 
-### 4. Communication and safety systems
+### Idea and motif
 
-A **central ground station** communicates with the whole drone fleet. A stable connection to every aircraft is essential. The station supervises the show and intervenes when needed, for example if GPS fails or a collision is threatened.
+We start by talking with you about the occasion and what you want to see in the sky. Together we develop the storyline, motifs and music. Our design team then builds the motifs as 3D models, for example a star, your logo or a piece of lettering.
 
-## A possible programming process
+### From motif to flight path
 
-### 1. The idea and 3D design
+Each drone is one point of light. A single letter needs around 10 to 13 of them, a detailed logo more like 100 to 200. We assign the points of a motif to the drones and set each one's route from the take-off grid to its place, and on from there to the next image. The result is a rough animation from take-off to landing, still without any colour.
 
-It starts with a concept: a company logo in the sky, a dancer or an animated story in several scenes. These motifs are usually designed in **3D software**.
+### Music and light
 
-### 2. Flight paths and lighting
+We cut the music along this rough animation, using royalty-free tracks or the music you choose. The music edit is included in the package. Finally, we place colours and light effects on the accents in the music, so flight path, timing and light all run on the same timeline.
 
-The 3D models are converted into individual points, each represented by a drone. Every movement needs a **flight path**, and every lighting cue needs a **time assignment**. This is where the programming takes shape.
+### Simulation and wind
 
-### 3. Computer simulation
+Before the show goes onto the drones, we play it through completely in our software. We check the distances between the drones, and if two paths come too close, we change them. Outdoors, the formation also has to cope with wind. Our drones hold their shape up to Beaufort force 5 and in light drizzle.
 
-Planning software simulates flight paths in real time. This reveals close encounters and jerky movements. Changes are easier to make at this stage than out in the field.
+### The show evening
 
-### 4. Upload and field tests
+On the day, we start setting up around three and a half hours before the show. We keep the safety area of roughly 100 × 100 metres clear of anyone not involved while the show runs, and shortly before it we check GPS reception, weather and no-fly zones. Then we give your DJ or sound crew the countdown by radio or phone. At zero, someone presses "Play" and the drones lift off.
 
-Once simulations pass, the final code is **loaded onto the drones**. Test flights under real conditions are used to refine the remaining details.
+## Your show with FlyingStars
 
-### 5. The live show
-
-Final safety checks before the event cover **GPS signal strength, weather and no-fly zones**. During the show, the ground station supervises the sequence while each drone autonomously follows its path.
-
-## Drone shows by FlyingStars
-
-We specialise in **drone light shows**, combining technology and creative concepts for sporting events, large city festivals, corporate events and private celebrations.
-
-Explore our [prices](/en/drohnenshow-preise/) and enquire about a show.
-
-![FlyingStars logo in black, purple and turquoise](https://flyingstars.art/wp-content/uploads/2025/02/was-kostet-eine-drohne-flyingstars-logo-1024x499.jpg)
+A show with us usually lasts around 13 minutes, and up to 25 are possible. You can see how many drones your motifs need and what that costs on our [prices page](/en/drohnenshow-preise/). Or [tell us about your idea](/en/kontakt/) directly, and we will reply within 48 hours.

@@ -1,10 +1,9 @@
 ---
 authorId: florian-becker
-title: Hoe wordt een droneshow geprogrammeerd?
-description: "Hoe een droneshow wordt geprogrammeerd: showdrones, choreografiesoftware, vliegroutes,
-  simulaties en tests vóór de live-show."
+title: "Hoe programmeer je een droneshow? Zo doen wij het"
+description: "Hoe wij een droneshow programmeren: jullie idee, vliegroutes, muziek en licht, simulatie en het aftellen op de showavond."
 date: "2025-06-12T00:00:00.000Z"
-updated: "2026-09-18T00:00:00.000Z"
+updated: "2026-11-22T00:00:00.000Z"
 tags:
   - Drohnenshow
   - Programmierung
@@ -14,92 +13,81 @@ cover:
   width: 1680
   height: 1120
 draft: false
-translationSourceHash: a9cb9784d8d7ff2f6aa88248cd4c3947aef7edbb3c5559ec0422331ed87562ac
+translationSourceHash: 9dd9bb8a10c1cd775e2660a945efc12fe3d85fc84ed2282de75e84d36392d264
 translationContractVersion: 2
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: nl
-  sourceFingerprint: a9cb9784d8d7ff2f6aa88248cd4c3947aef7edbb3c5559ec0422331ed87562ac
+  sourceFingerprint: 9dd9bb8a10c1cd775e2660a945efc12fe3d85fc84ed2282de75e84d36392d264
   legacy:
     provenanceFile: docs/i18n/content-provenance.json
     migration: I01-v2-2026-11-04
   fields:
     - address: /body
-      sourceFingerprint: c79ec3ff088d883dc33e6dc5979080142566bcfd106b4c761dd70a2b8d421fc9
-      targetFingerprint: 5bd6874288ccbf61d4dcd718321b42b6dca64bfa02d969b8477d634155c97f75
+      sourceFingerprint: 022ade5eb472c291851ed773ff9ade8ed37ca409c29385b3ab60dffbfcf63a3e
+      targetFingerprint: d14ea9d850fd591fb86e40d227a2868ced9867880f208d22acf99d917b26718e
       status: adopted-existing
     - address: /cover/alt
       sourceFingerprint: debf6f3890f470655260d1c585061012aab399099fdb5f2a21f10d398a9ba7e0
       targetFingerprint: 825076cde2c3d53eda1db68a418f0a6a2dbfbcb7e27e97abae8064d198df860c
       status: adopted-existing
     - address: /description
-      sourceFingerprint: 38d43f2fc28bccd663971bca98a13a681d2dfde58118b59adb61d6e422e423ee
-      targetFingerprint: 85c7f9bccc557c207702ce9847ad2f9c4a74e5c76ac9bbbe85926e58f0ac7d08
+      sourceFingerprint: ec73ddf113c81d097787533321cbb94cac55eb0747a126404baa1f4214dba455
+      targetFingerprint: 387de8251713f43e653a2bd220a4f9b4929fc10945aa5b41dabb13ee6627d416
       status: adopted-existing
     - address: /title
-      sourceFingerprint: c153a5e4fc5aec4040559ab0c9340446275f8cd711bc424059596bf39240faa0
-      targetFingerprint: f6477758c432119c723f1e897aa2fecea662186e5b91ecb342ebfec3d18ef6fd
+      sourceFingerprint: 1b4fdd2bc73c1bbd4c5f94bcf1174c0656341a727461852a1cf64e5351b0e1e2
+      targetFingerprint: 4247bd1bd7a008327df4c1690dd36ff639639b7f5c65f9c6eba28297b46b136e
       status: adopted-existing
 ---
-Op stadsfeesten, bedrijfsjubilea en muziekfestivals trekken droneshows wereldwijd publiek. Lichtgevende drones stijgen op en vormen logo's, harten en bewegende animaties. Maar hoe ontstaat zo'n show? Welke techniek zit erachter en hoe werkt het programmeren van drones?
 
-In dit artikel leggen we uit hoe een droneshow wordt geprogrammeerd, van het eerste idee tot een synchroon vliegende formatie.
+Bij een show tekenen honderden drones een logo, een tekst of een heel verhaal aan de hemel. Zodat elke drone op het juiste moment op de juiste plek oplicht, programmeren we ze vooraf allemaal afzonderlijk.
 
-![Een man houdt een drone naast een laptop, terwijl een vrouw met een tablet ernaast staat.](https://flyingstars.art/wp-content/uploads/2025/05/drohnenprogrammierung-1-1024x683.jpg)
+Wij zijn FlyingStars en vliegen sinds 2021 droneshows, inmiddels meer dan 150. Hier laten we jullie zien waarmee we werken en hoe jullie show bij ons ontstaat. Hoe één drone in de zwerm werkt, lezen jullie uitgebreider in [Hoe werkt een droneshow?](/nl/blog/2025-01-14-wie-funktioniert-drohnenshow-drohne/)
 
-## Wat is droneprogrammering?
+## Wat betekent “programmeren” bij ons?
 
-Droneprogrammering is de technische basis van elke droneshow. Het omvat de **nauwkeurige planning, synchronisatie en uitvoering** van een complete voorstelling, meestal met tientallen tot honderden drones, naast de besturing van afzonderlijke toestellen.
+Elke drone krijgt van ons een eigen vliegroute. Onze showsoftware legt die vooraf tot op de centimeter vast, samen met de timing en de lichtvolgorde. Tijdens de show bestuurt niemand de drones met een afstandsbediening, en sturing in realtime is er niet. Elke drone vliegt precies wat we vooraf hebben gepland.
 
-Een showdrone volgt een **vooraf bepaalde, GPS-gebaseerde vliegroute** en wordt niet met een afstandsbediening gevlogen. Die routes worden vooraf op de computer geprogrammeerd en gesimuleerd en daarna naar elke drone gestuurd.
+Die planning doen we zelf. Alejandro uit ons designteam maakt van jullie verhaal een choreografie in 2D en 3D, en Patrick stelt de vloot samen en zorgt voor het technische verloop. Externe dienstverleners halen we daar niet bij.
 
-## De belangrijkste bouwstenen van een droneshow
+## Waarmee we werken
 
-### 1. Speciale showdrones
+Op het showterrein draait het om twee dingen: onze drones en het grondstation.
 
-[Showdrones](/nl/blog/2025-03-31-drohnen-feuerwerk-als-alternative/) zijn **kleiner en lichter** dan gewone cameradrones. Ze hebben felle leds en zijn ontworpen om synchroon te vliegen. Meestal hebben ze **GPS, een hoogtemeter en een gyroscoop**, soms ook RTK, of Real Time Kinematics, voor zeer nauwkeurige positionering.
+### Onze showdrone
 
-### 2. Plannings- en choreografiesoftware
+Elk van onze drones weegt maar zo'n 300 gram. Bovenop zit de led die aan de hemel een lichtpunt wordt. GPS en een gyroscoop houden de drone op koers en in balans. Camera's hebben ze niet, en hun stroom komt uit twee gewone oplaadbare AA-batterijen, die we net als de motoren en rotoren los kunnen vervangen.
 
-Met software zoals **[DroneShowSoftware](https://www.droneshowsoftware.com/)**, **Blender** met geschikte plug-ins of oplossingen van fabrikanten zoals **Verity** of Intel wordt elke vliegbeweging ontworpen.
+### Het grondstation
 
-Elke drone krijgt een eigen route, timing en lichtsequentie. De uitdaging is botsingen te vermijden en soepele overgangen en herkenbare vormen te maken, afgestemd op muziek en licht.
+Voor de start staan alle drones in een raster op de grond. Vanaf het grondstation zetten we de show op elke drone afzonderlijk, geven we het startsein en houden we de hele zwerm in de gaten. Zijn route vliegt elke drone zelf. Een digitaal hek, de geofence, houdt ze binnen het showgebied. Heeft een drone een probleem, dan vliegt hij meestal automatisch terug of landt hij in noodgevallen in de veiligheidszone, waar niemand staat.
 
-### 3. Simulatie en tests
+## Hoe jullie show ontstaat
 
-Voordat er buiten wordt gevlogen, wordt alles op de computer gesimuleerd. Gegevens van de dronehardware worden beoordeeld om de betrouwbaarheid van de show te controleren. Wind, vliegsnelheid en startposities worden gecontroleerd voordat er getest mag worden.
+Jullie show ontstaat bij ons in vijf stappen, en jullie zijn er zo veel bij betrokken als jullie willen.
 
-### 4. Communicatie- en veiligheidssystemen
+### Idee en motief
 
-Een **centraal grondstation** communiceert met de hele dronevloot. Een stabiele verbinding met elk toestel is nodig. Het station bewaakt de uitvoering en grijpt zo nodig in, bijvoorbeeld bij GPS-uitval of een dreigende botsing.
+We beginnen met een gesprek over de aanleiding en over wat er aan de hemel te zien moet zijn. Samen ontwikkelen we de verhaallijn, de motieven en de muziek. Ons designteam bouwt de motieven daarna als 3D-modellen, bijvoorbeeld een ster, jullie logo of een tekst.
 
-## Een mogelijk programmeerproces
+### Van motief naar vliegroute
 
-### 1. Het idee en het 3D-ontwerp
+Elke drone is één lichtpunt. Voor een letter hebben we zo'n 10 tot 13 drones nodig, voor een gedetailleerd logo eerder 100 tot 200. We verdelen de punten van een motief over de drones en leggen voor elke drone de weg vast van het startraster naar zijn plek, en van daar verder naar het volgende beeld. Zo ontstaat een ruwe animatie van start tot landing, nog helemaal zonder kleur.
 
-Het begint met een concept: een bedrijfslogo aan de hemel, een danser of een geanimeerd verhaal in meerdere scènes. Deze beelden worden meestal in **3D-software** ontworpen.
+### Muziek en licht
 
-### 2. Vliegroutes en lichtontwerp
+Langs deze ruwe animatie monteren we de muziek, met rechtenvrije nummers of jullie eigen muziekkeuze. De muziekmontage zit in het pakket. Als laatste zetten we kleuren en lichteffecten op de accenten in de muziek, zodat vliegroute, timing en licht op dezelfde tijdlijn lopen.
 
-De 3D-modellen worden omgezet in losse punten, elk vertegenwoordigd door een drone. Elke beweging heeft een **vliegroute** nodig en elk lichtsignaal een **tijdstip**. Hier krijgt de programmering vorm.
+### Simulatie en wind
 
-### 3. Simulatie op de computer
+Voordat de show op de drones gaat, spelen we hem in onze software volledig af. We controleren de afstanden tussen de drones, en komen twee routes te dicht bij elkaar, dan passen we ze aan. Buiten moet de formatie ook tegen wind kunnen. Onze drones blijven stabiel in formatie tot windkracht 5 en ook bij lichte motregen.
 
-De planningssoftware simuleert vliegroutes in realtime. Zo worden te kleine afstanden en schokkerige bewegingen zichtbaar. Aanpassingen zijn in deze fase eenvoudiger dan op het veld.
+### De showavond
 
-### 4. Uploaden en veldtests
+Op de dag zelf beginnen we zo'n drieënhalf uur voor de show met de opbouw. Het veiligheidsgebied van ongeveer 100 × 100 meter houden we tijdens de show vrij van onbevoegden, en kort ervoor controleren we de GPS-ontvangst, het weer en de vliegverbodzones. Dan geven we jullie dj of technici via portofoon of telefoon het aftellen door. Bij nul drukt iemand op “Play” en stijgen de drones op.
 
-Na geslaagde simulaties wordt de definitieve code **op de drones geladen**. Tijdens testvluchten onder echte omstandigheden worden de laatste details verfijnd.
+## Jullie show met FlyingStars
 
-### 5. De live-show
-
-Vóór het evenement volgen de laatste veiligheidscontroles van **GPS-signaalsterkte, weer en vliegverbodzones**. Tijdens de show bewaakt het grondstation het verloop, terwijl elke drone zelfstandig zijn route volgt.
-
-## Droneshows van FlyingStars
-
-We zijn gespecialiseerd in **drone-lichtshows** en combineren techniek met creatieve concepten voor sportevenementen, grote stadsfeesten, bedrijfsevenementen en privéfeesten.
-
-Bekijk onze [prijzen](/nl/drohnenshow-preise/) en vraag een show aan.
-
-![FlyingStars-logo in zwart, paars en turquoise](https://flyingstars.art/wp-content/uploads/2025/02/was-kostet-eine-drohne-flyingstars-logo-1024x499.jpg)
+Een show duurt bij ons meestal zo'n 13 minuten, tot 25 minuten is mogelijk. Hoeveel drones jullie motieven nodig hebben en wat dat kost, zien jullie op onze [prijzenpagina](/nl/drohnenshow-preise/). Of [vertel ons meteen over jullie idee](/nl/kontakt/), we antwoorden binnen 48 uur.

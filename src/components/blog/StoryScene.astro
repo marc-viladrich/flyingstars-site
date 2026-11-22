@@ -446,7 +446,9 @@ const list = (v?: number[]) => (v?.length ? v.join(' ') : undefined);
 
   /* Text: lesbare Spalte unter der Bühne, ohne Balken; jeder Schritt hat Luft, damit die Szene dem Lesen folgt */
   .ss-text { padding-top: var(--space-10); padding-bottom: 28svh; }
-  .ss-step { padding-bottom: clamp(var(--space-12), 16svh, 9rem); }
+  /* Einspaltig (Szene oben) folgt die Szene dem Lesen auch ohne Leerraum zwischen den Schritten; viel Luft brauchen nur die
+     zwei Spalten, wo die Szene neben dem Text klebt (unten). Marc, 22.11.2026: Abstände am Handy viel zu groß. */
+  .ss-step { padding-bottom: clamp(var(--space-8), 5svh, var(--space-12)); }
   .ss-step > :global(:first-child), .ss-chapter > :global(:first-child) { margin-top: 0; }
   .ss-text > :global(* + *) { margin-top: 0; }
   .ss-step > :global(* + *) { margin-top: 1.1em; }

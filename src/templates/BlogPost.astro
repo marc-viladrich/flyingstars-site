@@ -113,6 +113,10 @@ const jsonLd = JSON.stringify({
   .post :global(.post-body h2) { font-size: clamp(1.625rem, 2.4vw, 2.125rem); line-height: 1.12; margin-top: 1.6em; }
   .post :global(.post-body h3) { font-size: clamp(1.25rem, 1.7vw, 1.4375rem); line-height: 1.25; margin-top: 1.6em; }
   .post :global(.post-body :is(h2, h3) + *) { margin-top: 0.6em; }
+  /* Ein Zwischentitel am Anfang eines Blocks (Cornerstone: Textblock, Szenenschritt, Kapitel) bringt keinen eigenen Abstand mit;
+     den Abstand hält der Block. Sonst addieren sich Blockabstand und Titelabstand (Marc, 22.11.2026: „die Abstände zwischen
+     Subheadings sind viel zu groß“, gemessen am iPhone: 82 px vor jedem Zwischentitel, bis 167 px zwischen Szenenschritten). */
+  .post :global(.post-body :is(h2, h3):first-child) { margin-top: 0; }
   .post :global(.post-body strong) { color: var(--head); font-weight: 600; }
   .post :global(.post-body a) { color: var(--accent); border-bottom: 1px solid var(--accent-line); transition: border-color var(--dur-control), color var(--dur-control); }
   .post :global(.post-body a:hover) { color: var(--amber-light); border-color: var(--accent); }
