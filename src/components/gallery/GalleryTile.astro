@@ -11,7 +11,7 @@ const sizes = '(min-width: 68.8125em) min(19vw, 23rem), 31vw';
 <Tag class="g-tile" href={href} style={style}>
   <div class="g-media" data-curtain>
     <picture>
-      <source type="image/avif" srcset={avif} sizes={sizes} />
+      {avif && <source type="image/avif" srcset={avif} sizes={sizes} />}
       <source type="image/webp" srcset={webp} sizes={sizes} />
       <img src={src} alt={alt} width={width} height={height} loading="lazy" decoding="async" />
     </picture>

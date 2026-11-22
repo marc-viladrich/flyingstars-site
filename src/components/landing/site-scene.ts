@@ -4,9 +4,10 @@
 // besteht aus übereinander gestaffelten Ebenen (Explosionsansicht). Jede Ebene ist eine SVG-Gruppe mit eigenem
 // Versatz; beim Eintritt fahren die Ebenen aus der zusammengeschobenen Lage auseinander, danach heben die Drohnen als
 // Raster ab und formen das Motiv. Die Szene ist schematisch, Maße stehen als Content in den Popovern.
+// Kamera und Zeichenhelfer sind exportiert (Runde 15): die Scroll-Szene der Blogartikel (blog/story-scene.ts) nutzt dieselbe Projektion.
 
-type V3 = [number, number, number];
-type P2 = [number, number];
+export type V3 = [number, number, number];
+export type P2 = [number, number];
 export type Item =
   | { t: 'path'; d: string; cls: string }
   | { t: 'circle'; cx: number; cy: number; r: number; cls: string };
@@ -21,14 +22,14 @@ export type Person = { s: P2; h: P2; items: Item[]; k: number };
 export type Crowd = { layer: string; hop: number; people: Person[] };
 export type Scene = { vb: [number, number, number, number]; layers: Layer[]; drones: Drone[]; spots: Spot[]; labels: Label[]; gridZone: string; crowd: Crowd };
 
-const r1 = (n: number) => Math.round(n * 10) / 10;
+export const r1 = (n: number) => Math.round(n * 10) / 10;
 const sub = (a: V3, b: V3): V3 => [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
 const dot = (a: V3, b: V3) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
 const cross = (a: V3, b: V3): V3 => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
 const norm = (a: V3): V3 => { const l = Math.hypot(...a); return [a[0] / l, a[1] / l, a[2] / l]; };
 
 /** Kamera: Azimut (Grad, negativ = von links), Höhenwinkel, Abstand. Liefert Projektion in Bildkoordinaten (y nach unten). */
-function camera(target: V3, az: number, el: number, dist: number) {
+export function camera(target: V3, az: number, el: number, dist: number) {
   const a = az * Math.PI / 180, e = el * Math.PI / 180;
   const eye: V3 = [target[0] + dist * Math.sin(a) * Math.cos(e), target[1] - dist * Math.cos(a) * Math.cos(e), target[2] + dist * Math.sin(e)];
   const f = norm(sub(target, eye)), r = norm(cross(f, [0, 0, 1])), u = cross(r, f);
@@ -40,10 +41,10 @@ function camera(target: V3, az: number, el: number, dist: number) {
   return { P, depth, fit };
 }
 
-const poly = (pts: P2[]) => 'M' + pts.map((p) => `${r1(p[0])} ${r1(p[1])}`).join('L') + 'Z';
-const line = (pts: P2[]) => 'M' + pts.map((p) => `${r1(p[0])} ${r1(p[1])}`).join('L');
+export const poly = (pts: P2[]) => 'M' + pts.map((p) => `${r1(p[0])} ${r1(p[1])}`).join('L') + 'Z';
+export const line = (pts: P2[]) => 'M' + pts.map((p) => `${r1(p[0])} ${r1(p[1])}`).join('L');
 /** Rechteck in der Ebene z (x0..x1, y0..y1) */
-const rectZ = (x0: number, y0: number, x1: number, y1: number, z: number): V3[] => [[x0, y0, z], [x1, y0, z], [x1, y1, z], [x0, y1, z]];
+export const rectZ = (x0: number, y0: number, x1: number, y1: number, z: number): V3[] => [[x0, y0, z], [x1, y0, z], [x1, y1, z], [x0, y1, z]];
 /** Abgerundetes Vieleck in der Ebene z: Ecken als Bögen aus 4 Zwischenpunkten (für die weichen Zonen draußen) */
 function roundedZ(pts: number[][], rad: number, z: number): V3[] {
   const out: V3[] = [];
@@ -68,14 +69,14 @@ function heart(n: number, cx: number, y: number, cz: number, w: number, h: numbe
 }
 
 /** Drohnen den Motivpunkten zuordnen: beide Mengen nach x sortiert, damit sich Bahnen kaum kreuzen */
-function pair(start: V3[], motif: V3[]) {
+export function pair(start: V3[], motif: V3[]) {
   const s = start.map((p, i) => ({ p, i })).sort((a, b) => a.p[0] - b.p[0] || a.p[1] - b.p[1]);
   const m = [...motif].sort((a, b) => a[0] - b[0] || b[2] - a[2]);
   return s.map(({ p }, k) => ({ start: p, motif: m[k] }));
 }
 
 /** Wiederholbarer Zufall, damit Build und Screenshots stabil bleiben */
-function random(seed: number) { return () => { seed = (seed + 0x6d2b79f5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+export function random(seed: number) { return () => { seed = (seed + 0x6d2b79f5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
 const inside = (p: P2, poly2: P2[]) => { let c = false; for (let i = 0, j = poly2.length - 1; i < poly2.length; j = i++) { const [xi, yi] = poly2[i], [xj, yj] = poly2[j]; if ((yi > p[1]) !== (yj > p[1]) && p[0] < (xj - xi) * (p[1] - yi) / (yj - yi) + xi) c = !c; } return c; };
 /** Streupositionen: Kandidaten im Gelände, die weder auf Sperrflächen liegen noch im Bild von höheren Ebenen verdeckt sind */
 function scatter(n: number, seed: number, area: { x0: number; x1: number; y0: number; y1: number }, blocked: (q: V3) => boolean, toScreen: (q: V3) => P2, covered: P2[][]) {
@@ -222,7 +223,8 @@ export function indoorScene(o: { colors: string[]; vertical: string; horizontal:
 }
 
 /** Draußen: Lageplan als Grund (Häuser, Park, Straße), darüber die Zonen als gestaffelte Platten, Drohnenlinie am Himmel. */
-export function outdoorScene(o: { colors: string[]; horizontal: string; detail: string }): Scene {
+/** motif (additiv, Labor Blogbilder 21.11.2026): 'heart' formt am Himmel ein Herz statt der Drohnenlinie; ohne Angabe wie bisher. */
+export function outdoorScene(o: { colors: string[]; horizontal: string; detail: string; motif?: 'line' | 'heart' }): Scene {
   const cam = camera([0, -4, 8], -36, 29, 560);
   // Lageplan-Koordinaten der bisherigen Draufsicht (0–400) in Meter umgerechnet: 0,5 m je Einheit, Mitte bei (204, 172)
   const W = (pts: number[][]) => pts.map(([x, y]) => [(x - 204) * 0.5, (172 - y) * 0.5]);
@@ -283,7 +285,8 @@ export function outdoorScene(o: { colors: string[]; horizontal: string; detail: 
   const seeds: V3[] = Array.from({ length: 21 }, (_, i) => [sp.x0 + 2.4 + (i % 7) * 2.5, sp.y0 + 1.8 + Math.floor(i / 7) * 2.4, 0]);
   const start: ZoneGroup = { zone: 'start', items: [...plate([[sp.x0, sp.y0], [sp.x1, sp.y0], [sp.x1, sp.y1], [sp.x0, sp.y1]], 2, S[3], 'pad', 2)] };
   const line60 = Array.from({ length: 21 }, (_, i): V3 => { const u = i / 20; return [-30 + u * 60, 2, 22 + Math.sin(u * Math.PI) * 7]; });
-  const drones: Drone[] = pair(seeds, line60).map(({ start: s, motif: m }, k) => ({
+  const sky = o.motif === 'heart' ? heart(seeds.length, 0, 2, 25, 46, 24, -24) : line60;
+  const drones: Drone[] = pair(seeds, sky).map(({ start: s, motif: m }, k) => ({
     g: P([s[0], s[1], 0.6], S[3]), l: P([s[0], s[1], 14], S[3]), m: P(m, S[3]),
     c: o.colors[Math.round((m[0] + 30) / 60 * (o.colors.length - 1))], k,
   })).map((d) => ({ ...d, g: [r1(d.g[0]), r1(d.g[1])] as P2, l: [r1(d.l[0]), r1(d.l[1])] as P2, m: [r1(d.m[0]), r1(d.m[1])] as P2 }));

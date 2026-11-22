@@ -1,5 +1,5 @@
 ---
-import {body,field} from 'astro-frontend-editor/markers';
+import {body,field,editorBuild} from 'astro-frontend-editor/markers';
 import { localizedCollection } from '../i18n/content';
 import { forPath } from '../i18n/server';
 const { t, localHref, formatLocale } = forPath(Astro.url.pathname);
@@ -15,16 +15,52 @@ import PostGrid from '../components/blog/PostGrid.astro';
 import SectionHead from '../components/SectionHead.astro';
 import { optimizedImage } from '../lib/media';
 import { authorOf, dateOf, readingMinutes, topicOf, sortPosts } from '../components/blog/post-meta';
-interface Props { post: CollectionEntry<'posts'>; }
-const { post } = Astro.props;
+// Optional (Labor Blogartikel, Runde 15, 21.11.2026): coverImage ersetzt das Titelbild (z. B. vorgerechnetes Lichtraster),
+// der Slot „body“ ersetzt den Artikelkörper, der Slot „after“ steht ganz am Ende (Labor-Notiz) (Artikel in Abschnitte geteilt, mit Grafiken in eigener Breite), noindex für
+// Labor-Seiten. Ohne diese Angaben wie bisher. Die Lesespalte gilt für jedes .post-body im Artikel, auch aus dem Slot.
+// Cornerstone-Artikel (Runde 15, 22.11.2026; components/blog/cornerstone/): registrierte Artikel bekommen Titelbild im
+// Lichtraster, Fotos, Scroll-Szene und Logo-Formation, der Text kommt unverändert aus der Collection. Rückfall auf das normale
+// Format, wenn die Anordnung nicht (mehr) zum Text passt (Meldung im Build) und im Editor-Build: dort bleibt der Artikeltext
+// wie bisher direkt im Text bearbeitbar (body-Marker), die Szene wäre beim Bearbeiten nur im Weg.
+import Cornerstone from '../components/blog/Cornerstone.astro';
+import { cornerstoneOf } from '../components/blog/cornerstone';
+import { splitSections, checkPlan, type CornerstoneBlock } from '../components/blog/cornerstone/types';
+import type { Story } from '../components/blog/story-scene';
+interface Props { post: CollectionEntry<'posts'>; coverImage?: { src: string; width: number; height: number; alt: string }; noindex?: boolean }
+const { post, coverImage, noindex = false } = Astro.props;
 const AUTHOR=authorOf(post);
 const { Content } = await render(post);
 const cover = post.data.cover ? await optimizedImage(post.data.cover.src, 1600) : undefined;
 const face = await optimizedImage(AUTHOR.image.src, 160);
 const more = sortPosts(await localizedCollection('posts', locale, p => !p.data.draft && p.id !== post.id)).slice(0, 3);
 const updated = post.data.updated && post.data.updated.valueOf() !== post.data.date.valueOf() ? new Intl.DateTimeFormat(formatLocale, { dateStyle: 'long' }).format(post.data.updated) : undefined;
+const article = editorBuild() || Astro.slots.has('body') ? undefined : cornerstoneOf(post);
+let plan: { sections: ReturnType<typeof splitSections>; stories: Map<CornerstoneBlock, Story> } | undefined;
+if (article) {
+  const sections = splitSections(post.rendered?.html ?? '', article.dropBodyImages);
+  const stories = new Map(article.blocks.flatMap((b) => (b.kind === 'story' ? [[b, b.scene()] as [CornerstoneBlock, Story]] : [])));
+  const problem = checkPlan(article, sections, stories);
+  if (problem) console.warn(`[cornerstone] ${post.id}: ${problem} – normales Blogformat`);
+  else plan = { sections, stories };
+}
+const cs = plan ? article : undefined;
+const coverAlt = cs ? t(`${cs.i18n}.${cs.cover.alt}`) : undefined;
+// Suche und Vorschauen (27-blog-bilder-2026-11-21/seo-interaktive-grafiken.md, Punkte 3 und 4): og:image und BlogPosting mit
+// absoluten Bild-URLs; Cornerstone-Artikel liefern ihr Titelbild in 16:9, 4:3 und 1:1
+const abs = (src: string) => new URL(src, Astro.site).href;
+const jsonLd = JSON.stringify({
+  '@context': 'https://schema.org', '@type': 'BlogPosting', headline: post.data.title, description: post.data.description,
+  inLanguage: locale, datePublished: post.data.date.toISOString(), dateModified: (post.data.updated ?? post.data.date).toISOString(),
+  author: { '@type': 'Person', name: AUTHOR.name }, publisher: { '@type': 'Organization', name: 'FlyingStars' },
+  mainEntityOfPage: new URL(Astro.url.pathname, Astro.site).href,
+  image: cs ? cs.cover.social.map((s) => abs(s.src)) : cover ? [abs(cover.src)] : undefined,
+}).replace(/</g, '\\u003c');
 ---
-<Base title={post.data.title} description={post.data.description} image={post.data.cover?.src} navSection="/blog/">
+<Base title={post.data.title} description={post.data.description} image={cs ? undefined : post.data.cover?.src} social={cs?.cover.social[0]} ogType="article" navSection="/blog/" noindex={noindex}>
+  <Fragment slot="head">
+    {!noindex && <meta name="robots" content="max-image-preview:large" />}
+    <script type="application/ld+json" set:html={jsonLd} />
+  </Fragment>
   <article class="section post" aria-labelledby="post-h">
     <header class="post-head">
       <a class="kicker mono post-back" href={localHref("/blog/")}><span aria-hidden="true">←</span> Blog · {topicOf(post)}</a>
@@ -35,8 +71,11 @@ const updated = post.data.updated && post.data.updated.valueOf() !== post.data.d
         <p class="when"><time datetime={post.data.date.toISOString()}>{dateOf(post)}</time> · {readingMinutes(post)} {t('postcard.minRead')}{updated && <> · {t('blog.updated', { date: updated })}</>}</p>
       </div>
     </header>
-    {cover && <figure class="post-cover" data-curtain><img src={cover.src} {...cover.attributes} width={cover.width} height={cover.height} alt={post.data.cover!.alt} loading="eager" decoding="async" fetchpriority="high" /></figure>}
-    <div class="post-body" {...body(post)}><Content /></div>
+    {cs ? <figure class="post-cover" data-curtain><picture><source srcset={cs.cover.avif} type="image/avif" /><img src={cs.cover.webp} width={cs.cover.width} height={cs.cover.height} alt={coverAlt} loading="eager" decoding="async" fetchpriority="high" /></picture></figure>
+      : coverImage ? <figure class="post-cover" data-curtain><img src={coverImage.src} width={coverImage.width} height={coverImage.height} alt={coverImage.alt} loading="eager" decoding="async" fetchpriority="high" /></figure>
+      : cover && <figure class="post-cover" data-curtain><img src={cover.src} {...cover.attributes} width={cover.width} height={cover.height} alt={post.data.cover!.alt} loading="eager" decoding="async" fetchpriority="high" /></figure>}
+    {cs && plan ? <Cornerstone article={cs} sections={plan.sections} stories={plan.stories} />
+      : Astro.slots.has('body') ? <slot name="body" /> : <div class="post-body" {...body(post)}><Content /></div>}
     <aside class="post-author" aria-label={t('blogpost.aboutTheAuthor')}>
       <img class="face" src={face.src} width={face.width} height={face.height} alt={AUTHOR.name} loading="lazy" decoding="async" />
       <p><b {...field({collection:"people",id:AUTHOR.id},["name"])}>{AUTHOR.name}</b> {t('blogpost.runsFlyingstarsTogetherWithRonjaDonsbachAndErwinWilmsHe')} <a class="link" href={localHref("/ueber-uns/#team")}>{t('blogpost.theTeam')} <span aria-hidden="true">→</span></a></p>
@@ -47,10 +86,11 @@ const updated = post.data.updated && post.data.updated.valueOf() !== post.data.d
     <SectionHead kicker={t('blogpost.readOn')} headline={t('blogpost.moreFromTheBlog')} id="more-h" />
     <PostGrid posts={more} level="h3" />
   </section>}
+  <slot name="after" />
 </Base>
 
 <style>
-  .post { --measure: 42rem; display: grid; justify-items: center; padding-bottom: 0; }
+  .post { --measure: 42rem; --feature-w: 76rem; display: grid; justify-items: center; padding-bottom: 0; }
   .post > * { width: 100%; }
   .post-head { max-width: var(--measure); display: grid; gap: var(--space-5-5); margin-bottom: clamp(var(--space-8), 4vw, var(--space-13)); }
   .post-head h1 { font-size: clamp(2.125rem, 4vw, 3.5rem); line-height: 1.04; }
@@ -64,25 +104,26 @@ const updated = post.data.updated && post.data.updated.valueOf() !== post.data.d
   .face { width: 3rem; height: 3rem; border-radius: var(--radius-round); object-fit: cover; }
 
   .post-cover { max-width: 64rem; margin: 0 0 clamp(var(--space-10), 5vw, var(--space-16)); aspect-ratio: 2 / 1; overflow: hidden; border-radius: var(--radius-16); background: var(--media-ground); --curtain-r: 1rem; }
+  .post-cover picture { display: contents; }
   .post-cover img { width: 100%; height: 100%; object-fit: cover; transition: transform var(--dur-reel) var(--ease-reveal); }
 
   /* Lesespalte: Fließtext in Inter, Zwischentitel in Space Grotesk, Links und Listenpunkte in Orange */
-  .post-body { max-width: var(--measure); font-size: var(--text-md); line-height: 1.72; color: #c9bfb0; }
-  .post-body > :global(* + *) { margin-top: 1.1em; }
-  .post-body :global(h2) { font-size: clamp(1.625rem, 2.4vw, 2.125rem); line-height: 1.12; margin-top: 1.6em; }
-  .post-body :global(h3) { font-size: clamp(1.25rem, 1.7vw, 1.4375rem); line-height: 1.25; margin-top: 1.6em; }
-  .post-body :global(:is(h2, h3) + *) { margin-top: 0.6em; }
-  .post-body :global(strong) { color: var(--head); font-weight: 600; }
-  .post-body :global(a) { color: var(--accent); border-bottom: 1px solid var(--accent-line); transition: border-color var(--dur-control), color var(--dur-control); }
-  .post-body :global(a:hover) { color: var(--amber-light); border-color: var(--accent); }
-  .post-body :global(:is(ul, ol)) { padding-left: 1.3em; margin-bottom: 0; }
-  .post-body :global(li) { padding-left: 0.3em; }
-  .post-body :global(li + li) { margin-top: 0.5em; }
-  .post-body :global(li::marker) { color: var(--accent); }
-  .post-body :global(ol > li::marker) { font: 500 0.95em var(--display); }
-  .post-body :global(p:has(> img:only-child)) { margin-block: 2em; }
-  .post-body :global(img) { width: 100%; height: auto; border-radius: var(--radius-14); }
-  .post-body :global(blockquote) { margin-inline: 0; padding-left: var(--space-5); border-left: 2px solid; border-image: var(--grad) 1; color: var(--head); }
+  .post :global(.post-body) { max-width: var(--measure); font-size: var(--text-md); line-height: 1.72; color: #c9bfb0; }
+  .post :global(.post-body > * + *) { margin-top: 1.1em; }
+  .post :global(.post-body h2) { font-size: clamp(1.625rem, 2.4vw, 2.125rem); line-height: 1.12; margin-top: 1.6em; }
+  .post :global(.post-body h3) { font-size: clamp(1.25rem, 1.7vw, 1.4375rem); line-height: 1.25; margin-top: 1.6em; }
+  .post :global(.post-body :is(h2, h3) + *) { margin-top: 0.6em; }
+  .post :global(.post-body strong) { color: var(--head); font-weight: 600; }
+  .post :global(.post-body a) { color: var(--accent); border-bottom: 1px solid var(--accent-line); transition: border-color var(--dur-control), color var(--dur-control); }
+  .post :global(.post-body a:hover) { color: var(--amber-light); border-color: var(--accent); }
+  .post :global(.post-body :is(ul, ol)) { padding-left: 1.3em; margin-bottom: 0; }
+  .post :global(.post-body li) { padding-left: 0.3em; }
+  .post :global(.post-body li + li) { margin-top: 0.5em; }
+  .post :global(.post-body li::marker) { color: var(--accent); }
+  .post :global(.post-body ol > li::marker) { font: 500 0.95em var(--display); }
+  .post :global(.post-body p:has(> img:only-child)) { margin-block: 2em; }
+  .post :global(.post-body img) { width: 100%; height: auto; border-radius: var(--radius-14); }
+  .post :global(.post-body blockquote) { margin-inline: 0; padding-left: var(--space-5); border-left: 2px solid; border-image: var(--grad) 1; color: var(--head); }
 
   .post-author { max-width: var(--measure); display: grid; grid-template-columns: auto 1fr; gap: var(--space-4-5); align-items: start; margin-top: clamp(var(--space-12), 6vw, var(--space-18)); padding-top: var(--space-7); border-top: 1px solid var(--line); color: var(--muted); font-size: var(--text-control); }
   .post-author .face { width: 4rem; height: 4rem; }
@@ -91,7 +132,7 @@ const updated = post.data.updated && post.data.updated.valueOf() !== post.data.d
   .post-more { padding-top: 0; }
 
   @media (max-width: 45em) {
-    .post-body { font-size: var(--text-copy); }
+    .post :global(.post-body) { font-size: var(--text-copy); }
     .post-cover { border-radius: var(--radius-12); --curtain-r: 0.75rem; }
   }
 </style>

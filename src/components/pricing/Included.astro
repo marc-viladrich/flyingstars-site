@@ -37,7 +37,8 @@ const list: Item[] = items ?? INCLUDED;
 
 <style>
   .inc { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--head-gap-content) clamp(var(--space-8), 5vw, var(--space-16)); align-items: start; }
-  .inc :global(.inc-head) { position: sticky; top: calc(var(--nav-h) + var(--space-8)); margin-bottom: 0; }
+  .inc :global(.inc-head) { position: sticky; top: calc(var(--nav-h) + var(--space-8)); margin-bottom: 0; transition: top var(--dur-standard) var(--ease-default); }
+  :global(:root.nav-away) .inc :global(.inc-head) { top: var(--space-8); }
   .inc-grid { --ig-cols: 2; list-style: none; margin: 0; padding: 0; }
   /* Zelle „Das macht ihr“: Struktur wie die Leistungen, Cyan statt Orange, feine Fläche mit Cyan-Haarlinie oben */
   /* Fläche über --ic-fill (global.css „Icon-Raster“): auf dem Handy läuft sie bis an den Bildschirmrand, die Linie mit */

@@ -1,0 +1,57 @@
+---
+// Logo-Formation am Schluss eines Blogartikels (Runde 15; seit 22.11.2026 mit 260 statt 600 Drohnen, Marc: „ein bisschen
+// zu voll“). Prototyp 2 (Marc, 21.11.2026: „zu grob, in your face“):
+// klein und ruhig im Textfluss, im Stil der eingestreuten Drohnen-Elemente der Seite (Himmel: Motiv mit Luft, ohne
+// Beschriftung). Keine Knöpfe, kein Zähler, kein Kasten; die Drohnen heben einmal ab und stehen dann mit leiser Eigen-
+// bewegung, die globale Pause in der Kopfzeile hält sie an. Darunter der Schlussabschnitt des Artikels (Slot) oder ein
+// Standardtext, danach ein Link in den Konfigurator. Engine: scripts/formation-play.js (wie die Fallstudien).
+// SEO (27-blog-bilder-2026-11-21/seo-interaktive-grafiken.md): Standbild als echtes <img> (Poster, gleicher Ausschnitt wie die
+// Engine, tools/blog/cornerstone-media.mjs), festes Seitenverhältnis, Engine per import() kurz vor der Sichtbarkeit; ohne
+// JavaScript, bei Ladefehler und bei reduzierter Bewegung bleibt das Standbild bzw. die fertige Formation.
+import { forPath } from '../../i18n/server';
+interface Props { src?: string; poster?: string; alt?: string; id?: string; more?: { label: string; href: string } | false }
+const { t, localHref } = forPath(Astro.url.pathname);
+const { src = '/media/blog/flyingstars-formation.json', poster = '/media/blog/flyingstars-formation.webp', alt = t('blogpost.finaleAlt'), id = 'finale', more = { label: t('blogpost.finaleMore'), href: '/drohnenshow-preise/#konfigurator' } } = Astro.props;
+const own = Astro.slots.has('default');
+---
+<section class="ff" aria-labelledby={own ? undefined : `${id}-h`} data-ff>
+  <figure class="ff-sky">
+    <img class="ff-poster" src={poster} width="1200" height="600" alt={alt} loading="lazy" decoding="async" />
+    <canvas data-ff-canvas data-formation={src} aria-hidden="true"></canvas>
+  </figure>
+  <div class="ff-text post-body">
+    {own ? <slot /> : <>
+      <h2 id={`${id}-h`}>{t('blogpost.finaleHeading')}</h2>
+      <p>{t('blogpost.finaleText')}</p>
+    </>}
+    {more && <p><a class="ff-more" href={localHref(more.href)}>{more.label} <span aria-hidden="true">→</span></a></p>}
+  </div>
+</section>
+
+<script>
+  // Engine erst kurz vor der Sichtbarkeit laden; das Standbild weicht erst, wenn die Formation geladen ist
+  document.querySelectorAll<HTMLElement>('[data-ff]').forEach((root) => {
+    const cv = root.querySelector<HTMLCanvasElement>('[data-ff-canvas]');
+    if (!cv || !('IntersectionObserver' in window)) return;
+    const io = new IntersectionObserver(async (es) => {
+      if (!es.some((e) => e.isIntersecting)) return;
+      io.disconnect();
+      const { mountFormation } = await import('../../scripts/formation-play.js');
+      mountFormation(cv, { onReady: () => requestAnimationFrame(() => root.classList.add('is-live')), flat: true });
+    }, { rootMargin: '400px 0px' });
+    io.observe(cv);
+  });
+</script>
+
+<style>
+  .ff { width: 100%; max-width: var(--measure, 42rem); margin-top: clamp(var(--space-14), 8vw, var(--space-20, 5rem)); }
+  /* Die Formation: eine ruhige Fläche über dem Schlussabschnitt, ohne Rahmen, links an der Lesespalte */
+  .ff-sky { position: relative; margin: 0 0 var(--space-4); width: min(100%, 22rem); aspect-ratio: 2 / 1; }
+  .ff-poster, .ff canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .ff-poster { object-fit: contain; transition: opacity var(--dur-fade) var(--ease-out); }
+  .is-live .ff-poster { opacity: 0; }
+  .ff canvas { touch-action: pan-y; }
+  .ff-text > :global(h2) { margin-top: 0; }
+  .ff-more { color: var(--accent); border-bottom: 1px solid var(--accent-line); }
+  @media (max-width: 45em) { .ff-sky { width: min(100%, 17rem); } }
+</style>

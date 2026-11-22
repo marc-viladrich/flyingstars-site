@@ -1,0 +1,487 @@
+---
+// Scroll-Geschichte für Cornerstone-Artikel (Runde 15, Prototypen 1–3 mit Marc, produktiv seit 22.11.2026). Standard auf
+// Desktop und Laptop: Text in der Lesespalte links, die isometrische Szene rechts klebend; hochkant, schmal oder ab 1200 px
+// Fensterhöhe klebt sie oben über dem Text. Jeder Schritt hat einen eigenen Bildausschnitt, die Kamera fährt weich dorthin.
+// Übergänge nur über transform und opacity. Schleifen laufen nur, solange ihr Schritt aktiv und die Bühne sichtbar ist, und
+// halten bei der globalen Pause (Kopfzeile) und reduzierter Bewegung.
+// SEO und Barrierefreiheit (27-blog-bilder-2026-11-21/seo-interaktive-grafiken.md): Der Text steht vollständig im HTML,
+// die Szene ist Inline-SVG mit dem Endzustand im HTML (ohne JavaScript sichtbar), die Bühne hat eine feste Höhe aus CSS,
+// reduzierte Bewegung zeigt jeden Schritt ohne Übergang und ohne Schleife.
+// Schnittstelle: story (Szene, story-scene.ts), note (Text einer Annotation, übersetzt), blocks (Textabschnitte mit Schritt),
+// groups (Kapitel). Ohne story nimmt die Komponente die Programmier-Szene (abwärtskompatibel zu den Labor-Seiten).
+import Icon from '../Icon.astro';
+import { storyScene, pathD, frameCam, type Piece, type Story, type Note } from './story-scene';
+import { scenePalette } from './scene-palette';
+interface Block { html: string; step?: number; title?: string; group?: string }
+interface Props { blocks: Block[]; caption: string; label: string; groups: { name: string; short: string }[]; story?: Story; note?: (n: Note) => string }
+const { blocks, caption, label, groups, story = storyScene(scenePalette), note = (n: Note) => n.text } = Astro.props;
+const LAST = story.poster ?? story.steps - 1; // Standbild im HTML
+const motion = story.motion ?? {};
+// Zeichenfläche im HTML (ohne JavaScript): eine breite Bühne; das Skript setzt die echte Größe
+const VW = 1000, VH = 470;
+const cam = frameCam(story.frames[LAST], VW, VH);
+const stateOf = (p: Piece, s: number) => {
+  if (p.steps.includes(s) && !p.asmOnly) return { t: `translate(0px, ${p.shift?.[s] ?? 0}px)`, o: p.dim?.includes(s) ? 0.32 : 1 };
+  const h = (s > Math.max(...p.steps) && p.after) || p.hide || { s: [0.04, 0.04] as [number, number] };
+  return { t: `translate(0px, ${h.dy ?? 0}px) scale(${h.s[0]}, ${h.s[1]})`, o: 0 };
+};
+const steps = blocks.filter((b) => b.step !== undefined);
+const head = blocks[0]?.step === undefined ? blocks[0] : undefined;
+const body = head ? blocks.slice(1) : blocks;
+// Ein Zwischentitel ohne eigenen Schritt (neuer Abschnitt) gehört zum nächsten Schritt
+const stepAfter = (i: number) => body.slice(i).find((b) => b.step !== undefined)?.step ?? LAST;
+const drawn = (cls: string) => cls === 'stream' || cls === 'stream-base' || cls === 'path';
+const noteStyle = (n: { x: number; y: number; row?: number }) => `--x: ${((n.x * cam.k + cam.tx) / VW * 100).toFixed(2)}%; --y: ${((n.y * cam.k + cam.ty) / VH * 100).toFixed(2)}%; --row: ${n.row ?? 0}`;
+const list = (v?: number[]) => (v?.length ? v.join(' ') : undefined);
+---
+<section class="ss" aria-label={label} data-ss>
+  {head && <div class="ss-head post-body" set:html={head.html} />}
+  <figure class="ss-fig">
+    <span class="ss-bg" aria-hidden="true"></span>
+    <div class="ss-stage" data-stage data-step={LAST} data-frames={JSON.stringify(story.frames)} data-wind={story.wind?.join(' ')} data-sweep={story.sweep?.flat().join(' ')} data-m-sweep={list(motion.sweep)} data-m-wind={list(motion.wind)} data-m-alive={list(motion.alive)} data-m-plain={list(motion.plain)} data-m-off={list(motion.off)} data-m-warm={list(motion.warm)} data-m-beat={motion.beat ? `${motion.beat.steps.join(',')} ${motion.beat.center.join(',')}` : undefined} data-m-assemble={motion.assemble}>
+      <svg viewBox={`0 0 ${VW} ${VH}`} role="img" aria-label={caption}>
+        <g class="cam" data-cam style={`transform: translate(${cam.tx}px, ${cam.ty}px) scale(${cam.k})`}>
+          {story.pieces.map((p, li) => { const st = stateOf(p, LAST); return <g data-key={p.key} data-steps={p.steps.join(' ')} data-dim={p.dim?.join(' ')} data-shift={p.shift ? JSON.stringify(p.shift) : undefined} data-asm={p.asm} data-asmonly={p.asmOnly ? '' : undefined} data-inner={p.inner ? '' : undefined} data-hide={p.hide ? `${p.hide.s.join(' ')} ${p.hide.dy ?? 0}` : undefined} data-after={p.after ? `${p.after.s.join(' ')} ${p.after.dy ?? 0}` : undefined} aria-hidden="true" class:list={['pc', { on: p.steps.includes(LAST) && !p.asmOnly }]} style={`--zc: ${p.zc}; --li: ${li}; transform-origin: ${p.origin[0]}px ${p.origin[1]}px; transform: ${st.t}; opacity: ${st.o}`}>
+            {p.shapes.map((s) => s.t === 'circle' ? <circle class={s.cls} cx={s.c[0]} cy={s.c[1]} r={s.r} /> : <path class={s.cls} d={pathD(s)} pathLength={drawn(s.cls) ? 1 : undefined} />)}
+          </g>; })}
+          <g class:list={['ss-drones', { 'is-off': motion.off?.includes(LAST), 'is-warm': motion.warm?.includes(LAST), 'is-plain': motion.plain?.includes(LAST) }]} aria-hidden="true">
+            {story.drones.map((d) => { const [x, y, a] = d.pos[LAST]; return <g class="sd" data-pos={d.pos.map((q) => q.join(',')).join(';')} data-w={d.w} data-via={d.via ? JSON.stringify(d.via) : undefined} style={`--c: ${d.c}; --k: ${d.k}; transform: translate(${x}px, ${y}px); opacity: ${a}`}><g class="sw"><circle class="halo" r="4.2" /><circle class="core" r="1.7" /></g></g>; })}
+          </g>
+        </g>
+      </svg>
+      {story.notes.map((n) => <span class:list={['sn', `sn-${n.side}`, { on: n.steps.includes(LAST), 'sn-check': n.check, 'sn-list': n.row !== undefined }]} data-steps={n.steps.join(' ')} data-target={n.target} data-x={n.x} data-y={n.y} style={noteStyle(n)} aria-hidden="true"><i class="sn-dot"></i><span class="sn-pill">{n.check && <Icon name="check" size={13} />}{note(n)}</span></span>)}
+    </div>
+    <div class="ss-bar">
+      <p class="ss-now" aria-hidden="true"><span class="ss-num mono" data-num>{String(steps.filter((b) => b.group === steps.at(-1)?.group).length).padStart(2, '0')}</span><span data-now>{steps.at(-1)?.title}</span></p>
+      <div class="ss-track">
+        {groups.map((g) => { const own = steps.filter((b) => b.group === g.name); return <div class:list={['ss-grp', { on: own.some((b) => b.step === LAST) }]} data-grp={g.name}>
+          <span class="ss-glab">{g.short}</span>
+          <ol aria-label={g.name}>{own.map((b, i) => <li><button type="button" data-goto={b.step} data-n={i + 1} data-title={b.title} aria-label={`${g.name}, ${i + 1}: ${b.title}`} aria-current={b.step === LAST ? 'step' : undefined} class:list={{ done: (b.step ?? 0) < LAST }}><span class="ss-seg"></span></button></li>)}</ol>
+        </div>; })}
+      </div>
+    </div>
+    <figcaption class="sr-only">{caption}</figcaption>
+  </figure>
+  <div class="ss-text post-body">
+    {body.map((b, i) => b.step === undefined
+      ? <div class="ss-chapter" data-step={stepAfter(i)} set:html={b.html} />
+      : <div class="ss-step" data-step={b.step} set:html={b.html} />)}
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-ss]').forEach((root) => {
+    const stage = root.querySelector<HTMLElement>('[data-stage]')!;
+    const svg = stage.querySelector('svg')!;
+    const camG = stage.querySelector<SVGGElement>('[data-cam]')!;
+    const pieces = [...stage.querySelectorAll<SVGGElement>('.pc')]; // Annotationen sind reine Beschriftung, ohne Hover-Effekt (Marc, Prototyp 2)
+    const notes = [...stage.querySelectorAll<HTMLElement>('.sn')];
+    const marks = [...root.querySelectorAll<HTMLElement>('.ss-text > [data-step]')];
+    const dots = [...root.querySelectorAll<HTMLButtonElement>('[data-goto]')];
+    const grps = [...root.querySelectorAll<HTMLElement>('[data-grp]')];
+    const now = root.querySelector<HTMLElement>('[data-now]'), num = root.querySelector<HTMLElement>('[data-num]');
+    const frames = JSON.parse(stage.dataset.frames!) as [number, number, number, number][];
+    const nums = (v?: string) => (v ? v.split(' ').map(Number) : []);
+    const [wx = 1, wy = 0] = nums(stage.dataset.wind);
+    const sweep = nums(stage.dataset.sweep);
+    // Bewegung je Schritt aus der Szene (story.motion): Abspielkopf, Wind und Böen, Eigenbewegung, Drohnen ohne Farbe, Explosion
+    const SWEEP = new Set(nums(stage.dataset.mSweep)), WIND = new Set(nums(stage.dataset.mWind)), ALIVE = new Set(nums(stage.dataset.mAlive)), PLAIN = new Set(nums(stage.dataset.mPlain));
+    const OFF = new Set(nums(stage.dataset.mOff)), WARM = new Set(nums(stage.dataset.mWarm));
+    const [beatSteps = '', beatAt = ''] = (stage.dataset.mBeat ?? '').split(' ');
+    const BEAT = new Set(beatSteps ? beatSteps.split(',').map(Number) : []), [bx = 0, by = 0] = beatAt ? beatAt.split(',').map(Number) : [];
+    const LOOP = new Set([...SWEEP, ...WIND, ...ALIVE, ...BEAT]);
+    const dronesG = stage.querySelector<SVGGElement>('.ss-drones')!;
+    const ASSEMBLE = stage.dataset.mAssemble === undefined ? -1 : Number(stage.dataset.mAssemble);
+    const P = pieces.map((el) => ({
+      el, steps: nums(el.dataset.steps), dim: nums(el.dataset.dim),
+      shift: el.dataset.shift ? (JSON.parse(el.dataset.shift) as Record<string, number>) : {},
+      hide: nums(el.dataset.hide), after: nums(el.dataset.after), asm: el.dataset.asm === undefined ? null : Number(el.dataset.asm),
+      asmOnly: el.dataset.asmonly !== undefined, inner: el.dataset.inner !== undefined,
+    }));
+    const D = [...stage.querySelectorAll<SVGGElement>('.sd')].map((el, i) => ({
+      el, sw: el.querySelector<SVGGElement>('.sw')!, w: Number(el.dataset.w), ph: i * 1.7, g: 0.7 + ((i * 7919) % 13) / 20,
+      via: el.dataset.via ? (JSON.parse(el.dataset.via) as Record<string, [number, number]>) : {},
+      pos: el.dataset.pos!.split(';').map((q) => q.split(',').map(Number)),
+    }));
+    const N = notes.map((el) => ({ el, steps: nums(el.dataset.steps), x: Number(el.dataset.x), y: Number(el.dataset.y) }));
+    const streams = [...stage.querySelectorAll<SVGPathElement>('.stream')];
+    const playhead = stage.querySelector<SVGPathElement>('.playhead');
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+    const held = () => reduce.matches || document.documentElement.classList.contains('motion-paused');
+
+    const T = 3.6; // Länge einer Böe in Sekunden
+
+    // ---------- Kamera ----------
+    let W = 1000, H = 470, step = -1, exploded = true, boom = 0, visible = false, frame = 0, t0 = 0, hop = 0;
+    const camOf = (s: number) => { const [x, y, w, h] = frames[s], k = Math.min(W / w, H / h); return { k, tx: W / 2 - (x + w / 2) * k, ty: H / 2 - (y + h / 2) * k }; };
+    const place = () => {
+      const c = camOf(Math.max(0, step));
+      camG.style.transform = `translate(${c.tx}px, ${c.ty}px) scale(${c.k})`;
+      N.forEach((n) => { n.el.style.setProperty('--x', `${((n.x * c.k + c.tx) / W) * 100}%`); n.el.style.setProperty('--y', `${((n.y * c.k + c.ty) / H) * 100}%`); });
+    };
+    const measure = () => { const r = stage.getBoundingClientRect(); W = Math.max(1, r.width); H = Math.max(1, r.height); svg.setAttribute('viewBox', `0 0 ${W} ${H}`); };
+
+    // ---------- Schritt ----------
+    const pose = (p: (typeof P)[number], s: number) => {
+      const together = s === ASSEMBLE && !exploded;
+      // Gehäuse und Beine nur zusammengesetzt; die Innenteile liegen dann unsichtbar im Gehäuse
+      if (p.asmOnly && together) return { t: 'translate(0px, 0px)', o: 1 };
+      if (p.inner && together) return { t: `translate(0px, ${p.asm ?? 0}px)`, o: 0 };
+      if (p.steps.includes(s) && !p.asmOnly) {
+        const dy = together && p.asm !== null ? p.asm : p.shift[s] ?? 0;
+        return { t: `translate(0px, ${dy}px)`, o: p.dim.includes(s) ? 0.32 : together && p.asm === 0 ? 0 : 1 };
+      }
+      const h = s > Math.max(...p.steps) && p.after.length ? p.after : p.hide.length ? p.hide : [0.04, 0.04, 0];
+      return { t: `translate(0px, ${h[2] ?? 0}px) scale(${h[0]}, ${h[1]})`, o: 0 };
+    };
+    const paint = (prev: number) => {
+      P.forEach((p) => {
+        const on = p.steps.includes(step), was = p.steps.includes(prev);
+        p.el.style.transitionDelay = on && !was ? 'var(--ss-enter)' : '0s'; // was kommt, wartet, bis das Gehende kleiner ist
+        const { t, o } = pose(p, step); p.el.style.transform = t; p.el.style.opacity = String(o);
+        p.el.classList.toggle('on', o > 0); // sichtbare Teile tragen .on (Funkwellen, Flugbahnen zeichnen sich nur dann)
+      });
+      N.forEach((n) => n.el.classList.toggle('on', n.steps.includes(step) && (step !== ASSEMBLE || exploded)));
+      fitLater();
+    };
+    // Die Explosion startet erst, wenn die Bühne im Blick ist und die Drohne eine Weile zusammen stand, oder wenn man im Text
+    // des ersten Schritts weitergelesen hat (Marc, Prototyp 2: „explodiert zu früh“)
+    const blast = () => { clearTimeout(boom); if (step === ASSEMBLE && !exploded) { exploded = true; paint(step); } };
+    const arm = (ms: number) => {
+      clearTimeout(boom);
+      if (step === ASSEMBLE && !exploded && visible) boom = window.setTimeout(blast, ms);
+    };
+    const set = (s: number) => {
+      if (s === step) return;
+      const prev = step; step = s;
+      stage.dataset.step = String(s);
+      // Erst die zusammengesetzte Drohne, dann die Explosion (Marc: „damit man beides verknüpft“)
+      exploded = s !== ASSEMBLE || held();
+      stage.classList.toggle('is-plain', PLAIN.has(s));
+      dronesG.classList.remove('is-plain', 'is-off', 'is-warm'); // Standbild-Klassen aus dem HTML
+      stage.classList.toggle('is-off', OFF.has(s)); stage.classList.toggle('is-warm', WARM.has(s));
+      paint(prev);
+      arm(2600);
+      // Vorwärts in einen Schritt mit Zwischenhalt: erst alle zugleich zum Zwischenhalt (Abheben, Sinken), dann weiter
+      clearTimeout(hop);
+      stage.classList.remove('is-via');
+      const fly = () => D.forEach((d) => { const [x, y, a] = d.pos[step]; d.el.style.transform = `translate(${x}px, ${y}px)`; d.el.style.opacity = String(a); });
+      if (prev === s - 1 && prev >= 0 && D[0]?.via[s] && !held()) {
+        stage.classList.add('is-via');
+        D.forEach((d) => { const v = d.via[s]; d.el.style.transform = `translate(${v[0]}px, ${v[1]}px)`; d.el.style.opacity = '1'; });
+        hop = window.setTimeout(() => { stage.classList.remove('is-via'); fly(); }, 950);
+      } else fly();
+      place();
+      dots.forEach((d) => { const n = Number(d.dataset.goto); if (n === s) d.setAttribute('aria-current', 'step'); else d.removeAttribute('aria-current'); d.classList.toggle('done', n < s); });
+      const cur = dots.find((d) => Number(d.dataset.goto) === s);
+      grps.forEach((g) => g.classList.toggle('on', !!cur && g.contains(cur)));
+      if (cur && now) now.textContent = cur.dataset.title ?? '';
+      if (cur && num) num.textContent = String(cur.dataset.n).padStart(2, '0');
+      run();
+    };
+
+    // ---------- Auslöser: der Textblock, dessen Anfang die Leselinie überschritten hat. Querformat (Szene rechts daneben):
+    // Leselinie in der Bildschirmmitte; hochkant oder sehr hoch (Szene oben): ein Drittel in den Bereich unter der Bühne ----------
+    const side = matchMedia('(min-aspect-ratio: 5/4) and (min-width: 60em) and (max-height: 74.99em)');
+    const lineY = () => { if (side.matches) return innerHeight * 0.5; const b = stage.getBoundingClientRect().bottom; return b + (innerHeight - b) * 0.32; };
+    const fig = root.querySelector<HTMLElement>('.ss-fig')!;
+    const pick = () => {
+      fig.classList.toggle('is-stuck', fig.getBoundingClientRect().top <= parseFloat(getComputedStyle(fig).top) + 1);
+      const line = lineY();
+      let s = Number(marks[0]?.dataset.step ?? 0);
+      for (const m of marks) if (m.getBoundingClientRect().top < line) s = Number(m.dataset.step);
+      set(s);
+      // weitergelesen im ersten Schritt: jetzt explodieren
+      const first = marks.find((m) => Number(m.dataset.step) === ASSEMBLE);
+      if (step === ASSEMBLE && !exploded && first && first.getBoundingClientRect().top < line - innerHeight * 0.16) blast();
+    };
+    let ticking = false;
+    addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(() => { ticking = false; pick(); }); } }, { passive: true });
+
+    // ---------- Annotationen, die über den Bildschirm ragen würden, stehen auf der anderen Seite ----------
+    const listW = () => Math.max(0, ...notes.filter((n) => n.classList.contains('sn-list')).map((n) => n.querySelector('.sn-pill')!.getBoundingClientRect().width));
+    const fit = () => notes.forEach((n) => {
+      n.classList.remove('sn-flip');
+      // Prüfliste: alle Zeilen gemeinsam, nach dem Platz rechts vom Anker (unsichtbare zählen sonst zur Seitenbreite)
+      if (n.classList.contains('sn-list')) { if (n.getBoundingClientRect().left + listW() > document.documentElement.clientWidth - 8) n.classList.add('sn-flip'); return; }
+      const r = n.querySelector('.sn-pill')!.getBoundingClientRect();
+      if (r.right > document.documentElement.clientWidth - 8 || r.left < 8) n.classList.add('sn-flip');
+    });
+    let fitLater = () => {};
+    const relayout = () => { stage.classList.add('is-reset'); measure(); place(); void stage.getBoundingClientRect(); stage.classList.remove('is-reset'); requestAnimationFrame(fit); };
+
+    // Anfangszustand ohne Übergang (im HTML steht der Endzustand für Suche, Vorschau und ohne JavaScript)
+    stage.classList.add('is-reset');
+    measure(); pick(); if (step < 0) set(0);
+    void stage.getBoundingClientRect();
+    stage.classList.remove('is-reset');
+    fitLater = () => requestAnimationFrame(() => setTimeout(fit, 30));
+    fit();
+    if ('ResizeObserver' in window) new ResizeObserver(relayout).observe(stage); else addEventListener('resize', relayout);
+    dots.forEach((d) => d.addEventListener('click', () => {
+      const m = marks.find((el) => el.dataset.step === d.dataset.goto && el.classList.contains('ss-step'));
+      if (!m) return;
+      scrollTo({ top: scrollY + m.getBoundingClientRect().top - lineY() + 24, behavior: held() ? 'auto' : 'smooth' });
+    }));
+
+    // ---------- Schleifen: Abspielkopf (Software), Wind und Böen (Simulation), leise Eigenbewegung des Sterns ----------
+    function still() {
+      D.forEach((d) => { d.sw.style.transform = ''; });
+      streams.forEach((p) => { p.style.strokeDasharray = ''; p.style.strokeDashoffset = ''; });
+      if (playhead) playhead.style.transform = '';
+    }
+    function loop(ms: number) {
+      frame = 0;
+      if (!visible || held() || document.hidden || !LOOP.has(step)) { still(); return; }
+      if (!t0) t0 = ms;
+      const t = (ms - t0) / 1000;
+      if (SWEEP.has(step) && playhead && sweep.length === 4) {
+        const u = (Math.sin(t * 0.55 - Math.PI / 2) + 1) / 2;
+        playhead.style.transform = `translate(${sweep[0] + (sweep[2] - sweep[0]) * u}px, ${sweep[1] + (sweep[3] - sweep[1]) * u}px)`;
+      }
+      if (WIND.has(step)) streams.forEach((p, i) => {
+        // jede Linie zeichnet sich von Luv nach Lee und läuft dann aus; leicht versetzt
+        const q = ((t + 0.11 * ((i * 5) % 8)) / T) % 1, head = Math.min(1, q / 0.62), tail = Math.max(0, Math.min(1, (q - 0.34) / 0.62));
+        p.style.strokeDasharray = `${Math.max(0.0001, head - tail)} 2`; p.style.strokeDashoffset = String(-tail);
+      });
+      if (ALIVE.has(step) || BEAT.has(step)) {
+        // Herzschlag: zwei weiche Schläge, dann Ruhe (1,8 s); Weg vom Mittelpunkt höchstens 5 %
+        const bp = (t % 1.8) / 1.8, bump = (c: number, w: number) => Math.exp(-(((bp - c) / w) ** 2));
+        const beat = BEAT.has(step) ? 0.05 * bump(0.12, 0.06) + 0.03 * bump(0.32, 0.07) : 0;
+        const gust = WIND.has(step), amp = gust ? 1 : ALIVE.has(step) ? 0.6 : 0, sx = Math.sin(t * 0.45) * 1.4 * amp, sy = Math.sin(t * 0.6 + 1) * 0.9 * amp;
+        D.forEach((d) => {
+          let x = sx + Math.sin(t * 1.1 + d.ph) * 0.8 * amp, y = sy + Math.cos(t * 0.9 + d.ph * 1.3) * 0.8 * amp;
+          if (gust) {
+            // Böe: trifft die Drohne, wenn die Windlinie ihre Lage erreicht; sie gibt nach und fängt sich wieder
+            let tau = (((t / T) % 1) - d.w * 0.62) * T; if (tau < 0) tau += T;
+            const push = 4.2 * d.g * 8.15 * tau * Math.exp(-3 * tau) * Math.cos(tau * 1.6);
+            x += wx * push - wy * push * 0.25 * Math.sin(d.ph); y += wy * push + wx * push * 0.25 * Math.sin(d.ph);
+          }
+          if (beat) { const [px, py] = d.pos[step]; x += (px - bx) * beat; y += (py - by) * beat; }
+          d.sw.style.transform = `translate(${x.toFixed(2)}px, ${y.toFixed(2)}px)`;
+        });
+      } else D.forEach((d) => { d.sw.style.transform = ''; });
+      frame = requestAnimationFrame(loop);
+    }
+    function run() { if (!frame && visible && !held() && !document.hidden && LOOP.has(step)) frame = requestAnimationFrame(loop); else if (!LOOP.has(step) || held()) still(); }
+    new IntersectionObserver((es) => { const was = visible; visible = es[es.length - 1].isIntersecting; if (visible && !was) arm(2600); run(); }, { threshold: 0.6 }).observe(stage);
+    document.addEventListener('flyingstars:motion-change', () => { if (held()) blast(); run(); });
+    document.addEventListener('visibilitychange', run);
+  });
+</script>
+
+<style>
+  /* Zwei Formen nach Bildschirmform (Marc, Prototyp 2/3): Standard auf Desktop und Laptop ist die Szene rechts neben der
+     Lesespalte, mitlaufend. Hochkant, schmal oder ab 1200 px Fensterhöhe klebt sie oben über dem Text, etwa halb so hoch
+     wie in Prototyp 2 (Marc: bleibt eindrücklich, lässt mehr Raum zum Lesen). Breite wie die hervorgehobenen Elemente des Artikels (--feature-w, BlogPost). */
+  .ss { --ss-enter: var(--dur-scene-enter); --ss-stage-h: clamp(11rem, 28svh, 19rem); --ss-fade: clamp(var(--space-12), 9svh, var(--space-20, 5rem)); width: 100%; max-width: min(var(--feature-w, 76rem), 100%); display: grid; justify-items: center; margin-block: clamp(var(--space-10), 5vw, var(--space-16)) 0; }
+  .ss-head, .ss-text { width: 100%; max-width: var(--measure, 42rem); }
+  /* Der Schritttitel in der Leiste darf die Spalte des Artikels nicht weiten (nowrap, Auslassung) */
+  .ss, .ss-fig, .ss-bar, .ss-now { min-width: 0; }
+  .ss-fig { width: 100%; }
+  .ss-head :global(h2) { margin-top: 0; }
+  .ss-head { margin-bottom: var(--space-6); }
+
+  /* Hochkant: Bühne klebt unter dem Kopf über die Breite des Artikels; der Text läuft darunter durch und verschwindet weich.
+     Weicht die Kopfzeile beim Runterscrollen aus (nav-away, site.ts), rückt die Bühne nach oben. */
+  .ss-fig { position: sticky; top: var(--nav-h); z-index: 3; width: 100%; margin: 0; padding-block: var(--space-3) 0; transition: top var(--dur-standard) var(--ease-default); }
+  :global(:root.nav-away) .ss-fig { top: 0; }
+  /* Weiche Kanten: unten ein Verlauf mit leichter Unschärfe, oben derselbe nach oben (wenn die Kopfzeile ausweicht) */
+  .ss-fig::before, .ss-fig::after { content: ""; position: absolute; left: calc(50% - 50vw); right: calc(50% - 50vw); height: var(--ss-fade); pointer-events: none; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+  /* Verlauf mit weicher Kurve (nicht linear), die Unschärfe läuft über die Maske mit aus: der Text wird erst weich, dann blass,
+     dann verschwindet er; keine sichtbare Linie an der Unterkante der Schrittleiste (Marc, 22.11.) */
+  .ss-fig::after { top: 100%; background: linear-gradient(var(--ground) 0%, color-mix(in srgb, var(--ground) 92%, transparent) 18%, color-mix(in srgb, var(--ground) 70%, transparent) 42%, color-mix(in srgb, var(--ground) 30%, transparent) 72%, transparent 100%); -webkit-mask-image: linear-gradient(#000 0%, rgb(0 0 0 / 0.75) 45%, transparent 100%); mask-image: linear-gradient(#000 0%, rgb(0 0 0 / 0.75) 45%, transparent 100%); }
+  .ss-fig::before { display: none; bottom: 100%; background: linear-gradient(to top, var(--ground) 0%, color-mix(in srgb, var(--ground) 92%, transparent) 18%, color-mix(in srgb, var(--ground) 70%, transparent) 42%, color-mix(in srgb, var(--ground) 30%, transparent) 72%, transparent 100%); -webkit-mask-image: linear-gradient(to top, #000 0%, rgb(0 0 0 / 0.75) 45%, transparent 100%); mask-image: linear-gradient(to top, #000 0%, rgb(0 0 0 / 0.75) 45%, transparent 100%); }
+  /* Fläche über die volle Fensterbreite als eigenes Element statt box-shadow + clip-path: in WebKit sieht eine Unschärfe
+     (backdrop-filter) in einem beschnittenen Element nichts dahinter und zeichnet deckend, die Kante wird hart (Marc, Safari) */
+  .ss-bg { position: absolute; z-index: -1; top: 0; bottom: 0; left: calc(50% - 50vw); right: calc(50% - 50vw); background: var(--ground); pointer-events: none; }
+  .ss-fig { isolation: isolate; }
+  .ss-fig.is-stuck::before { display: block; } /* oben nur, wenn die Bühne klebt (sonst läge der Verlauf über der Überschrift davor) */
+  .ss-stage { position: relative; width: 100%; height: var(--ss-stage-h); }
+  /* Die Zeichnung endet weich an den Rändern der Bühne (Boden und Feld dürfen hinauslaufen) */
+  .ss-stage svg { width: 100%; height: 100%; display: block; overflow: hidden;
+    -webkit-mask-image: linear-gradient(to bottom, transparent, #000 4%, #000 86%, transparent), linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
+    mask-image: linear-gradient(to bottom, transparent, #000 4%, #000 86%, transparent), linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
+    -webkit-mask-composite: source-in; mask-composite: intersect; }
+  .cam { transform-origin: 0 0; transition: transform var(--dur-scene-camera) var(--ease-scene); }
+
+  /* Teile: weich wachsen und schrumpfen, nur transform und opacity */
+  .pc { transform-box: view-box; transition: transform var(--dur-scene-morph) var(--ease-scene), opacity var(--dur-reveal-move) var(--ease-out); }
+  .sd { transition: transform var(--dur-scene-drone) var(--ease-scene) calc(var(--k) * var(--dur-stagger-drone)), opacity var(--dur-reveal) var(--ease-out) calc(var(--k) * var(--dur-stagger-drone)); }
+  /* Zwischenhalt (story.drones.via): alle zugleich, ohne Versatz */
+  .is-via .sd { transition: transform var(--dur-slow-long) var(--ease-scene), opacity var(--dur-underline) var(--ease-out); }
+  .is-reset, .is-reset * { transition: none !important; }
+
+  /* Zeichnung: Vokabular der Standortzeichnung (Startseite), etwas gröber und ruhiger */
+  .slab { fill: rgb(var(--rgb-head) / 3%); stroke: rgb(var(--rgb-head) / 12%); stroke-width: 0.6; }
+  .slab-side { fill: rgb(var(--rgb-head) / 6%); stroke: rgb(var(--rgb-head) / 10%); stroke-width: 0.5; }
+  .floor-line { fill: none; stroke: rgb(var(--rgb-head) / 4%); stroke-width: 0.5; }
+  .zplate { fill: color-mix(in srgb, var(--zc) 16%, var(--ground)); stroke: color-mix(in srgb, var(--zc) 75%, transparent); stroke-width: 0.9; }
+  .zplate-side, .zplate-edge { fill: color-mix(in srgb, var(--zc) 30%, var(--ground)); stroke: color-mix(in srgb, var(--zc) 55%, transparent); stroke-width: 0.5; }
+  .part { fill: color-mix(in srgb, var(--zc) 16%, var(--ground)); stroke: color-mix(in srgb, var(--zc) 80%, transparent); stroke-width: 0.8; }
+  .part-side { fill: color-mix(in srgb, var(--zc) 34%, var(--ground)); stroke: color-mix(in srgb, var(--zc) 60%, transparent); stroke-width: 0.5; }
+  .chip { fill: color-mix(in srgb, var(--zc) 45%, var(--ground)); }
+  .trace { fill: none; stroke: color-mix(in srgb, var(--zc) 40%, transparent); stroke-width: 0.6; }
+  .rotor { fill: color-mix(in srgb, var(--zc) 8%, transparent); stroke: color-mix(in srgb, var(--zc) 50%, transparent); stroke-width: 0.6; }
+  .arm { fill: none; stroke: color-mix(in srgb, var(--zc) 80%, transparent); stroke-width: 2; stroke-linecap: round; }
+  .hub { fill: var(--ground); stroke: var(--zc); stroke-width: 0.8; }
+  .motor { fill: color-mix(in srgb, var(--zc) 30%, var(--ground)); stroke: var(--zc); stroke-width: 0.7; }
+  .motor-side { fill: color-mix(in srgb, var(--zc) 45%, var(--ground)); stroke: color-mix(in srgb, var(--zc) 60%, transparent); stroke-width: 0.5; }
+  .blade { fill: color-mix(in srgb, var(--zc) 40%, var(--ground)); stroke: color-mix(in srgb, var(--zc) 85%, transparent); stroke-width: 0.5; stroke-linejoin: round; }
+  .shell { fill: color-mix(in srgb, var(--zc) 20%, var(--ground)); stroke: color-mix(in srgb, var(--zc) 85%, transparent); stroke-width: 0.9; stroke-linejoin: round; }
+  .shell-side { fill: color-mix(in srgb, var(--zc) 38%, var(--ground)); stroke: color-mix(in srgb, var(--zc) 65%, transparent); stroke-width: 0.6; stroke-linejoin: round; }
+  .leg { fill: none; stroke: color-mix(in srgb, var(--zc) 70%, transparent); stroke-width: 1.4; stroke-linecap: round; }
+  /* LED: leuchtet sanft im Logoverlauf (Orange → Orchidee → Cyan), langsam und ohne Blinken */
+  .led-base { fill: color-mix(in srgb, var(--zc) 18%, var(--ground)); stroke: color-mix(in srgb, var(--zc) 70%, transparent); stroke-width: 0.8; }
+  .led-halo, .led-glow { fill: var(--logo-amber); animation: ss-led var(--dur-led) var(--ease-default) infinite; }
+  .led-halo { opacity: 0.1; filter: blur(6px); }
+  .led-glow { opacity: 0.3; filter: blur(2.5px); }
+  .led-core { fill: #fff3df; animation: ss-led-core var(--dur-led) var(--ease-default) infinite; }
+  @keyframes ss-led { 0%, 100% { fill: var(--logo-amber); } 33% { fill: var(--logo-orchid); } 66% { fill: var(--cyan); } }
+  @keyframes ss-led-core { 0%, 100% { fill: #ffe2bf; } 33% { fill: #f7d6fb; } 66% { fill: #d4fbfd; } }
+  .bar { stroke: none; }
+  .bar-0 { fill: var(--logo-amber); } .bar-1 { fill: #f58a5a; } .bar-2 { fill: #ec7f95; } .bar-3 { fill: var(--logo-orchid); } .bar-4 { fill: #b88bec; } .bar-5 { fill: var(--logo-blue); } .bar-6 { fill: #6fc8ef; } .bar-7 { fill: var(--cyan); }
+  .track { fill: none; stroke: color-mix(in srgb, var(--zc) 40%, transparent); stroke-width: 0.6; }
+  .tick { fill: none; stroke: color-mix(in srgb, var(--zc) 14%, transparent); stroke-width: 0.5; }
+  .playhead { fill: none; stroke: var(--accent); stroke-width: 1.2; }
+  .route { fill: none; stroke: color-mix(in srgb, var(--zc) 70%, transparent); stroke-width: 0.7; }
+  .guide { fill: none; stroke: rgb(var(--rgb-head) / 20%); stroke-width: 0.6; stroke-dasharray: 1.5 3.5; }
+  .glass-floor, .glass-back { fill: color-mix(in srgb, var(--zc) 4%, transparent); }
+  .glass-hidden { fill: none; stroke: color-mix(in srgb, var(--zc) 28%, transparent); stroke-width: 0.6; stroke-dasharray: 3 4; }
+  .glass { fill: color-mix(in srgb, var(--zc) 5%, transparent); }
+  .glass-edge { fill: none; stroke: color-mix(in srgb, var(--zc) 60%, transparent); stroke-width: 0.9; }
+  /* Windlinien: eine leise Spur des ganzen Felds, darüber die sich zeichnende Linie (pathLength 1, Skript); ohne Schleife
+     (reduzierte Bewegung, Pause) stehen sie fertig gezeichnet */
+  .stream-base { fill: none; stroke: color-mix(in srgb, var(--zc) 12%, transparent); stroke-width: 0.6; }
+  .stream { fill: none; stroke: color-mix(in srgb, var(--zc) 80%, transparent); stroke-width: 0.9; stroke-linecap: round; }
+  .mast { fill: none; stroke: color-mix(in srgb, var(--zc) 75%, transparent); stroke-width: 1.1; }
+  .mast-glow { fill: var(--zc); opacity: 0.18; }
+  .mast-tip { fill: var(--zc); }
+  .wave { fill: none; stroke: color-mix(in srgb, var(--zc) 55%, transparent); stroke-width: 0.8; transform-box: fill-box; transform-origin: center; }
+  /* Funkwellen laufen, solange ihr Teil sichtbar ist (.on, Skript) */
+  .pc.on .wave { animation: ss-wave var(--dur-wave) var(--ease-out) infinite; }
+  .pc.on .wave:nth-of-type(2) { animation-delay: var(--dur-enter); } .pc.on .wave:nth-of-type(3) { animation-delay: var(--dur-slow); }
+  @keyframes ss-wave { 0% { opacity: 0; transform: scale(0.6); } 25% { opacity: 1; } 100% { opacity: 0; transform: scale(1.25); } }
+  .link { fill: none; stroke: color-mix(in srgb, var(--zc) 40%, transparent); stroke-width: 0.7; stroke-dasharray: 2 4; }
+  .mesh-back { fill: none; stroke: color-mix(in srgb, var(--zc) 32%, transparent); stroke-width: 0.6; stroke-dasharray: 3 3; }
+  .mesh-edge { fill: none; stroke: color-mix(in srgb, var(--zc) 40%, transparent); stroke-width: 0.6; }
+  .mesh-front { fill: color-mix(in srgb, var(--zc) 10%, transparent); stroke: var(--zc); stroke-width: 1.1; stroke-linejoin: round; }
+  .seed { fill: none; stroke: rgb(var(--rgb-head) / 26%); stroke-width: 0.5; }
+  /* Flugbahnen: ruhige durchgehende Linien, die sich beim Eintreten in den Schritt zeichnen */
+  .path { fill: none; stroke: color-mix(in srgb, var(--zc) 34%, transparent); stroke-width: 0.6; stroke-dasharray: 1 1; stroke-dashoffset: 0; }
+  .pc.on .path { animation: ss-draw var(--dur-branch) var(--ease-scene) both; animation-delay: var(--ss-enter); }
+  @keyframes ss-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+  /* Ablauf (ablauf-scene.ts): Startunterlagen, Animationsraster, Abhebelinien, Umriss der vorigen Formation */
+  .pad { fill: rgb(var(--rgb-head) / 5%); stroke: rgb(var(--rgb-head) / 30%); stroke-width: 0.5; }
+  .raster-area { fill: color-mix(in srgb, var(--zc) 5%, transparent); stroke: none; }
+  .raster { fill: none; stroke: color-mix(in srgb, var(--zc) 30%, transparent); stroke-width: 0.5; stroke-dasharray: 1.5 2.5; }
+  .lift { fill: none; stroke: color-mix(in srgb, var(--zc) 34%, transparent); stroke-width: 0.6; stroke-linecap: round; stroke-dasharray: 1 1; stroke-dashoffset: 0; }
+  .pc.on .lift { animation: ss-draw var(--dur-image) var(--ease-scene) both; animation-delay: var(--ss-enter); }
+  .ghost { fill: none; stroke: color-mix(in srgb, var(--zc) 30%, transparent); stroke-width: 0.6; stroke-dasharray: 2 3; }
+  .path-hot { fill: none; stroke: var(--zc); stroke-width: 1.1; }
+  .warn-ring { fill: color-mix(in srgb, var(--zc) 12%, transparent); stroke: var(--zc); stroke-width: 1; }
+  .file { fill: color-mix(in srgb, var(--zc) 16%, var(--ground)); stroke: var(--zc); stroke-width: 0.8; }
+  .file-side { fill: color-mix(in srgb, var(--zc) 34%, var(--ground)); }
+  .guest { fill: var(--zc); opacity: 0.8; }
+  .keepout { fill: none; stroke: var(--zc); stroke-width: 0.9; stroke-dasharray: 2 3; opacity: 0.75; }
+
+  /* Drohnen */
+  .sd .core { fill: var(--c); transition: fill var(--dur-slow) var(--ease-scene); }
+  .sd .halo { fill: var(--c); opacity: 0.2; transition: opacity var(--dur-slow) var(--ease-scene); }
+  /* Drohnen ohne Farbe (am Boden, story.motion.plain) */
+  .is-plain .sd .core { fill: var(--head); }
+  .is-plain .sd .halo { opacity: 0.08; }
+  /* LEDs aus (am Boden) und warmweiß (erste Formation), story.motion.off / warm */
+  .is-off .sd .core { fill: rgb(var(--rgb-head) / 55%); }
+  .is-off .sd .halo { opacity: 0; }
+  .is-warm .sd .core { fill: #fff3df; }
+  .is-warm .sd .halo { fill: #fff3df; opacity: 0.14; }
+
+
+  /* Annotationen: Punkt am Teil, Pille daneben (feste Größe, lesbar auf jeder Breite); Listen stehen untereinander */
+  .sn { position: absolute; left: var(--x); top: var(--y); width: 0; height: 0; opacity: 0; visibility: hidden; transition: opacity var(--dur-fade) var(--ease-out), visibility 0s var(--dur-fade); }
+  .sn.on { opacity: 1; visibility: visible; transition-delay: var(--dur-note-delay), 0s; }
+  .sn-dot { position: absolute; left: -0.21875rem; top: -0.21875rem; width: 0.4375rem; height: 0.4375rem; border-radius: var(--radius-round); background: var(--head); box-shadow: 0 0 0 0.1875rem rgb(var(--rgb-head) / 16%); }
+  .sn-pill { position: absolute; top: 0; transform: translateY(-50%); display: inline-flex; align-items: center; gap: var(--space-1-5); white-space: nowrap; padding: var(--space-1) var(--space-2-5); border-radius: var(--radius-pill); background: var(--ground); border: 1px solid var(--line-strong); color: var(--head); font: 500 var(--text-xs)/1.2 var(--display); }
+  .sn-r .sn-pill { left: 1rem; }
+  .sn-l .sn-pill { right: 1rem; }
+  .sn-pill::before { content: ""; position: absolute; top: 50%; width: 0.75rem; border-top: 1px solid var(--line-strong); }
+  .sn-r .sn-pill::before { right: 100%; }
+  .sn-l .sn-pill::before { left: 100%; }
+  .sn-r.sn-flip .sn-pill { left: auto; right: 1rem; }
+  .sn-l.sn-flip .sn-pill { right: auto; left: 1rem; }
+  .sn-r.sn-flip .sn-pill::before { right: auto; left: 100%; }
+  .sn-l.sn-flip .sn-pill::before { left: auto; right: 100%; }
+  .sn-check .sn-pill :global(.ico) { color: rgb(var(--rgb-good)); }
+  /* Prüfliste (Live-Show): ruhig untereinander auf dem Feld neben dem Stern, ohne Verbindungslinie (Marc, Prototyp 2: näher an die Ebene) */
+  .sn-list { top: calc(var(--y) + var(--row) * 2rem); }
+  .sn-list .sn-dot { display: none; }
+  .sn-list .sn-pill { left: 0; right: auto; border-color: transparent; background: color-mix(in srgb, var(--ground) 80%, transparent); color: var(--text); }
+  /* Zu wenig Platz rechts: die ganze Liste rückt nach links, die Häkchen bleiben bündig */
+  .sn-list.sn-flip .sn-pill { left: -9.5rem; }
+  .sn-list .sn-pill::before { display: none; }
+
+  /* Schrittleiste: ruhig, zwei Gruppen aus feinen Strichen; die aktive Gruppe trägt ihren Namen hell */
+  .ss-bar { display: flex; align-items: center; justify-content: space-between; gap: var(--space-5); padding-top: var(--space-2); border-top: 1px solid var(--line); margin-top: var(--space-2); }
+  .ss-now { margin: 0; min-width: 0; display: flex; align-items: baseline; gap: var(--space-3); color: var(--head); font: 500 var(--text-sm)/1.3 var(--display); }
+  .ss-now [data-now] { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ss-num { color: var(--faint); font-size: var(--text-xs); letter-spacing: 0.06em; }
+  .ss-track { display: flex; align-items: center; gap: var(--space-6); flex: none; }
+  .ss-grp { display: flex; align-items: center; gap: var(--space-2-5); }
+  .ss-glab { color: var(--faint); font: 500 var(--text-xs)/1 var(--display); transition: color var(--dur-fade) var(--ease-out); }
+  .ss-grp.on .ss-glab { color: var(--head); }
+  .ss-grp ol { list-style: none; display: flex; margin: 0; padding: 0; }
+  .ss-grp button { width: 1.375rem; height: 2.75rem; border: 0; padding: 0; background: none; cursor: pointer; display: grid; place-items: center; }
+  .ss-seg { width: 0.875rem; height: 2px; border-radius: 1px; background: rgb(var(--rgb-head) / 16%); transition: background var(--dur-control) var(--ease-default), width var(--dur-control) var(--ease-default); }
+  .ss-grp button.done .ss-seg { background: rgb(var(--rgb-head) / 42%); }
+  .ss-grp button[aria-current] .ss-seg { width: 1.125rem; background: var(--head); }
+  .ss-grp button:hover .ss-seg { background: rgb(var(--rgb-head) / 70%); }
+  .ss-grp button:focus-visible { outline: 2px solid var(--accent); outline-offset: -0.375rem; border-radius: var(--radius-4); }
+
+  /* Text: lesbare Spalte unter der Bühne, ohne Balken; jeder Schritt hat Luft, damit die Szene dem Lesen folgt */
+  .ss-text { padding-top: var(--space-10); padding-bottom: 28svh; }
+  .ss-step { padding-bottom: clamp(var(--space-12), 16svh, 9rem); }
+  .ss-step > :global(:first-child), .ss-chapter > :global(:first-child) { margin-top: 0; }
+  .ss-text > :global(* + *) { margin-top: 0; }
+  .ss-step > :global(* + *) { margin-top: 1.1em; }
+  .ss-step > :global(h3 + *) { margin-top: 0.6em; }
+  /* Neuer Abschnitt (zweiter Zwischentitel): Linie und Abstand wie ein Kapitelwechsel */
+  .ss-chapter { padding-top: var(--space-10); border-top: 1px solid var(--line); margin-bottom: var(--space-10); }
+  .ss-chapter :global(h2) { margin: 0; }
+
+  @media (prefers-reduced-motion: reduce) { .cam, .pc, .sd, .sd *, .sn { transition: none !important; } .wave, .path, .lift, .led-glow, .led-halo, .led-core { animation: none !important; } }
+  :global(.motion-paused) :is(.wave, .path, .lift, .led-glow, .led-halo, .led-core) { animation: none !important; }
+
+  /* Querformat: Text in der Lesespalte links (etwa 10 Zeichen schmaler als der Artikel), die Szene rechts daneben klebt
+     über die Bildschirmhöhe und läuft mit; keine Fläche, keine Verläufe nötig */
+  @media (--story-wide) and (--story-short) and (min-aspect-ratio: 5/4) {
+    .ss { grid-template-columns: minmax(0, 37rem) minmax(0, 1fr); grid-template-areas: "head fig" "text fig"; column-gap: clamp(var(--space-8), 4vw, var(--space-16)); justify-items: stretch; align-items: start; }
+    .ss-head { grid-area: head; max-width: none; }
+    .ss-text { grid-area: text; max-width: none; padding-top: 0; padding-bottom: 32svh; }
+    .ss-fig { grid-area: fig; align-self: start; top: calc(var(--nav-h) + var(--space-4)); height: calc(100svh - var(--nav-h) - var(--space-8)); display: flex; flex-direction: column; padding: 0; }
+    :global(:root.nav-away) .ss-fig { top: var(--space-4); }
+    .ss-fig::before, .ss-fig::after, .ss-bg { content: none; display: none; }
+    .ss-stage { flex: 1 1 auto; height: auto; min-height: 0; }
+    .ss-bar { flex-wrap: wrap; row-gap: 0; }
+    .ss-now { flex: 1 1 100%; padding-top: var(--space-1); }
+    .ss-step { padding-bottom: clamp(var(--space-16), 30svh, 16rem); }
+    .ss-chapter { padding-top: var(--space-12); }
+  }
+
+  /* Schmal: Bühne niedriger, Gruppennamen weg, nur die Striche */
+  @media (max-width: 45em) {
+    .ss { --ss-stage-h: clamp(11rem, 26svh, 15rem); }
+    .ss-fig { padding-top: var(--space-1); }
+    .ss-bar { gap: var(--space-3); padding-top: 0; margin-top: var(--space-1); }
+    .ss-now { font-size: var(--text-xs); gap: var(--space-2); }
+    .ss-glab { display: none; }
+    .ss-track { gap: var(--space-2-5); }
+    .ss-grp button { width: 1rem; }
+    .ss-seg { width: 0.625rem; }
+    .ss-grp button[aria-current] .ss-seg { width: 0.875rem; }
+    .sn-pill { font-size: 0.6875rem; padding: 0.125rem var(--space-2); }
+    .sn-list { top: calc(var(--y) + var(--row) * 1.625rem); }
+    .sn-list.sn-flip .sn-pill { left: -7.75rem; }
+    .ss-text { padding-top: var(--space-6); }
+  }
+</style>
