@@ -153,3 +153,11 @@ Sprachliste, Tastatur), `scripts/css-tokens.test.mjs`.
 ## Runde 20e (22.11.2026)
 
 - Zusammenbau-Schritt („Unsere Showdrohne“): Die Kamera rückt die zusammengesetzte Drohne in die Bühnenmitte, auf Höhe der Textkarte (1440 × 900: 36 px höher als vorher). Grundlage ist `story.focus` (Mitte der zusammengesetzten Drohne, Ober- und Unterkante der zerlegten samt Beschriftungen); `camOf` im Skript verschiebt nur so weit, dass die zerlegte Fassung mit mindestens 6 % Rand auf der Bühne bleibt. Auf flachen Bühnen (Handy) fällt die Verschiebung deshalb kleiner aus. Die übrigen Szenen und Schritte sind unverändert.
+
+## Runde 20f (22.11.2026, siteweit)
+
+- Hochzeit-Teaser (`REELS.hochzeit` in show-teaser.js): die wichtigsten Konfigurator-Motive mit Steigerung, Doppelungen mit dem Seitenkopf sind gewollt. Wächter `scripts/hochzeit-reel.test.mjs`.
+- Bildköpfe (`LandingHero`: Hochzeit, Indoor, Werbung, Über uns) vertikal mittig zum Bild; `layout-audit` hero-top akzeptiert in `.lh` „mittig zum Bild“ (docs/DESIGN.md).
+- Blütenspalier 3D+: ein ruhiger Schwenk 0,3 → −0,2 rad über die ganze Geschichte statt Ruck nach 5 s mit Umkehr.
+- Show-Engines (Seitenkopf-Show, Konfigurator-Teaser) laden erst nach `afterHeroPaint()` (when-near.mjs): WebKit malt das Standbild oft erst nach `load`.
+- Unterlängen in Verlaufswörtern: Ursache und Liste der 38 betroffenen Wörter in docs/rca-unterlaengen-2026-11-22.md, Wächter tests/descender.spec.ts.
