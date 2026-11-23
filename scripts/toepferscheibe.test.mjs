@@ -12,7 +12,7 @@ const { GROSS } = await import('../src/scripts/scenes/gross/index.js');
 const { LIMITS } = await import('../src/scripts/show-flight.js');
 const { droneStops } = await import('../src/content/show-packages.ts');
 const { OCCASIONS } = await import('../src/content/show-configurator.js');
-const { BUILDERS } = await import('../src/scripts/scenes/index.js');
+const { hasBuilder } = await import('../src/scripts/scenes/index.js');
 
 const MIN = 300, NAMES = ['potteryWheel3d', 'potteryWheelStory'];
 const STOPS = { potteryWheel3d: droneStops('3d').filter((n) => n >= MIN), potteryWheelStory: droneStops('story').filter((n) => n >= MIN) };
@@ -46,7 +46,7 @@ test('im Konfigurator: Kultur, 3D und 3D+ ab 300, nachgeladen', () => {
   assert.deepEqual(Object.keys(m.tiers), ['HORIZON', 'ODYSSEY']);
   assert.equal(m.tiers.HORIZON.build, 'potteryWheel3d'); assert.equal(m.tiers.HORIZON.minDrones, MIN);
   assert.equal(m.tiers.ODYSSEY.build, 'potteryWheelStory'); assert.equal(m.tiers.ODYSSEY.minDrones, MIN);
-  for (const b of NAMES) { assert.equal(typeof GROSS[b], 'function', `${b} nicht in gross/index.js`); assert.equal(BUILDERS[b], undefined, `${b} im gemeinsamen Szenenpaket`); }
+  for (const b of NAMES) { assert.equal(typeof GROSS[b], 'function', `${b} nicht in gross/index.js`); assert.equal(hasBuilder(b), false, `${b} im gemeinsamen Szenenpaket`); }
 });
 
 test('genau n Drohnen in jedem Bild bei jeder einstellbaren Zahl, Punkte und Teile gültig', async () => {

@@ -12,7 +12,7 @@ const { GROSS } = await import('../src/scripts/scenes/gross/index.js');
 const { LIMITS } = await import('../src/scripts/show-flight.js');
 const { droneStops } = await import('../src/content/show-packages.ts');
 const { OCCASIONS } = await import('../src/content/show-configurator.js');
-const { BUILDERS } = await import('../src/scripts/scenes/index.js');
+const { hasBuilder } = await import('../src/scripts/scenes/index.js');
 
 const MIN = 600, NAMES = ['soundField3d', 'soundFieldStory'];
 const STOPS = { soundField3d: droneStops('3d').filter((n) => n >= MIN), soundFieldStory: droneStops('story').filter((n) => n >= MIN) };
@@ -114,7 +114,7 @@ test('in Kultur und Stadtfest mit derselben Fassung', () => {
     assert.equal(m.tiers.ODYSSEY.build, 'soundFieldStory'); assert.equal(m.tiers.ODYSSEY.minDrones, MIN);
     assert.deepEqual(Object.keys(m.tiers), ['HORIZON', 'ODYSSEY']);
   }
-  for (const b of NAMES) { assert.equal(typeof GROSS[b], 'function', `${b} nicht in gross/index.js`); assert.equal(BUILDERS[b], undefined, `${b} im gemeinsamen Szenenpaket`); }
+  for (const b of NAMES) { assert.equal(typeof GROSS[b], 'function', `${b} nicht in gross/index.js`); assert.equal(hasBuilder(b), false, `${b} im gemeinsamen Szenenpaket`); }
 });
 
 test('mehr Drohnen kaufen Größe: ab 1000 ein größeres Feld mit mehr Linien, nicht dichtere Linien', () => {

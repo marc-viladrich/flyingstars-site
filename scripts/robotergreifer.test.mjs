@@ -12,7 +12,7 @@ const { GROSS } = await import('../src/scripts/scenes/gross/index.js');
 const { LIMITS } = await import('../src/scripts/show-flight.js');
 const { droneStops } = await import('../src/content/show-packages.ts');
 const { OCCASIONS } = await import('../src/content/show-configurator.js');
-const { BUILDERS } = await import('../src/scripts/scenes/index.js');
+const { hasBuilder } = await import('../src/scripts/scenes/index.js');
 
 const MIN = 400, STOPS = { s3: droneStops('3d').filter((n) => n >= MIN), plus: droneStops('story').filter((n) => n >= MIN) };
 const nearest = (pts) => pts.map((p, i) => { let m = Infinity; for (let j = 0; j < pts.length; j++) if (j !== i) m = Math.min(m, Math.hypot(p[0] - pts[j][0], p[1] - pts[j][1], (p[2] || 0) - (pts[j][2] || 0))); return m; });
@@ -49,7 +49,7 @@ test('im Konfigurator: 3D ab 400 hinter dem Kleinen Roboter; in 3D+ erzählt der
   const bot = launch.motifs[i - 1];
   assert.equal(bot.tiers.ODYSSEY.build, 'robotGripperStory');
   assert.ok(bot.tiers.ODYSSEY.minDrones <= GRIPPER_MIN && GRIPPER_MIN === MIN, 'Greifer in 3D+ ab derselben Zahl wie in 3D');
-  for (const b of ['robotArm3d', 'robotGripperStory']) { assert.equal(typeof GROSS[b], 'function', `${b} nicht in gross/index.js`); assert.equal(BUILDERS[b], undefined, `${b} im gemeinsamen Szenenpaket`); }
+  for (const b of ['robotArm3d', 'robotGripperStory']) { assert.equal(typeof GROSS[b], 'function', `${b} nicht in gross/index.js`); assert.equal(hasBuilder(b), false, `${b} im gemeinsamen Szenenpaket`); }
 });
 
 test('Roboter-Geschichte: unter 400 unverändert, ab 400 dieselben Drohnen vom Roboter in den Greifarm, ohne Wolke', async () => {

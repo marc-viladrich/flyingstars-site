@@ -519,6 +519,18 @@ export function createField(canvas, { onBeat, onTick, cloudTime = 1, cloudSpread
     if (instant || still()) settle(now(), motifEnd(k)); else startBeat(k, now(), false, viaCloud);
     render(); sync();
   }
+  /** Ergänzt fertige Ausschnitte, ohne den laufenden Flug anzufassen. */
+  function extend(next, beats, { complete, joined }) {
+    next.beats.push(...beats);
+    if (complete) {
+      next.loopTo = 0;
+      if (joined) next.loopJoined = true;
+    }
+    if (scene !== next) return;
+    fit(beats);
+    estimates.delete(scene);
+    sync();
+  }
   /** Jumps to act k of the current scene (back/forward buttons). */
   function goto(k) {
     if (!scene) return;
@@ -686,5 +698,5 @@ export function createField(canvas, { onBeat, onTick, cloudTime = 1, cloudSpread
     }
     return out;
   }
-  return { relayout: resize, drones, radius: () => radNow, setMotionIndependent(v) { motionIndependent = !!v; sync(); tick(); }, show, replay: () => goto(0), goto, beat: () => beat, setPaused, paused: () => userPaused, setRate: (r) => { rate = r; tick(); }, timeline, screenOf };
+  return { relayout: resize, drones, radius: () => radNow, setMotionIndependent(v) { motionIndependent = !!v; sync(); tick(); }, show, extend, isShowing: (next) => scene === next, replay: () => goto(0), goto, beat: () => beat, setPaused, paused: () => userPaused, setRate: (r) => { rate = r; tick(); }, timeline, screenOf };
 }

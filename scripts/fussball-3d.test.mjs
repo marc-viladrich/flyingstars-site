@@ -7,7 +7,7 @@ import './show-node-env.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-const { BUILDERS } = await import('../src/scripts/scenes/index.js');
+const { builders: BUILDERS } = await import('../src/scripts/scenes/jubilaeum.js');
 const { spieler, ball, schuss, schuss2d, springer } = await import('../src/scripts/scenes/catalog-3d/sport.js');
 const { LIMITS } = await import('../src/scripts/show-flight.js');
 const RANGES = { kick2d: [150, 170, 190], kickHorizon: [200, 250, 290], kickStory: [300, 450, 1000], diveHorizon: [200, 250, 290], diveStory: [300, 450, 1000] };
