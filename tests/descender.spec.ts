@@ -31,7 +31,7 @@ for (const { path, gradient } of routes) {
         expect(result.glyphs, 'Geprüfte Glyphen').toBeGreaterThan(0);
         if (gradient) expect(result.gradients, 'Glyphen in Verlaufswörtern').toBeGreaterThan(0);
         expect.soft(result.findings, `${reducedMotion} / Schriftstärke ${weight}`).toEqual([]);
-        await style.evaluate(el => el.remove());
+        await style.evaluate(el => (el as Element).remove());
       }
     }
   });

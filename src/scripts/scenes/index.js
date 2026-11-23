@@ -42,9 +42,9 @@ const aliases = {
   rocketLaunch: "rocketStory", moonStory: "rocketStory", maskStoryAll: "maskStory", clockStoryAll: "clockStory",
 };
 const slices = {
-  diveStory: [0, 3], medalStory: [3, 4, "Die Ringe im Wasser werden zu eurer Zahl"],
+  diveStory: [0, 3], medalStory: [3, 4, () => message('showScenes.ripplesBecomeYourNumber')],
   fireworkStory: [0, 3], fireworkFinale: [3, 5],
-  travelStory: [0, 4], planeStory: [4, 6, "Ein Papierflieger fliegt die Route ab"],
+  travelStory: [0, 4], planeStory: [4, 6, () => message('showScenes.paperPlaneFollowsTheRoute')],
   rocketLaunch: [0, 3], moonStory: [2, 4], maskStory: [0, 3], clockStory: [0, 4],
 };
 const canBeWhole = new Set(["diveStory", "fireworkStory", "travelStory", "maskStory", "clockStory"]);
@@ -89,7 +89,7 @@ export async function prepareScene(version, n) {
     const scene = await builder(n, caption, name === "maskStory" && slice ? { ...version, omitDevil: true } : version);
     if (!slice) return scene;
     const [from, to, first] = slice, beats = scene.beats.slice(from, to);
-    if (first) beats[0] = { ...beats[0], caption: first };
+    if (first) beats[0] = { ...beats[0], caption: first() }; // Bildunterschrift in der Seitensprache (23.11.: war fest Deutsch)
     return { ...scene, beats };
   };
 }

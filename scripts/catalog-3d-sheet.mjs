@@ -42,7 +42,8 @@ const rows = [];
 // 3D+ Bewegung. Die Spaltennamen stehen in jeder Zeile (cols); scripts/catalog-3d-sheet.py zeichnet noch seine festen
 // Spaltenköpfe, bis es `cols = rows[0].get("cols") or [...]` liest.
 if (process.argv.includes('--paare')) {
-  const { CATALOG_3D, LIT_MAX } = await import('../src/scripts/scenes/catalog-3d/index.js');
+  const { loadCatalog3d, LIT_MAX } = await import('../src/scripts/scenes/catalog-3d/index.js');
+  const CATALOG_3D = await loadCatalog3d();
   const beatOf = (key, stufe) => { const k = Math.min(+n3, LIT_MAX), { pts, live } = CATALOG_3D[key](k, stufe); return { pts, live: (b, j, t, o) => live(pts[j], j, t, o) }; };
   for (const key of keys.filter((k) => !k.startsWith('--'))) {
     const a = beatOf(key, '3D'), b = beatOf(key, '3D+');

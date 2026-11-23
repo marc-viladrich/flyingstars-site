@@ -2654,6 +2654,16 @@
     "en": "The FlyingStars logo with lettering made of {v0} drones",
     "nl": "Het FlyingStars-logo met tekst uit {v0} drones"
   },
+  "showScenes.ripplesBecomeYourNumber": {
+    "de": "Die Ringe im Wasser werden zu eurer Zahl",
+    "en": "The ripples become your number",
+    "nl": "De kringen worden jullie getal"
+  },
+  "showScenes.paperPlaneFollowsTheRoute": {
+    "de": "Ein Papierflieger fliegt die Route ab",
+    "en": "A paper plane follows the route",
+    "nl": "Een papieren vliegtuig volgt de route"
+  },
   "showScenes.theDevilFromOurBokkenrijdersShow": {
     "de": "Der Teufel aus unserer Show Bokkenrijders",
     "en": "The devil from our Bokkenrijders show",

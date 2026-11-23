@@ -6,7 +6,8 @@ import './show-node-env.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-const { CATALOG_3D, LIT_MAX } = await import('../src/scripts/scenes/catalog-3d/index.js');
+const { loadCatalog3d, LIT_MAX } = await import('../src/scripts/scenes/catalog-3d/index.js');
+const CATALOG_3D = await loadCatalog3d();
 const { catalogScene } = await import('../src/scripts/scenes/catalog.js');
 const { LIMITS } = await import('../src/scripts/show-flight.js');
 const KEYS = Object.keys(CATALOG_3D);

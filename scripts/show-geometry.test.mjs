@@ -65,7 +65,7 @@ test('Jeder Anlass hat vier bis fünfzig Motive (Runde 24/10: Katalog-, Show- un
       // Runde 10: coveredBy = in ODYSSEY zeigt eine Story desselben Anlasses dieses Bild schon (Baumstern → großer Stern)
       const covered = (pkg) => pkg === 'ODYSSEY' && motif.coveredBy && occasion.motifs.some((x) => x.id === motif.coveredBy && x.tiers.ODYSSEY);
       if (stufe === '3D') PACKAGE_ORDER.slice(first).forEach((pkg) => assert.ok(motif.tiers[pkg] || covered(pkg), `${id}: ${pkg} fehlt nach ${PACKAGE_ORDER[first]}`));
-      else if (stufe === '3D+') assert.ok(!motif.tiers.HORIZON && motif.tiers.ODYSSEY?.build, `${id}: 3D+ gehört nur nach ODYSSEY`);
+      else if (stufe === '3D+') assert.ok(!motif.tiers.HORIZON && (motif.tiers.ODYSSEY?.build || covered('ODYSSEY')), `${id}: 3D+ gehört nur nach ODYSSEY`); // 23.11.: Sportwagen steckt in 3D+ in der Tacho-Geschichte (coveredBy)
       else if ('flat' in motif) assert.deepEqual(Object.keys(motif.tiers), ['SPARK'], `${id}: ohne 3D-Fassung nur SPARK`);
       else assert.deepEqual(Object.keys(motif.tiers), ['ODYSSEY'], `${id}: eigene Geschichte ohne Stufe nur ODYSSEY`);
       for (const pkg of PACKAGE_ORDER) if (motif.tiers[pkg]) assert.ok(Number.isFinite(motif.tiers[pkg].minDrones), `${occasion.id}/${motif.id} ${pkg}: minDrones`);
