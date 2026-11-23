@@ -247,7 +247,8 @@ return  [
     // Runde 16 (Marc: „Tachometer → Auto“, mehr Zerlegen und Zusammensetzen): in 3D+ zerlegt sich der Drehzahlmesser und
     // setzt sich zum Sportwagen zusammen (scenes/umbau-geschichten.js); 2D und 3D bleiben die Katalogfassungen
     ((m) => ({ ...m, tiers: { ...m.tiers, ODYSSEY: { ...m.tiers.ODYSSEY, build: 'tachoCarStory', caption: t('showConfigurator.tachoCarStoryCaption') } } }))(catalogMotif('drehzahl', 'launch', t, locale)),
-    catalogMotif('sportwagen', 'launch', t, locale),
+    // Sportwagen in 3D+ nur noch als Ziel der Tacho-Geschichte (Marc 23.11.: das Auto erschien dort doppelt)
+    withoutTier(catalogMotif('sportwagen', 'launch', t, locale), 'ODYSSEY', 'drehzahl'),
     catalogMotif('hubschrauber', 'launch', t, locale),
     ab(catalogMotif('flugzeug', 'launch', t, locale), { ODYSSEY: 400 }), // Runde 10: mit der Mondlandung die zweite Stufe von 3D+
     catalogMotif('kugel', 'launch', t, locale),

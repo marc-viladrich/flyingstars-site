@@ -6,7 +6,7 @@
 
 const SEL = ':is(h1, h2, h3) .grad';
 // Runde 15 (Marc: „setzt zu spät ein … sobald ein Heading im Bild ist, dann mit einem Delay von einer Sekunde“): auslösen,
-// sobald das ganze Wort im Fenster steht (knapp über dem unteren Rand); die Verzögerung trägt die Transition (himmel.css)
+// sobald das ganze Wort im Fenster steht (knapp über dem unteren Rand); seit 23.11. ohne Verzögerung (global.css --dur-weight-delay)
 // Runde 16 (Marc: „sobald der erste Pixel des Headings sichtbar ist“): kein Rand, kein Schwellenwert
 const LATE = '0% 0% 0% 0%';
 

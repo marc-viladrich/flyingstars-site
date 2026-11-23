@@ -93,7 +93,7 @@
   --dur-slow: 0.9s;
   --dur-slow-long: 0.95s;
   --dur-weight-fill: 0.96s; /* Verlaufswort füllt sich (himmel.css, Runde 14) */
-  --dur-weight-delay: 0.4s; /* … sobald es sichtbar wird (Runde 16: 0,9 und 0,5 s waren zu lang) */
+  --dur-weight-delay: 0s; /* … sobald es sichtbar wird (Runde 16: 0,9 und 0,5 s zu lang; 23.11. Marc: ganz ohne Verzögerung) */
   --dur-follow: 0.16s; /* Licht folgt dem Zeiger mit kurzer Trägheit (NRW-Karte, Runde 15) */
   --dur-reel: 1.2s;
   --dur-ambient: 1.4s;
