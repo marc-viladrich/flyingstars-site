@@ -245,7 +245,10 @@ const ticks = [DRONES_MIN, 300, 500, DRONES_MAX];
             <fieldset class="cfg-up-set">
               <legend class="sr-only">{t('preise.upgrades')}</legend>
               <div class="chips cfg-up" id="cfg-upgrades">
-                {upgrades.map(([id, price]) => <label title={t(`preise.upDesc.${id}`)}><input type="checkbox" name="upgrade" value={id} /><span>{t(`preise.up.${id}`)}<small class="mono">{price}</small></span></label>)}
+                {upgrades.map(([id, price]) => {
+                  const label = t(`preise.up.${id}`);
+                  return <label title={t(`preise.upDesc.${id}`)}><input type="checkbox" name="upgrade" value={id} data-label={label} /><span>{label}<small class="mono">{price}</small></span></label>;
+                })}
               </div>
             </fieldset>
           </div>

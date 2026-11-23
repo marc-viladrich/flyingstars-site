@@ -23,6 +23,8 @@ const SOCIAL = [
   { label: 'TikTok', icon: 'tiktok', href: 'https://www.tiktok.com/@flyingstars_art' },
   { label: 'Facebook', icon: 'facebook', href: 'https://www.facebook.com/FlyingStars.Art/' },
 ];
+import HimmelFolge from '../components/HimmelFolge.astro';
+import HimmelStart from '../components/HimmelStart.astro';
 import Consent from '../components/Consent.astro';
 import { trackingConfig } from '../lib/consent.mjs';
 const tracking = trackingConfig({
@@ -56,7 +58,7 @@ const inNav = (href: string) => site.nav.some((item) => item.href === href);
   <head>
     <meta charset="utf-8" />
     {/* UI-Wörterbuch der Seitensprache vor allen Modul-Skripten (defer läuft in Dokumentreihenfolge), siehe src/i18n/ui.mjs */}
-    <script is:inline defer src={`/media/i18n/${locale}.js`}></script>
+    <script is:inline defer data-fs-ui src={`/media/i18n/${locale}.js`}></script>
     {/* Above-the-fold fonts: avoid moving the blog grid when fallback metrics are replaced. */}
     <link rel="preload" href="/fonts/space-grotesk-0.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/inter-latin-400-700-v1.woff2" as="font" type="font/woff2" crossorigin />
@@ -112,9 +114,9 @@ const inNav = (href: string) => site.nav.some((item) => item.href === href);
       <div class="base mono"><span>© {new Date().getFullYear()} FlyingStars GmbH</span><nav aria-label={t('base.legal')}>{site.footer.legal.map((item) => <a href={localHref(item.href)}>{item.label}</a>)}</nav><button type="button" class="consent-reopen" data-consent-open hidden aria-label={t('consent.reopen')} title={t('consent.reopen')}><Icon name="cookie" size={18} /></button></div>
     </footer>
     {(tracking.ga || tracking.ads) && <Consent config={tracking} />}
+    {current === '/' ? <HimmelFolge /> : <HimmelStart />}
     <script>
       import '../scripts/site';
-      import '../scripts/himmel/index';
     </script>
   </body>
 </html>

@@ -6,7 +6,7 @@ import assert from 'node:assert/strict';
 import { readFileSync, statSync } from 'node:fs';
 
 const read = (p) => readFileSync(new URL(`../${p}`, import.meta.url), 'utf8');
-const staticImports = (src) => [...src.matchAll(/^\s*import\s+(?:[^'"()]+\s+from\s+)?['"]([^'"]+)['"]/gm)].map((m) => m[1]);
+const staticImports = (src) => [...src.matchAll(/^\s*import(?!\s+type\b)\s+(?:[^'"()]+\s+from\s+)?['"]([^'"]+)['"]/gm)].map((m) => m[1]);
 
 test('himmel/index.ts lädt den Schwarm nur dynamisch und bleibt klein', () => {
   const src = read('src/scripts/himmel/index.ts');
@@ -57,7 +57,7 @@ test('Runde 5: Zeiger verdrängt (Feder wie Scrollstory), kein Aufleuchten; Himm
 
 test('Schwarm bestellt Bilder erst nahe ihrer Bühne', () => {
   const src = read('src/scripts/himmel/schwarm.ts');
-  const ctor = src.slice(src.indexOf('constructor(defs: SlotDef[])'), src.indexOf('loadFolge(slot: Slot)'));
+  const ctor = src.slice(src.indexOf('constructor(defs: SlotDef[]'), src.indexOf('loadFolge(slot: Slot'));
   assert.match(ctor, /new IntersectionObserver/);
   assert.doesNotMatch(ctor.split('def.react?.')[0], /this\.want\(/, 'want() direkt im Konstruktor lädt alle Motive beim Start');
 });

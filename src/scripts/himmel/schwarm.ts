@@ -33,6 +33,7 @@ interface Scene { id: string; n: number; pts: Float32Array; col: Uint8Array; ran
 interface SlotDef { sel: string; place: Place; spec: Spec | ((host: HTMLElement) => Spec); deskOnly?: boolean; then?: Spec; react?: React; when?: (host: HTMLElement) => boolean; max?: number; folge?: boolean; up?: number; tall?: number }
 /** Die Show-Folge (folge.js), erst nahe an ihrer Section geladen. */
 interface Folge { ready: Promise<void>; canEnter(): boolean; place(box: Box): unknown; enter(box: Box): { pts: number[][]; radius: number } | null; peek(): number[][]; play(): void; leave(): number[][]; hide(): void }
+export type FolgeLoader = (canvas: HTMLCanvasElement, burst: number[][]) => Promise<Folge>;
 interface Slot { def: SlotDef; host: HTMLElement; bounds?: Box; box: Box; scene: Scene | null; want: string; spec: Spec; first: Spec; seqAt: number; own: HTMLElement | null; turned: boolean; heldAt: number }
 
 const N = 300;
@@ -272,7 +273,7 @@ class Himmel {
   // Farbe und Lichtgröße im Flug: von der zuletzt gezeigten Farbe (cc) zur Farbe des Ziels, Gewicht cw je Drohne
   cc = new Uint8Array(N * 3); fc = new Uint8Array(N * 3); cw = new Float32Array(N).fill(1); rad0 = 0; rad1 = 0;
 
-  constructor(defs: SlotDef[]) {
+  constructor(defs: SlotDef[], loadFolge?: FolgeLoader) {
     this.layer.className = 'hm-layer'; this.layer.setAttribute('aria-hidden', 'true');
     for (const f of [this.fly, this.stand]) { f.cv.style.left = '0'; f.cv.style.top = '0'; f.cv.style.visibility = 'hidden'; this.layer.append(f.cv); }
     document.body.append(this.layer);
@@ -322,19 +323,18 @@ class Himmel {
     reducedMotion.addEventListener('change', motionChanged);
     document.fonts?.ready.then(refresh);
     const fs = this.slots.find((s) => s.def.folge);
-    if (fs) this.loadFolge(fs);
+    if (fs && loadFolge) this.loadFolge(fs, loadFolge);
     this.frame = this.frame.bind(this);
     this.layout(true);
   }
   /** Die Show-Folge laden, sobald ihre Section näher als zwei Bildschirmhöhen ist (die Engine des Konfigurators ist groß). */
-  loadFolge(slot: Slot) {
+  loadFolge(slot: Slot, createFolge: FolgeLoader) {
     void load({ burst: true }).then((sc) => { this.burstScene = sc; });
     const io = new IntersectionObserver((es) => {
       if (!es.some((e) => e.isIntersecting)) return;
       io.disconnect();
       const cv = document.createElement('canvas'); cv.className = 'hm-folge'; this.layer.append(cv);
-      import('./folge.js').then(({ createFolge }) => {
-        const f = createFolge(cv, { locale: lang(), burst: burstPts() }) as unknown as Folge;
+      createFolge(cv, burstPts()).then((f) => {
         f.place(slot.box);
         return f.ready.then(() => { this.fol = f; this.folReady = true; this.last = 0; this.kick(); });
       }).catch((e) => console.warn('Show-Folge nicht verfügbar:', e));
@@ -791,10 +791,10 @@ function plan(): SlotDef[] {
 }
 
 let started = false;
-export function initSchwarm(): void {
+export function initSchwarm(loadFolge?: FolgeLoader): void {
   if (started) return;
   const defs = plan().filter((d) => document.querySelector(d.sel));
   if (!defs.length) return;
   started = true;
-  new Himmel(defs);
+  new Himmel(defs, loadFolge);
 }

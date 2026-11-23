@@ -2,26 +2,30 @@ import {translatorFor} from './ui-core.mjs';
 import messages from './ui.json' with { type: 'json' };
 import { LOCALES } from './routing.mjs';
 const server = import.meta.env?.SSR ?? (typeof process !== 'undefined' && Boolean(process.versions?.node));
-// Im Browser liegt das Wörterbuch der Seitensprache schon global bereit: /media/i18n/<sprache>.js, ein klassisches
-// Skript mit defer im <head> (Base.astro), läuft vor allen Modul-Skripten. Kein Top-Level-await (Runde 23): Safari bis
-// 26.6 wertet parallel importierte Module mit Top-Level-await fehlerhaft aus (WebKit-Bug 242740), dort lud u. a. der
-// Konfigurator gar nicht.
-function dictionary() {
-  if (server) return messages;
-  const browser = globalThis.__FS_UI__;
-  if (!browser) throw new Error('UI-Wörterbuch fehlt: /media/i18n/<sprache>.js wurde nicht vor den Modulen geladen');
-  return browser;
-}
-/** Build-time projection; browser consumers do not receive the other languages. */
-export function messagesForLocale(locale) {
-  if (!LOCALES.includes(locale)) throw new Error(`Unknown UI locale: ${locale}`);
-  return Object.fromEntries(Object.entries(messages).map(([key, value]) => [key, { [locale]: value[locale] }]));
+// Klassisches defer-Skript vor den Modulen, synchron gelesen (Runde 23, WebKit-Bug 242740).
+function browserError(error) {
+  // Auch dann sichtbar, wenn ein Aufrufer einen fehlgeschlagenen Lazy-Import abfängt.
+  console.error(error);
 }
 
 /** No HTML interpolation. Callers render links/emphasis, values are plain text.
  * @returns {((key: string, values?: Record<string, unknown>) => string) & {afeAddress: (key: string) => {owner:{collection:string,id:string},part:string,path:string[],mode:string}}}
  */
-export function createTranslator(locale = 'de') { return translatorFor(dictionary(),locale); }
+export function createTranslator(locale = 'de') {
+  if (server) return translatorFor(messages, locale);
+  const browser = globalThis.__FS_UI__;
+  if (!browser) {
+    const error = new Error('UI-Wörterbuch fehlt vor den Browser-Modulen');
+    browserError(error);
+    throw error;
+  }
+  if (locale !== document.documentElement.lang) {
+    const error = new Error(`UI-Wörterbuch der Seite passt nicht zur angefragten Sprache: ${locale}`);
+    browserError(error);
+    throw error;
+  }
+  return translatorFor(browser, locale, { flat: true, onMissing: browserError });
+}
 
 /** Browser modules (including lazy scene builders); safe for deterministic Node unit tests. */
 export function t(key, values = {}) {

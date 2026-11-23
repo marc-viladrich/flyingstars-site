@@ -1,0 +1,26 @@
+<script>
+  import { t } from '../../i18n/ui.mjs';
+  import { createVideoController } from '../../scripts/video-controller';
+  document.querySelectorAll<HTMLElement>('[data-lh-reel]').forEach((host) => {
+    const v = host.querySelector('video')!;
+    const btn = host.querySelector<HTMLButtonElement>('[data-lh-toggle]')!;
+    const label = host.querySelector<HTMLElement>('[data-lh-label]')!;
+    const show = (on: boolean) => {
+      btn.setAttribute('aria-pressed', String(on));
+      label.textContent = on ? t('landinghero.pauseVideo') : t('landinghero.playVideo');
+      btn.setAttribute('aria-label', label.textContent);
+      host.classList.toggle('is-on', on);
+      // einmal gelaufen: angehalten bleibt das Bild des Videos stehen, das Standbild kommt nicht zurück
+      if (on) host.classList.add('has-played');
+      host.classList.add('ready');
+    };
+    const controller = createVideoController(v, { host, trigger: 'manual', visibilityThreshold: 0.25, autoMediaQuery: 'all', onState: show,
+      onError: () => { host.classList.remove('is-on', 'can-toggle'); btn.hidden = true; } });
+    btn.hidden = false;
+    btn.addEventListener('click', () => controller.setChoice(!host.classList.contains('is-on')));
+    // Klick irgendwo aufs Video schaltet wie der Knopf (Marc, 02.11.2026); der Knopf bleibt das Ziel für Tastatur und Screenreader
+    host.addEventListener('click', (event) => { if (!btn.hidden && !btn.contains(event.target as Node)) btn.click(); });
+    host.classList.add('can-toggle');
+
+  });
+</script>
