@@ -155,9 +155,9 @@ function steadyBeat(b) {
  * variant "indoor": eigene Bühne ohne Schwarm; das Canvas liegt per CSS in seiner Bühne (siehe mountFolge()).
  * @param {HTMLCanvasElement} canvas
  * order: eigene Reihenfolge der Stücke ohne Auftakt (Prüfwerkzeuge, Kontaktbögen).
- * @param {{ locale?: string, burst?: number[][], rnd?: () => number, variant?: "himmel" | "indoor" | "eco", order?: string[] }} [opts]
+ * @param {{ locale?: string, burst?: number[][], rnd?: () => number, variant?: "himmel" | "indoor" | "eco", order?: string[], buildShow?: (step: {build: string, pkg: string, n: number, whole?: boolean}) => Promise<object[]> }} [opts]
  */
-export function createFolge(canvas, { burst = [], rnd = Math.random, variant = "himmel", order = null } = {}) {
+export function createFolge(canvas, { burst = [], rnd = Math.random, variant = "himmel", order = null, buildShow } = {}) {
   const V = VARIANTS[variant] ?? VARIANTS.himmel, NV = V.n, PIECE = V.pieces;
   // Hinzukommende Drohnen warten unter dem Bild (Anzeigeeinheiten, das Bild reicht bis etwa ±0,75 · size), über die Breite
   // verteilt, als lockerer Schwarm; dank joinLate fliegen sie dunkel und leuchten erst an ihrem Platz auf
@@ -189,9 +189,8 @@ export function createFolge(canvas, { burst = [], rnd = Math.random, variant = "
       const { ecoScene } = await import("../scenes/eco.js");
       all = ecoScene(build.slice(4), n).beats.map(steadyBeat);
     } else {
-      const [{ buildSequence }, { SHOW_PACKAGES }] = await Promise.all([import("../show-scenes.js"), import("../../content/show-packages.ts")]);
-      const seq = await buildSequence([{ id: "m", label: "", tiers: { [pkg]: { build, caption: "", minDrones: 0, ...(step.whole ? { whole: true } : {}) } } }], pkg, n, SHOW_PACKAGES[pkg].color, "");
-      all = seq.beats;
+      if (!buildShow) throw new Error('Für die Himmel-Folge fehlt der Szenenlader');
+      all = await buildShow(step);
     }
     const s = seg++;
     const beats = all.filter((b) => !b.interlude).slice(step.from ?? 0, step.to);
@@ -369,9 +368,10 @@ export function createFolge(canvas, { burst = [], rnd = Math.random, variant = "
  */
 export function mountFolge(stage) {
   const canvas = stage.querySelector("canvas");
-  if (!canvas || stage.dataset.folgeOn) return;
+  const variant = stage.dataset.folge;
+  if (!canvas || stage.dataset.folgeOn || !STAGED.has(variant)) return;
   stage.dataset.folgeOn = "1";
-  const f = createFolge(canvas, { variant: STAGED.has(stage.dataset.folge) ? stage.dataset.folge : "himmel" });
+  const f = createFolge(canvas, { variant });
   const boxOf = () => ({ x: 0, y: 0, w: stage.clientWidth, h: stage.clientHeight });
   let started = false;
   f.ready.then(() => {

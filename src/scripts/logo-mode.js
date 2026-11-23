@@ -5,6 +5,7 @@
 //   23-logo-drohnen-konverter/tools/v10/examples.mjs). Gezeigt werden je Drohnenzahl nur die Logos, die in diese Zahl passen.
 // - Eigenes Logo: logo-v10 (Kontur, Budget-Flexibilität, Detailgrad), Entfernen von Teilen in einer flachen Ansicht über der
 //   Bühne (die Bühne selbst ist gekippt und fliegt; dort wäre ein Klick nicht verlässlich einer Drohne zuzuordnen).
+import { t } from "../i18n/ui.mjs";
 import { decodePoints } from "./logo-v10/prepared.mjs";
 import { exampleRaster, exampleOptions } from "./logo-v10/example-raster.mjs";
 import { logoFormations } from "./logo-v10/logo-formation.js";
@@ -80,7 +81,7 @@ export function logoSession(file, init = {}) {
  * Feld sie zeichnet (screenOf(): Bildschirmlage je Punktindex); entfernte Teile als Geister, über eine Ausgleichsabbildung
  * Logo → Bildschirm aus den aktuellen Punkten gelegt. el: { canvas, band, bar, text, remove, restore, clear, all }.
  */
-export function stageEditor(el, { screenOf, onChange, t }) {
+export function stageEditor(el, { screenOf, onChange }) {
   const c = el.canvas, g = c.getContext("2d");
   let shown = null, groups = null, removed = [], selected = new Set(), hover = null, raf = 0, on = false;
   /** Logo-Koordinaten → Bildschirm: kleinste Quadrate über alle Punkte mit Lage (x' = a x + b, y' = c y + d) */

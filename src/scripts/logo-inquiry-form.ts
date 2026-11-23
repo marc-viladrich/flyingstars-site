@@ -20,7 +20,7 @@ export function logoInquiryForm(form: HTMLFormElement) {
     for (const key of ['original', 'preview', 'drones'] as const) {
       const value = selected[key]; if (!value) continue;
       const row = document.createElement('li'); row.dataset.logoItem = key;
-      const name = key === 'drones' ? t('logoInquiry.drones', {n:value}) : t(`logoInquiry.${key}`);
+      const name = key === 'drones' ? t('logoInquiry.drones', {n:value}) : t(key === 'original' ? 'logoInquiry.original' : 'logoInquiry.preview');
       if (key !== 'drones') {
         const file = value as File, thumb = document.createElement('span'), img = document.createElement('img');
         thumb.className = `logo-att-thumb is-${key}`;

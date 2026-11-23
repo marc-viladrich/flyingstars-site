@@ -1,4 +1,6 @@
 ---
+import LandingHeroShowScript from './LandingHeroShowScript.astro';
+import LandingHeroVideoScript from './LandingHeroVideoScript.astro';
 import MediaFrame from '../MediaFrame.astro';
 import FactList from '../FactList.astro';
 import { forPath } from '../../i18n/server';
@@ -51,63 +53,7 @@ const showLabels = { hochzeitHero: t('landinghero.weddingShowLabel') };
   </MediaFrame>}
 </section>
 
-<script>
-  import { t } from '../../i18n/ui.mjs';
-  import { createVideoController } from '../../scripts/video-controller';
-  document.querySelectorAll<HTMLElement>('[data-lh-reel]').forEach((host) => {
-    const v = host.querySelector('video')!;
-    const btn = host.querySelector<HTMLButtonElement>('[data-lh-toggle]')!;
-    const label = host.querySelector<HTMLElement>('[data-lh-label]')!;
-    const show = (on: boolean) => {
-      btn.setAttribute('aria-pressed', String(on));
-      label.textContent = on ? t('landinghero.pauseVideo') : t('landinghero.playVideo');
-      btn.setAttribute('aria-label', label.textContent);
-      host.classList.toggle('is-on', on);
-      // einmal gelaufen: angehalten bleibt das Bild des Videos stehen, das Standbild kommt nicht zurück
-      if (on) host.classList.add('has-played');
-      host.classList.add('ready');
-    };
-    const controller = createVideoController(v, { host, trigger: 'manual', visibilityThreshold: 0.25, autoMediaQuery: 'all', onState: show,
-      onError: () => { host.classList.remove('is-on', 'can-toggle'); btn.hidden = true; } });
-    btn.hidden = false;
-    btn.addEventListener('click', () => controller.setChoice(!host.classList.contains('is-on')));
-    // Klick irgendwo aufs Video schaltet wie der Knopf (Marc, 02.11.2026); der Knopf bleibt das Ziel für Tastatur und Screenreader
-    host.addEventListener('click', (event) => { if (!btn.hidden && !btn.contains(event.target as Node)) btn.click(); });
-    host.classList.add('can-toggle');
-
-  });
-</script>
-
-<script>
-  import { importInStages, afterHeroPaint } from '../../scripts/when-near.mjs';
-  // Formationen statt Video (Runde 14): erst nach dem Laden der Seite und im Leerlauf, damit vor dem LCP weder Szenen noch
-  // Katalogdaten laden (tools/himmel/perf-start.mjs); die Modulkette in Stufen wie beim Konfigurator-Teaser. Reduzierte
-  // Bewegung: das Standbild bleibt, die Engine lädt nicht. Globale Pause: lädt erst, wenn die Pause aufgehoben wird.
-  const hosts = document.querySelectorAll<HTMLElement>('[data-lh-show]');
-  const idle = () => new Promise<void>((res) => ('requestIdleCallback' in window ? requestIdleCallback(() => res(), { timeout: 1200 }) : setTimeout(res, 200)));
-  const paused = () => document.documentElement.classList.contains('motion-paused');
-  // der Pause-Knopf der Kopfzeile meldet jeden Wechsel (src/scripts/site.ts)
-  const whenPlaying = () => new Promise<void>((res) => {
-    if (!paused()) return res();
-    const resume = () => { if (!paused()) { document.removeEventListener('flyingstars:motion-change', resume); res(); } };
-    document.addEventListener('flyingstars:motion-change', resume);
-  });
-  if (hosts.length && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    afterHeroPaint().then(idle).then(whenPlaying).then(() => importInStages(
-      () => import('../../scripts/show-field.js'),
-      () => import('../../scripts/show-scenes.js'),
-      () => import('../../content/show-configurator.js'),
-      () => import('../../scripts/formation/index.js'),
-      () => import('../../scripts/show-teaser.js'),
-      () => import('../../scripts/hero-show.js'),
-    )).then((m) => Promise.all([...hosts].map((host) => m.initHeroShow(host).then(() => {
-      // jetzt beschreibt die Bühne, was zu sehen ist; das ausgeblendete Standbild tritt zurück
-      const canvas = host.querySelector('canvas')!;
-      canvas.setAttribute('role', 'img'); canvas.setAttribute('aria-label', host.dataset.lhLabel ?? ''); canvas.removeAttribute('aria-hidden');
-      host.querySelector('img')?.setAttribute('aria-hidden', 'true');
-    })))).catch((error) => console.warn('Hero-Show konnte nicht laden', error));
-  }
-</script>
+{show ? <LandingHeroShowScript /> : <LandingHeroVideoScript />}
 
 <style>
   .lh { position: relative; display: grid; grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr); gap: clamp(var(--space-8), 5vw, var(--space-20)); align-items: center; padding: clamp(var(--space-9), 6vw, var(--space-22)) var(--gutter) clamp(var(--space-14), 7vw, var(--space-28)); overflow: hidden; }

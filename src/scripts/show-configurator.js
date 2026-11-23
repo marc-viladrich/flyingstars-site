@@ -7,6 +7,11 @@ import { localeFromPath } from '../i18n/routing.mjs';
 const locale = localeFromPath(location.pathname);
 const { OCCASIONS, STEPS } = getConfiguratorContent(locale);
 import { t as message } from '../i18n/ui.mjs';
+// Jede Auswahl verweist auf einen vollständigen Übersetzungsschlüssel.
+/** @type {Record<import('../content/show-packages').ShowArt, string>} */
+const ART_NAME_KEYS = { '2d': 'preise.artName.2d', '3d': 'preise.artName.3d', story: 'preise.artName.story' };
+/** @type {Record<import('../content/show-packages').ShowArt, string>} */
+const YOUR_SHOW_KEYS = { '2d': 'preise.yourShow.2d', '3d': 'preise.yourShow.3d', story: 'preise.yourShow.story' };
 // Show configurator. Anlass picks a sequence of motifs that plays like a little show; Paket and Drohnenzahl set the
 // price (zwölfte Fassung, Marc 30.10.2026: the drone count is the third axis, every package has its own range, crossing
 // a range boundary switches the package visibly). Switching the package turns the motif on stage into its version for
@@ -46,7 +51,7 @@ import { DENSITIES, RISKY } from "./logo-density.mjs";
 import { logoAdvice } from "./logo-advice.mjs";
 import { logoFrame } from "./logo-stage.mjs";
 import { LANDMARK_EXAMPLES } from "./logo-examples.mjs";
-import { SHOW_EXTRAS } from "../content/show-extras.mjs";
+import SHOW_EXTRAS from "../content/show-extras.json" with { type: "json" };
 import { money } from "../lib/price.mjs";
 // Preisseite nach Moritz (17.11.2026): keine Paketwahl mehr. Zwei Zustände:
 // - preset (SPARK/HORIZON/ODYSSEY): Startpunkt aus einer Paketkarte („SPARK anpassen“, ?paket=SPARK). Feste Drohnenzahl des
@@ -362,7 +367,7 @@ if (form) {
       // Runde 9 (Punkt 1): im Automatikzustand steht der Griff auf der gemessenen Stufe des automatischen Bilds
       if (detailAuto.getAttribute("aria-pressed") === "true") void placeAutoDensity(source, n, pts.length);
       editor ??= mod.stageEditor({ canvas: $("#cfg-pick"), band: $("#cfg-edit-band"), bar: $("#cfg-edit-bar"), text: $("#cfg-edit-text"), remove: $("#cfg-edit-remove"), restore: $("#cfg-edit-restore"), clear: $("#cfg-edit-clear"), all: $("#cfg-edit-all") }, {
-        screenOf: field.screenOf, t: message,
+        screenOf: field.screenOf,
         onChange: (list) => { if (!session) return; session.setRemoved(list); logoVer++; showCloud(); update(true, LOGO_SEGMENT, { cloud: true }); },
       });
       editor.show(pts, session.removed); drawLogoMode();
@@ -552,7 +557,7 @@ if (form) {
   function drawPrice() {
     // Runde 10 (Marc 20.11.2026: „ab 300 Drohnen rausnehmen“, „keinen Bindestrich zwischen Typ und Show“): „Eure 2D Show“,
     // „Eure 3D Show“, „Eure 3D+ Show“, in der Preisbox und in der Leiste am Handy gleich; die Mindestzahl steht am Regler
-    const s = step(), price = currentPrice(), name = preset ?? message(`preise.yourShow.${pricedArt()}`), boxName = name;
+    const s = step(), price = currentPrice(), name = preset ?? message(YOUR_SHOW_KEYS[pricedArt()]), boxName = name;
     section.classList.toggle("is-individual", !preset);
     $("#cfg-new").textContent = preset ?? ""; $("#cfg-new").hidden = !preset;
     if (preset) document.documentElement.style.setProperty("--pkg", `rgb(${SHOW_PACKAGES[preset].color.join(",")})`);
@@ -571,12 +576,12 @@ if (form) {
     const up = chosenUpgrades();
     const summary = [
       message('showConfigurator.occasionValue', { v0: occasion.label }),
-      message('preise.summaryArt', { art: message(`preise.artName.${pricedArt()}`) }),
+      message('preise.summaryArt', { art: message(ART_NAME_KEYS[pricedArt()]) }),
       message('configurator.motifs', { list: occasion.motifs.filter((m) => canPlay(m, s.pkg, drones)).map((m) => m.label).join(', ') }),
       ...(text ? [message('showConfigurator.customTextValueValue', { v0: text, v1: STYLE_LABEL[style] })] : []),
       ...(logo ? [message('showConfigurator.customLogoTriedInThePreview')] : []),
       preset ? message('preise.summaryPackage', { name: preset, drones: pricedDrones(), price: amount }) : message('preise.summaryIndividual', { drones: pricedDrones(), price: amount }),
-      ...(up.length ? [message('preise.summaryUpgrades', { list: up.map((id) => message(`preise.up.${id}`)).join(', ') })] : []),
+      ...(up.length ? [message('preise.summaryUpgrades', { list: upBoxes.filter(box => box.checked).map(box => box.dataset.label).join(', ') })] : []),
     ].join("\n");
     const inquiry = inquiryHref({paket:preset ?? undefined,drohnen:pricedDrones(),anlass:up.includes("indoor") ? "indoor" : occasion.anlass,extras:up,show:summary},locale,'/drohnenshow-preise/#anfrage'); // das Formular steht seit Moritz' Preistext auf der Preisseite
     $("#cfg-cta").href = inquiry; $("#cfg-bar-cta").href = inquiry;
@@ -654,7 +659,7 @@ if (form) {
   let floorTimer = 0, auto3d = false; // auto3d: 3D kam von selbst (2D ab TWO_D_LIMIT), nicht aus der Auswahl
   /** Kurzer Hinweis, warum der Regler nicht tiefer geht (z. B. „3D-Show ab 200 Drohnen“) oder die Art wechselte. */
   function floorNote(key = 'preise.artFloor', n = artMin(art), extra = {}) {
-    floorEl.textContent = message(key, { art: message(`preise.artName.${art}`), n, ...extra });
+    floorEl.textContent = message(key, { art: message(ART_NAME_KEYS[art]), n, ...extra });
     floorEl.parentElement.classList.add("is-note");
     clearTimeout(floorTimer);
     floorTimer = setTimeout(() => floorEl.parentElement.classList.remove("is-note"), 2600);

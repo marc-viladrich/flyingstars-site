@@ -1,0 +1,18 @@
+<script>
+  import { initHimmel } from '../scripts/himmel/index';
+  import type { FolgeLoader } from '../scripts/himmel/schwarm';
+  // Nur der Himmel der Startseite spielt Stücke aus dem Konfigurator.
+  async function buildShow({ build, pkg, n, whole }: { build: string; pkg: string; n: number; whole?: boolean }) {
+    const [{ buildSequence }, { SHOW_PACKAGES }] = await Promise.all([
+      import('../scripts/show-scenes.js'), import('../content/show-packages'),
+    ]);
+    const version = { build, caption: '', minDrones: 0, ...(whole ? { whole: true } : {}) };
+    const seq = await buildSequence([{ id: 'm', label: '', tiers: { [pkg]: version } }], pkg, n, SHOW_PACKAGES[pkg as keyof typeof SHOW_PACKAGES].color, '');
+    return seq.beats;
+  }
+
+  initHimmel(async (canvas, burst) => {
+    const { createFolge } = await import('../scripts/himmel/folge.js');
+    return createFolge(canvas, { burst, buildShow }) as unknown as Awaited<ReturnType<FolgeLoader>>;
+  });
+</script>

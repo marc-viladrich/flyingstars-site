@@ -6,7 +6,7 @@ import assert from 'node:assert/strict';
 import { readFileSync, statSync } from 'node:fs';
 
 const read = (p) => readFileSync(new URL(`../${p}`, import.meta.url), 'utf8');
-const staticImports = (src) => [...src.matchAll(/^\s*import\s+(?:[^'"()]+\s+from\s+)?['"]([^'"]+)['"]/gm)].map((m) => m[1]);
+const staticImports = (src) => [...src.matchAll(/^\s*import(?!\s+type\b)\s+(?:[^'"()]+\s+from\s+)?['"]([^'"]+)['"]/gm)].map((m) => m[1]);
 
 test('himmel/index.ts lädt den Schwarm nur dynamisch und bleibt klein', () => {
   const src = read('src/scripts/himmel/index.ts');
@@ -22,7 +22,7 @@ test('himmel/index.ts lädt den Schwarm nur dynamisch und bleibt klein', () => {
 test('23.11.: Schwarm lädt nur auf Seiten mit Bühne, nah an der Bühne; buehnen.ts kennt jede Bühne aus plan()', () => {
   const index = read('src/scripts/himmel/index.ts'), stages = read('src/scripts/himmel/buehnen.ts');
   assert.match(index, /querySelectorAll\(STAGES\)/);
-  assert.match(index, /if \(stages\.length\)/, 'ohne Bühne kein Import');
+  assert.match(index, /if \(!stages\.length\) return;/, 'ohne Bühne kein Import');
   assert.match(index, /new IntersectionObserver/, 'Import erst nahe einer Bühne');
   const sels = [...read('src/scripts/himmel/schwarm.ts').matchAll(/sel: '([^']+)'/g)].map((m) => m[1]);
   assert.ok(sels.length > 5);
@@ -68,7 +68,7 @@ test('Runde 5: Zeiger verdrängt (Feder wie Scrollstory), kein Aufleuchten; Himm
 
 test('Schwarm bestellt Bilder erst nahe ihrer Bühne', () => {
   const src = read('src/scripts/himmel/schwarm.ts');
-  const ctor = src.slice(src.indexOf('constructor(defs: SlotDef[])'), src.indexOf('loadFolge(slot: Slot)'));
+  const ctor = src.slice(src.indexOf('constructor(defs: SlotDef[]'), src.indexOf('loadFolge(slot: Slot'));
   assert.match(ctor, /new IntersectionObserver/);
   assert.doesNotMatch(ctor.split('def.react?.')[0], /this\.want\(/, 'want() direkt im Konstruktor lädt alle Motive beim Start');
 });

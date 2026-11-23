@@ -85,7 +85,7 @@ test('Einzelbild-Rahmen, Presse-Einträge und CSS-Dauerschleifen haben je einen 
 });
 
 test('Alle aktiven Reels verwenden den gemeinsamen Video-Controller', () => {
-  for (const file of ['src/scripts/hero-reel.ts','src/components/landing/LandingHero.astro','src/components/projects/ProjectCard.astro']) {
+  for (const file of ['src/scripts/hero-reel.ts','src/components/landing/LandingHeroVideoScript.astro','src/components/projects/ProjectCard.astro']) {
     const source = read(file); assert.match(source, /createVideoController/); assert.doesNotMatch(source, /\.play\(|new IntersectionObserver|new MutationObserver/);
   }
 });

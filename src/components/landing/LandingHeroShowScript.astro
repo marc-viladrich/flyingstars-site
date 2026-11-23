@@ -1,0 +1,30 @@
+<script>
+  import { importInStages, afterHeroPaint } from '../../scripts/when-near.mjs';
+  // Formationen statt Video (Runde 14): erst nach dem Laden der Seite und im Leerlauf, damit vor dem LCP weder Szenen noch
+  // Katalogdaten laden (tools/himmel/perf-start.mjs); die Modulkette in Stufen wie beim Konfigurator-Teaser. Reduzierte
+  // Bewegung: das Standbild bleibt, die Engine lädt nicht. Globale Pause: lädt erst, wenn die Pause aufgehoben wird.
+  const hosts = document.querySelectorAll<HTMLElement>('[data-lh-show]');
+  const idle = () => new Promise<void>((res) => ('requestIdleCallback' in window ? requestIdleCallback(() => res(), { timeout: 1200 }) : setTimeout(res, 200)));
+  const paused = () => document.documentElement.classList.contains('motion-paused');
+  // der Pause-Knopf der Kopfzeile meldet jeden Wechsel (src/scripts/site.ts)
+  const whenPlaying = () => new Promise<void>((res) => {
+    if (!paused()) return res();
+    const resume = () => { if (!paused()) { document.removeEventListener('flyingstars:motion-change', resume); res(); } };
+    document.addEventListener('flyingstars:motion-change', resume);
+  });
+  if (hosts.length && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    afterHeroPaint().then(idle).then(whenPlaying).then(() => importInStages(
+      () => import('../../scripts/show-field.js'),
+      () => import('../../scripts/show-scenes.js'),
+      () => import('../../content/show-configurator.js'),
+      () => import('../../scripts/formation/index.js'),
+      () => import('../../scripts/show-teaser.js'),
+      () => import('../../scripts/hero-show.js'),
+    )).then((m) => Promise.all([...hosts].map((host) => m.initHeroShow(host).then(() => {
+      // jetzt beschreibt die Bühne, was zu sehen ist; das ausgeblendete Standbild tritt zurück
+      const canvas = host.querySelector('canvas')!;
+      canvas.setAttribute('role', 'img'); canvas.setAttribute('aria-label', host.dataset.lhLabel ?? ''); canvas.removeAttribute('aria-hidden');
+      host.querySelector('img')?.setAttribute('aria-hidden', 'true');
+    })))).catch((error) => console.warn('Hero-Show konnte nicht laden', error));
+  }
+</script>

@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { readdirSync, readFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
+import { checkBrowserDictionaries } from './browser-ui-graph.mjs';
 import { LOCALES, localizedHref } from '../src/i18n/routing.mjs';
 
 /** Checks the output that is actually deployed, including redirects; no hand-maintained route list. */
@@ -29,6 +30,7 @@ export function checkI18nBuild(dist = new URL('../dist/', import.meta.url)) {
       assert.equal(new URL(fallback).pathname, routeOf(file), localizedFile);
     }
   }
-  return { germanRoutes: german.length, localizedContentRoutes: content, localizedRedirects: redirects };
+  const browser = checkBrowserDictionaries(fileURLToPath(dist));
+  return { browserRoutes: browser.routes, browserDictionaries: browser.dictionaries, germanRoutes: german.length, localizedContentRoutes: content, localizedRedirects: redirects };
 }
 if (process.argv[1] === fileURLToPath(import.meta.url)) console.log(JSON.stringify(checkI18nBuild(), null, 2));

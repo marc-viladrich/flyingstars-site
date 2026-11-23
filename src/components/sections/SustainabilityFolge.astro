@@ -1,0 +1,7 @@
+<script>
+  import { whenNear } from '../../scripts/when-near.mjs';
+  // Indoor-Reihe (show: indoor): Engine erst nahe der Bühne laden; Bau in Leerlauf-Tasks, Start bei Sichtbarkeit (folge.js)
+  for (const stage of document.querySelectorAll<HTMLElement>('[data-folge]')) {
+    whenNear(stage, async () => { const { mountFolge } = await import('../../scripts/himmel/folge.js'); mountFolge(stage); }, { rootMargin: '300px 0px' });
+  }
+</script>
