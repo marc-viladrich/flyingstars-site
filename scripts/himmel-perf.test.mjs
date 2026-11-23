@@ -15,7 +15,18 @@ test('himmel/index.ts lädt den Schwarm nur dynamisch und bleibt klein', () => {
   assert.match(src, /import\(\s*['"]\.\/schwarm['"]\s*\)/, 'Schwarm muss per import() nachladen');
   // Alles, was index.ts statisch zieht, gehört zum Skript des ersten Bildschirms: höchstens 8 KB Quelltext
   const bytes = ['index.ts', ...imports.map((p) => p.replace(/^\.\//, '') + '.ts')].reduce((s, f) => s + statSync(new URL(`../src/scripts/himmel/${f}`, import.meta.url)).size, 0);
-  assert.ok(bytes < 8000, `Himmel im Erstbildschirm-Skript: ${bytes} Bytes Quelltext (Budget 8000)`);
+  // 23.11.: 9000 statt 8000 für die Bühnenprüfung (buehnen.ts + Beobachter, ~0,3 kB gzip), die Seiten ohne Bühne 30 kB Schwarm erspart
+  assert.ok(bytes < 9000, `Himmel im Erstbildschirm-Skript: ${bytes} Bytes Quelltext (Budget 9000)`);
+});
+
+test('23.11.: Schwarm lädt nur auf Seiten mit Bühne, nah an der Bühne; buehnen.ts kennt jede Bühne aus plan()', () => {
+  const index = read('src/scripts/himmel/index.ts'), stages = read('src/scripts/himmel/buehnen.ts');
+  assert.match(index, /querySelectorAll\(STAGES\)/);
+  assert.match(index, /if \(stages\.length\)/, 'ohne Bühne kein Import');
+  assert.match(index, /new IntersectionObserver/, 'Import erst nahe einer Bühne');
+  const sels = [...read('src/scripts/himmel/schwarm.ts').matchAll(/sel: '([^']+)'/g)].map((m) => m[1]);
+  assert.ok(sels.length > 5);
+  for (const sel of sels) assert.ok(stages.split(/['\s,]+/).includes(sel), `${sel} fehlt in buehnen.ts`);
 });
 
 test('Base.astro lädt Himmel nur über index.ts', () => {

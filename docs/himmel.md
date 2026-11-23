@@ -222,6 +222,12 @@ Regeln: `docs/DESIGN.md` → „Startseite: Nachhaltigkeit kompakt, Team als Col
 Abnahmekriterium (Marc, 18.11.): Startseite mobil nicht langsamer als `main`. Ausgangslage: Lighthouse mobil `main` 99 Punkte,
 LCP 1,1–1,9 s; Vorschau 96 Punkte, LCP 2,7 s.
 
+- **Laden nur mit Bühne (23.11.2026):** `index.ts` lädt den Schwarm nur, wenn die Seite eine Bühne aus `buehnen.ts` hat, und
+  erst, wenn eine davon bis auf zwei Fensterhöhen heran ist (dazu weiter: erstes Bild gemalt oder erster Scroll). Vorher lud jede
+  Seite ~30 kB gzip Schwarm, Katalogindex und Formation, auch die Blog-Übersicht ohne Bühne. Gemessen: Blog-Übersicht 68 → 38 kB JS,
+  Blogartikel 70 → 36 kB, Preisseite 242 → 228 kB; Sprung per Anker zum Formular bis zum ersten Himmelsbild unverändert
+  (Chromium 4× gedrosselt 0,5–1,2 s, der Flug dominiert). Ladeanalyse: freelance/clients/flyingstars/28-konfigurator-ladeanalyse-2026-11-23 im Hub.
+
 - **Ursache:** Mit der neuen, kürzeren Schlagzeile ist auf dem Handy nicht mehr die H1, sondern das Hero-Video das größte Element
   (LCP). Dessen erstes Einzelbild kommt erst nach dem Laden der Videodatei, und der Start des Videos wartete zusätzlich auf
   Schwarm, Show-Folge und sechs Formationen (rund 100 KB JavaScript und 6 JSON-Abrufe vor dem Video).
