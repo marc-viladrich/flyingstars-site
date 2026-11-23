@@ -262,7 +262,7 @@ if (form) {
   const NOTICE_KEY = "fs-logo-hinweis";
   let noticeOk = false;
   try { noticeOk = sessionStorage.getItem(NOTICE_KEY) === "1"; } catch {}
-  const logoModule = () => (lm ??= import("./logo-mode.js"));
+  const logoModule = () => (lm ??= import("./logo-mode.js").catch((error) => { lm = null; throw error; }));
   const slider = $("#cfg-drones");
   let drones = Number(slider.value);
   /** @type {null | "SPARK" | "HORIZON" | "ODYSSEY"} */
@@ -491,8 +491,8 @@ if (form) {
     dropLogo();
   };
   const sequence = async () => {
-    const showDrones = drones;
-    if (logoMode) { const shown = await memo(`logomode|${showDrones}|${logoAnchor()}|${logoId}|${logoVer}|${overClosed}`, () => logoShow().then((x) => x ?? Promise.reject(new Error("keine Logos")))).catch(() => null); if (shown) return shown; }
+    const showDrones = drones, showOccasion = occasion, textStyle = text ? style : null;
+    if (logoMode) { const shown = await memo(`logomode|${showDrones}|${logoAnchor()}|${logoId}|${logoVer}|${overClosed}`, () => logoShow()); if (shown) return shown; }
     // Paket-Startpunkt: die Show in seiner Farbe; individuell warmweiß ohne Farbton (keine versteckten Paketwechsel)
     const tint = preset ? SHOW_PACKAGES[preset].color : null;
     const p = pkgName(), base = `${occasion.id}|${p}|${showDrones}|${preset ?? "frei"}`, id = logoId, src = logo, withTour = tour && text;
@@ -503,7 +503,7 @@ if (form) {
       const points = await logoPts;
       return composeShow({
         logoCaption: points?.minimum ? message('logoMode.minimum', { n: points.minimum }) : src && showDrones < (await recommendation(src)).length ? message('logoMode.simplified', { n: showDrones }) : message('showConfigurator.yourLogo'),
-        main: await main, tour: await tourSeq, logo: points, textStyle: text ? style : null, textSegment: occasion.motifs.length,
+        main: await main, tour: await tourSeq, logo: points, textStyle, textSegment: showOccasion.motifs.length,
         tourCaption: (caption, s) => message('configurator.captionStyle', { caption, style: STYLE_LABEL[s] }),
       });
     });
@@ -726,14 +726,38 @@ if (form) {
   // a new occasion is reached through the living cloud (Marc: „beim Wechsel des Anlasses immer“)
   occGroup.addEventListener("change", () => {
     // Runde 27: „Euer Logo“ ist der Logo-Modus; der Anlass davor bleibt für Zusammenfassung und Rückweg
-    if (occValue() === "logo") { leavePreset(); logoMode = true; drawLogoMode(); void logoModule(); fresh = []; unlockTo = null; update(false, logo ? LOGO_SEGMENT : undefined, { cloud: true }); return; }
+    if (occValue() === "logo") { leavePreset(); logoMode = true; drawLogoMode(); fresh = []; unlockTo = null; update(false, logo ? LOGO_SEGMENT : undefined, { cloud: true }); return; }
     const next = OCCASIONS.find((o) => o.id === occValue()), was = logoMode;
     logoMode = false; drawLogoMode();
     if (!next || (next === occasion && !was)) return;
     occasion = next; tour = false; fresh = []; unlockTo = null;
     update(false, undefined, { cloud: true });
   });
-  for (const type of ["pointerdown", "focusin"]) form.addEventListener(type, preloadScenes, { once: true });
+  const warm = (group, load) => {
+    for (const type of ["pointerover", "focusin", "touchstart"]) group.addEventListener(type, (event) => {
+      const input = event.target.closest("label")?.querySelector("input");
+      if (!input || (type === "pointerover" && input.closest("label").contains(event.relatedTarget))) return;
+      load(input.value)?.catch(() => {});
+    }, { passive: true });
+  };
+  warm(occGroup, (value) => {
+    if (value === "logo") return logoMode ? null : logoModule().then((mod) => mod.customerLogos(drones));
+    const next = OCCASIONS.find((o) => o.id === value);
+    if (next && (next !== occasion || logoMode)) return preloadScenes(next.motifs, pkgName(), drones);
+  });
+  warm(artGroup, (next) => {
+    if (next === art || logoMode || !SHOW_ARTS.includes(next)) return;
+    const down = SHOW_ARTS.indexOf(next) < SHOW_ARTS.indexOf(art);
+    let count = down ? Math.max(artMin(next), textNeed(text), logo && lastLogoPts ? lastLogoPts.length : 0) : Math.max(artMin(next), drones);
+    if (next === "2d" && count >= TWO_D_LIMIT) count = droneStops("2d").filter((n) => n < TWO_D_LIMIT).at(-1);
+    return preloadScenes(occasion.motifs, ART_TIER[next], stopAtLeast(next, count));
+  });
+  // Ein erneut gewähltes Radio löst kein change aus. Nach einem Ladefehler darf es noch einmal versuchen.
+  for (const group of [occGroup, artGroup]) group.addEventListener("click", (event) => {
+    if ($("#cfg-error").hidden || !event.target.matches("input:checked")) return;
+    const selected = group === artGroup ? art : logoMode ? "logo" : occasion.id;
+    if (event.target.value === selected) update(false, undefined, { cloud: true });
+  });
   // deep links (?anlass=hochzeit&paket=ODYSSEY&drohnen=400&motiv=lotus): open the configurator on a motif, e.g. to send it on
   // Runde 9 (c): ein Motiv-Link ohne ?anlass öffnet den Anlass, der das Motiv führt
   const params = new URLSearchParams(location.search), linked = OCCASIONS.find((o) => o.id === params.get("anlass")) ?? (params.get("motiv") && !occasion.motifs.some((m) => m.id === params.get("motiv")) ? occasionOfMotif(OCCASIONS, params.get("motiv")) : null);

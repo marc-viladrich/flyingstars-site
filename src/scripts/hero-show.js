@@ -7,7 +7,7 @@
 // bei verstecktem Tab zeichnet die Engine nicht (show-field.js).
 import { t as message } from "../i18n/ui.mjs";
 import { createField } from "./show-field.js";
-import { buildReel, REELS, REEL_CLOUD } from "./show-teaser.js";
+import { openReel, REELS, REEL_CLOUD } from "./show-teaser.js";
 
 /** Tempo gegenüber der Konfigurator-Vorschau: ruhiger als der Teaser (3,4×), ein Hochzeits-Seitenkopf erzählt, er zählt nicht auf. */
 export const HERO_RATE = 2.2;
@@ -22,7 +22,7 @@ export async function initHeroShow(root) {
   root.dataset.lhShowReady = "true";
   const reel = REELS[root.dataset.lhShow] ? root.dataset.lhShow : "hochzeitHero";
   const canvas = root.querySelector("[data-lh-field]"), art = root.querySelector("[data-lh-art]");
-  let shown = "";
+  let shown = "", reelPlayback;
   const label = (beat) => {
     const key = ART[beat?.reel?.pkg];
     if (!key || key === shown) return;
@@ -38,9 +38,10 @@ export async function initHeroShow(root) {
   };
   // oben Platz für die Ecken-Beschriftung, unten nur ein schmaler Rand: am Handy ist der Rahmen flach, das Motiv soll ihn füllen
   const rem = () => parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
-  const field = createField(canvas, { onTick, ...REEL_CLOUD, fitProjected: true, view: () => ({ top: rem() * 1.5, bottom: rem() * 0.5 }) });
+  const field = createField(canvas, { onTick, onBeat: (k) => reelPlayback?.advance(k), ...REEL_CLOUD, fitProjected: true, view: () => ({ top: rem() * 1.5, bottom: rem() * 0.5 }) });
   field.setRate(HERO_RATE);
-  const scene = await buildReel(reel, { zoom: HERO_ZOOM });
+  reelPlayback = await openReel(field, reel, { zoom: HERO_ZOOM });
+  const { scene } = reelPlayback;
   field.show(scene, 300, 1, { at: 0, cloud: true });
   label(scene.beats[0]);
   // erst jetzt über das Standbild blenden: die ersten Drohnen fliegen schon ein

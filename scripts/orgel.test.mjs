@@ -12,7 +12,7 @@ const { GROSS } = await import('../src/scripts/scenes/gross/index.js');
 const { LIMITS } = await import('../src/scripts/show-flight.js');
 const { droneStops } = await import('../src/content/show-packages.ts');
 const { OCCASIONS } = await import('../src/content/show-configurator.js');
-const { BUILDERS } = await import('../src/scripts/scenes/index.js');
+const { hasBuilder } = await import('../src/scripts/scenes/index.js');
 
 const MIN = 500, NAMES = ['organ3d', 'organStory'];
 const STOPS = { organ3d: droneStops('3d').filter((n) => n >= MIN), organStory: droneStops('story').filter((n) => n >= MIN) };
@@ -47,7 +47,7 @@ test('im Konfigurator: Kultur, direkt hinter der Harfe (Musik), 3D und 3D+ ab 50
   assert.deepEqual(Object.keys(m.tiers), ['HORIZON', 'ODYSSEY']);
   assert.equal(m.tiers.HORIZON.build, 'organ3d'); assert.equal(m.tiers.HORIZON.minDrones, MIN);
   assert.equal(m.tiers.ODYSSEY.build, 'organStory'); assert.equal(m.tiers.ODYSSEY.minDrones, MIN);
-  for (const b of NAMES) { assert.equal(typeof GROSS[b], 'function', `${b} nicht in gross/index.js`); assert.equal(BUILDERS[b], undefined, `${b} im gemeinsamen Szenenpaket`); }
+  for (const b of NAMES) { assert.equal(typeof GROSS[b], 'function', `${b} nicht in gross/index.js`); assert.equal(hasBuilder(b), false, `${b} im gemeinsamen Szenenpaket`); }
 });
 
 test('genau n Drohnen in jedem Bild bei jeder einstellbaren Zahl, Punkte und Teile gültig', async () => {
@@ -98,8 +98,8 @@ test('Bilder schließen aneinander an: jedes Bild beginnt, wo das vorige endet (
 });
 
 test('Übergang mit Bezug zur Harfe: Teile heißen wie am Ende der Harfengeschichte', async () => {
-  const { BUILDERS: B } = await import('../src/scripts/scenes/index.js');
-  const harp = await B.harpStory(600, ''), last = harp.beats[harp.beats.length - 1];
+  const { loadBuilder } = await import('../src/scripts/scenes/index.js');
+  const harp = await (await loadBuilder('harpStory'))(600, ''), last = harp.beats[harp.beats.length - 1];
   const { beats } = await builders.organStory(600, '');
   assert.deepEqual(beats[0].groups.map((g) => g.name), last.groups.map((g) => g.name));
   assert.ok(beats[0].groups.every((g) => g.count > 0));

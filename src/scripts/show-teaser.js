@@ -34,14 +34,15 @@ import { SHOW_PACKAGES, DRONES_MIN, DRONES_MAX, ART_TIER, TWO_D_LIMIT, artMin, c
 import { createField } from "./show-field.js";
 import { rankOf } from "./show-tempo.js";
 import { buildSequence } from "./show-scenes.js";
-import { logoPoints } from "./scenes/fs-logo.js";
-import { reassemble } from "./scenes/umbau.js";
-import lettering from "../data/teaser-lettering.json";
-import { primeTextFormation } from "./text-formation.js";
-// Ruckeln an der Grenze #ablauf → #preise (WebKit/Safari, 18.11.2026): Der Textplaner setzte den Schriftzug FLYINGSTΛRS
-// (450 und 600 Drohnen) beim Eintritt der Section am Stück, rund 120 ms. Die beiden Formationen liegen jetzt vorberechnet
-// bei (tools/himmel/teaser-schriftzug.mjs), der Planer lädt im Teaser gar nicht mehr.
-for (const [n, f] of Object.entries(lettering.formations)) primeTextFormation(lettering.value, Number(n), f.pts, f.style);
+import { once } from "./scenes/load-once.js";
+
+const loadBrandLettering = once(async () => {
+  const [{ default: data }, { primeTextFormation }] = await Promise.all([
+    import("../data/teaser-lettering.json", { with: { type: "json" } }),
+    import("./text-formation.js"),
+  ]);
+  for (const [n, f] of Object.entries(data.formations)) primeTextFormation(data.value, Number(n), f.pts, f.style);
+});
 /** Ein eigener Task, wenn der Browser Luft hat (Safari 18 kennt requestIdleCallback nicht: setTimeout). Der Aufbau des
  * Showreels läuft so in Stücken statt in einem langen Task. */
 const idle = () => new Promise((res) => (typeof requestIdleCallback === "function" ? requestIdleCallback(() => res(), { timeout: 600 }) : setTimeout(res, 16)));
@@ -142,7 +143,6 @@ export const STILL = REELS.start.still;
 
 /** Das FlyingStars-Logo (Raster aus 88 Lichtpunkten, mit mehr Drohnen durchgehende Linien), seit Runde 16 geteilt mit der
  * QR-Geschichte: scenes/fs-logo.js. */
-export { logoPoints };
 const FS_GRAD = [[255, 158, 41], [219, 100, 232], [51, 237, 242]];
 const gradAt = (u) => { const t = Math.max(0, Math.min(1, u)) * 2, i = Math.min(1, Math.floor(t)), f = t - i; return FS_GRAD[i].map((v, c) => Math.round(v + (FS_GRAD[i + 1][c] - v) * f)); };
 /**
@@ -157,12 +157,14 @@ const gradAt = (u) => { const t = Math.max(0, Math.min(1, u)) * 2, i = Math.min(
 export const LOOP_LINGER = 4.5;
 /** Ab dieser Drohnenzahl sieht das Logo aus, wie es soll; was darüber hinausgeht, schreibt den Schriftzug darunter. */
 export const LOGO_FULL = 300;
+const loadLogo = once(() => import("./scenes/fs-logo.js"));
 async function logoBeat(n) {
+  const { logoPoints } = await loadLogo();
   if (n <= LOGO_FULL) return { pts: logoPoints(n), hold: 2.2, run: true, frame: "mark", caption: message('showTeaser.theFlyingstarsLogoMadeOfValueDrones', { v0: n }) };
   // Logo oben (verkleinert), darunter FLYINGSTΛRS in der Druckschrift des Textplaners im FlyingStars-Verlauf
   // die Schrift trägt die zusätzlichen Drohnen: bei 450 klein unter dem Logo, bei 600 deutlich größer (Runde 10)
   const big = n >= 600, mark = logoPoints(LOGO_FULL).map(([x, y, z, ...c]) => [x * 0.6, y * 0.6 + 0.42, z, ...c]);
-  const { lettering } = await import("./scenes/text.js");
+  const [{ lettering }] = await Promise.all([import("./scenes/text.js"), loadBrandLettering()]);
   const text = await lettering("FlyingStars", "print", n - LOGO_FULL, big ? 1.7 : 0.8);
   const ys = text.map((p) => p[1]), top = Math.max(...ys), x0 = Math.min(...text.map((p) => p[0])), x1 = Math.max(...text.map((p) => p[0]));
   const word = text.map(([x, y]) => [x, y - top - (big ? 0.34 : 0.4), 0, ...gradAt((x - x0) / (x1 - x0 || 1))]);
@@ -198,8 +200,8 @@ function lockItem(r, tier, motif, own) {
  * skaliert wird; das Logo behält seinen Maßstab über 100–300 Drohnen. art: der Ablauf in nur dieser Art (lockItem);
  * zoom: Anteil der Bühne, den ein Motiv höchstens füllt. Ein Eintrag mit value ersetzt den Wert der Fassung (die Zahl
  * der Jahreszahl). */
-export async function buildReel(reel = REEL, { art = null, zoom = ZOOM } = {}) {
-  const items = Array.isArray(reel) ? reel : (REELS[reel] ?? REELS.start).items, beats = [];
+function reelParts(reel, { art = null, zoom = ZOOM } = {}) {
+  const items = Array.isArray(reel) ? reel : (REELS[reel] ?? REELS.start).items, parts = [];
   const lock = art ? ART_TIER[art] : null;
   let skipped = false;
   for (const [segment, r0] of items.entries()) {
@@ -212,8 +214,8 @@ export async function buildReel(reel = REEL, { art = null, zoom = ZOOM } = {}) {
     // ein direkter Flug (cloud: false) gilt nur nach dem Motiv, auf das er sich bezieht; fiel das weg, kommt die Wolke
     const viaCloud = r.cloud !== false || skipped;
     skipped = false;
-    for (const [step, n] of r.drones.entries()) {
-      await idle(); // jedes Bild in einem eigenen Task
+    const steps = r.drones.map((n, step) => async () => {
+      await idle();
       const pkg = r.tier ?? (lock && r.kind === "logo" ? lock : packageForDrones(n));
       let pick;
       if (r.kind === "logo") pick = [await logoBeat(n)];
@@ -231,22 +233,67 @@ export async function buildReel(reel = REEL, { art = null, zoom = ZOOM } = {}) {
         // dichter werden (wie das Logo), darum ohne Schreib-Licht, mit Lichtlauf und eigenem Ausschnitt je Paket
         if (r.kind === "text") pick = pick.map((b) => ({ ...b, live: undefined, run: true, hold: 2.2 }));
       }
-      pick.forEach((b, i) => beats.push({ ...b, segment, zoom, cloud: viaCloud && step === 0 && i === 0, drones: n, reel: { ...r, pkg, n } }));
-    }
+      return pick.map((b, i) => ({ ...b, segment, zoom, cloud: viaCloud && step === 0 && i === 0, drones: n, reel: { ...r, pkg, n } }));
+    });
+    // Logo und Schriftzug haben je einen gemeinsamen Ausschnitt über ihre Drohnenzahlen.
+    const frames = r.kind === "logo" ? [steps.filter((_, i) => r.drones[i] <= LOGO_FULL), steps.filter((_, i) => r.drones[i] > LOGO_FULL)] : steps.map((step) => [step]);
+    for (const frame of frames) if (frame.length) parts.push(async () => {
+      const beats = (await Promise.all(frame.map((step) => step()))).flat();
+      // Lichtlauf vor dem Anzeigen rechnen (O(n²)).
+      for (const b of beats) rankOf(b);
+      return beats;
+    });
   }
-  // Runde 6: die Lichtlauf-Reihenfolge (rankOf, je Bild O(n²)) schon hier im Leerlauf rechnen; sonst entsteht sie beim ersten
-  // Zeigen eines Bildes mitten in der Show (ein Bild von 30–50 ms bei 4× Drossel)
-  for (const [k, b] of beats.entries()) { if (k % 4 === 0) await idle(); rankOf(b); }
-  const joined = beats.length > 1 && beats.at(-1).reel?.loop && beats.at(-1).handoff;
-  if (joined) { await idle(); beats.push(loopBeat(beats.at(-1), beats[0])); }
-  return { beats, loopTo: 0, ...(joined ? { loopJoined: true } : {}) };
+  return parts;
+}
+
+export async function buildReel(reel = REEL, options = {}) {
+  const beats = [];
+  for (const part of reelParts(reel, options)) beats.push(...await part());
+  const join = await reelJoin(beats.at(-1), beats[0]);
+  if (join) beats.push(join);
+  return { beats, loopTo: 0, ...(join ? { loopJoined: true } : {}) };
+}
+
+async function reelJoin(last, first) {
+  if (last !== first && last?.reel?.loop && last.handoff) return loopBeat(last, first);
+}
+
+/** Startbild und ein Bild Vorlauf. Bei verspätetem Nachschub steht das letzte Bild weiter. */
+export async function openReel(field, reel, options) {
+  const parts = reelParts(reel, options), scene = { beats: await parts[0]() };
+  let next = 1, leadAt = 0, pending = false;
+  if (next === parts.length) scene.loopTo = 0;
+  const advance = (beat) => {
+    if (pending || beat < leadAt || next === parts.length) return;
+    pending = true;
+    idle().then(async () => {
+      if (!field.isShowing(scene)) { pending = false; return; }
+      const beats = await parts[next]();
+      const complete = next + 1 === parts.length;
+      const join = complete && await reelJoin(beats.at(-1), scene.beats[0]);
+      if (join) beats.push(join);
+      leadAt = scene.beats.length;
+      next += 1;
+      pending = false;
+      field.extend(scene, beats, { complete, joined: Boolean(join) });
+    }).catch(() => {
+      // Die Bühne bleibt stehen. Auch nach einem abgebrochenen Netzwechsel kann die Runde weiterlaufen.
+      setTimeout(() => {
+        pending = false;
+        if (field.isShowing(scene)) advance(field.beat());
+      }, 1500);
+    });
+  };
+  return { scene, advance };
 }
 
 /** Der Umbau vom letzten Bild zurück zum ersten (LOOP_LINGER): die leuchtenden Drohnen bauen das erste Bild, die übrigen
  * verlöschen an ihrem Platz und gehen mit dessen Start in Reserve. Beide Bilder stehen in eigenen Ausschnitten, der Umbau
  * rechnet beim Abspielen zwischen ihnen um (refit). Er gehört zum ersten Motiv (segment, Wireframe: Regler, Paket und
  * „Platz für euer Logo“ wechseln, während sich das Logo zusammensetzt; eine Wahl der Art setzt dort ein). */
-function loopBeat(last, first) {
+async function loopBeat(last, first) {
+  const { reassemble } = await import("./scenes/umbau.js");
   const morph = reassemble(last, first, { caption: first.caption, spread: 2.2, fly: 2.3, seamless: true, keepLit: true, refit: true });
   // eigener Ausschnitt (refit macht ihn für die Lage auf dem Bildschirm bedeutungslos); kopieren darf man das Bild nicht
   return Object.assign(morph, { segment: first.segment, frame: "schleife", zoom: last.zoom, fitPts: last.fitPts ?? last.pts.map((p) => p.slice(0, 3)), cloud: false, drones: first.drones, reel: first.reel });
@@ -265,6 +312,7 @@ export function initTeaser(root) {
   const q = (name) => root.querySelector(`[data-cft="${name}"]`);
   const all = (name) => [...root.querySelectorAll(`[data-cft="${name}"]`)];
   const pkgs = all("pkg"), coins = all("euro"), thumb = q("thumb"), fill = q("fill"), count = q("count"), note = q("note"), arts = all("art");
+  let streaming;
   let last = { pkg: null, n: null, note: null }, segment = 0, chosen = arts.find((a) => a.checked)?.value ?? null;
   const press = (el) => { el.classList.remove("is-press"); void el.offsetWidth; el.classList.add("is-press"); };
   /** Das Wireframe folgt der Bühne: Paketknopf, Regler mit Drohnenzahl, Euro-Zeichen; dazu die Schrift unten auf der Bühne. */
@@ -291,12 +339,20 @@ export function initTeaser(root) {
   // bleibt unten nur der Platz der Paketzeile (.cft-note, rund 3,5 rem). Am Handy war das Motiv sonst so klein wie zuvor
   // im Konfigurator (Marc: „teilweise auch zu klein“)
   const rem = () => parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
-  const field = createField(q("field"), { onBeat: (k, beat) => sync(beat), ...REEL_CLOUD, fitProjected: true, view: () => ({ top: rem(), bottom: rem() * 3.5 }) });
+  const field = createField(q("field"), { onBeat: (k, beat) => { sync(beat); if (streaming && field.isShowing(streaming.scene)) streaming.advance(k); }, ...REEL_CLOUD, fitProjected: true, view: () => ({ top: rem(), bottom: rem() * 3.5 }) });
   field.setRate(REEL_RATE);
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   let done = false, picks = 0;
   // je Art ein eigener Ablauf, erst gebaut, wenn jemand die Art wählt (der gemischte Ablauf sofort)
-  const scenes = new Map(), sceneFor = (art) => { if (!scenes.has(art)) scenes.set(art, buildReel(reel, art ? { art } : {})); return scenes.get(art); };
+  const scenes = new Map();
+  const sceneFor = (art) => {
+    if (!scenes.has(art)) scenes.set(art, (
+      art === null && !reduce
+        ? openReel(field, reel).then((ready) => { streaming = ready; return ready.scene; })
+        : buildReel(reel, { art })
+    ).catch((error) => { scenes.delete(art); throw error; }));
+    return scenes.get(art);
+  };
   /** Bild, mit dem eine gewählte Art einsetzt: das gerade gezeigte Motiv in dieser Art, sonst das nächste, das es dort gibt. */
   const entry = (scene, last) => { const pick = (k) => (last ? scene.beats.findLastIndex((b) => b.segment === k) : scene.beats.findIndex((b) => b.segment === k)); for (let k = segment; k <= segment + scene.beats.length; k++) { const at = pick(k); if (at >= 0) return at; } return 0; };
   // Runde 16 (Marc: „Klick auf die schon gewählte Stufe hebt die Wahl auf“): ein zweiter Klick (oder die Leertaste) auf

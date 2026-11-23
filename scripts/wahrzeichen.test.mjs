@@ -10,7 +10,7 @@ import assert from 'node:assert/strict';
 const { builders, LANDMARKS, SHAPES, LEVELS, flat, level, BODY_MAX } = await import('../src/scripts/scenes/wahrzeichen.js');
 const { WAHRZEICHEN_3D, clockLit } = await import('../src/scripts/scenes/catalog-3d/wahrzeichen.js');
 const { CLEAR } = await import('../src/scripts/scenes/catalog-resample.js');
-const { BUILDERS } = await import('../src/scripts/scenes/index.js');
+const { loadBuilder } = await import('../src/scripts/scenes/index.js');
 const { LIMITS } = await import('../src/scripts/show-flight.js');
 const { droneStops, TWO_D_LIMIT } = await import('../src/content/show-packages.ts');
 
@@ -20,10 +20,10 @@ const STOPS = { '2d': droneStops('2d').filter((n) => n < TWO_D_LIMIT), '3d': dro
 const nearest = (pts, dim = 3) => pts.map((p, i) => { let m = Infinity; for (let j = 0; j < pts.length; j++) if (j !== i) m = Math.min(m, Math.hypot(p[0] - pts[j][0], p[1] - pts[j][1], dim === 3 ? (p[2] || 0) - (pts[j][2] || 0) : 0)); return m; });
 const quantile = (a, q) => { const s = [...a].sort((x, y) => x - y); return s[Math.min(s.length - 1, Math.floor(q * s.length))]; };
 
-test('jede Fassung ist im Register der Motivbauer (scenes/index.js)', () => {
+test('jede Fassung ist im Register der Motivbauer (scenes/index.js)', async () => {
   for (const [key, v] of Object.entries(LANDMARKS)) for (const build of Object.values(v)) {
     assert.equal(typeof builders[build], 'function', `${key}: ${build} fehlt in wahrzeichen.js`);
-    assert.equal(BUILDERS[build], builders[build], `${key}: ${build} nicht in scenes/index.js registriert`);
+    assert.equal(await loadBuilder(build), builders[build], `${key}: ${build} nicht in scenes/index.js registriert`);
   }
 });
 

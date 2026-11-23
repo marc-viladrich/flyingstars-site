@@ -13,7 +13,7 @@ const { GROSS } = await import('../src/scripts/scenes/gross/index.js');
 const { LIMITS } = await import('../src/scripts/show-flight.js');
 const { droneStops } = await import('../src/content/show-packages.ts');
 const { OCCASIONS } = await import('../src/content/show-configurator.js');
-const { BUILDERS } = await import('../src/scripts/scenes/index.js');
+const { hasBuilder } = await import('../src/scripts/scenes/index.js');
 
 const MIN = 300, STOPS = { s3: droneStops('3d').filter((n) => n >= MIN), plus: droneStops('story').filter((n) => n >= MIN) };
 /** Nächster Nachbar je Punkt (Gitter, sonst kostet es bei 1000 Drohnen zu lange). */
@@ -53,7 +53,7 @@ test('im Konfigurator: Winter & Silvester, direkt hinter der Uhr (Steigerung), 3
   assert.deepEqual(Object.keys(m.tiers), ['HORIZON', 'ODYSSEY']);
   assert.equal(m.tiers.HORIZON.build, 'countdown3d'); assert.equal(m.tiers.HORIZON.minDrones, MIN);
   assert.equal(m.tiers.ODYSSEY.build, 'countdownStory'); assert.equal(m.tiers.ODYSSEY.minDrones, MIN);
-  for (const b of ['countdown3d', 'countdownStory']) { assert.equal(typeof GROSS[b], 'function', `${b} nicht in gross/index.js`); assert.equal(BUILDERS[b], undefined, `${b} im gemeinsamen Szenenpaket`); }
+  for (const b of ['countdown3d', 'countdownStory']) { assert.equal(typeof GROSS[b], 'function', `${b} nicht in gross/index.js`); assert.equal(hasBuilder(b), false, `${b} im gemeinsamen Szenenpaket`); }
 });
 
 test('genau n Drohnen in jedem Bild bei jeder einstellbaren Zahl, Punkte gültig, kein Sprung bei t = 0', async () => {

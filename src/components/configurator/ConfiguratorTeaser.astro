@@ -104,15 +104,15 @@ const labels = {
     // 18.11.2026 (Ruckeln an der Grenze in Safari): mit großem Vorlauf laden (rund 2,5 s Lesen bei ruhigem Scrollen) und den
     // Aufbau in Stücken erledigen, bevor die Bühne ins Bild kommt; vorher waren es 300 px und ein Aufbau am Stück.
     // Runde 6: die Modulkette in Stufen auswerten (am Stück ein Long Task von 53 ms an nachhaltigkeit → ablauf, 4× Drossel)
+    const rootMargin = document.querySelector('[data-lh-show]') ? '450px 0px' : '1500px 0px';
     whenNear(root, () => importInStages(
       () => import('../../scripts/show-field.js'),
       () => import('../../scripts/show-scenes.js'),
-      () => import('../../scripts/scenes/index.js'), // Szenen-Baukasten, den der Ablauf beim Aufbau nachlädt
       () => import('../../content/show-configurator.js'),
       () => import('../../scripts/formation/index.js'),
       () => import('../../scripts/show-teaser.js'),
       // Start im nächsten Bild: createField misst die Bühne (getBoundingClientRect); im requestAnimationFrame teilt sich das
       // die Layout-Arbeit mit dem Bild, statt mitten im Scrollen ein zusätzliches Layout zu erzwingen
-    ).then((m) => new Promise((resolve) => requestAnimationFrame(() => resolve(m.initTeaser(root))))), { rootMargin: '1500px 0px' });
+    ).then((m) => new Promise((resolve) => requestAnimationFrame(() => resolve(m.initTeaser(root))))), { rootMargin });
   } });
 </script>

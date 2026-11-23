@@ -29,7 +29,7 @@ export async function exampleFile(id) {
 let examples = null;
 /** Die Kundenlogos für n Drohnen: [{ name, pts: [[x, y], …] (y nach unten, lange Seite in [-1, 1]), n }]. */
 export async function customerLogos(n) {
-  examples ??= fetch("/media/logo-modus/kundenlogos.json").then((r) => { if (!r.ok) throw new Error(String(r.status)); return r.json(); });
+  examples ??= fetch("/media/logo-modus/kundenlogos.json").then((r) => { if (!r.ok) throw new Error(String(r.status)); return r.json(); }).catch((error) => { examples = null; throw error; });
   const data = await examples;
   // nur von Hand freigegebene Bilder (ok: geprüft in 23-logo-drohnen-konverter/screens/v10-kundenlogos); je Logo das größte
   // freigegebene Bild bis zur gewählten Zahl. Passen weniger als zwei, kommen die kleinsten freigegebenen Bilder darüber

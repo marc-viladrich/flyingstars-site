@@ -11,7 +11,7 @@ const { GROSS } = await import('../src/scripts/scenes/gross/index.js');
 const { LIMITS } = await import('../src/scripts/show-flight.js');
 const { droneStops } = await import('../src/content/show-packages.ts');
 const { OCCASIONS } = await import('../src/content/show-configurator.js');
-const { BUILDERS } = await import('../src/scripts/scenes/index.js');
+const { hasBuilder } = await import('../src/scripts/scenes/index.js');
 
 // Runde 11c: 3D und 3D+ ab 700 (vorher 1000)
 const MIN = { factoryCampus3d: 700, factoryCampusStory: 700 }, NAMES = ['factoryCampus3d', 'factoryCampusStory'];
@@ -96,7 +96,7 @@ test('im Konfigurator: Jubiläum, nach den Wahrzeichen, 3D und 3D+ ab 700, nachg
   assert.deepEqual(Object.keys(m.tiers), ['HORIZON', 'ODYSSEY']);
   assert.equal(m.tiers.HORIZON.build, 'factoryCampus3d'); assert.equal(m.tiers.HORIZON.minDrones, MIN.factoryCampus3d);
   assert.equal(m.tiers.ODYSSEY.build, 'factoryCampusStory'); assert.equal(m.tiers.ODYSSEY.minDrones, MIN.factoryCampusStory);
-  for (const b of NAMES) { assert.equal(typeof GROSS[b], 'function', `${b} nicht in gross/index.js`); assert.equal(BUILDERS[b], undefined, `${b} im gemeinsamen Szenenpaket`); }
+  for (const b of NAMES) { assert.equal(typeof GROSS[b], 'function', `${b} nicht in gross/index.js`); assert.equal(hasBuilder(b), false, `${b} im gemeinsamen Szenenpaket`); }
 });
 
 test('das Bild füllt die Bühne; Rauch wird Strom, der Strom baut Haus für Haus, der Kranz steigt (Runde 11c)', async () => {

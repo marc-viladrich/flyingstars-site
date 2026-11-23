@@ -13,7 +13,7 @@ const { GROSS } = await import('../src/scripts/scenes/gross/index.js');
 const { LIMITS } = await import('../src/scripts/show-flight.js');
 const { droneStops, TWO_D_LIMIT } = await import('../src/content/show-packages.ts');
 const { OCCASIONS } = await import('../src/content/show-configurator.js');
-const { BUILDERS } = await import('../src/scripts/scenes/index.js');
+const { hasBuilder } = await import('../src/scripts/scenes/index.js');
 
 const MIN = { SPARK: 150, HORIZON: 200, ODYSSEY: 300 }; // Runde 11c // Runde 11b: lockerer, mit weniger Drohnen
 const STOPS = { flat: droneStops('2d').filter((n) => n >= MIN.SPARK && n < TWO_D_LIMIT), s3: droneStops('3d').filter((n) => n >= MIN.HORIZON), plus: droneStops('story').filter((n) => n >= MIN.ODYSSEY) };
@@ -45,7 +45,7 @@ test('im Konfigurator: Winter & Silvester, nach dem Lichterbaum, 2D ab 150, 3D a
   assert.deepEqual(Object.keys(m.tiers), ['SPARK', 'HORIZON', 'ODYSSEY']);
   for (const [tier, build] of [['SPARK', 'adventskranz2d'], ['HORIZON', 'adventskranz3d'], ['ODYSSEY', 'adventskranzStory']]) {
     assert.equal(m.tiers[tier].build, build); assert.equal(m.tiers[tier].minDrones, MIN[tier], `${tier} ab ${m.tiers[tier].minDrones}`);
-    assert.equal(typeof GROSS[build], 'function', `${build} nicht in gross/index.js`); assert.equal(BUILDERS[build], undefined, `${build} im gemeinsamen Szenenpaket`);
+    assert.equal(typeof GROSS[build], 'function', `${build} nicht in gross/index.js`); assert.equal(hasBuilder(build), false, `${build} im gemeinsamen Szenenpaket`);
   }
 });
 

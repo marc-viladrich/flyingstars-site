@@ -11,7 +11,7 @@ import './show-node-env.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-const { BUILDERS } = await import('../src/scripts/scenes/index.js');
+const { loadBuilder } = await import('../src/scripts/scenes/index.js');
 const { builders, riseModel, risePoseAt, headModel, headLevel, headLineCount } = await import('../src/scripts/scenes/catalog-3d/drache.js');
 const { LIMITS } = await import('../src/scripts/show-flight.js');
 const { droneStops } = await import('../src/content/show-packages.ts');
@@ -43,12 +43,12 @@ function motion(b, n, every = 1) {
 }
 const extent = (pts, k) => Math.max(...pts.map((p) => p[k])) - Math.min(...pts.map((p) => p[k]));
 
-test('im Konfigurator: 3D ab 200 aufsteigend, 3D+ ab 300 der Kopf, kein Drachenflug (Marc 20.11.: „sieht mega weird aus“)', () => {
+test('im Konfigurator: 3D ab 200 aufsteigend, 3D+ ab 300 der Kopf, kein Drachenflug (Marc 20.11.: „sieht mega weird aus“)', async () => {
   const fest = OCCASIONS.find((o) => o.id === 'festival'), m = fest.motifs.find((x) => x.id === 'drache');
   assert.equal(m.tiers.HORIZON.build, 'dragonRise'); assert.equal(m.tiers.HORIZON.minDrones, 200);
   assert.equal(m.tiers.ODYSSEY.build, 'dragonHead'); assert.equal(m.tiers.ODYSSEY.minDrones, 300);
   assert.ok(!fest.motifs.some((x) => x.id === 'drachenflug'), 'Drachenflug ist wieder in der Liste');
-  for (const b of ['dragonRise', 'dragonHead']) assert.equal(BUILDERS[b], builders[b], `${b} nicht in scenes/index.js`);
+  for (const b of ['dragonRise', 'dragonHead']) assert.equal(await loadBuilder(b), builders[b], `${b} nicht in scenes/index.js`);
 });
 
 test('genau n Drohnen in jedem Bild bei jeder einstellbaren Zahl, Punkte gültig', async () => {

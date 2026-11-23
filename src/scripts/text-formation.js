@@ -19,7 +19,7 @@ export function wrap(t) { // balanced lines at word breaks: 1 line up to 14 char
 }
 export function loadTextEngine() { // the text engine is loaded only when someone needs a text (≈ 43 KB gzip)
   if (engine) return engine;
-  engine = import('./pricing-text-engine.js').then((module) => { FK = module.FK; return module; });
+  engine = import('./pricing-text-engine.js').then((module) => { FK = module.FK; return module; }).catch((error) => { engine = null; throw error; });
   return engine;
 }
 function draw(lines, count, style) { // one formation in metres, or null when it does not come out
@@ -50,17 +50,36 @@ export function primeTextFormation(value, count, pts, style = "Umriss") {
 // danach liefert textFormation() es sofort.
 let worker = null, seq = 0;
 const waiting = new Map();
+const inFlight = new Map();
+
 export async function textFormationAsync(value, count) {
   const key = keyOf(value, count);
   if (cache.has(key)) return cache.get(key);
+  if (!inFlight.has(key)) inFlight.set(key, planText(value, count, key).finally(() => inFlight.delete(key)));
+  return inFlight.get(key);
+}
+
+async function planText(value, count, key) {
   if (worker === null) {
     try {
       worker = typeof Worker === "function" ? new Worker(new URL("./text-worker.js", import.meta.url), { type: "module" }) : false;
-      if (worker) worker.onmessage = ({ data }) => { const w = waiting.get(data.id); waiting.delete(data.id); w?.(data); };
+      if (worker) {
+        worker.onmessage = ({ data }) => { const w = waiting.get(data.id); waiting.delete(data.id); w?.resolve(data); };
+        worker.onerror = (event) => {
+          worker.terminate(); worker = null;
+          for (const { reject } of waiting.values()) reject(new Error(event.message || "Textplaner konnte nicht geladen werden"));
+          waiting.clear();
+        };
+      }
     } catch { worker = false; }
   }
   if (!worker) { await loadTextEngine(); return textFormation(value, count); }
-  const data = await new Promise((resolve) => { const id = ++seq; waiting.set(id, resolve); worker.postMessage({ id, value, count }); });
+  const data = await new Promise((resolve, reject) => {
+    const id = ++seq;
+    waiting.set(id, { resolve, reject });
+    try { worker.postMessage({ id, value, count }); }
+    catch (error) { waiting.delete(id); reject(error); }
+  });
   if (data.error) { await loadTextEngine(); return textFormation(value, count); }
   if (data.result) { if (cache.size > 60) cache.clear(); cache.set(key, data.result); }
   return data.result;

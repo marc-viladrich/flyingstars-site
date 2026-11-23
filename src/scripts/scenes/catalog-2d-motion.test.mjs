@@ -11,7 +11,8 @@ import '../../../scripts/show-node-env.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { catalogScene, CATALOG, catalogMinDrones, flatVariant, WHOLE_TURN, wheelRing, needleHub } from './catalog.js';
+import { catalogScene, CATALOG, catalogMinDrones, flatVariant } from './catalog.js';
+import { WHOLE_TURN, wheelRing, needleHub } from './catalog-points.js';
 import { GEARS_2D, gearPhases } from './catalog-actions.js';
 
 const FLAT = Object.keys(CATALOG).filter((k) => CATALOG[k].dimension !== '3D');

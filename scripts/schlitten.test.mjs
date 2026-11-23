@@ -12,7 +12,7 @@ const { GROSS } = await import('../src/scripts/scenes/gross/index.js');
 const { LIMITS } = await import('../src/scripts/show-flight.js');
 const { droneStops } = await import('../src/content/show-packages.ts');
 const { OCCASIONS } = await import('../src/content/show-configurator.js');
-const { BUILDERS } = await import('../src/scripts/scenes/index.js');
+const { hasBuilder } = await import('../src/scripts/scenes/index.js');
 
 const MIN = 400, STOPS = { s3: droneStops('3d').filter((n) => n >= MIN), plus: droneStops('story').filter((n) => n >= MIN) };
 function nearest(pts) {
@@ -39,7 +39,7 @@ test('im Konfigurator: Winter & Silvester, 3D und 3D+ ab 400, nachgeladen', () =
   assert.deepEqual(Object.keys(m.tiers), ['HORIZON', 'ODYSSEY']);
   assert.equal(m.tiers.HORIZON.build, 'sleigh3d'); assert.equal(m.tiers.HORIZON.minDrones, MIN);
   assert.equal(m.tiers.ODYSSEY.build, 'sleighStory'); assert.equal(m.tiers.ODYSSEY.minDrones, MIN);
-  for (const b of ['sleigh3d', 'sleighStory']) { assert.equal(typeof GROSS[b], 'function'); assert.equal(BUILDERS[b], undefined); }
+  for (const b of ['sleigh3d', 'sleighStory']) { assert.equal(typeof GROSS[b], 'function'); assert.equal(hasBuilder(b), false); }
 });
 
 test('genau n Drohnen bei jeder einstellbaren Zahl, Punkte gültig, kein Sprung bei t = 0', async () => {
