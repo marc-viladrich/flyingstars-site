@@ -1,9 +1,10 @@
 ---
 authorId: florian-becker
-title: "How does a drone show work? Drones, show night, requirements"
-description: "What a show drone can do, how a show night runs and what you need for your own show: our overview from more than 150 drone shows."
+title: How does a drone show work?
+description: The technology, programming and production of a drone show, plus creative uses and the
+  requirements for staging one.
 date: "2025-01-14T00:00:00.000Z"
-updated: "2026-11-22T00:00:00.000Z"
+updated: "2026-09-22T00:00:00.000Z"
 tags:
   - Drohnenshow
   - Technik
@@ -13,93 +14,85 @@ cover:
   width: 1600
   height: 1067
 draft: false
-translationSourceHash: 2d662f5edf5d3bb89ca2b844d29ba02dd4202b563e3364e6df1c632241915b9e
+translationSourceHash: f5b1aeea95da30c50d8c7e39bddeae867b36c6e4eda5a4f61ea198cfe64cfe6f
 translationContractVersion: 2
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: en
-  sourceFingerprint: 2d662f5edf5d3bb89ca2b844d29ba02dd4202b563e3364e6df1c632241915b9e
+  sourceFingerprint: f5b1aeea95da30c50d8c7e39bddeae867b36c6e4eda5a4f61ea198cfe64cfe6f
   legacy:
     provenanceFile: docs/i18n/content-provenance.json
     migration: I01-v2-2026-11-04
   fields:
     - address: /body
-      sourceFingerprint: d40d20c71ad6c0ad21f117d9cbf7acc1fe288ada7c6545cca4ff55d70b5d3fe0
-      targetFingerprint: 0bdcffa233adf3ad29073f3ea00a4c6dd8cd4771f3d3d920a28835588b8185f8
+      sourceFingerprint: 31e4baaf544149a2174750e9eac534b3265478cabca4d296e9d99c356c87dbcb
+      targetFingerprint: bb0bd09c92ae6a3836dc92aec74dde7560f83f3389a06365592b09bf8038a86a
       status: adopted-existing
     - address: /cover/alt
-      sourceFingerprint: 409f5539db2fd1cfa90510b75350f3eaf95aada55b3dfa542ad516abafca4938
+      sourceFingerprint: fdad0e41028426439fae2c60f8dd86512891c27f83285e8ce73a6a290e34931b
       targetFingerprint: 32adb80a2f487ebfc9dd3ebd6a0b96310f60a006f6c17c0bd0538628eb31cc06
       status: adopted-existing
     - address: /description
-      sourceFingerprint: bde183a5d9d190555668c031173bc07c6d1e03ae55c240c9db9c9419ccc97156
-      targetFingerprint: 4a8a44391fce88328a3ff6d086a6a044c45a2bb17019647c2732972df2243a4e
+      sourceFingerprint: ec1f10aeebaf0a8b2aa49b9b3222a8f016038ec0ec0de6e229d8262ddcbdde4d
+      targetFingerprint: fed52e37f16d70a3e4e66bb5e943f5cba96dee51e35a5f904535e55a7b397870
       status: adopted-existing
     - address: /title
-      sourceFingerprint: 7d2d6f2df181685b285c99b66d5f6d0d12835bb1bde0eaca253e7eff240d21a9
-      targetFingerprint: 552b082c55b03a2babb458297b5108939972efb643e100112b671c2e6705c701
+      sourceFingerprint: 4165c1ef92233adf11fd78cf9c4cb3c6815a943848a4873c748fe7276e362b7b
+      targetFingerprint: e0479f3b591b678b96c312b6efaa476ae2a050f97be0a4eae737a6bc34d2120c
       status: adopted-existing
 ---
-In a drone show, every drone becomes a point of light. From a hundred to over a thousand of these points we build logos, initials or whole stories in the night sky, and because the points fly, the pictures move.
+How does a drone show work? Picture hundreds of drones moving in sync across the night sky, forming illuminated pictures, symbols and animations. Behind the performance are flight technology, creative programming and precise coordination. This article explains the technology, programming and design that make a drone show possible.
 
-Since 2021 we have flown more than 150 shows, for towns and companies, at festivals and weddings. Here we explain what is inside our drones, how a show night runs and what you can prepare if you are planning a show of your own.
+## What is a drone and how does it work?
 
-## The show drone: a flying point of light
+A drone is an unmanned aircraft controlled remotely or autonomously by software. Several propellers provide lift and move it in different directions. Sensors such as GPS, accelerometers and gyroscopes help determine its position and speed. Our article on [how a drone works](https://flyingstars.art/drohnen-aufbau-funktionsweise) explains more about the technology and controls. Light-show drones also have LEDs that create the colours and effects seen in the sky.
 
-Our show drones are small and light, about 300 grams each. On board is a GPS module that determines its position and LED lights whose colour and brightness we set for every moment of the show. They carry no cameras. They film nobody, and in the sky they are only light.
+![A drone show at dusk](https://flyingstars.art/wp-content/uploads/2025/01/drohne-in-daemmerung-e1737555383718.jpg)
 
-In the swarm, each drone is one pixel. A letter takes about 10 to 13 of them, a detailed logo more like 100 to 200. Most of the time we fly no higher than 120 metres.
+## The technology and programming behind drone shows
 
-Around the show area we draw a digital fence, the geofence. If a drone reaches that boundary, it starts a safety protocol on its own. Usually it flies back; in an emergency it lands in the safety zone, where nobody is standing. We charge the batteries with 100 % green electricity from naturstrom. You can read more on our [sustainability](/en/nachhaltigkeit/) page.
+Drone movements are programmed using specialist software. It calculates the choreography in advance so the aircraft can fly in sync and safely. This coordination makes animated pictures and light effects possible.
 
-## Technology and programming: everything is set before take-off
+### Key parts of the programming
 
-During the show, nobody steers a drone by remote control. Every flight path is pre-programmed, planned to the centimetre in our show software. Our team on the ground monitors the flight with automatic and manual safety systems.
+1. **Software and sensors:** Software controls flight paths, speed and position.
+2. **Choreography and animation:** Creative programming defines movements and formations, combining technical work with design.
+3. **LEDs:** These produce coloured light effects and pictures in the night sky.
 
-The choreography comes from our design team. Alejandro turns your story into movement, in 2D and 3D. First the flight from take-off to landing is in place, then we cut the music to it, and last come colour and light on the accents of the music. Meanwhile Patrick puts the fleet together.
+## How a drone show unfolds
 
-How we turn an idea into flight paths step by step is explained in detail in [How do you program a drone show?](/en/blog/2025-06-12-wie-programmiert-man-eine-drohnenshow/)
+A drone show starts on the ground. The drones are prepared and loaded with the information they need for the performance. After take-off, they follow a precise choreography to create pictures and animations.
 
-## How a show night runs
+### The main stages
 
-On the night itself you have the least to do. We close off the launch site, set up and fly as soon as it is dark enough, at the earliest 30 minutes after sunset.
+- **Preparation:** The required number of drones is positioned according to a planned animation grid.
+- **Take-off and formations:** The drones take off in sync and fly into predefined formations.
+- **Movement and animation:** Precise flight paths create moving pictures and light effects.
+- **Return and finish:** After the show, the drones return safely to their starting point.
 
-- **Setting up:** From about three and a half hours before the show we place the drones on the closed-off launch site, each on its fixed spot in the launch grid.
-- **Take-off:** We count down with the DJ or sound crew by radio or phone, the music starts and all the drones lift off at once. Up in the air they gather into the first formation, a circle for example.
-- **Pictures in the sky:** With the music, the formation turns into the motifs you planned with us, and the circle might become a heart that beats softly. A show lasts 13 minutes on average, and up to 25 is possible.
-- **Landing:** After the last picture, every drone flies back to its starting point and lands there. Then we pack up.
+## Creative uses
 
-## What you book a drone show for
+Drone shows are both technical productions and artistic performances. Businesses and event organisers use them for city festivals, corporate events and private celebrations. Clients value the flexibility and freedom to create their own designs.
 
-Companies and brands put their logo, their claim or a new product in the sky, for a campaign or as a moment at the company party. You approve every motif beforehand. For agencies we can fly in the background if you prefer. There is more on our page about [drone shows for advertising](/en/drohnenshow-werbung/).
+### Typical occasions
 
-Towns book us for city festivals and fairs, at Christmas or on New Year's Eve. With no bangs and no litter left behind, children and dogs can join in too. What drones change compared with rockets and firecrackers is covered in [Drones instead of fireworks](/en/blog/2025-03-31-drohnen-feuerwerk-als-alternative/). For Deutsche Umwelthilfe, we flew #BÖLLERCIAO in Berlin.
+- **Events:** Drone shows can be a highlight at large events and festivals.
+- **Businesses:** Companies use them for PR campaigns and product launches.
+- **Arts and culture:** Drone shows can become moving works of art.
 
-At concerts, festivals and musicals we fly to the music and coordinate with the stage crew and musicians. Privately, it is weddings, proposals and birthdays, with initials, names or a date in the sky. Our page on [wedding drone shows](/en/drohnenshow-hochzeit/) shows what that can look like.
+## Limits and challenges
 
-When outdoors is not an option, we bring the swarm into the hall, for trade fairs, indoor concerts or anniversaries. That is what our [indoor drone shows](/en/drohnenshow-indoor/) are for.
+The number of drones a show can use depends on having enough space that can be secured for the duration of the show, as well as consent from the landowners. Permits from the relevant authorities and suitable technical infrastructure are also essential. All applicable flight regulations must be followed.
 
-## What a show needs
+## Tips for planning a drone show
 
-Space first. As a rule of thumb we plan a show area of about 100 × 100 metres, kept clear of anyone not involved while the show is on. The take-off and landing site of about 25 × 25 metres sits inside it, and we close it to the public from set-up onwards. The exact size depends on the number of drones and the flight height.
+If you're planning a drone show, consider the following:
 
-From you, we need consent from the owners of every piece of land we fly over. For public land, that is the town or municipality. We help you with this and have a letter you can pass on, or we send it to them directly.
+- **Choose an experienced provider:** Experience helps deliver a professional performance.
+- **Check the setting:** The venue needs enough space and a clear view of the sky.
+- **Develop a creative choreography:** Music, movement and lighting work together to make the show memorable.
 
-We handle every other permit. We hold an operating authorisation from the German Federal Aviation Office (LBA) and an EU-wide operating licence. With these, we can fly many shows, on private land for example, without any extra approval process. We also submit applications to German air traffic control or for flights elsewhere in the EU.
+## How it all comes together
 
-That leaves the weather. Our drones hold their formations up to wind force 5 and in light drizzle, so in summer we rarely have to postpone. If bad weather is on the way, we move the show at no extra charge.
-
-## What you can prepare
-
-For a first enquiry, the place, date and occasion are enough. The most useful thing for us to know is where your audience will stand, because that is how we choose a show location everyone can see.
-
-The earlier you get in touch, the more relaxed it gets. Two to three months' notice is ideal, especially when permits become more involved. Book in the year before and you get a 10 % early-booking discount. If it is urgent, we can plan a show within one or two weeks for an express surcharge.
-
-Feel free to collect ideas for motifs, such as your logo, your initials or a landmark of your town. Whether an idea works with your number of drones is something we work out together.
-
-For the music, send us your wish list. We do the edit, royalty-free or with the music you want. The sound system on site is usually provided by you or the event technicians.
-
-## Your piece of sky
-
-In the [configurator on our pricing page](/en/drohnenshow-preise/) you can put your show together yourself and get a feel for how many drones suit you. Or tell us about your idea through the [contact form](/en/kontakt/). We get back to you within 48 hours with a first assessment.
+Drone shows combine technology, art and creative design. They can be used as an [alternative to fireworks](/en/blog/2025-03-31-drohnen-feuerwerk-als-alternative/). Precise programming and specialist software coordinate flight movements, light effects and choreography to create a visual performance in the night sky for many kinds of events.

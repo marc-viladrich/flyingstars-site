@@ -33,7 +33,12 @@ test('Indoor ohne Vergleich Drohne/Feuerwerk/Laser; Brandgefahr ohne absolute Ve
     assert.ok(fire, `${locale}: Zeile Brandgefahr bleibt (Marc)`);
     assert.doesNotMatch(fire.label, /kein|no |geen/i, locale);
     for (const cell of [...fire.cells, ...fire.values]) assert.doesNotMatch(cell.label ?? cell.value, /^(keine|none|geen)$/i, locale);
-    assert.deepEqual(fire.cells.map((c) => c.tone), ['y', 'n', 'y'], `${locale}: sehr gering = gut, hoch = schlecht`);
+    assert.deepEqual(fire.cells.map((c) => c.tone), ['y', 'n', 'y'], locale);
+    const noFlame = { '': 'Kein offenes Feuer', en: 'No open flame', nl: 'Geen open vuur' }[locale];
+    for (const column of [0, 2]) {
+      assert.equal(fire.cells[column].label, noFlame, locale);
+      assert.equal(fire.values[column].value, noFlame, locale);
+    }
   }
 });
 

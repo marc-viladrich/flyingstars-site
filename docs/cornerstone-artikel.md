@@ -161,3 +161,21 @@ Sprachliste, Tastatur), `scripts/css-tokens.test.mjs`.
 - Blütenspalier 3D+: ein ruhiger Schwenk 0,3 → −0,2 rad über die ganze Geschichte statt Ruck nach 5 s mit Umkehr.
 - Show-Engines (Seitenkopf-Show, Konfigurator-Teaser) laden erst nach `afterHeroPaint()` (when-near.mjs): WebKit malt das Standbild oft erst nach `load`.
 - Unterlängen in Verlaufswörtern: Ursache und Liste der 38 betroffenen Wörter in docs/rca-unterlaengen-2026-11-22.md, Wächter tests/descender.spec.ts.
+
+## Runde 21 (25.11.2026)
+
+Moritz lässt die drei bestehenden Artikel zum Launch auf ihrem ursprünglichen Textstand. Einige ranken bereits.
+Die Originalfassungen in DE, EN und NL samt Frontmatter sind deshalb wieder die SEO-Ausgangsbasis. Die
+Blog-URLs bleiben gleich. Die separaten Vorher-Seiten sind entfallen.
+
+Die drei Artikel stehen in ihren Dateien unter `src/components/blog/cornerstone/articles/` auf
+`layout: 'basic'`. Der Blog zeigt den Originaltext in einer Lesespalte, das Lichtraster-Titelbild und
+die Fotos nach den mit `afterSection` zugeordneten Abschnitten. Die Logo-Formation steht am Ende
+und ersetzt dort das importierte Logo im öffentlichen HTML. Der Testflug-Artikel bleibt ein Entwurf.
+Bei seiner Veröffentlichung zeigt das normale Artikellayout ebenfalls die Formation. Im Editor-Build
+bleibt der Markdown-Text direkt bearbeitbar.
+
+Für das vollständige Format pro Artikel `layout: 'basic'` auf `layout: 'cornerstone'` ändern.
+Dann prüft und rendert der Build wieder `blocks` mit Szene bzw. Vergleichstabelle. Die Abschnitte
+beziehen sich auf die Originalfassungen. Die Programmier-Szene verwendet für deren neun
+Unterabschnitte die vorhandenen Szenenbilder in passender Reihenfolge.

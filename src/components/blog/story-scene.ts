@@ -417,3 +417,30 @@ export function storyScene(o: { colors: string[]; zone: Record<string, string> }
 
 /** Pfad eines Teils als SVG-d */
 export const pathD = (s: Exclude<Shape, { t: 'circle' }>) => 'M' + s.pts.map((p) => `${p[0]} ${p[1]}`).join('L') + (s.t === 'poly' ? 'Z' : '');
+
+/** Ordnet vorhandene Szenenbilder den Schritten einer anderen Textfassung zu. */
+export function remapStorySteps(story: Story, sequence: number[]): Story {
+  const indices = (steps?: number[]) => steps && sequence.flatMap((step, index) => steps.includes(step) ? [index] : []);
+  const positions = <T>(values: T[]) => sequence.map((step) => values[step]);
+  const keyed = <T>(values?: Record<number, T>) => values && Object.fromEntries(
+    sequence.flatMap((step, index) => Object.hasOwn(values, step) ? [[index, values[step]]] : []),
+  );
+  const indexOf = (step?: number) => step === undefined ? undefined : sequence.indexOf(step);
+  const motion = story.motion;
+  return {
+    ...story,
+    steps: sequence.length,
+    frames: positions(story.frames),
+    pieces: story.pieces.map((piece) => ({ ...piece, steps: indices(piece.steps)!, dim: indices(piece.dim), shift: keyed(piece.shift) })),
+    drones: story.drones.map((drone) => ({ ...drone, pos: positions(drone.pos), via: keyed(drone.via) })),
+    notes: story.notes.map((note) => ({ ...note, steps: indices(note.steps)! })),
+    poster: indexOf(story.poster),
+    focus: story.focus && [indexOf(story.focus[0])!, ...story.focus.slice(1)] as Story['focus'],
+    motion: motion && {
+      sweep: indices(motion.sweep), wind: indices(motion.wind), alive: indices(motion.alive), plain: indices(motion.plain),
+      off: indices(motion.off), warm: indices(motion.warm), signal: indices(motion.signal), show: indices(motion.show),
+      assemble: indexOf(motion.assemble),
+      beat: motion.beat && { ...motion.beat, steps: indices(motion.beat.steps)! },
+    },
+  };
+}

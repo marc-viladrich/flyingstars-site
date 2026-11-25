@@ -9,24 +9,24 @@
 // Engine, tools/blog/cornerstone-media.mjs), festes Seitenverhältnis, Engine per import() kurz vor der Sichtbarkeit; ohne
 // JavaScript, bei Ladefehler und bei reduzierter Bewegung bleibt das Standbild bzw. die fertige Formation.
 import { forPath } from '../../i18n/server';
-interface Props { src?: string; poster?: string; alt?: string; id?: string; more?: { label: string; href: string } | false }
+interface Props { src?: string; poster?: string; alt?: string; id?: string; visualOnly?: boolean; more?: { label: string; href: string } | false }
 const { t, localHref } = forPath(Astro.url.pathname);
-const { src = '/media/blog/flyingstars-formation.json', poster = '/media/blog/flyingstars-formation.webp', alt = t('blogpost.finaleAlt'), id = 'finale', more = { label: t('blogpost.finaleMore'), href: '/drohnenshow-preise/#konfigurator' } } = Astro.props;
+const { src = '/media/blog/flyingstars-formation.json', poster = '/media/blog/flyingstars-formation.webp', alt = t('blogpost.finaleAlt'), id = 'finale', visualOnly = false, more = { label: t('blogpost.finaleMore'), href: '/drohnenshow-preise/#konfigurator' } } = Astro.props;
 const own = Astro.slots.has('default');
 ---
-<section class="ff" aria-labelledby={own ? undefined : `${id}-h`} data-ff>
+<div class="ff" data-ff>
   <figure class="ff-sky">
     <img class="ff-poster" src={poster} width="1200" height="600" alt={alt} loading="lazy" decoding="async" />
     <canvas data-ff-canvas data-formation={src} aria-hidden="true"></canvas>
   </figure>
-  <div class="ff-text post-body">
+  {!visualOnly && <section class="ff-text post-body" aria-labelledby={own ? undefined : `${id}-h`}>
     {own ? <slot /> : <>
       <h2 id={`${id}-h`}>{t('blogpost.finaleHeading')}</h2>
       <p>{t('blogpost.finaleText')}</p>
     </>}
     {more && <p><a class="ff-more" href={localHref(more.href)}>{more.label} <span aria-hidden="true">→</span></a></p>}
-  </div>
-</section>
+  </section>}
+</div>
 
 <script>
   // Engine erst kurz vor der Sichtbarkeit laden; das Standbild weicht erst, wenn die Formation geladen ist
