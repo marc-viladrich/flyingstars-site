@@ -39,8 +39,9 @@
       "landingActiveUsers": 22.0,
       "organicClicks": 0.0,
       "encodedQueryRows": 0,
-      "status": "unmapped",
-      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+      "status": "redirect",
+      "reason": "WordPress-Showbericht → sprachgleiche Referenzdetailseite (Migrationsinventar vom 25.11.2026)",
+      "target": "/westfalen-100/"
     },
     {
       "path": "/404/",
@@ -57,8 +58,9 @@
       "landingActiveUsers": 33.0,
       "organicClicks": 11.0,
       "encodedQueryRows": 0,
-      "status": "unmapped",
-      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+      "status": "redirect",
+      "reason": "WordPress-Showbericht → sprachgleiche Referenzdetailseite (Migrationsinventar vom 25.11.2026)",
+      "target": "/vw-50-golf/"
     },
     {
       "path": "/50-jahre-vw-golf/",
@@ -84,8 +86,9 @@
       "landingActiveUsers": 13.0,
       "organicClicks": 1.0,
       "encodedQueryRows": 0,
-      "status": "unmapped",
-      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+      "status": "redirect",
+      "reason": "WordPress-Showbericht → sprachgleiche Referenzdetailseite (Migrationsinventar vom 25.11.2026)",
+      "target": "/eisenhuettenstadt-75/"
     },
     {
       "path": "/AGB/",
@@ -183,8 +186,9 @@
       "landingActiveUsers": 10.0,
       "organicClicks": 0.0,
       "encodedQueryRows": 0,
-      "status": "unmapped",
-      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+      "status": "redirect",
+      "reason": "WordPress-Showbericht → sprachgleiche Referenzdetailseite (Migrationsinventar vom 25.11.2026)",
+      "target": "/airpower24/"
     },
     {
       "path": "/author/azad/",
@@ -246,8 +250,9 @@
       "landingActiveUsers": 27.0,
       "organicClicks": 0.0,
       "encodedQueryRows": 0,
-      "status": "unmapped",
-      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+      "status": "redirect",
+      "reason": "WordPress-Showbericht → sprachgleiche Referenzdetailseite (Migrationsinventar vom 25.11.2026)",
+      "target": "/hochzeit-recklinghausen/"
     },
     {
       "path": "/blog grundlagen/",
@@ -368,8 +373,9 @@
       "landingActiveUsers": 47.0,
       "organicClicks": 24.0,
       "encodedQueryRows": 0,
-      "status": "unmapped",
-      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+      "status": "redirect",
+      "reason": "WordPress-Showbericht → sprachgleiche Referenzdetailseite (Migrationsinventar vom 25.11.2026)",
+      "target": "/boellerciao/"
     },
     {
       "path": "/drohenshow berlin/",
@@ -819,8 +825,9 @@
       "landingActiveUsers": 21.0,
       "organicClicks": 5.0,
       "encodedQueryRows": 0,
-      "status": "unmapped",
-      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+      "status": "redirect",
+      "reason": "WordPress-Showbericht → sprachgleiche Referenzdetailseite (Migrationsinventar vom 25.11.2026)",
+      "target": "/sonnemondsterne/"
     },
     {
       "path": "/en/",
@@ -848,8 +855,9 @@
       "landingActiveUsers": 46.0,
       "organicClicks": 0.0,
       "encodedQueryRows": 0,
-      "status": "unmapped",
-      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+      "status": "redirect",
+      "reason": "WordPress-Showbericht → sprachgleiche Referenzdetailseite (Migrationsinventar vom 25.11.2026)",
+      "target": "/en/westfalen-100/"
     },
     {
       "path": "/en/50-years-of-golf-at-the-scalaria-on-lake-wolfgang-austria/",
@@ -857,8 +865,9 @@
       "landingActiveUsers": 50.0,
       "organicClicks": 0.0,
       "encodedQueryRows": 0,
-      "status": "unmapped",
-      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+      "status": "redirect",
+      "reason": "WordPress-Showbericht → sprachgleiche Referenzdetailseite (Migrationsinventar vom 25.11.2026)",
+      "target": "/en/vw-50-golf/"
     },
     {
       "path": "/en/50-years-vw-golf/",
@@ -875,8 +884,9 @@
       "landingActiveUsers": 8.0,
       "organicClicks": 0.0,
       "encodedQueryRows": 0,
-      "status": "unmapped",
-      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+      "status": "redirect",
+      "reason": "WordPress-Showbericht → sprachgleiche Referenzdetailseite (Migrationsinventar vom 25.11.2026)",
+      "target": "/en/eisenhuettenstadt-75/"
     },
     {
       "path": "/en/agb/",
@@ -1105,8 +1115,9 @@
       "landingActiveUsers": 53.0,
       "organicClicks": 1.0,
       "encodedQueryRows": 0,
-      "status": "unmapped",
-      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+      "status": "redirect",
+      "reason": "WordPress-Showbericht → sprachgleiche Referenzdetailseite (Migrationsinventar vom 25.11.2026)",
+      "target": "/en/airpower24/"
     },
     {
       "path": "/en/exploring-reinvented-the-new-ford-explorer/",
@@ -1124,8 +1135,9 @@
       "landingActiveUsers": 14.0,
       "organicClicks": 0.0,
       "encodedQueryRows": 0,
-      "status": "unmapped",
-      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+      "status": "redirect",
+      "reason": "WordPress-Showbericht → sprachgleiche Referenzdetailseite (Migrationsinventar vom 25.11.2026)",
+      "target": "/en/extraschicht-duisburg/"
     },
     {
       "path": "/en/final-highlight-of-movie-park-germany-at-hollywood-christmas/",
@@ -1197,8 +1209,9 @@
       "landingActiveUsers": 60.0,
       "organicClicks": 2.0,
       "encodedQueryRows": 0,
-      "status": "unmapped",
-      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+      "status": "redirect",
+      "reason": "WordPress-Showbericht → sprachgleiche Referenzdetailseite (Migrationsinventar vom 25.11.2026)",
+      "target": "/en/boellerciao/"
     },
     {
       "path": "/en/home-test/",
@@ -1309,8 +1322,9 @@
       "landingActiveUsers": 46.0,
       "organicClicks": 4.0,
       "encodedQueryRows": 0,
-      "status": "unmapped",
-      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+      "status": "redirect",
+      "reason": "WordPress-Showbericht → sprachgleiche Referenzdetailseite (Migrationsinventar vom 25.11.2026)",
+      "target": "/en/loreal-prada-rheinturm/"
     },
     {
       "path": "/en/marriage-proposal-she-said-yes-🤍/",
@@ -1327,8 +1341,9 @@
       "landingActiveUsers": 13.0,
       "organicClicks": 0.0,
       "encodedQueryRows": 0,
-      "status": "unmapped",
-      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+      "status": "redirect",
+      "reason": "WordPress-Showbericht → sprachgleiche Referenzdetailseite (Migrationsinventar vom 25.11.2026)",
+      "target": "/en/heiratsantrag-hugenpoet/"
     },
     {
       "path": "/en/movie-park-germany-christmas/",
@@ -1336,8 +1351,9 @@
       "landingActiveUsers": 59.0,
       "organicClicks": 7.0,
       "encodedQueryRows": 0,
-      "status": "unmapped",
-      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+      "status": "redirect",
+      "reason": "WordPress-Showbericht → sprachgleiche Referenzdetailseite (Migrationsinventar vom 25.11.2026)",
+      "target": "/en/movie-park-germany/"
     },
     {
       "path": "/en/musical-teaser-bokkenrijders/",
@@ -1373,8 +1389,9 @@
       "landingActiveUsers": 43.0,
       "organicClicks": 7.0,
       "encodedQueryRows": 0,
-      "status": "unmapped",
-      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+      "status": "redirect",
+      "reason": "WordPress-Showbericht → sprachgleiche Referenzdetailseite (Migrationsinventar vom 25.11.2026)",
+      "target": "/en/nfl-muenchen/"
     },
     {
       "path": "/en/nfl-announcement-of-the-home-team-in-munich/",
@@ -1410,8 +1427,9 @@
       "landingActiveUsers": 58.0,
       "organicClicks": 2.0,
       "encodedQueryRows": 0,
-      "status": "unmapped",
-      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+      "status": "redirect",
+      "reason": "WordPress-Showbericht → sprachgleiche Referenzdetailseite (Migrationsinventar vom 25.11.2026)",
+      "target": "/en/siemens-mobility/"
     },
     {
       "path": "/en/preise/",
@@ -1498,8 +1516,9 @@
       "landingActiveUsers": 52.0,
       "organicClicks": 3.0,
       "encodedQueryRows": 0,
-      "status": "unmapped",
-      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+      "status": "redirect",
+      "reason": "WordPress-Showbericht → sprachgleiche Referenzdetailseite (Migrationsinventar vom 25.11.2026)",
+      "target": "/en/sonnemondsterne/"
     },
     {
       "path": "/en/special-wedding-surprise-for-the-bride-groom-and-all-their-guests/",
@@ -1507,8 +1526,9 @@
       "landingActiveUsers": 40.0,
       "organicClicks": 1.0,
       "encodedQueryRows": 0,
-      "status": "unmapped",
-      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+      "status": "redirect",
+      "reason": "WordPress-Showbericht → sprachgleiche Referenzdetailseite (Migrationsinventar vom 25.11.2026)",
+      "target": "/en/hochzeit-recklinghausen/"
     },
     {
       "path": "/en/spotify-luciano-x-apache-207-2/",
@@ -1516,8 +1536,9 @@
       "landingActiveUsers": 11.0,
       "organicClicks": 0.0,
       "encodedQueryRows": 0,
-      "status": "unmapped",
-      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+      "status": "redirect",
+      "reason": "WordPress-Showbericht → sprachgleiche Referenzdetailseite (Migrationsinventar vom 25.11.2026)",
+      "target": "/en/spotify-luciano-apache/"
     },
     {
       "path": "/en/spring-festival-special/",
@@ -1525,8 +1546,9 @@
       "landingActiveUsers": 8.0,
       "organicClicks": 0.0,
       "encodedQueryRows": 0,
-      "status": "unmapped",
-      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+      "status": "redirect",
+      "reason": "WordPress-Showbericht → sprachgleiche Referenzdetailseite (Migrationsinventar vom 25.11.2026)",
+      "target": "/en/fruehlingsfest-essen/"
     },
     {
       "path": "/en/tag/100-drones/",
@@ -1653,8 +1675,9 @@
       "landingActiveUsers": 8.0,
       "organicClicks": 0.0,
       "encodedQueryRows": 0,
-      "status": "unmapped",
-      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+      "status": "retained",
+      "reason": "WordPress-Showbericht → sprachgleiche Referenzdetailseite (Migrationsinventar vom 25.11.2026)",
+      "target": "/extraschicht-duisburg/"
     },
     {
       "path": "/ford-drohnenshow/",
@@ -1672,8 +1695,9 @@
       "landingActiveUsers": 9.0,
       "organicClicks": 0.0,
       "encodedQueryRows": 0,
-      "status": "unmapped",
-      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+      "status": "redirect",
+      "reason": "WordPress-Showbericht → sprachgleiche Referenzdetailseite (Migrationsinventar vom 25.11.2026)",
+      "target": "/fruehlingsfest-essen/"
     },
     {
       "path": "/heiratsantrag-sie-hat-ja-gesagt-🤍/",
@@ -1690,8 +1714,9 @@
       "landingActiveUsers": 8.0,
       "organicClicks": 0.0,
       "encodedQueryRows": 0,
-      "status": "unmapped",
-      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+      "status": "redirect",
+      "reason": "WordPress-Showbericht → sprachgleiche Referenzdetailseite (Migrationsinventar vom 25.11.2026)",
+      "target": "/heiratsantrag-hugenpoet/"
     },
     {
       "path": "/hello-world-302902/",
@@ -1909,8 +1934,9 @@
       "landingActiveUsers": 61.0,
       "organicClicks": 28.0,
       "encodedQueryRows": 0,
-      "status": "unmapped",
-      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+      "status": "redirect",
+      "reason": "WordPress-Showbericht → sprachgleiche Referenzdetailseite (Migrationsinventar vom 25.11.2026)",
+      "target": "/loreal-prada-rheinturm/"
     },
     {
       "path": "/movie-parks-germany-christmas/",
@@ -1918,8 +1944,9 @@
       "landingActiveUsers": 36.0,
       "organicClicks": 19.0,
       "encodedQueryRows": 0,
-      "status": "unmapped",
-      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+      "status": "redirect",
+      "reason": "WordPress-Showbericht → sprachgleiche Referenzdetailseite (Migrationsinventar vom 25.11.2026)",
+      "target": "/movie-park-germany/"
     },
     {
       "path": "/musikalischer-teaser-bokkenrijders/",
@@ -1956,8 +1983,9 @@
       "landingActiveUsers": 48.0,
       "organicClicks": 1.0,
       "encodedQueryRows": 0,
-      "status": "unmapped",
-      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+      "status": "redirect",
+      "reason": "WordPress-Showbericht → sprachgleiche Referenzdetailseite (Migrationsinventar vom 25.11.2026)",
+      "target": "/nfl-muenchen/"
     },
     {
       "path": "/niederlande-feuerwerk-verbot-auswirkungen-auf-silvesterfeiern-2026/",
@@ -2146,8 +2174,9 @@
       "landingActiveUsers": 26.0,
       "organicClicks": 7.0,
       "encodedQueryRows": 0,
-      "status": "unmapped",
-      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+      "status": "redirect",
+      "reason": "WordPress-Showbericht → sprachgleiche Referenzdetailseite (Migrationsinventar vom 25.11.2026)",
+      "target": "/siemens-mobility/"
     },
     {
       "path": "/preise-neu/",
@@ -2335,8 +2364,9 @@
       "landingActiveUsers": 20.0,
       "organicClicks": 0.0,
       "encodedQueryRows": 0,
-      "status": "unmapped",
-      "reason": "Kein belegtes Gegenstück im aktuellen Relaunch; redaktionelle Entscheidung erforderlich"
+      "status": "redirect",
+      "reason": "WordPress-Showbericht → sprachgleiche Referenzdetailseite (Migrationsinventar vom 25.11.2026)",
+      "target": "/spotify-luciano-apache/"
     },
     {
       "path": "/support/",
