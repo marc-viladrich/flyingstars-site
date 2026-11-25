@@ -5,6 +5,9 @@ name: CI
 on:
   pull_request:
   workflow_dispatch:
+permissions:
+  contents: read
+  packages: read # privates Editor-Paket über GITHUB_TOKEN
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
@@ -20,8 +23,8 @@ jobs:
       - uses: actions/setup-node@v6
         with: { node-version-file: .nvmrc, cache: npm, registry-url: 'https://npm.pkg.github.com', scope: '@marc-viladrich' }
       - run: npm ci
-        # Private editor package (GitHub Packages): classic token with read:packages only.
-        env: { NODE_AUTH_TOKEN: '${{ secrets.PACKAGES_READ_TOKEN }}' }
+        # Private editor package (GitHub Packages): GITHUB_TOKEN of this run; the package grants this repo read access (Manage Actions access).
+        env: { NODE_AUTH_TOKEN: '${{ secrets.GITHUB_TOKEN }}' }
       - name: Gemeinsame lokale und CI-Prüfung
         run: npm run ci
         env:
@@ -52,7 +55,7 @@ jobs:
       - uses: actions/setup-node@v6
         with: { node-version-file: .nvmrc, cache: npm, registry-url: 'https://npm.pkg.github.com', scope: '@marc-viladrich' }
       - run: npm ci
-        env: { NODE_AUTH_TOKEN: '${{ secrets.PACKAGES_READ_TOKEN }}' }
+        env: { NODE_AUTH_TOKEN: '${{ secrets.GITHUB_TOKEN }}' }
       - uses: actions/download-artifact@v4
         with: { name: production-build, path: dist }
       - name: Playwright-Version
@@ -116,7 +119,7 @@ jobs:
       - uses: actions/setup-node@v6
         with: { node-version-file: .nvmrc, cache: npm, registry-url: 'https://npm.pkg.github.com', scope: '@marc-viladrich' }
       - run: npm ci
-        env: { NODE_AUTH_TOKEN: '${{ secrets.PACKAGES_READ_TOKEN }}' }
+        env: { NODE_AUTH_TOKEN: '${{ secrets.GITHUB_TOKEN }}' }
       - uses: actions/download-artifact@v4
         with: { name: production-build, path: dist }
       - name: Playwright-Version
