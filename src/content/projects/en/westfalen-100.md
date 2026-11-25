@@ -114,7 +114,7 @@
       },
       {
         "title": "A storyboard for Westfalen",
-        "text": "The completely customised show design was developed through intensive collaboration with our contacts at Westfalen AG. Each storyline and element draft was validated after each new step. Gradually, the final storyline emerged, fully aligned with the company's corporate identity. It was also important that all employees could understand the show, so words like \"customer love\" were also displayed in English.\n\nDid the anniversary show take place on {{project.westfalen-100.date.long}}, as the original report states, or in 2023, as listed in the project records?",
+        "text": "The completely customised show design was developed through intensive collaboration with our contacts at Westfalen AG. Each storyline and element draft was validated after each new step. Gradually, the final storyline emerged, fully aligned with the company's corporate identity. It was also important that all employees could understand the show, so words like \"customer love\" were also displayed in English.",
         "image": {
           "src": "/assets/0144cc5f4f3ca93d33a4d13c9cc0b6ce5aa0afddc618c840adcd17b1599e92ff.webp",
           "alt": "Jumping Westfalen horse",
@@ -248,12 +248,12 @@
   "featured": false,
   "draft": false,
   "translationContractVersion": 2,
-  "translationSourceHash": "4d23c2f41d45395da9931d0801a49797e466731dcd4c397b5dd5b2a2c4c6df76",
+  "translationSourceHash": "62b226f40b0a7deda77184c46b1d8e66382b8f01615eb9dbfae204a6166bb8b0",
   "translationEvidence": {
     "version": 2,
     "addressing": "stable-keys",
     "locale": "en",
-    "sourceFingerprint": "4d23c2f41d45395da9931d0801a49797e466731dcd4c397b5dd5b2a2c4c6df76",
+    "sourceFingerprint": "62b226f40b0a7deda77184c46b1d8e66382b8f01615eb9dbfae204a6166bb8b0",
     "fields": [
       {
         "address": "/body",
@@ -521,8 +521,8 @@
       },
       {
         "address": "/showcase/story/@k_7b697db02abcb0114e63/text",
-        "sourceFingerprint": "1be64fccd2d7911c9865dde741282eb20e6d88513d7458ca74be544c7afd0d00",
-        "targetFingerprint": "72b1b13044571d261fcce3b5925d3a78f1a32d2faf0b8b3cf31149f0f52df0cb",
+        "sourceFingerprint": "c2d46f69f1a6a3469827d87ca37e937ab2414257344ab571d71a2aa71d8fac5e",
+        "targetFingerprint": "e60859c0d28ca9e961beeb5c373f0a5a3f24fede79c6c39624c2c75962feb377",
         "status": "reviewed"
       },
       {

@@ -113,7 +113,7 @@
       },
       {
         "title": "De terugblik",
-        "text": "Samen met de muziek en de lichtshow konden we mooie beelden aan de hemel tekenen. Het publiek was net zo enthousiast als wij. Voor zulke avonden is de lange reis en de nauwkeurige planning de moeite waard. We komen graag terug bij Scalaria aan de Wolfgangsee.\n\nHoeveel drones vlogen boven de Wolfgangsee? Het oorspronkelijke verslag noemt er 400, de vragenlijst 350.",
+        "text": "Samen met de muziek en de lichtshow konden we mooie beelden aan de hemel tekenen. Het publiek was net zo enthousiast als wij. Voor zulke avonden is de lange reis en de nauwkeurige planning de moeite waard. We komen graag terug bij Scalaria aan de Wolfgangsee.",
         "image": {
           "src": "/assets/c7f5446dd194ab6c12836ab43ccffdedb82b4d4a25af2d4ad4060b7051fa8f2a.webp",
           "alt": "Tekst ‘50 Jahre Golf’",
@@ -199,12 +199,12 @@
   "featured": false,
   "draft": false,
   "translationContractVersion": 2,
-  "translationSourceHash": "91d55ffc086e4e9ea546ca3e9ff50b5a228391d3c44e8b03b8a54cc562b41062",
+  "translationSourceHash": "a509fa9b62f69a976875de78022689f140473da3eb9d9ab08b2a1960e7b3aba9",
   "translationEvidence": {
     "version": 2,
     "addressing": "stable-keys",
     "locale": "nl",
-    "sourceFingerprint": "91d55ffc086e4e9ea546ca3e9ff50b5a228391d3c44e8b03b8a54cc562b41062",
+    "sourceFingerprint": "a509fa9b62f69a976875de78022689f140473da3eb9d9ab08b2a1960e7b3aba9",
     "fields": [
       {
         "address": "/body",
@@ -484,8 +484,8 @@
       },
       {
         "address": "/showcase/story/@k_83d449588735e83cf880/text",
-        "sourceFingerprint": "f7ac889fa0524593ff21b8b9d0ec4f351606f04a3becf76cb44b452c36f2b6e2",
-        "targetFingerprint": "84ddf5064bf26df1a34908b4f52390d085df610b615d631d9e8905bea439857f",
+        "sourceFingerprint": "b1c1defc5fad5a6dd65fea4e48a0dc9baccd36190536f3e701ee03e7ca8bf76e",
+        "targetFingerprint": "7955f07e783694c03fe6409c549188ed2e45b456dc2b9f230109f55916b7305a",
         "status": "reviewed"
       },
       {

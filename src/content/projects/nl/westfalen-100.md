@@ -114,7 +114,7 @@
       },
       {
         "title": "Een storyboard voor Westfalen",
-        "text": "We ontwierpen het verhaal in nauw overleg met onze contactpersonen bij Westfalen AG. Na iedere stap werden de ontwerpen en motieven beoordeeld. Zo ontstond een show die aansloot bij de huisstijl en identiteit van het bedrijf. Alle medewerkers moesten de beelden kunnen begrijpen. Daarom toonden we woorden als ‘Kundenliebe’ ook in het Engels.\n\nVond de jubileumshow volgens het oorspronkelijke verslag plaats op {{project.westfalen-100.date.long}}, of in 2023 zoals in de projectdocumenten staat?",
+        "text": "We ontwierpen het verhaal in nauw overleg met onze contactpersonen bij Westfalen AG. Na iedere stap werden de ontwerpen en motieven beoordeeld. Zo ontstond een show die aansloot bij de huisstijl en identiteit van het bedrijf. Alle medewerkers moesten de beelden kunnen begrijpen. Daarom toonden we woorden als ‘Kundenliebe’ ook in het Engels.",
         "image": {
           "src": "/assets/0144cc5f4f3ca93d33a4d13c9cc0b6ce5aa0afddc618c840adcd17b1599e92ff.webp",
           "alt": "Springend Westfalen-paard",
@@ -248,12 +248,12 @@
   "featured": false,
   "draft": false,
   "translationContractVersion": 2,
-  "translationSourceHash": "4d23c2f41d45395da9931d0801a49797e466731dcd4c397b5dd5b2a2c4c6df76",
+  "translationSourceHash": "62b226f40b0a7deda77184c46b1d8e66382b8f01615eb9dbfae204a6166bb8b0",
   "translationEvidence": {
     "version": 2,
     "addressing": "stable-keys",
     "locale": "nl",
-    "sourceFingerprint": "4d23c2f41d45395da9931d0801a49797e466731dcd4c397b5dd5b2a2c4c6df76",
+    "sourceFingerprint": "62b226f40b0a7deda77184c46b1d8e66382b8f01615eb9dbfae204a6166bb8b0",
     "fields": [
       {
         "address": "/body",
@@ -521,8 +521,8 @@
       },
       {
         "address": "/showcase/story/@k_7b697db02abcb0114e63/text",
-        "sourceFingerprint": "1be64fccd2d7911c9865dde741282eb20e6d88513d7458ca74be544c7afd0d00",
-        "targetFingerprint": "a47d1fb71aac1779be71f0443f9534d303133d758c083e1ef9d1f857f2904f05",
+        "sourceFingerprint": "c2d46f69f1a6a3469827d87ca37e937ab2414257344ab571d71a2aa71d8fac5e",
+        "targetFingerprint": "258fed73e1a7e13788d8d5c4068c7e8602b7b74ab03226020fe34b32114915cd",
         "status": "reviewed"
       },
       {

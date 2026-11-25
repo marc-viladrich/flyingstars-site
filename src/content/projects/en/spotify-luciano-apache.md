@@ -99,7 +99,7 @@
       },
       {
         "title": "The pulsing finale",
-        "text": "With choreographed precision, our drones flew silhouettes and scenes that resembled a combination of music video and live performance - an experience that made the atmosphere of the urban rap collaboration real. Particularly impressive: the finale, which culminated in a large, rhythmically pulsating closing sequence. The Berlin sky itself became a means of projecting collective enthusiasm - in the spirit of Spotify: music, art and innovative technology merged into an unforgettable work of art.\n\nWas it exactly {{project.spotify-luciano-apache.drones}} drones? The original report gives {{project.spotify-luciano-apache.drones}} in its facts and “over {{project.spotify-luciano-apache.drones}}” in the text.",
+        "text": "With choreographed precision, our drones flew silhouettes and scenes that resembled a combination of music video and live performance - an experience that made the atmosphere of the urban rap collaboration real. Particularly impressive: the finale, which culminated in a large, rhythmically pulsating closing sequence. The Berlin sky itself became a means of projecting collective enthusiasm - in the spirit of Spotify: music, art and innovative technology merged into an unforgettable work of art.",
         "image": {
           "src": "/assets/7287079acf9167d37e5bb6f011722c9ee927564d782561e7d462e86f994f8c2d.webp",
           "alt": "“Gesegnet” lettering above Prenzlauer Berg",
@@ -188,12 +188,12 @@
   "featured": false,
   "draft": false,
   "translationContractVersion": 2,
-  "translationSourceHash": "e131c97c1605ae8362879609bf69ae93749b458f128b200d344b03490bd555b6",
+  "translationSourceHash": "8395a8435cc88bcab2de8903022d659da4cc1ae17bf934fb2fe96310c7f8cc70",
   "translationEvidence": {
     "version": 2,
     "addressing": "stable-keys",
     "locale": "en",
-    "sourceFingerprint": "e131c97c1605ae8362879609bf69ae93749b458f128b200d344b03490bd555b6",
+    "sourceFingerprint": "8395a8435cc88bcab2de8903022d659da4cc1ae17bf934fb2fe96310c7f8cc70",
     "fields": [
       {
         "address": "/body",
@@ -383,8 +383,8 @@
       },
       {
         "address": "/showcase/story/@k_2710041a2fa5cb208295/text",
-        "sourceFingerprint": "2df6d1aa18b7aacb294eacbacd4f9cac0004bab41448d45640928800f813e0fa",
-        "targetFingerprint": "2d01bedb3b44b0ee7686b65735a7804c16191513d53a4e92d811c5368c88eb77",
+        "sourceFingerprint": "4d59d4ea1c9dac452f92b4e56da6d3e3c0a1dd71d2dffd5afef4e141034fa33f",
+        "targetFingerprint": "c24d7db590fd0c5471d0f4b8d31af6b4e22ce521a91b969bb772b27427ce4715",
         "status": "reviewed"
       },
       {

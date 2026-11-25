@@ -113,7 +113,7 @@
       },
       {
         "title": "The outcome",
-        "text": "Once again, the show at Lake Wolfgang was a wonderful experience. Together with the music and light show, we were able to draw fantastic pictures in the night sky. The audience was just as enthusiastic as we were. Long journeys and meticulous planning are always worthwhile for moments like this. Lake Wolfgangsee is a wonderful location that we love to visit again and again so that we can continue to be a partner for unforgettable moments for the Scalaria Resort.\n\nHow many drones flew over Lake Wolfgang? The original show report says 400 and the questionnaire lists 350.",
+        "text": "Once again, the show at Lake Wolfgang was a wonderful experience. Together with the music and light show, we were able to draw fantastic pictures in the night sky. The audience was just as enthusiastic as we were. Long journeys and meticulous planning are always worthwhile for moments like this. Lake Wolfgangsee is a wonderful location that we love to visit again and again so that we can continue to be a partner for unforgettable moments for the Scalaria Resort.",
         "image": {
           "src": "/assets/c7f5446dd194ab6c12836ab43ccffdedb82b4d4a25af2d4ad4060b7051fa8f2a.webp",
           "alt": "“50 Jahre Golf” lettering",
@@ -199,12 +199,12 @@
   "featured": false,
   "draft": false,
   "translationContractVersion": 2,
-  "translationSourceHash": "91d55ffc086e4e9ea546ca3e9ff50b5a228391d3c44e8b03b8a54cc562b41062",
+  "translationSourceHash": "a509fa9b62f69a976875de78022689f140473da3eb9d9ab08b2a1960e7b3aba9",
   "translationEvidence": {
     "version": 2,
     "addressing": "stable-keys",
     "locale": "en",
-    "sourceFingerprint": "91d55ffc086e4e9ea546ca3e9ff50b5a228391d3c44e8b03b8a54cc562b41062",
+    "sourceFingerprint": "a509fa9b62f69a976875de78022689f140473da3eb9d9ab08b2a1960e7b3aba9",
     "fields": [
       {
         "address": "/body",
@@ -484,8 +484,8 @@
       },
       {
         "address": "/showcase/story/@k_83d449588735e83cf880/text",
-        "sourceFingerprint": "f7ac889fa0524593ff21b8b9d0ec4f351606f04a3becf76cb44b452c36f2b6e2",
-        "targetFingerprint": "d7958a3482d098d47d7ab82450a42837f836a17afd1b6b390fdb912666d3598a",
+        "sourceFingerprint": "b1c1defc5fad5a6dd65fea4e48a0dc9baccd36190536f3e701ee03e7ca8bf76e",
+        "targetFingerprint": "7368b404e751c78b0d7e701b766b7045b4aa247991620f27b6e040b6fcfa53d8",
         "status": "reviewed"
       },
       {

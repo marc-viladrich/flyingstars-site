@@ -99,7 +99,7 @@
       },
       {
         "title": "De pulserende finale",
-        "text": "We vlogen silhouetten en scènes die het midden hielden tussen een videoclip en een liveoptreden. De lichtshow eindigde met een grote, ritmisch pulserende slotsequentie. Muziek, beeld en techniek kwamen zo samen boven Berlijn.\n\nWaren het precies {{project.spotify-luciano-apache.drones}} drones? Het oorspronkelijke verslag noemt {{project.spotify-luciano-apache.drones}} bij de projectgegevens en ‘meer dan {{project.spotify-luciano-apache.drones}}’ in de tekst.",
+        "text": "We vlogen silhouetten en scènes die het midden hielden tussen een videoclip en een liveoptreden. De lichtshow eindigde met een grote, ritmisch pulserende slotsequentie. Muziek, beeld en techniek kwamen zo samen boven Berlijn.",
         "image": {
           "src": "/assets/7287079acf9167d37e5bb6f011722c9ee927564d782561e7d462e86f994f8c2d.webp",
           "alt": "Tekst ‘Gesegnet’ boven Prenzlauer Berg",
@@ -188,12 +188,12 @@
   "featured": false,
   "draft": false,
   "translationContractVersion": 2,
-  "translationSourceHash": "e131c97c1605ae8362879609bf69ae93749b458f128b200d344b03490bd555b6",
+  "translationSourceHash": "8395a8435cc88bcab2de8903022d659da4cc1ae17bf934fb2fe96310c7f8cc70",
   "translationEvidence": {
     "version": 2,
     "addressing": "stable-keys",
     "locale": "nl",
-    "sourceFingerprint": "e131c97c1605ae8362879609bf69ae93749b458f128b200d344b03490bd555b6",
+    "sourceFingerprint": "8395a8435cc88bcab2de8903022d659da4cc1ae17bf934fb2fe96310c7f8cc70",
     "fields": [
       {
         "address": "/body",
@@ -383,8 +383,8 @@
       },
       {
         "address": "/showcase/story/@k_2710041a2fa5cb208295/text",
-        "sourceFingerprint": "2df6d1aa18b7aacb294eacbacd4f9cac0004bab41448d45640928800f813e0fa",
-        "targetFingerprint": "229718d16900cbba2e3bf182b1da5675041c3d05afedcc85a028a04db64413b8",
+        "sourceFingerprint": "4d59d4ea1c9dac452f92b4e56da6d3e3c0a1dd71d2dffd5afef4e141034fa33f",
+        "targetFingerprint": "56bc178d315f84673b60f3537b5a0a47a2d4db6ae28e1e9ef53d58768907f0c2",
         "status": "reviewed"
       },
       {

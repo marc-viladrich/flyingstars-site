@@ -124,7 +124,7 @@
       },
       {
         "title": "Das pulsierende Finale",
-        "text": "Mit choreografierter Präzision flogen unsere Drohnen Silhouetten und Szenen, die einer Kombination aus Musikvideo und Live-Performance glichen – ein Erlebnis, das die Atmosphäre der urbanen Rap-Zusammenarbeit real werden ließ. Besonders eindrucksvoll: das Finale, das in einer großen, rhythmisch pulsierenden Abschlusssequenz gipfelte. So wurde der Berliner Himmel selbst zum Projektionsmittel kollektiver Begeisterung – ganz im Sinne von Spotify: Musik, Kunst und innovative Technik verschmolzen hier zu einem unvergesslichen Gesamtkunstwerk.\n\nWaren es genau {{project.spotify-luciano-apache.drones}} Drohnen? In den Eckdaten des damaligen Berichts stehen {{project.spotify-luciano-apache.drones}}, im Text „über {{project.spotify-luciano-apache.drones}}“.",
+        "text": "Mit choreografierter Präzision flogen unsere Drohnen Silhouetten und Szenen, die einer Kombination aus Musikvideo und Live-Performance glichen – ein Erlebnis, das die Atmosphäre der urbanen Rap-Zusammenarbeit real werden ließ. Besonders eindrucksvoll: das Finale, das in einer großen, rhythmisch pulsierenden Abschlusssequenz gipfelte. So wurde der Berliner Himmel selbst zum Projektionsmittel kollektiver Begeisterung – ganz im Sinne von Spotify: Musik, Kunst und innovative Technik verschmolzen hier zu einem unvergesslichen Gesamtkunstwerk.",
         "image": {
           "src": "/assets/7287079acf9167d37e5bb6f011722c9ee927564d782561e7d462e86f994f8c2d.webp",
           "alt": "Schriftzug „Gesegnet“ über Prenzlauer Berg",

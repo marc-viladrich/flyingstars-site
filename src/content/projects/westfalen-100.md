@@ -136,7 +136,7 @@
       },
       {
         "title": "Ein Storyboard für Westfalen",
-        "text": "Das komplett individuell gewählte Show-Design entstand im intensiven Austausch mit unseren Ansprechpartner*innen von Westfalen AG. Die jeweiligen Storyline- und Element-Entwürfe wurden nach jedem neuen Schritt validiert. Nach und nach entstand so die finale Storyline in kompletter Anlehnung an die Unternehmens-Corporate Identity. Wichtig war es dabei auch, dass alle Mitarbeitenden das Ganze verstehen würden, sodass bspw. Wörter wie \"Kundenliebe\" auch ins Englische übersetzt gezeigt werden sollten.\n\nFand die Jubiläumsshow wie im damaligen Showbericht vermerkt am {{project.westfalen-100.date.long}} statt oder 2023, wie in den Projektunterlagen?",
+        "text": "Das komplett individuell gewählte Show-Design entstand im intensiven Austausch mit unseren Ansprechpartner*innen von Westfalen AG. Die jeweiligen Storyline- und Element-Entwürfe wurden nach jedem neuen Schritt validiert. Nach und nach entstand so die finale Storyline in kompletter Anlehnung an die Unternehmens-Corporate Identity. Wichtig war es dabei auch, dass alle Mitarbeitenden das Ganze verstehen würden, sodass bspw. Wörter wie \"Kundenliebe\" auch ins Englische übersetzt gezeigt werden sollten.",
         "image": {
           "src": "/assets/0144cc5f4f3ca93d33a4d13c9cc0b6ce5aa0afddc618c840adcd17b1599e92ff.webp",
           "alt": "Springendes Westfalen-Pferd",

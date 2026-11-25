@@ -131,7 +131,7 @@
       },
       {
         "title": "Das Fazit",
-        "text": "Auch dieses Mal war die Show am Wolfgangsee eine wunderbare Erfahrung. Zusammen mit Musik und Lichtshow konnten wir tolle Bilder in den Nachthimmel zeichnen. Das Publikum war genauso begeistert wie wir. Für solche Momente lohnen sich weite Anfahrten und akribische Planung immer wieder. Der Wolfgangsee ist eine wunderbare Location, die wir immer wieder gerne besuchen, um für das Scalaria Resort auch weiterhin ein Partner für unvergessliche Momente sein zu dürfen.\n\nWie viele Drohnen flogen am Wolfgangsee? Der damalige Showbericht nennt 400, im Fragebogen stehen 350.",
+        "text": "Auch dieses Mal war die Show am Wolfgangsee eine wunderbare Erfahrung. Zusammen mit Musik und Lichtshow konnten wir tolle Bilder in den Nachthimmel zeichnen. Das Publikum war genauso begeistert wie wir. Für solche Momente lohnen sich weite Anfahrten und akribische Planung immer wieder. Der Wolfgangsee ist eine wunderbare Location, die wir immer wieder gerne besuchen, um für das Scalaria Resort auch weiterhin ein Partner für unvergessliche Momente sein zu dürfen.",
         "image": {
           "src": "/assets/c7f5446dd194ab6c12836ab43ccffdedb82b4d4a25af2d4ad4060b7051fa8f2a.webp",
           "alt": "Schriftzug „50 Jahre Golf“",
