@@ -30,9 +30,58 @@ test('Redirects erkennen widersprüchliche Ziele vor der Map-Projektion und lös
  assert.deepEqual(resolveRedirects([{from:'/a',to:'/b/'},{from:'/a/',to:'/b/'},{from:'/b/',to:'/c/'}]),[{from:'/a/',to:'/c/'},{from:'/b/',to:'/c/'}]);
  assert.throws(()=>assertRedirectRoutes([{from:'/kontakt/',to:'/target/'}],[{path:'/kontakt/'}]),/überschreibt/);
  assert.equal(resolveRedirects([{from:'/umlaute-für',to:'/target/'}])[0].from,'/umlaute-für/');
- const redirects=await deliveryRedirects(process.cwd());assert.equal(redirects.length,74);assert.equal(htaccessText(redirects),readFileSync('public/.htaccess','utf8'));
+ const redirects=await deliveryRedirects(process.cwd());assert.equal(htaccessText(redirects),readFileSync('public/.htaccess','utf8'));
 });
 test('Besucher-Origin, Legacy-Medien und AFE teilen eine Policy mit getrennten Projektionen',async()=>{
  const site=await createSite(process.cwd());assert.equal(PRODUCTION_ORIGIN,'https://flyingstars.art');assert.equal(site.mediaOrigin,LEGACY_MEDIA_ORIGIN);assert.deepEqual(site.mediaHosts,LEGACY_MEDIA_HOSTS);
  const custom=mediaHosts('media.example.org');assert.ok(custom.includes('media.example.org'));assert.equal(new Set(custom).size,custom.length);assert.ok(!site.mediaHosts.includes('media.example.org'));
+});
+
+test('Das WordPress-Inventar führt jeden Showbericht auf eine vorhandene sprachgleiche Fallstudie',async()=>{
+ const csv=readFileSync(new URL('../docs/inventar.csv',import.meta.url),'utf8');
+ // CSV fields can contain commas and doubled quotes, including in article titles.
+ const records=csv.trimEnd().split(/\r?\n/).map(line=>
+  [...line.matchAll(/(?:^|,)(?:"((?:[^"]|"")*)"|([^,]*))/g)]
+   .map(match=>match[1]?.replaceAll('""','"')??match[2]));
+ const [header,...rows]=records;
+ const reports=rows.map(row=>{
+  assert.equal(row.length,header.length,'Ungültige Inventarzeile: '+row[0]);
+  return Object.fromEntries(header.map((name,index)=>[name,row[index]]));
+ }).filter(row=>row.Typ==='Referenz/Showbericht');
+ assert.equal(reports.length,36);
+
+ const root=process.cwd(), content=await readEditorialRecords(root);
+ const projects=content.filter(record=>record.id.startsWith('project/')).map(record=>({
+  id:record.id.slice('project/'.length),data:record.data,
+ }));
+ const cases=new Set(publicRouteEntries({pages:[],projects,posts:[]}).filter(route=>route.kind==='case').map(route=>route.path));
+ const htaccess=readFileSync(new URL('../public/.htaccess',import.meta.url),'utf8');
+ const rules=[...htaccess.matchAll(/^RewriteRule (\^\S+) (\S+) \[R=301,L\]$/gm)]
+  .map(([,pattern,target])=>({pattern:new RegExp(pattern),target}));
+ const assertDirect=(source,target)=>{
+  for(const variant of [source.replace(/\/$/,''),source]){
+   const rule=rules.find(({pattern})=>pattern.test(variant.slice(1)));
+   assert.equal(rule?.target,target,'Direkte 301 für '+variant);
+  }
+ };
+ for(const report of reports){
+  const from=new URL(report['Alte URL']).pathname.replace(/\/?$/,'/');
+  const to=new URL(report['Neue URL (tatsächlich oder geplant)']).pathname;
+  const locale=report.Sprache;
+  assert.ok(cases.has(to),'Fehlende Fallstudie '+to);
+  assert.equal(to.startsWith('/en/'),locale==='en');
+  if(from===to){
+   // Apache's DirectorySlash handles the slashless form of retained static directories.
+   assert.ok(!rules.some(({pattern})=>pattern.test(from.slice(1))),'Selbstweiterleitung '+from);
+  }else assertDirect(from,to);
+ }
+ for(const [from,to] of [
+  ['/100-drohnen-fur-puma-zum-anstoss-eines-bundesliga-derbys/','/puma-bundesliga/'],
+  ['/en/100-drones-for-puma-at-the-start-of-a-bundesliga-derby/','/en/puma-bundesliga/'],
+  ['/ford-drohnenshow/','/exploring-reinvented-der-neue-ford-explorer/'],
+  ['/en/ford-droneshow/','/en/exploring-reinvented-der-neue-ford-explorer/'],
+ ]){
+  assert.ok(cases.has(to),'Fehlende Fallstudie '+to);
+  assertDirect(from,to);
+ }
 });

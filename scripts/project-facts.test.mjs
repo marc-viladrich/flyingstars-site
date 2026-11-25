@@ -11,7 +11,10 @@ test('Alle 20 Projekte besitzen ausschließlich explizite Faktenverweise; Stand 
  for(const file of readdirSync('src/content/projects',{recursive:true}).filter(n=>n.endsWith('.md'))){
   const data=contentSchemas.projects.parse(parse(readFileSync('src/content/projects/'+file,'utf8').split('---')[1]));
   for(const field of ['date','client','location','drones'])if(field in data){projectFactRefSchema.parse(data[field]);assert.equal(data[field].field,field);}
-  if(data.showcase){projectFactRefSchema.parse(data.showcase.drones);assert.ok(data.showcase.credits.some(c=>c.value?.field==='location'));}
+  if(data.showcase){
+   assert.deepEqual(data.showcase.drones,data.drones);
+   assert.ok(data.showcase.credits.some(c=>c.value?.field==='location'));
+  }
   count++;
  }
  assert.equal(count,60); // 20 Projekte je DE/EN/NL, seit 15.11.2026 mit E.ON Hamburg (Moritz' Startseitentext)
@@ -29,4 +32,14 @@ test('Alle 20 Projekte besitzen ausschließlich explizite Faktenverweise; Stand 
 test('AFE bearbeitet denselben historischen Faktenbesitzer; Timeline referenziert vorhandene Ereignisse',async()=>{
  const site=await createSite(process.cwd()),source=site.sourceFor('site/project-facts');assert.deepEqual(source.address,{collection:'projectFacts',id:'configuration'});assert.equal(source.file,'src/content/project-facts.json');
  for(const locale of ['','en/','nl/']){const page=parse(readFileSync(`src/content/pages/${locale}ueber-uns.yaml`,'utf8'));for(const item of page.sections.find(s=>s.type==='timeline').items)if(typeof item.when==='object'){projectFactRefSchema.parse(item.when);assert.equal(typeof projectValues(item,locale.slice(0,-1)||'de').when,'string');}}
+});
+
+test('Mehrabend-Shows lösen beide Termine und die Aufführungszahl aus dem Faktenbestand auf',()=>{
+ for(const [project,lastDay] of [['airpower24','2024-09-07'],['eisenhuettenstadt-75','2025-08-31']]){
+  const reference={project,field:'endDate',display:'iso'};
+  assert.equal(projectFactRefSchema.parse(reference).display,'iso');
+  assert.equal(projectValue(reference),lastDay);
+  assert.equal(projectValue({project,field:'shows'}),2);
+  assert.equal(projectText(`{{project.${project}.endDate.iso}}`,'nl'),lastDay);
+ }
 });

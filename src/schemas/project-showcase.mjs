@@ -15,6 +15,13 @@ const photograph = z.object({
   caption: fieldPolicy(z.string().min(1), 'translatable'),
 }).meta(imageMetadata);
 
+const localClip = /^\/media\/projekte\/[a-z0-9-]+\/[a-z0-9-]+\.mp4$/;
+const clipSource = z.string().refine(value => localClip.test(value) || z.url().safeParse(value).success);
+const caseLink = z.object({
+  href: fieldPolicy(z.string().refine(value => localClip.test(value) || z.url({protocol:/^https$/}).safeParse(value).success), 'shared'),
+  label: fieldPolicy(z.string().min(1), 'translatable'),
+});
+
 export const projectShowcaseSchema = z.object({
   route: grouped('Adresse', fieldPolicy(z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/), 'shared')),
   order: grouped('Adresse', fieldPolicy(z.number().int().positive(), 'shared')),
@@ -29,10 +36,13 @@ export const projectShowcaseSchema = z.object({
   titleChars: grouped('Titel & Darstellung', fieldPolicy(z.number().int().positive(), 'shared')),
   tagline: grouped('Titel & Darstellung', fieldPolicy(z.string().min(1), 'translatable')),
   accent: grouped('Titel & Darstellung', fieldPolicy(z.string().regex(/^#[a-fA-F0-9]{6}$/), 'shared')),
-  drones: grouped('Showdaten', z.union([fieldPolicy(z.number().int().positive(), 'shared'),projectFactRefSchema])),
-  heroVideo: grouped('Showdaten', fieldPolicy(z.url().optional(), 'shared')),
+  drones: grouped('Showdaten', z.union([fieldPolicy(z.number().int().positive(), 'shared'),projectFactRefSchema]).optional()),
+  heroVideo: grouped('Showdaten', fieldPolicy(clipSource.optional(), 'shared')),
   // A published film can be linked without inventing a self-hosted hero loop.
-  videoLink: z.object({ href: fieldPolicy(z.url(), 'shared'), label: fieldPolicy(z.string().min(1), 'translatable') }).optional(),
+  videoLink: z.union([
+    z.object({ href: fieldPolicy(z.url(), 'shared'), label: fieldPolicy(z.string().min(1), 'translatable') }),
+    z.array(caseLink).min(1),
+  ]).optional(),
   credits: z.array(z.object({ label: fieldPolicy(z.string().min(1), 'translatable'), value: z.union([fieldPolicy(z.string().min(1), 'translatable'),projectFactRefSchema]) })).min(1),
   numbers: z.array(z.object({ value: z.union([fieldPolicy(z.number().int().nonnegative(), 'shared'),projectFactRefSchema]), label: fieldPolicy(z.string().min(1), 'translatable') })).min(1),
   story: z.array(z.object({

@@ -1,6 +1,8 @@
 {
   "airpower24": {
     "date": "2024-09-05",
+    "endDate": "2024-09-07",
+    "shows": 2,
     "client": "Air Power",
     "location": {
       "de": "Spielberg und Zeltweg (Österreich)",
@@ -17,6 +19,8 @@
   },
   "eisenhuettenstadt-75": {
     "date": "2025-08-30",
+    "endDate": "2025-08-31",
+    "shows": 2,
     "client": {
       "de": "Stadt Eisenhüttenstadt",
       "en": "City of Eisenhüttenstadt",
