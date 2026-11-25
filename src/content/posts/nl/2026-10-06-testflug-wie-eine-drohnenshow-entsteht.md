@@ -8,31 +8,31 @@ tags:
   - Ablauf
 draft: true
 sourceIssue: 1
-translationSourceHash: 17412646d7306efca1a30c96f27f009915d7d22babb28d48661ff275a9b5f4d4
+translationSourceHash: c4145116dbe113f4f466a0bb2d51fb0ed01789c22aa11f1f75f59b5ff31a14da
 translationContractVersion: 2
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: nl
-  sourceFingerprint: 17412646d7306efca1a30c96f27f009915d7d22babb28d48661ff275a9b5f4d4
+  sourceFingerprint: c4145116dbe113f4f466a0bb2d51fb0ed01789c22aa11f1f75f59b5ff31a14da
   legacy:
     provenanceFile: docs/i18n/content-provenance.json
     migration: I01-v2-2026-11-04
   fields:
     - address: /body
-      sourceFingerprint: 1523506b885efa715f59d2257edcd86c53dcdc30aca786715f5ecc9c85272af1
+      sourceFingerprint: b20cfb81dc58125fcbbcf14d8437983f48900aa76943e9ccd93fe00021d77f29
       targetFingerprint: 3a65eb4ad37caf0a6e0e1193e0780192a24c4397698d87d83c8877e9129c9ba8
       status: adopted-existing
     - address: /cover
-      sourceFingerprint: ca5b95fe3bc5d220d5dce9235af2ab5920b55864b159eb7165b0c3ea5de979f9
+      sourceFingerprint: 7b56df795687523f763bc5019540f1a097c2e617f1db090b15c00ebcc9f0e2e4
       targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
     - address: /description
-      sourceFingerprint: 7780127fb4d3ce660d9bd8b99e1bbb06710ca864797eff6c281f8e289ce8504d
+      sourceFingerprint: 13e3d7ec0ba1ca57b266700c5670f47326ea132fb85a2504fd065ef98f358aea
       targetFingerprint: 1d3bef747f8fbe66bec6e15f4a68a9a8318f6902f4fe06a621b8430642b1ebdc
       status: adopted-existing
     - address: /title
-      sourceFingerprint: 0712bf88f40a7c35d2b1d9c826850357fb7f0fd4d45f3d4fe3a7ff19fdd4f240
+      sourceFingerprint: 9e33b822687e965634f86cdc8c5f6cf10dd0279e174e0770b94efcf34d04e5b1
       targetFingerprint: 537fb230d8e986321d86f36488753fcd7593c3de88047d392af55d428b72d8a4
       status: adopted-existing
 ---

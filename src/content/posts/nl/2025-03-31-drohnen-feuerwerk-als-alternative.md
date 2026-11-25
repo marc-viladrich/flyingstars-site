@@ -14,31 +14,31 @@ cover:
   width: 1200
   height: 915
 draft: false
-translationSourceHash: a7f95f42822e3761d2b27ef943b1c6f5f584552f41a5a53255e61db44dd8c603
+translationSourceHash: 26722dd39df872e10ff9ee7773ad7817d284f4788c074369d8b0d98a76348a7e
 translationContractVersion: 2
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: nl
-  sourceFingerprint: a7f95f42822e3761d2b27ef943b1c6f5f584552f41a5a53255e61db44dd8c603
+  sourceFingerprint: 26722dd39df872e10ff9ee7773ad7817d284f4788c074369d8b0d98a76348a7e
   legacy:
     provenanceFile: docs/i18n/content-provenance.json
     migration: I01-v2-2026-11-04
   fields:
     - address: /body
-      sourceFingerprint: 0f88928cd3ea15df3745cc9d5ec747ee8fc8ac81cc6f68d7b2896313e71ca904
+      sourceFingerprint: 00c080fae98eb60bf026139b8876a31663eac57f22bdd28cafd687927ee96385
       targetFingerprint: 4b4464e884f7c5b993158021779db0a001fe68de9a95b259d3bc8d466e32a9ff
       status: adopted-existing
     - address: /cover/alt
-      sourceFingerprint: 9da8835a0729b68a99fabc6a3592a6247e14aee134e0750eba780561bd081ea2
+      sourceFingerprint: eace5f860ce147bef414ba50bbe2bcb2cfdaa9280ff088571f455e022e4005a4
       targetFingerprint: 20b159d709a956a5e9f5f2e68cecf7258fa8119fe183a1dc1079079f25f6ea51
       status: adopted-existing
     - address: /description
-      sourceFingerprint: da838276af24946ee8b40ad2b6bde2d3631c80e4cc8afcaf13f06b9a5b2dc51f
+      sourceFingerprint: 637548a8db21cf82a4395234d4f80384a0c781893b3618ec9d8ff87336882a32
       targetFingerprint: 1e1479e05929606ce3c3e9c479136233b7a9f2c01bade580033e4b54aad118d6
       status: adopted-existing
     - address: /title
-      sourceFingerprint: eea10e0f052d3de660c728978ffae24f851c4bc0e5c2a9ebdde73852de82206a
+      sourceFingerprint: 4f0547a70d5470655f2da618a9d472a197041eebc3bc1fa4c36a69ffcabbf02d
       targetFingerprint: 7c2850440361eab4a885906aa60c991ffbdf2d41a8f0fad0c06987aee7c46d43
       status: adopted-existing
 ---

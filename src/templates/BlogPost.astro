@@ -28,7 +28,12 @@ import { splitSections, checkPlan, type CornerstoneBlock } from '../components/b
 import type { Story } from '../components/blog/story-scene';
 interface Props { post: CollectionEntry<'posts'>; coverImage?: { src: string; width: number; height: number; alt: string }; noindex?: boolean }
 const { post, coverImage, noindex = false } = Astro.props;
-const AUTHOR=authorOf(post);
+const AUTHOR = authorOf(post);
+const authorRole = AUTHOR.role[locale];
+const authorBio = AUTHOR.authorBio?.[locale]
+  ?? `${AUTHOR.name} ${t('blogpost.runsFlyingstarsTogetherWithRonjaDonsbachAndErwinWilmsHe')}`;
+const teamHref = localHref('/ueber-uns/#team');
+const authorRecord = { collection: 'people', id: AUTHOR.id };
 const { Content } = await render(post);
 const cover = post.data.cover ? await optimizedImage(post.data.cover.src, 1600) : undefined;
 const face = await optimizedImage(AUTHOR.image.src, 160);
@@ -51,7 +56,8 @@ const abs = (src: string) => new URL(src, Astro.site).href;
 const jsonLd = JSON.stringify({
   '@context': 'https://schema.org', '@type': 'BlogPosting', headline: post.data.title, description: post.data.description,
   inLanguage: locale, datePublished: post.data.date.toISOString(), dateModified: (post.data.updated ?? post.data.date).toISOString(),
-  author: { '@type': 'Person', name: AUTHOR.name }, publisher: { '@type': 'Organization', name: 'FlyingStars' },
+  author: { '@type': 'Person', name: AUTHOR.name, jobTitle: authorRole, description: authorBio, url: abs(teamHref) },
+  publisher: { '@type': 'Organization', name: 'FlyingStars' },
   mainEntityOfPage: new URL(Astro.url.pathname, Astro.site).href,
   image: cs ? cs.cover.social.map((s) => abs(s.src)) : cover ? [abs(cover.src)] : undefined,
 }).replace(/</g, '\\u003c');
@@ -78,7 +84,11 @@ const jsonLd = JSON.stringify({
       : Astro.slots.has('body') ? <slot name="body" /> : <div class="post-body" {...body(post)}><Content /></div>}
     <aside class="post-author" aria-label={t('blogpost.aboutTheAuthor')}>
       <img class="face" src={face.src} width={face.width} height={face.height} alt={AUTHOR.name} loading="lazy" decoding="async" />
-      <p><b {...field({collection:"people",id:AUTHOR.id},["name"])}>{AUTHOR.name}</b> {t('blogpost.runsFlyingstarsTogetherWithRonjaDonsbachAndErwinWilmsHe')} <a class="link" href={localHref("/ueber-uns/#team")}>{t('blogpost.theTeam')} <span aria-hidden="true">→</span></a></p>
+      <div>
+        <p class="post-author-name"><b {...field(authorRecord, ['name'])}>{AUTHOR.name}</b> <span {...field(authorRecord, ['role', locale])}>{authorRole}</span></p>
+        <p {...(AUTHOR.authorBio && field(authorRecord, ['authorBio', locale]))}>{authorBio}</p>
+        <a class="link" href={teamHref}>{t('blogpost.theTeam')} <span aria-hidden="true">→</span></a>
+      </div>
     </aside>
   </article>
   <Cta type="cta" index={1} headline={t('blogpost.planningYourOwnShow')} text={t('blogpost.aDateLocationAndOccasionAreEnoughForAnInitial')} button={{ label: t('chopper404.requestAShow'), href: '/kontakt/' }} />
@@ -131,6 +141,7 @@ const jsonLd = JSON.stringify({
 
   .post-author { max-width: var(--measure); display: grid; grid-template-columns: auto 1fr; gap: var(--space-4-5); align-items: start; margin-top: clamp(var(--space-12), 6vw, var(--space-18)); padding-top: var(--space-7); border-top: 1px solid var(--line); color: var(--muted); font-size: var(--text-control); }
   .post-author .face { width: 4rem; height: 4rem; }
+  .post-author-name { display: flex; flex-wrap: wrap; column-gap: var(--space-2); margin-bottom: var(--space-2); }
   .post-author b { color: var(--head); font-weight: 500; }
   .post-author .link { margin-top: var(--space-2-5); display: flex; }
   .post-more { padding-top: 0; }
