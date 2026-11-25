@@ -37,8 +37,8 @@ sections:
         _key: k_3c9e5a71f0b24d68e1a7
     # Vergleich direkt an der Aussage, vor der Scrollstory (Marc, Runde 5: „auch mit Lasershows. Das ist ja schon sehr
     # essentiell“; Runde 6: gehört zu „Die Alternative zum Feuerwerk“). Outdoor-Fassung: am Himmel, Verbote bei Trockenheit.
-    # Brandgefahr (Runde 14, 21.11.2026): Moritz wollte die Zeile raus, Marc lässt sie stehen, aber ohne absolute Verneinung
-    # („Keine“ ist rechtlich heikel): Drohnenshow und Laser „Sehr gering“, Feuerwerk „Hoch“.
+    # Brandgefahr (Moritz, 25.11.2026): „Kein offenes Feuer“ für Drohnen- und Lasershows.
+    # So kommunizieren es auch FlyingStars und andere Anbieter. Feuerwerk bleibt „Hoch“.
     comparison:
       rowHeader: Kriterium
       columns: [ {"_key":"k_25c7b51894fea29324b9","value":"Drohnenshow"}, {"_key":"k_2060882c19dc049928a0","value":"Feuerwerk"}, {"_key":"k_a1cc1dd9230abdeb3916","value":"Lasershow"} ]
@@ -65,11 +65,11 @@ sections:
             - { label: Dunst, text: für sichtbare Strahlen nötig, tone: p, "_key": "k_a24e3bfc7472e3bf13f9" }
           _key: k_ae883a76c875eafd7f9d
         - label: Brandgefahr
-          values: [ {"_key":"k_0526342ac93e95226784","value":"Sehr gering"}, {"_key":"k_2d67556585620d14cfce","value":"Hoch, Verbote bei Trockenheit"}, {"_key":"k_26d9c1a7244e6bd3b073","value":"Sehr gering"} ]
+          values: [ {"_key":"k_0526342ac93e95226784","value":"Kein offenes Feuer"}, {"_key":"k_2d67556585620d14cfce","value":"Hoch, Verbote bei Trockenheit"}, {"_key":"k_26d9c1a7244e6bd3b073","value":"Kein offenes Feuer"} ]
           cells:
-            - { label: Sehr gering, text: "", tone: y, "_key": "k_c112dcb5ecb7a6db1e77" }
+            - { label: Kein offenes Feuer, text: "", tone: y, "_key": "k_c112dcb5ecb7a6db1e77" }
             - { label: Hoch, text: Verbote bei Trockenheit, tone: n, "_key": "k_c52023407bff00b9f377" }
-            - { label: Sehr gering, text: "", tone: y, "_key": "k_325b4770afefdddbc88f" }
+            - { label: Kein offenes Feuer, text: "", tone: y, "_key": "k_325b4770afefdddbc88f" }
           _key: k_37b5b5e74c7bd7792e72
     todo: Moritz und FlyingStars müssen die Umweltformulierungen vor Veröffentlichung prüfen, die Belege für Ökostrom und das TÜV-NORD-Schallschutzgutachten bereithalten und die Nutzung des naturstrom-Logos schriftlich freigeben lassen.
     _key: k_b58e8e802d7c6c5c47eb
