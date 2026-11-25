@@ -19,7 +19,7 @@ export type CornerstoneBlock =
    *  „alternative“), in der Sprache des Artikels; eine Quelle für beide Stellen */
   | { kind: 'compare'; label: UiKey; caption: UiKey }
   /** ein Foto über die Artikelbreite oder eine Reihe (Handy: Slider), mit Leuchtpunkt-Unterlage (ArticlePhotos.astro) */
-  | { kind: 'photos'; photos: CornerstonePhoto[]; caption?: UiKey; focus?: string }
+  | { kind: 'photos'; photos: CornerstonePhoto[]; caption?: UiKey; focus?: string; afterSection?: number }
   /** Scroll-Szene: jeder genannte Abschnitt ist ein Kapitel, seine Unterabschnitte (###) sind die Schritte der Szene, in
    *  dieser Reihenfolge (steps: 'list': die Punkte der ersten Aufzählung im Abschnitt, Titel = fetter Anfang). Die Szene muss
    *  genau so viele Schritte haben. groups: Kurzname je Kapitel für die Schrittleiste. */
@@ -31,6 +31,7 @@ export interface CornerstoneArticle {
   post: string;
   /** Präfix der Übersetzungsschlüssel, z. B. 'cornerstone.programmieren' */
   i18n: string;
+  layout?: 'basic' | 'cornerstone';
   /** Titelbild (tools/blog/cornerstone-media.mjs): AVIF + WebP für den Kopf, JPG 16:9 / 4:3 / 1:1 für Suche und Vorschauen */
   cover: { avif: string; webp: string; width: number; height: number; alt: UiKey; social: { src: string; width: number; height: number }[] };
   /** Bilder aus dem importierten Text weglassen (die Darstellung bringt eigene Fotos) */
@@ -58,6 +59,31 @@ export function splitSections(html: string, dropImages = false): Section[] {
     };
   });
 }
+
+/** Im Basisformat bleiben alle Textabschnitte in Reihenfolge. Nur Fotos mit Abschnittszuordnung kommen dazu. */
+export function basicBlocks(blocks: CornerstoneBlock[], sections: Section[]) {
+  type Photo = Extract<CornerstoneBlock, { kind: 'photos' }>;
+  const photos = blocks.filter((block): block is Photo => block.kind === 'photos' && block.afterSection !== undefined);
+  const result: (Photo | { kind: 'basic-text'; html: string })[] = [];
+  let html = '';
+  for (const [index, section] of sections.entries()) {
+    html += section.html;
+    const here = photos.filter((photo) => photo.afterSection === index);
+    if (here.length) {
+      if (html) result.push({ kind: 'basic-text', html });
+      result.push(...here);
+      html = '';
+    }
+  }
+  if (html) result.push({ kind: 'basic-text', html });
+  return result;
+}
+
+/** Nur das importierte, allein stehende FlyingStars-Logo weicht der Formation. */
+export const withoutStaticLogo = (html: string) => html.replace(
+  /<p>\s*<img\b[^>]*\bsrc=["'][^"']*\/was-kostet-eine-drohne-flyingstars-logo(?:-\d+x\d+)?(?:_[a-zA-Z0-9]+)?\.(?:jpg|webp)["'][^>]*>\s*<\/p>/g,
+  '',
+);
 
 export type Step = { html: string; title: string };
 /** Schritte eines Abschnitts: Unterabschnitte (###) oder die Punkte der ersten Aufzählung; head = alles davor */

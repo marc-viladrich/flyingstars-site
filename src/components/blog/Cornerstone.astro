@@ -5,7 +5,7 @@ import ArticlePhotos from './ArticlePhotos.astro';
 import StoryScene from './StoryScene.astro';
 import FormationFinale from './FormationFinale.astro';
 import ComparisonMatrix from '../ComparisonMatrix.astro';
-import { stepsOf, splitAfter, type CornerstoneArticle, type CornerstoneBlock, type Section } from './cornerstone/types';
+import { basicBlocks, stepsOf, splitAfter, type CornerstoneArticle, type CornerstoneBlock, type Section } from './cornerstone/types';
 import { localizedCollection } from '../../i18n/content';
 import { localeFromPath, sourceId } from '../../i18n/routing.mjs';
 import type { Story, Note } from './story-scene';
@@ -26,13 +26,15 @@ const storyBlocks = (b: Extract<CornerstoneBlock, { kind: 'story' }>) => {
 const textOf = (b: Extract<CornerstoneBlock, { kind: 'text' }>) => (b.split ? splitAfter(sections[b.section].html, b.split.after)![b.split.part] : sections[b.section].html);
 // Vergleichstabelle aus der Seite „Nachhaltigkeit“ in der Sprache des Artikels (eine Quelle für beide Stellen)
 type Compare = { rowHeader?: string; columns: { value: string }[]; rows: never[] };
-const compare = article.blocks.some((b) => b.kind === 'compare')
+const blocks = article.layout === 'basic' ? basicBlocks(article.blocks, sections) : article.blocks;
+const compare = blocks.some((b) => b.kind === 'compare')
   ? ((await localizedCollection('pages', localeFromPath(Astro.url.pathname), (e) => sourceId(e.id) === 'nachhaltigkeit'))[0]?.data.sections as { type: string; id?: string; comparison?: Compare }[] | undefined)
       ?.find((s) => s.type === 'sustainability' && s.id === 'alternative')?.comparison
   : undefined;
 const note = (n: Note) => (n.key ? k(`note.${n.key}`) : n.text);
 ---
-{article.blocks.map((b) => {
+{blocks.map((b) => {
+  if (b.kind === 'basic-text') return <div class="post-body" set:html={b.html} />;
   if (b.kind === 'text') return <div class="post-body cs-text" set:html={textOf(b)} />;
   if (b.kind === 'compare') return compare && <figure class="cs-compare"><ComparisonMatrix label={k(b.label)} rowHeader={compare.rowHeader} columns={compare.columns} rows={compare.rows} /><figcaption>{k(b.caption)}</figcaption></figure>;
   if (b.kind === 'photos') return <ArticlePhotos photos={b.photos.map((p) => ({ ...p, alt: k(p.alt) }))} caption={b.caption ? k(b.caption) : undefined} focus={b.focus} />;

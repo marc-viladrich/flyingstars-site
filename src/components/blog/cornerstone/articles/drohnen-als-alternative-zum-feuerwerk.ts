@@ -12,7 +12,7 @@ export default defineCornerstone({
     avif: `${M}titel.avif`, webp: `${M}titel.webp`, width: 1600, height: 800, alt: 'cover',
     social: [{ src: `${M}titel-16x9.jpg`, width: 1280, height: 720 }, { src: `${M}titel-4x3.jpg`, width: 1200, height: 900 }, { src: `${M}titel-1x1.jpg`, width: 1200, height: 1200 }],
   },
-  dropBodyImages: true,
+  layout: 'basic',
   blocks: [
     { kind: 'text', section: 0 },
     { kind: 'photos', photos: [{ src: `${M}bluete.webp`, width: 1600, height: 1000, alt: 'photoBlossom' }], caption: 'photoBlossomCaption' },
@@ -26,8 +26,9 @@ export default defineCornerstone({
       { src: `${M}markenzeichen.webp`, width: 1000, height: 1000, alt: 'photoMark' },
       { src: `${M}schriftzug.webp`, width: 1000, height: 1000, alt: 'photoLettering' },
       { src: `${M}jubilaeum.webp`, width: 1000, height: 1000, alt: 'photoAnniversary' },
-    ], caption: 'photoAdsCaption', focus: '20% 80%' },
+    ], caption: 'photoAdsCaption', focus: '20% 80%', afterSection: 3 },
     { kind: 'text', section: 4 },
-    { kind: 'finale', section: 5 },
+    { kind: 'text', section: 5 },
+    { kind: 'finale', section: 6 },
   ],
 });
