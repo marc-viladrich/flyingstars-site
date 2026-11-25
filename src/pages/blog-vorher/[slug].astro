@@ -1,7 +1,0 @@
----
-// Vorher-Fassung (de), siehe src/labor/blog-vorher.ts
-import BlogVorher from '../../labor/BlogVorher.astro';
-import { vorherPaths } from '../../labor/blog-vorher';
-export const getStaticPaths = () => vorherPaths('de');
----
-<BlogVorher locale="de" slug={Astro.params.slug!} />

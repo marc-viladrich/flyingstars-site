@@ -1,9 +1,9 @@
 ---
 authorId: florian-becker
-title: "Wie programmiert man eine Drohnenshow? So machen wir es"
-description: "Wie wir eine Drohnenshow programmieren: eure Idee, Flugbahnen, Musik und Licht, Simulation und der Countdown am Showabend."
+title: "Wie programmiert man eine Drohnenshow?"
+description: "Wie eine Drohnenshow programmiert wird: Showdrohnen, Choreografie-Software, Flugbahnen, Simulationen und Tests vor der Live-Show."
 date: 2025-06-12
-updated: 2026-11-22
+updated: 2026-09-18
 tags: ["Drohnenshow", "Programmierung"]
 cover:
   src: "https://flyingstars.art/wp-content/uploads/2025/05/drohnenprogrammierung-1.jpg"
@@ -13,58 +13,116 @@ cover:
 draft: false
 ---
 
-Hunderte Drohnen zeichnen bei einer Show ein Logo, einen Schriftzug oder eine ganze Geschichte an den Himmel. Damit jede von ihnen zur richtigen Zeit am richtigen Platz leuchtet, programmieren wir sie vorher einzeln.
+Ob bei Stadtfesten, Firmenjubiläen oder Musikfestivals – Drohnenshows begeistern Zuschauer weltweit. Anstelle von Feuerwerk steigen leuchtende Drohnen auf, formieren sich zu Logos, Herzen oder bewegten Animationen. Doch wie entsteht so eine Show? Was steckt hinter der Technologie? Und vor allem: Wie funktioniert die Drohnen Programmierung genau?
 
-Wir sind FlyingStars und fliegen seit 2021 Drohnenshows, bisher mehr als 150. Hier zeigen wir euch, womit wir arbeiten und wie eure Show bei uns entsteht. Wie eine einzelne Drohne im Schwarm funktioniert, lest ihr ausführlicher in [Wie funktioniert eine Drohnenshow?](/blog/2025-01-14-wie-funktioniert-drohnenshow-drohne/)
+In diesem Beitrag erklären wir euch, wie eine Drohnenshow programmiert wird – von der Idee bis zur synchron fliegenden Formation.
 
-## Was heißt bei uns „programmieren“?
+ 
 
-Jede Drohne bekommt von uns ihre eigene Flugbahn. Unsere Show-Software legt sie vorab auf den Zentimeter genau fest, dazu das Timing und die Lichtfolge. Während der Show lenkt niemand die Drohnen per Fernbedienung, eine Steuerung in Echtzeit gibt es nicht. Jede Drohne fliegt genau das ab, was wir vorher geplant haben.
+![Ein Mann hält eine Drohne neben einem Laptop, während eine Frau mit einem Tablet danebensteht.](https://flyingstars.art/wp-content/uploads/2025/05/drohnenprogrammierung-1-1024x683.jpg)
 
-Diese Planung machen wir selbst. Alejandro aus unserem Design-Team verwandelt eure Geschichte in eine Choreografie in 2D und 3D, Patrick stellt die Flotte zusammen und kümmert sich um den technischen Ablauf. Externe Dienstleister:innen holen wir dafür nicht dazu.
+ 
 
-## Womit wir arbeiten
+## Was ist Drohnen Programmierung?
 
-Draußen auf dem Showgelände kommt es auf zwei Dinge an, unsere Drohnen und die Bodenstation.
+ 
 
-### Unsere Showdrohne
+Drohnen Programmierung ist die technische Grundlage für jede Drohnenshow. Dabei geht es nicht nur um das Steuern einzelner Drohnen, sondern um die **präzise Planung, Synchronisierung und Ausführung** eines komplexen Gesamtablaufs – meist mit Dutzenden bis Hunderten Drohnen.
 
-Jede unserer Drohnen wiegt nur rund 300 Gramm. Oben sitzt die LED, die am Himmel zum Lichtpunkt wird. GPS und Gyroskop halten die Drohne auf ihrer Bahn und im Gleichgewicht. Kameras haben sie keine, Strom kommt aus zwei herkömmlichen AA-Akkus, die wir wie Motoren und Rotoren einzeln tauschen können.
+Eine Showdrohne fliegt nicht per Fernbedienung, sondern folgt einem **festgelegten, GPS-basierten Flugpfad**. Diese Pfade entstehen nicht spontan, sondern werden vorher am Computer programmiert, simuliert und anschließend an jede einzelne Drohne übertragen.
 
-### Die Bodenstation
+ 
 
-Vor dem Start stehen alle Drohnen in einem Raster am Boden. Von der Bodenstation aus spielen wir die Show auf jede einzelne auf, geben das Startsignal und behalten den ganzen Schwarm im Blick. Ihre Bahn fliegt jede Drohne selbst ab. Ein digitaler Zaun, der Geofence, hält sie im Showbereich. Hat eine Drohne ein Problem, fliegt sie meist automatisch zurück oder landet im Notfall in der Sicherheitszone, in der sich niemand aufhält.
+## Drohnenshow: Die wichtigsten Bausteine
 
-## Wie eure Show entsteht
+ 
 
-Eure Show entsteht bei uns in fünf Schritten, und ihr seid dabei so viel eingebunden, wie ihr möchtet.
+### 1. Spezielle Showdrohnen
 
-### Idee und Motiv
+ 
 
-Am Anfang sprechen wir mit euch über den Anlass und darüber, was am Himmel zu sehen sein soll. Gemeinsam entwickeln wir Storyline, Motive und Musik. Unser Design-Team baut die Motive dann als 3D-Modelle, zum Beispiel einen Stern, euer Logo oder einen Schriftzug.
+Diese [Showdrohnen](https://flyingstars.art/drohnen-feuerwerk-als-alternative) sind **kleiner und leichter** als klassische Kameradrohnen. Sie verfügen über leuchtstarke LEDs, sind auf maximale Synchronisation ausgelegt und meist mit **GPS, Höhenmesser, Gyroskop und teilweise RTK-Technik** (Real Time Kinematics) für extrem genaue Positionierung ausgestattet.
 
-### Vom Motiv zur Flugbahn
+ 
 
-Jede Drohne ist ein Lichtpunkt. Für einen Buchstaben brauchen wir etwa 10 bis 13 davon, für ein detailliertes Logo eher 100 bis 200. Wir verteilen die Punkte eines Motivs auf die Drohnen und legen für jede den Weg vom Startraster zu ihrem Platz fest, und von dort weiter zum nächsten Bild. So entsteht eine Rohanimation von Start bis Landung, noch ganz ohne Farbe.
+### 2. Planungs- und Choreografie-Software
 
-### Musik und Licht
+ 
 
-An dieser Rohanimation entlang schneiden wir die Musik, mit GEMA-freien Titeln oder eurer Wunschmusik. Der Musikschnitt ist im Paket enthalten. Zum Schluss setzen wir Farben und Lichteffekte auf die Akzente der Musik, sodass Flugroute, Timing und Licht auf derselben Zeitachse laufen.
+Hier kommt die eigentliche Drohnen Programmierung ins Spiel. Mit Software wie **[DroneShowSoftware](https://www.droneshowsoftware.com/), Blender** mit passenden Plugins oder Herstellerlösungen wie der von **Verity** oder Intel wird jede Flugbewegung entworfen.
 
-### Simulation und Testflug
+Jede Drohne bekommt ihre eigene Flugroute, ihr Timing und ihre Lichtsequenzen. Die Herausforderung: **keine Kollisionen, sanfte Übergänge, beeindruckende Formen** – und das alles synchron mit Musik und Licht.
 
-Bevor die Show auf die Drohnen geht, spielen wir sie in unserer Software komplett durch. Dabei prüfen wir die Abstände zwischen den Drohnen, und kommen sich zwei Bahnen zu nah, ändern wir sie. Danach machen wir einen Testflug mit echten Drohnen. Draußen muss die Formation auch Wind aushalten. Unsere Drohnen fliegen formstabil bis Windstärke 5 und auch bei leichtem Nieselregen.
+ 
 
-### Der Showabend
+### 3. Simulation & Tests
 
-Am Showtag beginnen wir rund dreieinhalb Stunden vor dem Start mit dem Aufbau. Den Sicherheitsbereich von etwa 100 × 100 Metern halten wir während der Show frei von Unbeteiligten, und kurz vorher prüfen wir GPS-Empfang, Wetter und Flugverbotszonen. Dann geben wir eurem DJ oder eurer Technik per Funk oder Telefon den Countdown durch. Bei null drückt jemand auf „Play“, und die Drohnen steigen auf.
+ 
 
-## Wie viel Zeit ihr einplanen solltet
+Bevor es nach draußen geht, wird alles im Computer simuliert. Während der Simulation werden Daten aus der Hardware der Drohnen ausgewertet, um die Zuverlässigkeit der Show zu gewährleisten. Wind, Fluggeschwindigkeit, Startpunkte – alles wird überprüft. Erst wenn alles „grün“ ist, darf getestet werden.
 
-Fragt am besten so früh wie möglich an. Zwei bis drei Monate Vorbereitungszeit sind ideal, vor allem wenn der Showort aufwendige Genehmigungen braucht. Wenn es eilt, planen wir eure Show gegen einen Express-Aufschlag auch in ein bis zwei Wochen.
+ 
 
-Die Beschallung vor Ort stellt ihr oder eure Technik. Die fertig geschnittene Musik schicken wir vorab, zum Beispiel als WAV-Datei, damit am Abend nur noch der Countdown fehlt. Bucht ihr schon im Vorjahr, bekommt ihr 10 % Frühbuchungsrabatt.
+### 4. Kommunikations- und Sicherheitssysteme
 
-## Eure Show mit FlyingStars
+ 
 
-Eine Show dauert bei uns meist rund 13 Minuten, bis zu 25 sind möglich. Wie viele Drohnen eure Motive brauchen und was das kostet, seht ihr auf unserer [Preisseite](/drohnenshow-preise/). Oder ihr [erzählt uns direkt von eurer Idee](/kontakt/), wir antworten innerhalb von 48 Stunden.
+Eine **zentrale Bodenstation** kommuniziert mit dem gesamten Drohnenschwarm, wobei eine stabile Verbindung zu jedem einzelnen Gerät essenziell ist. Sie kontrolliert die Ausführung der Show und greift bei Bedarf ein – z. B. bei GPS-Ausfall oder drohendem Zusammenstoß.
+
+ 
+
+## Möglicher Ablauf einer Drohnenshow-Programmierung
+
+ 
+
+### 1. Die Idee und das 3D-Design
+
+ 
+
+Am Anfang steht das Konzept: Ein Firmenlogo am Himmel? Ein tanzender Mensch? Eine animierte Geschichte in mehreren Szenen? Diese Motive werden meist in **3D-Programmen** entworfen.
+
+ 
+
+### 2. Flugbahnen und Lichtgestaltung
+
+ 
+
+Die 3D-Modelle werden in Einzelpunkte umgerechnet – jeder davon wird von einer Drohne repräsentiert. Für jede Bewegung braucht es eine **Flugbahn**, für jedes Lichtsignal eine **zeitliche Zuordnung**. Hier beginnt die eigentliche Drohnen Programmierung.
+
+ 
+
+### 3. Simulation am PC
+
+ 
+
+Mit der Planungssoftware lassen sich Flugpfade in Echtzeit simulieren. Hier erkennt man schnell, ob es zu nahen Begegnungen kommt oder ob Bewegungen ruckartig wirken. Anpassungen sind in dieser Phase einfacher als im Feld.
+
+ 
+
+### 4. Upload und Feldtest
+
+ 
+
+Wenn alle Simulationen bestanden sind, wird der finale Code **auf die Drohnen geladen**. In Testflügen unter realen Bedingungen werden letzte Feinheiten optimiert.
+
+ 
+
+### 5. Live-Show unter sicheren Bedingungen
+
+ 
+
+Vor dem Event erfolgen letzte Sicherheitschecks: **GPS-Signalstärke, Wetter, Flugverbotszonen**. Während der Show steuert die Bodenstation den Ablauf, während jede Drohne autonom ihren Weg findet.
+
+ 
+
+## Drohnenshows von Flyingstars
+
+ 
+
+Als Expert:innen für **hochwertige Drohnen-Lichtshows** bringen wir innovative Technologie und kreative Konzepte zusammen, um spektakuläre visuelle Erlebnisse zu schaffen. Ob für Sport-Events, große Stadtfeste, Company Events oder auch private Feiern.
+
+Jetzt [Preise](https://flyingstars.art/drohnenshow-preise/) entdecken und Drohnenshow buchen.
+
+ 
+
+![FlyingStars Logo schwarz-lila-türkis](https://flyingstars.art/wp-content/uploads/2025/02/was-kostet-eine-drohne-flyingstars-logo-1024x499.jpg)
