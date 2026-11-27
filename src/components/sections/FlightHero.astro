@@ -48,13 +48,6 @@ const sources = video === videos.showreel ? heroVideoSources() : undefined;
 </script>
 <style>
   .hero h1 > .kicker { margin: 0 0 var(--head-gap-kicker); }
-  /* Handy: Das Standbild ist das erste Bild der Seite (LCP). Das Video blendet darüber ein und bleibt um 1 px kleiner, damit
-     sein erstes Einzelbild (dasselbe Motiv) nicht als neues, späteres LCP-Element zählt. Der Ring bleibt dunkel wie der Grund
-     (das Standbild blendet wie bisher aus). Ohne das maß Lighthouse mobil das Laden der ganzen Videodatei als LCP (3,7 statt
-     2,1 s). docs/himmel.md → Performance */
-  @media (--mobile) {
-    .hero > .reel { clip-path: inset(var(--space-0-25) round var(--radius-14)); }
-  }
   /* Knopf nur am Handy; Form, Fläche und Größe wie .lh-toggle am Handy (MediaFrame.astro), unten rechts innen an der Ecke
      des Rahmens (gleicher Abstand wie das Showreel-Label oben rechts) */
   .hero-toggle { display: none; }

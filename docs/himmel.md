@@ -239,6 +239,8 @@ LCP 1,1–1,9 s; Vorschau 96 Punkte, LCP 2,7 s.
   als das Standbild darunter (`FlightHero.astro`). Chrome meldet ein späteres Element nur, wenn es größer ist; so bleibt das
   Standbild (`fetchpriority="high"`, 720er-Fassung per `srcset`) das LCP-Element. Das Video trägt kein `poster` mehr: Es ist erst
   sichtbar, wenn es spielt, und das `poster` lud ein zweites Standbild im kritischen Pfad.
+  **Aktualisierung vom 27.11.:** Der auf LCP-Einstufung zielende Inset wurde entfernt. Bildgröße, Ladepriorität und regelbasierter
+  Autoplay-Start folgen weiter der Nutzbarkeit. Die Frame-Zeit wird zusätzlich zum LCP geprüft.
 - **Schwarm nach dem ersten Bild:** `index.ts` lädt `schwarm.ts` per `import()` erst nach `load` und dem ersten Bild des
   Hero-Videos (spätestens 2,5 s nach `load`, Seiten ohne Video 1,5 s), dann im Leerlauf; wer vorher scrollt, bekommt ihn sofort.
   Motive lädt der Schwarm erst, wenn ihre Bühne näher als gut eine Bildschirmhöhe ist. (Die Himmelszeile stand dafür sofort im
