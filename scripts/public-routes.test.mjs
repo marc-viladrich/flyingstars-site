@@ -85,3 +85,30 @@ test('Das WordPress-Inventar führt jeden Showbericht auf eine vorhandene sprach
   assertDirect(from,to);
  }
 });
+
+test('WordPress-Artikel haben eindeutige sprachgleiche Ziele auf beiden Hosts', async () => {
+  const content = await readEditorialRecords(process.cwd());
+  const posts = content.filter(record => record.id.startsWith('post/') && record.data.legacyPath);
+  const expected = readFileSync(new URL('../docs/inventar.csv', import.meta.url), 'utf8').trimEnd().split(/\r?\n/)
+    .slice(1).filter(row => !row.includes(',Referenz/Showbericht,')).map(row => new URL(row.split(',')[0]).pathname);
+  assert.deepEqual(posts.map(record => record.data.legacyPath).sort(), expected.sort());
+  const delivery = new Map((await deliveryRedirects(process.cwd())).map(rule => [rule.from, rule.to]));
+  const preview = new Map(readFileSync(new URL('../public/_redirects', import.meta.url), 'utf8').trimEnd().split('\n')
+    .map(line => {
+      const [from, to, status] = line.split(' ');
+      assert.equal(status, '301');
+      return [from, to];
+    }));
+  const targets = new Set();
+  for (const post of posts) {
+    assert.equal(post.data.draft, false);
+    const { legacyPath } = post.data;
+    const target = contentRoute('posts', post.id.slice('post/'.length), post.data);
+    assert.equal(target.startsWith('/en/'), legacyPath.startsWith('/en/'));
+    assert.equal(delivery.get(legacyPath + '/'), target);
+    assert.equal(preview.get(legacyPath), target);
+    assert.equal(preview.get(legacyPath + '/'), target);
+    assert.ok(!targets.has(target), 'Doppeltes WordPress-Ziel: ' + target);
+    targets.add(target);
+  }
+});

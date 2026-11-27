@@ -14,5 +14,5 @@ for (const [file, mod] of Object.entries(modules)) {
   registry.set(article.post, article);
 }
 /** Der registrierte Cornerstone-Artikel zu einem Post (jede Sprache), sonst undefined */
-export const cornerstoneOf = (post: CollectionEntry<'posts'>) => registry.get(sourceId(post.id));
+export const cornerstoneOf = (post: CollectionEntry<'posts'>) => post.data.legacyPath ? undefined : registry.get(sourceId(post.id));
 export const cornerstones = () => [...registry.values()];

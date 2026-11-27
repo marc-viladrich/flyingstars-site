@@ -4,10 +4,11 @@ import FormationFinale from './FormationFinale.astro';
 import { checkPlan, splitSections, withoutStaticLogo, type CornerstoneArticle, type CornerstoneBlock } from './cornerstone/types';
 import type { Story } from './story-scene';
 
-interface Props { postId: string; article?: CornerstoneArticle }
-const { postId, article } = Astro.props;
+interface Props { postId: string; article?: CornerstoneArticle; preserveImages?: boolean }
+const { postId, article, preserveImages } = Astro.props;
 // Use Astro's rendered Markdown so original images keep their optimized sources and dimensions.
-const html = withoutStaticLogo(await Astro.slots.render('default'));
+const rendered = await Astro.slots.render('default');
+const html = preserveImages ? rendered : withoutStaticLogo(rendered);
 const sections = article ? splitSections(html, article.layout !== 'basic' && article.dropBodyImages) : [];
 const stories = new Map<CornerstoneBlock, Story>();
 if (article && article.layout !== 'basic') {
@@ -19,4 +20,4 @@ if (problem) console.warn(`[cornerstone] ${postId}: ${problem} – normales Blog
 {article && !problem
   ? <Cornerstone article={article} sections={sections} stories={stories} />
   : <div class="post-body" set:html={html} />}
-{(!article || problem || article.layout === 'basic') && <FormationFinale visualOnly />}
+{!preserveImages && (!article || problem || article.layout === 'basic') && <FormationFinale visualOnly />}

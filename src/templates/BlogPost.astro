@@ -3,12 +3,12 @@ import {body,field,editorBuild} from 'astro-frontend-editor/markers';
 import { localizedCollection } from '../i18n/content';
 import { forPath } from '../i18n/server';
 const { t, localHref, formatLocale } = forPath(Astro.url.pathname);
-import { localeFromPath } from '../i18n/routing.mjs';
+import { localeFromPath, localeOfId, sourceId } from '../i18n/routing.mjs';
 const locale = localeFromPath(Astro.url.pathname);
 // Blogartikel auf Seitenniveau (Marc, 31.10.2026, Runde 8): Kicker mit Thema, Titel, Autor mit Foto, Datum und Lesezeit,
 // Titelbild mit Vorhang, lesbare Spalte (rund 68 Zeichen), am Ende Autor, Anfrage und zwei weitere Beiträge.
 // Der Artikeltext bleibt wörtlich wie auf flyingstars.art (Import 31.10.2026), Moritz überarbeitet ihn später.
-import { render, type CollectionEntry } from 'astro:content';
+import { getCollection, render, type CollectionEntry } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import Cta from '../components/sections/Cta.astro';
 import PostGrid from '../components/blog/PostGrid.astro';
@@ -17,8 +17,10 @@ import { optimizedImage } from '../lib/media';
 import { authorOf, dateOf, readingMinutes, topicOf, sortPosts } from '../components/blog/post-meta';
 import PostBody from '../components/blog/PostBody.astro';
 import { cornerstoneOf } from '../components/blog/cornerstone';
+import previewCovers from '../components/blog/preview-covers.json';
 interface Props { post: CollectionEntry<'posts'> }
 const { post } = Astro.props;
+const alternateLocales = (await getCollection('posts', (entry) => !entry.data.draft && sourceId(entry.id) === sourceId(post.id))).map((entry) => localeOfId(entry.id));
 const AUTHOR = authorOf(post);
 const authorRole = AUTHOR.role[locale];
 const authorBio = AUTHOR.authorBio?.[locale]
@@ -31,6 +33,8 @@ const face = await optimizedImage(AUTHOR.image.src, 160);
 const more = sortPosts(await localizedCollection('posts', locale, p => !p.data.draft && p.id !== post.id)).slice(0, 3);
 const updated = post.data.updated && post.data.updated.valueOf() !== post.data.date.valueOf() ? new Intl.DateTimeFormat(formatLocale, { dateStyle: 'long' }).format(post.data.updated) : undefined;
 const editing = editorBuild();
+const previewCover = !editing && locale === 'de' && post.data.legacyPath && Astro.site?.hostname.endsWith('.pages.dev')
+  ? previewCovers[sourceId(post.id) as keyof typeof previewCovers] : undefined;
 const cs = editing ? undefined : cornerstoneOf(post);
 const layout = cs?.layout ?? (cs ? 'cornerstone' : 'basic');
 const coverAlt = cs ? t(`${cs.i18n}.${cs.cover.alt}`) : undefined;
@@ -46,12 +50,12 @@ const jsonLd = JSON.stringify({
   image: cs ? cs.cover.social.map((s) => abs(s.src)) : cover ? [abs(cover.src)] : undefined,
 }).replace(/</g, '\\u003c');
 ---
-<Base title={post.data.title} description={post.data.description} image={cs ? undefined : post.data.cover?.src} social={cs?.cover.social[0]} ogType="article" navSection="/blog/">
+<Base title={post.data.title} description={post.data.description} image={cs ? undefined : post.data.cover?.src} social={cs?.cover.social[0]} ogType="article" navSection="/blog/" alternateLocales={alternateLocales}>
   <Fragment slot="head">
     <meta name="robots" content="max-image-preview:large" />
     <script type="application/ld+json" set:html={jsonLd} />
   </Fragment>
-  <article class="section post" aria-labelledby="post-h" data-blog-layout={layout}>
+  <article class="section post" aria-labelledby="post-h" data-blog-layout={layout} data-legacy-blog={post.data.legacyPath}>
     <header class="post-head">
       <a class="kicker mono post-back" href={localHref("/blog/")}><span aria-hidden="true">←</span> Blog · {topicOf(post)}</a>
       <h1 id="post-h">{post.data.title}</h1>
@@ -62,9 +66,20 @@ const jsonLd = JSON.stringify({
       </div>
     </header>
     {cs ? <figure class="post-cover" data-curtain><picture><source srcset={cs.cover.avif} type="image/avif" /><img src={cs.cover.webp} width={cs.cover.width} height={cs.cover.height} alt={coverAlt} loading="eager" decoding="async" fetchpriority="high" /></picture></figure>
-      : cover && <figure class="post-cover" data-curtain><img src={cover.src} {...cover.attributes} width={cover.width} height={cover.height} alt={post.data.cover!.alt} loading="eager" decoding="async" fetchpriority="high" /></figure>}
+      : cover && <figure class="post-cover" data-curtain><img data-preview-cover={previewCover ? '' : undefined} src={cover.src} {...cover.attributes} width={cover.width} height={cover.height} alt={post.data.cover!.alt} loading="eager" decoding="async" fetchpriority="high" /></figure>}
+    {previewCover && <script define:vars={{ previewCover }}>
+      if (new URLSearchParams(location.search).get('bild') === 'flyingstars') {
+        const image = document.querySelector('[data-preview-cover]');
+        if (image) {
+          image.removeAttribute('srcset');
+          image.removeAttribute('sizes');
+          image.alt = previewCover.alt;
+          image.src = previewCover.src;
+        }
+      }
+    </script>}
     {editing ? <div class="post-body" {...body(post)}><Content /></div>
-      : <PostBody postId={post.id} article={cs}><Content /></PostBody>}
+      : <PostBody postId={post.id} article={cs} preserveImages={Boolean(post.data.legacyPath)}><Content /></PostBody>}
     <aside class="post-author" aria-label={t('blogpost.aboutTheAuthor')}>
       <img class="face" src={face.src} width={face.width} height={face.height} alt={AUTHOR.name} loading="lazy" decoding="async" />
       <div>
@@ -118,6 +133,8 @@ const jsonLd = JSON.stringify({
   .post :global(.post-body li::marker) { color: var(--accent); }
   .post :global(.post-body ol > li::marker) { font: 500 0.95em var(--display); }
   .post :global(.post-body p:has(> img:only-child)) { margin-block: 2em; }
+  .post :global(.post-toc) { padding: var(--space-4); border: 1px solid var(--line); border-radius: var(--radius-12); margin-bottom: var(--space-6); }
+  .post :global(.post-toc summary) { cursor: pointer; }
   .post :global(.post-body img) { width: 100%; height: auto; border-radius: var(--radius-14); }
   .post :global(.post-body blockquote) { margin-inline: 0; padding-left: var(--space-5); border-left: 2px solid; border-image: var(--grad) 1; color: var(--head); }
 

@@ -11,6 +11,7 @@ export async function seoFallbackReport(root,dist) {
   const [kind,slug]=record.id.split('/');
   for(const locale of ['en','nl']){
    const translated=ids.get(`${kind}/${locale}/${slug}`);
+   if(!translated && record.data.legacyPath)continue;
    if(!translated)throw Error(`Missing or stale ${locale} translation: ${record.id}`);
    const route=site.recordRoute(translated);if(!route||translated.data.draft)continue;
    const html=await readFile(path.join(dist,route,'index.html'),'utf8');

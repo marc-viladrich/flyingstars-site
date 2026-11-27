@@ -7,8 +7,8 @@
 import { LOCALES, LOCALE_NAMES, localizedHref, type Locale } from '../i18n/routing.mjs';
 import { createTranslator } from '../i18n/ui.mjs';
 import Icon from './Icon.astro';
-interface Props { locale: Locale; path: string; id: string; }
-const { locale, path, id } = Astro.props;
+interface Props { locale: Locale; path: string; id: string; available?: readonly Locale[]; }
+const { locale, path, id, available = LOCALES } = Astro.props;
 const t = createTranslator(locale);
 const popId = `lang-${id}`;
 ---
@@ -20,7 +20,7 @@ const popId = `lang-${id}`;
   </button>
   <div id={popId} class="lang-pop">
     <ul class="glide-list" style={`--n: ${LOCALES.length}`} aria-label={t('language.choose')}>
-      {LOCALES.map((language) => <li><a href={localizedHref(path, language)} lang={language} hreflang={language} aria-current={language === locale ? 'page' : undefined} data-language-link><span>{LOCALE_NAMES[language]}</span><span class="lang-code">{language.toUpperCase()}</span></a></li>)}
+      {LOCALES.map((language) => <li><a href={localizedHref(available.includes(language) ? path : '/blog/', language)} lang={language} hreflang={language} aria-current={language === locale ? 'page' : undefined} data-language-link><span>{LOCALE_NAMES[language]}</span><span class="lang-code">{language.toUpperCase()}</span></a></li>)}
       <li class="glide-mark" aria-hidden="true"></li>
     </ul>
   </div>

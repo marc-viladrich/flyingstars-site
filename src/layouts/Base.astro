@@ -14,7 +14,7 @@ const site = getSite(forPath(Astro.url.pathname).locale);
 import Logo from '../components/Logo.astro';
 import Icon from '../components/Icon.astro';
 import { optimizedImage } from '../lib/media';
-import { LOCALES, localeFromPath, sourcePath, localizedHref } from '../i18n/routing.mjs';
+import { LOCALES, localeFromPath, sourcePath, localizedHref, type Locale } from '../i18n/routing.mjs';
 import LanguageSwitch from '../components/LanguageSwitch.astro';
 import { CONTACT } from '../components/people';
 const SOCIAL = [
@@ -34,8 +34,8 @@ const tracking = trackingConfig({
 });
 // social: fertiges Vorschaubild (z. B. Cornerstone-Titelbild im Lichtraster) statt image, das hier optimiert wird; ogType: article
 // für Blogartikel; Slot „head“ für seitenspezifische Angaben (Structured Data)
-interface Props { title: string; description: string; noindex?: boolean; canonicalPath?: string; image?: string; social?: { src: string; width: number; height: number }; ogType?: 'website' | 'article'; navSection?: string; fullBleed?: boolean; }
-const { title, description, noindex: pageNoindex = false, canonicalPath, image, social: socialImage, ogType = 'website', navSection, fullBleed: bleed = false } = Astro.props;
+interface Props { title: string; description: string; noindex?: boolean; canonicalPath?: string; image?: string; social?: { src: string; width: number; height: number }; ogType?: 'website' | 'article'; navSection?: string; fullBleed?: boolean; alternateLocales?: readonly Locale[]; }
+const { title, description, noindex: pageNoindex = false, canonicalPath, image, social: socialImage, ogType = 'website', navSection, fullBleed: bleed = false, alternateLocales = LOCALES } = Astro.props;
 const noindex = pageNoindex || process.env.AFE_MODE === 'editor';
 const canonical = new URL(canonicalPath ?? Astro.url.pathname, Astro.site);
 const locale = localeFromPath(Astro.url.pathname);
@@ -66,7 +66,7 @@ const inNav = (href: string) => site.nav.some((item) => item.href === href);
     <title>{title} | {site.name}</title>
     <meta name="description" content={factText(description,locale)} />
     <link rel="canonical" href={canonical} />
-    {!noindex && <>{LOCALES.map((language) => <link rel="alternate" hreflang={language} href={new URL(localizedHref(sourcePath(canonical.pathname), language), Astro.site)} />)}<link rel="alternate" hreflang="x-default" href={new URL(sourcePath(canonical.pathname), Astro.site)} /></>}
+    {!noindex && <>{alternateLocales.map((language) => <link rel="alternate" hreflang={language} href={new URL(localizedHref(sourcePath(canonical.pathname), language), Astro.site)} />)}{alternateLocales.includes('de') && <link rel="alternate" hreflang="x-default" href={new URL(sourcePath(canonical.pathname), Astro.site)} />}</>}
     {noindex && <meta name="robots" content="noindex" />}
     <meta property="og:title" content={`${title} | FlyingStars`} />
     <meta property="og:description" content={factText(description,locale)} />
@@ -92,14 +92,14 @@ const inNav = (href: string) => site.nav.some((item) => item.href === href);
            Touch-Geräten deckt der Schalter den ganzen Kopf ab, die Übersicht steht dann als erster Eintrag in der Liste
            (.nav-drop-all, nur wenn die Liste sie nicht schon enthält; global.css) */}
       <nav aria-label={t('base.mainNavigation')}>{site.nav.map((item, i) => item.children ? <div class="nav-drop"><span class="nav-drop-head"><a href={localHref(item.href)} aria-current={navState(item.href)}>{item.label}</a><button class="nav-drop-toggle" type="button" aria-expanded="false" aria-controls={`nav-sub-${i}`} aria-label={t('base.submenu', { label: item.label })}><svg class="caret" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" /></svg></button></span><ul class="glide-list" id={`nav-sub-${i}`} style={`--n-items: ${item.children.length}`}>{!item.children.some((c) => c.href === item.href) && <li class="nav-drop-all"><a href={localHref(item.href)} aria-current={navState(item.href)}>{t('base.submenuOverview')}</a></li>}{item.children.map((c) => <li><a href={localHref(c.href)} aria-current={navState(c.href)}>{c.label}</a></li>)}<li class="glide-mark" aria-hidden="true"></li></ul></div> : <a href={localHref(item.href)} aria-current={navState(item.href)}>{item.label}</a>)}</nav>
-      <LanguageSwitch locale={locale} path={current} id="header" />
+      <LanguageSwitch locale={locale} path={current} id="header" available={alternateLocales} />
       <button class="motion-btn" type="button" data-motion-toggle data-motion-pause={t('base.pauseMotion')} data-motion-resume={t('site.resumeMotion')} aria-pressed="false" aria-label={t('base.pauseMotion')} title={t('base.pauseMotion')}><svg class="i-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="7" y="6" width="3.2" height="12" rx="1" /><rect x="13.8" y="6" width="3.2" height="12" rx="1" /></svg><svg class="i-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8.5 6.2v11.6a.8.8 0 0 0 1.2.7l9-5.8a.8.8 0 0 0 0-1.4l-9-5.8a.8.8 0 0 0-1.2.7z" /></svg></button>
       <a class="btn small primary" href={localHref(site.cta.href)}>{site.cta.label}</a>
       <button class="menu-btn" type="button" data-menu-open aria-controls="mobile-menu" aria-expanded="false" aria-label={t('base.openMenu')}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg></button>
     </header>
     {/* Kopfzeile des Menüs = Kopfzeile der Seite (gleiche Elemente, gleiche Abstände), damit beim Öffnen nichts springt (Marc, 02.11.2026) */}
     <dialog class="mobile-menu" id="mobile-menu" aria-label={t('base.mainNavigation')} autofocus>
-      <div class="top"><Logo /><LanguageSwitch locale={locale} path={current} id="menu" /><button class="motion-btn" type="button" data-motion-toggle data-motion-pause={t('base.pauseMotion')} data-motion-resume={t('site.resumeMotion')} aria-pressed="false" aria-label={t('base.pauseMotion')} title={t('base.pauseMotion')}><svg class="i-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="7" y="6" width="3.2" height="12" rx="1" /><rect x="13.8" y="6" width="3.2" height="12" rx="1" /></svg><svg class="i-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8.5 6.2v11.6a.8.8 0 0 0 1.2.7l9-5.8a.8.8 0 0 0 0-1.4l-9-5.8a.8.8 0 0 0-1.2.7z" /></svg></button><button class="menu-btn menu-close" type="button" data-menu-close aria-label={t('base.closeMenu')}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg></button></div>
+      <div class="top"><Logo /><LanguageSwitch locale={locale} path={current} id="menu" available={alternateLocales} /><button class="motion-btn" type="button" data-motion-toggle data-motion-pause={t('base.pauseMotion')} data-motion-resume={t('site.resumeMotion')} aria-pressed="false" aria-label={t('base.pauseMotion')} title={t('base.pauseMotion')}><svg class="i-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="7" y="6" width="3.2" height="12" rx="1" /><rect x="13.8" y="6" width="3.2" height="12" rx="1" /></svg><svg class="i-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8.5 6.2v11.6a.8.8 0 0 0 1.2.7l9-5.8a.8.8 0 0 0 0-1.4l-9-5.8a.8.8 0 0 0-1.2.7z" /></svg></button><button class="menu-btn menu-close" type="button" data-menu-close aria-label={t('base.closeMenu')}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg></button></div>
       <nav aria-label={t('base.mobileNavigation')}>{site.nav.map((item) => item.children ? <details class="sub-drop"><summary>{item.label}<svg class="caret" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" /></svg></summary><ul class="sub">{item.children.map((c) => <li><a href={localHref(c.href)}>{c.label}</a></li>)}</ul></details> : <a href={localHref(item.href)}>{item.label}</a>)}{!inNav('/blog/') && <a href={localHref("/blog/")}>Blog</a>}<a href={localHref(site.cta.href)}>{site.cta.label}</a></nav>
     </dialog>
     <main id="main" class:list={{ 'content-page': !fullBleed, 'page-top': !flushTop }}><slot /></main>

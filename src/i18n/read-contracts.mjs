@@ -10,7 +10,7 @@ export function readContractRecords(root,site){
 }
 export function auditContracts(site,records,options={}){
  const deps=dependenciesFromRecords(records),results=[];
- for(const source of records.filter(r=>isSource(r.id)))for(const locale of ['en','nl']){
+ for(const source of records.filter(r=>isSource(r.id) && !r.data.legacyPath))for(const locale of ['en','nl']){
   const id=source.id.replace('/',`/${locale}/`),target=records.find(r=>r.id===id);if(!target)throw Error('Missing translation: '+id);
   const result=verifyCurrent(site.sourceFor(source.id).schema,source.data,target.data,locale,deps,options);results.push({id,result});
  }

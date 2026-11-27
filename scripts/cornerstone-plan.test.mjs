@@ -62,7 +62,8 @@ test('Vollständiges Format lässt sich mit den Originalen in allen Sprachen wie
     const { default: article } = await import('data:text/javascript;base64,' + Buffer.from(outputFiles[0].text).toString('base64'));
     const stories = new Map(article.blocks.filter(block => block.kind === 'story').map(block => [block, block.scene()]));
     for (const prefix of ['', 'en/', 'nl/']) {
-      const markdown = readFileSync(new URL(`${prefix}${article.post}.md`, posts), 'utf8').split(/^---\s*$/m)[2];
+      const [, frontmatter, markdown] = readFileSync(new URL(`${prefix}${article.post}.md`, posts), 'utf8').split(/^---\s*$/m);
+      if (/^legacyPath:/m.test(frontmatter)) continue;
       const sections = splitSections(withoutStaticLogo(marked.parse(markdown)));
       assert.equal(checkPlan({ ...article, layout: 'cornerstone' }, sections, stories), undefined, prefix + article.post);
     }

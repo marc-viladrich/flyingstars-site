@@ -2,6 +2,7 @@ import {readEntry} from './test-support/read.mjs';
 import {contentSchemas} from '../src/schemas/content-schema.mjs';
 import {createSite} from '../editor/flyingstars-adapter.mjs';
 import {readContractRecords,auditContracts} from '../src/i18n/read-contracts.mjs';
+import {isSource} from '../src/i18n/transaction.mjs';
 const contractSite=await createSite(process.cwd());
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -54,7 +55,9 @@ test('Every UI message has all locales and exactly the same interpolation fields
 });
 
 test('All real source entries have current EN/NL content and stable structural identities', () => {
-  assert.equal(auditContracts(contractSite,readContractRecords(process.cwd(),contractSite)).length,194);
+  const all = readContractRecords(process.cwd(), contractSite);
+  const required = all.filter(record => isSource(record.id) && !record.data.legacyPath);
+  assert.equal(auditContracts(contractSite, all).length, required.length * (LOCALES.length - 1));
   const identity = new Set(['type', 'id', 'personId', 'authorId', 'project', 'field', 'display', 'href', 'src', 'file', 'logo', 'video', 'heroVideo', 'route', 'nextRoute', 'icon', 'shape', 'color', 'accent', 'variant', 'zone', 'loop', 'reel', 'occasion', 'package', 'mediaSide']);
   const sameStructure = (source, target, at = '') => {
     if (source === null || typeof source !== 'object') {
@@ -70,6 +73,7 @@ test('All real source entries have current EN/NL content and stable structural i
     const files = readdirSync(base, { withFileTypes: true }).filter((entry) => entry.isFile() && /\.(yaml|md)$/.test(entry.name));
     for (const file of files) {
       const source = readEntry(new URL(file.name, base));
+      if (collection === 'posts' && source.data.legacyPath) continue;
       for (const locale of ['en', 'nl']) {
         const translated = readEntry(new URL(`${locale}/${file.name}`, base));
         assert.equal(translated.data.translationContractVersion,2);

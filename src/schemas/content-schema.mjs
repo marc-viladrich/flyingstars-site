@@ -530,6 +530,8 @@ export const pageSchema = keyedSchema(z.object({
 
 export const postSchema = keyedSchema(z.object({
     authorId:personId,
+    // Bestehende WordPress-Fassung mit eigenen Sprachversionen, Bildern und Datumsangaben.
+    legacyPath: fieldPolicy(z.string().regex(/^\/(?:en\/)?[a-z0-9-]+$/).optional(), 'shared'),
     ...translationMeta,
     title: fieldPolicy(z.string().min(1), 'translatable'),
     description: fieldPolicy(z.string().refine(text=>{const n=factText(text).length;return n>=50&&n<=160;},'Beschreibung braucht nach Faktenprojektion 50–160 Zeichen'), 'translatable'),
