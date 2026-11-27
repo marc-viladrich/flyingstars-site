@@ -6,7 +6,7 @@ function preferredLocale(header: string) {
     const locale = tag.split('-')[0];
     const q = params.find(param => param.trim().startsWith('q='));
     const weight = q === undefined ? 1 : Number(q.trim().slice(2));
-    return LOCALES.includes(locale) && weight > 0 && weight <= 1 ? [{ locale, weight, index }] : [];
+    return LOCALES.some(supported => supported === locale) && weight > 0 && weight <= 1 ? [{ locale, weight, index }] : [];
   });
   candidates.sort((a, b) => b.weight - a.weight || a.index - b.index);
   return candidates[0]?.locale ?? 'de';
