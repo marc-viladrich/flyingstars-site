@@ -85,7 +85,7 @@ Once simulations are approved, the final code is uploaded to the drones. Real-wo
 
 <img alt="FlyingStars Logo schwarz-lila-türkis" decoding="async" height="380" loading="lazy" sizes="(max-width: 45em) 92vw, 42rem" src="https://flyingstars.art/wp-content/uploads/2025/02/was-kostet-eine-drohne-flyingstars-logo-1024x499.jpg" srcset="https://flyingstars.art/wp-content/uploads/2025/02/was-kostet-eine-drohne-flyingstars-logo-1024x499.jpg 1024w, https://flyingstars.art/wp-content/uploads/2025/02/was-kostet-eine-drohne-flyingstars-logo-300x146.jpg 300w, https://flyingstars.art/wp-content/uploads/2025/02/was-kostet-eine-drohne-flyingstars-logo.jpg 1200w" width="780"/>
 
-<a href="https://flyingstars.art/kontakt/">
+<a href="/en/kontakt/">
 
 Anfragen
 </a>

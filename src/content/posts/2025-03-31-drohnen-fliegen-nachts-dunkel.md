@@ -55,9 +55,9 @@ draft: false
 
 <h2 id="drohnenshows-von-flyingstars"> Drohnenshows von Flyingstars</h2>
 
-<p>Neben dem privaten und gewerblichen Einsatz von Drohnen erfreuen sich spektakuläre Drohnenshows immer größerer Beliebtheit. FlyingStars ist führender Anbieter in diesem Bereich und kreiert Lichtshows mit synchronisierten Drohnen. Diese Shows werden für Events, Firmenfeiern, Hochzeiten und große Festivals eingesetzt und bieten eine nachhaltige Alternative zu klassischen Feuerwerken.</p><p>Die <a href="https://flyingstars.art/drohnenshow-preise/">Kosten für eine Drohnenshow</a> variieren je nach Umfang, Anzahl der Drohnen und individuellen Anforderungen.</p>
+<p>Neben dem privaten und gewerblichen Einsatz von Drohnen erfreuen sich spektakuläre Drohnenshows immer größerer Beliebtheit. FlyingStars ist führender Anbieter in diesem Bereich und kreiert Lichtshows mit synchronisierten Drohnen. Diese Shows werden für Events, Firmenfeiern, Hochzeiten und große Festivals eingesetzt und bieten eine nachhaltige Alternative zu klassischen Feuerwerken.</p><p>Die <a href="/drohnenshow-preise/">Kosten für eine Drohnenshow</a> variieren je nach Umfang, Anzahl der Drohnen und individuellen Anforderungen.</p>
 
-<a href="https://flyingstars.art/kontakt/">
+<a href="/kontakt/">
 
 Anfragen
 </a>

@@ -38,7 +38,7 @@ draft: false
 
 <h2 id="drohnenshows-von-flyingstars"> Drohnenshows von FlyingStars</h2>
 
-<p>Wir als Flyingstars gehören zu den führenden Anbietern in Europa, wenn es um choreografierte Drohnenshows geht. Ob zu Silvester, Stadtfesten, Konzerten oder Firmenjubiläen – wir versuchen Technologie, Kunst und Emotionen auf faszinierende Weise zu verbinden.</p><p>Jetzt <a href="https://flyingstars.art/drohnenshow-preise/">Preise </a>entdecken und Drohnenshow buchen.</p>
+<p>Wir als Flyingstars gehören zu den führenden Anbietern in Europa, wenn es um choreografierte Drohnenshows geht. Ob zu Silvester, Stadtfesten, Konzerten oder Firmenjubiläen – wir versuchen Technologie, Kunst und Emotionen auf faszinierende Weise zu verbinden.</p><p>Jetzt <a href="/drohnenshow-preise/">Preise </a>entdecken und Drohnenshow buchen.</p>
 
 <h3 id="warum-flyingstars"> Warum Flyingstars?</h3>
 
@@ -46,7 +46,7 @@ draft: false
 
 <img alt="FlyingStars Logo schwarz-lila-türkis" decoding="async" height="380" loading="lazy" sizes="(max-width: 45em) 92vw, 42rem" src="https://flyingstars.art/wp-content/uploads/2025/02/was-kostet-eine-drohne-flyingstars-logo-1024x499.jpg" srcset="https://flyingstars.art/wp-content/uploads/2025/02/was-kostet-eine-drohne-flyingstars-logo-1024x499.jpg 1024w, https://flyingstars.art/wp-content/uploads/2025/02/was-kostet-eine-drohne-flyingstars-logo-300x146.jpg 300w, https://flyingstars.art/wp-content/uploads/2025/02/was-kostet-eine-drohne-flyingstars-logo.jpg 1200w" width="780"/>
 
-<a href="https://flyingstars.art/kontakt/">
+<a href="/kontakt/">
 
 Anfragen
 </a>

@@ -51,7 +51,7 @@ draft: false
 
 <h2 id="drohnenshows-von-flyingstars"> Drohnenshows von Flyingstars</h2>
 
-<p><strong>FlyingStars</strong> gehört zu den führenden Anbietern für <strong>innovative Drohnenshows</strong> im deutschsprachigen Raum. Mit <strong>modernster Technologie</strong>, erfahrenen Piloten und einem <strong>kreativen Team</strong> setzt FlyingStars neue Maßstäbe für <strong>Alternativen zu Feuerwerk</strong>.</p><ul><li><strong>Expertise &amp; Qualität</strong>: Von kleinen Events bis zu internationalen Großshows.</li><li><strong>Individuelle Konzepte</strong>: Jede Show wird auf <strong>Anlass</strong>, <strong>Location</strong> und <strong>Zielgruppe</strong> abgestimmt.</li><li><strong>Breites Einsatzspektrum</strong>: Silvester, Stadtfeste, Firmen-Events, Hochzeiten und mehr.</li></ul><p>👉 Jetzt Drohnenshow mit FlyingStars entdecken – <a href="https://flyingstars.art/drohnenshow-preise/">Preise</a> vergleichen und direkt buchen.</p>
+<p><strong>FlyingStars</strong> gehört zu den führenden Anbietern für <strong>innovative Drohnenshows</strong> im deutschsprachigen Raum. Mit <strong>modernster Technologie</strong>, erfahrenen Piloten und einem <strong>kreativen Team</strong> setzt FlyingStars neue Maßstäbe für <strong>Alternativen zu Feuerwerk</strong>.</p><ul><li><strong>Expertise &amp; Qualität</strong>: Von kleinen Events bis zu internationalen Großshows.</li><li><strong>Individuelle Konzepte</strong>: Jede Show wird auf <strong>Anlass</strong>, <strong>Location</strong> und <strong>Zielgruppe</strong> abgestimmt.</li><li><strong>Breites Einsatzspektrum</strong>: Silvester, Stadtfeste, Firmen-Events, Hochzeiten und mehr.</li></ul><p>👉 Jetzt Drohnenshow mit FlyingStars entdecken – <a href="/drohnenshow-preise/">Preise</a> vergleichen und direkt buchen.</p>
 
 <h2 id="faq-h-ufige-fragen-zu-feuerwerk-alternativen"> FAQ: Häufige Fragen zu Feuerwerk-Alternativen</h2>
 
@@ -75,7 +75,7 @@ draft: false
 
 <p>Eine <strong>Drohnenshow</strong> ist die wohl innovativste und nachhaltigste <strong>Alternative zu Feuerwerk</strong>. Sie ist leise, tierfreundlich, frei von Feinstaub und Müll – und trotzdem spektakulär. Drohnen lassen sich individuell programmieren und können Logos, Jahreszahlen, Schriftzüge oder ganze Geschichten am Himmel darstellen. Damit eignen sie sich perfekt als <strong>Silvester Alternative zu Feuerwerk</strong>, für Firmen-Events, Hochzeiten und Stadtfeste. Im Gegensatz zu klassischen Feuerwerken sind Drohnenshows flexibel, sicher und ein echtes Symbol für Innovation und Nachhaltigkeit.</p>
 
-<a href="https://flyingstars.art/kontakt/">
+<a href="/kontakt/">
 
 Anfragen
 </a>

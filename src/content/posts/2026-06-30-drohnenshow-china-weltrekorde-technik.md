@@ -85,11 +85,11 @@ draft: false
 
 <h2 id="drohnenshows-von-flyingstars"> Drohnenshows von Flyingstars</h2>
 
-<p>Als Expert:innen für <strong>hochwertige Drohnen-Lichtshows</strong> bringen wir innovative Technologie und kreative Konzepte zusammen, um spektakuläre visuelle Erlebnisse zu schaffen. Ob für Sport-Events, große Stadtfeste, Company Events oder auch private Feiern. Lasst euch inspirieren und plant euer eigenes Licht-Spektakel. Moderne Technologie, kreative Choreografie und nachhaltige Umsetzung – das ist die Zukunft am Himmel.</p><p>Jetzt <a href="https://flyingstars.art/drohnenshow-preise/">Preise </a>entdecken und Drohnenshow buchen.</p>
+<p>Als Expert:innen für <strong>hochwertige Drohnen-Lichtshows</strong> bringen wir innovative Technologie und kreative Konzepte zusammen, um spektakuläre visuelle Erlebnisse zu schaffen. Ob für Sport-Events, große Stadtfeste, Company Events oder auch private Feiern. Lasst euch inspirieren und plant euer eigenes Licht-Spektakel. Moderne Technologie, kreative Choreografie und nachhaltige Umsetzung – das ist die Zukunft am Himmel.</p><p>Jetzt <a href="/drohnenshow-preise/">Preise </a>entdecken und Drohnenshow buchen.</p>
 
 <img alt="FlyingStars Logo schwarz-lila-türkis" decoding="async" height="380" loading="lazy" sizes="(max-width: 45em) 92vw, 42rem" src="https://flyingstars.art/wp-content/uploads/2025/02/was-kostet-eine-drohne-flyingstars-logo-1024x499.jpg" srcset="https://flyingstars.art/wp-content/uploads/2025/02/was-kostet-eine-drohne-flyingstars-logo-1024x499.jpg 1024w, https://flyingstars.art/wp-content/uploads/2025/02/was-kostet-eine-drohne-flyingstars-logo-300x146.jpg 300w, https://flyingstars.art/wp-content/uploads/2025/02/was-kostet-eine-drohne-flyingstars-logo.jpg 1200w" width="780"/>
 
-<a href="https://flyingstars.art/kontakt/">
+<a href="/kontakt/">
 
 Anfragen
 </a>
