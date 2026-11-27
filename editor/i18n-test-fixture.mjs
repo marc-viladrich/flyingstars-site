@@ -8,6 +8,8 @@ import {fileURLToPath} from 'node:url';
 import {NativeStore,git} from 'astro-frontend-editor/runtime';
 import assert from 'node:assert/strict';
 const here=path.dirname(fileURLToPath(import.meta.url));
+// The editor starts the private and public Astro builds in series. Each build has its own 180 s limit.
+export const BUILD_PAIR_TIMEOUT = 7 * 60_000;
 export async function i18nFixture(t,{sourceRoot=path.join(here,'..'),forCI=false,offlineMedia=true}={}) {
   const root=await fs.mkdtemp(path.join(os.tmpdir(),'flyingstars-i18n-')),source=path.join(root,'source');
   if(t)t.after(()=>fs.rm(root,{recursive:true,force:true}));
@@ -18,7 +20,18 @@ export async function i18nFixture(t,{sourceRoot=path.join(here,'..'),forCI=false
     await git(source,['symbolic-ref','HEAD','refs/heads/content/draft']);
     await git(source,['remote','remove','origin']);
   }
-  await fs.cp(sourceRoot,source,{recursive:true,mode:constants.COPYFILE_FICLONE,filter:file=>!['.git','node_modules','.astro','dist'].includes(path.basename(file))&&!path.basename(file).startsWith('.env')});
+  // The video payload guard in nested CI reads the lab archive. Ordinary editor fixtures build only public media.
+  const videoArchive = path.resolve(sourceRoot, 'archive/video-lab/files');
+  await fs.cp(sourceRoot, source, {
+    recursive: true,
+    mode: constants.COPYFILE_FICLONE,
+    filter: (file) => {
+      const name = path.basename(file);
+      return !['.git', 'node_modules', '.astro', 'dist'].includes(name)
+        && !name.startsWith('.env')
+        && (forCI || path.resolve(file) !== videoArchive);
+    },
+  });
   await fs.symlink(await fs.realpath(path.join(here,'../node_modules')),path.join(source,'node_modules'));
   let config=await fs.readFile(path.join(source,'astro.config.mjs'),'utf8');
   const envDir = JSON.stringify(path.join(root,'unused-env'));
