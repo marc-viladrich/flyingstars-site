@@ -5,7 +5,7 @@ title: "How do you program a drone show?"
 description: "How to program a drone show: Step-by-Step Guide and Cost Overview"
 date: "2025-05-26"
 updated: "2025-10-23"
-cover: {"src": "/assets/170995b8dc1c5692f6a115f1f186fef074979d4e78daff49e742232d1e99f7cd.webp", "alt": "A man holds a quadcopter while talking to a woman in an office", "width": 960, "height": 480}
+cover: {"src": "/media/wordpress/94d1ca9baa8870a62ae2942a7e503612e2943e9e6d295815c0a1efb9b785c6be.jpg", "alt": "A man holds a drone beside an open laptop", "width": 1680, "height": 1120}
 draft: false
 ---
 
@@ -82,8 +82,4 @@ Drone shows may look magical, but they are built on meticulous planning, advance
 
 If you’re passionate about technology, lighting design, or digital storytelling, this is a fascinating field – one with the power to evoke awe and lasting impressions.
 
-**Want to Learn More?** Check out our other posts: how drones fly at night, the cost of show drones, and why drone shows are the future of fireworks.
-
-![FlyingStars Logo schwarz-lila-türkis](/media/wordpress/350a8cc09aa9f85f1626c8c5e166eaac33cc2e79a4cd8041453ac8536b470ff0.jpg)
-
-[Anfragen](/en/kontakt/)
+Read more about [flying drones at night](/en/blog/2025-03-31-drohnen-fliegen-nachts-dunkel/), [the cost of show drones](/en/blog/2025-02-28-drohne-kosten/) and [drone shows as an alternative to fireworks](/en/blog/2025-03-31-drohnen-feuerwerk-als-alternative/).

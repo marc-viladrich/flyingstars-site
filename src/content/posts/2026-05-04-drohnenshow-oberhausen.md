@@ -5,7 +5,7 @@ title: "Drohnenshow Oberhausen: Spektakuläre Lichtmomente im Ruhrgebiet"
 description: "Magische Drohnenshows in Oberhausen: Faszinierende Lichtkunst am Himmel für unvergessliche Momente bei jedem Event."
 date: "2026-05-04"
 updated: "2026-05-19"
-cover: {"src": "/assets/b216940dc200c406134094adb374878c2dbb90ad0d1059c12404561a5858666f.webp", "alt": "Illustration mit dem Schriftzug Drohnenshow Oberhausen, Gebäudeumrissen und einer Drohne", "width": 960, "height": 480}
+cover: {"src": "/media/wordpress/c5cc897388eff5af7352a7b572eadd11740340a079b4eab149ed1ace53438947.png", "alt": "Drohnenshow Oberhausen", "width": 768, "height": 512}
 draft: false
 ---
 
@@ -69,7 +69,3 @@ Die Beispiele aus Oberhausen zeigen, wie wirkungsvoll Drohnenshows als Highlight
 Gerade bei Events wie Weihnachtsmärkten lassen sich damit einzigartige visuelle Erlebnisse schaffen.\
 Unternehmen wie **Flying Stars** setzen solche Shows professionell um – von der Idee bis zur fertigen Inszenierung.\
 So können auch eigene Events mit einer maßgeschneiderten Drohnenshow auf ein neues Level gehoben werden.
-
-![FlyingStars Logo schwarz-lila-türkis](/media/wordpress/350a8cc09aa9f85f1626c8c5e166eaac33cc2e79a4cd8041453ac8536b470ff0.jpg)
-
-[Anfragen](/kontakt/)

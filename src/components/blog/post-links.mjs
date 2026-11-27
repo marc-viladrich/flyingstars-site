@@ -40,7 +40,17 @@ export function renderPostLinks(html, hasThumbnail) {
 }
 
 /** @param {string} html */
-export function formationPosition(html) {
-  const brandedHeading = /<h2\b[^>]*>(?:Drohnenshows von Flying\s?Stars|Droneshows van Flying\s?Stars|Drone shows by Flying\s?Stars|FlyingStars [–—] Experts in Drone Light Shows)<\/h2>/gi;
-  return [...html.matchAll(brandedHeading)].at(-1)?.index;
+export function brandedShowSection(html) {
+  const headings = [...html.matchAll(/<h2\b([^>]*)>([^<]*)<\/h2>/gi)];
+  const branded = /^(?:Drohnenshows von Flying\s?Stars|Droneshows van Flying\s?Stars|Drone shows by Flying\s?Stars|FlyingStars (?:[–—] (?:Experts in Drone Light Shows|For Unforgettable Events)|für unvergessliche Events))$/i;
+  const index = headings.findLastIndex(([, , title]) => branded.test(title.trim()));
+  if (index === -1) return;
+  const heading = headings[index];
+  const id = /\sid="([^"]+)"/.exec(heading[1])?.[1];
+  return {
+    id,
+    start: heading.index,
+    content: heading.index + heading[0].length,
+    end: headings[index + 1]?.index ?? html.length,
+  };
 }

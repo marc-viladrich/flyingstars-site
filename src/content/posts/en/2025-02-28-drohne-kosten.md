@@ -5,7 +5,7 @@ title: "How much do drones cost?"
 description: "Drones range in price from $50 to over $10,000, depending on the model. Learn everything about costs, categories and key buying factors"
 date: "2025-02-28"
 updated: "2025-03-19"
-cover: {"src": "/assets/8b97c9b2d3feef8814ca2fc60004d32f5042f5d87b9cf3f82d666164c7a57b04.webp", "alt": "A large drone in the foreground and a person wearing video goggles behind it", "width": 960, "height": 480}
+cover: {"src": "/media/wordpress/d7c41f59b1a09d7b661c248579fe1f5045f7b52735d1668de10efeb9b3bb6f6c.jpg", "alt": "Drone controlled by man with VR", "width": 1200, "height": 585}
 draft: false
 ---
 
@@ -71,12 +71,8 @@ In addition to the initial purchase, various ongoing costs can arise when operat
 - Even though drones are built to be durable, **accidents or wear and tear** may require repairs.
 - These expenses should be considered, particularly for **frequent or intensive** drone use.
 
-![FlyingStars black logo with FS in pink and blue](/media/wordpress/350a8cc09aa9f85f1626c8c5e166eaac33cc2e79a4cd8041453ac8536b470ff0.jpg)
-
 ## Drone Shows by FlyingStars
 
 In addition to private and commercial drone use, spectacular drone shows are becoming increasingly popular. FlyingStars is a leading provider in this field, creating light shows with synchronized drones. These shows are used for events, corporate celebrations, weddings, and large festivals, offering a sustainable alternative to traditional fireworks.
 
 The [cost of a drone show](/en/drohnenshow-preise/) varies depending on the scale, number of drones, and specific requirements of the event.
-
-[Inquiry](/en/kontakt/)

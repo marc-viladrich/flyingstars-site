@@ -5,7 +5,7 @@ title: "Drone Anatomy: How Does a Drone Work?"
 description: "Drones fly using rotors, sensors, and GPS – simply explained by FlyingStars, experts in creative drone light shows."
 date: "2025-03-31"
 updated: "2025-04-24"
-cover: {"src": "/assets/3b8275181094e508c248d408da6d4a7a14b6b84eae2cd42c91c5063a0f039536.webp", "alt": "A light-coloured camera drone hovers above sand in the evening light", "width": 960, "height": 480}
+cover: {"src": "/media/wordpress/d8c50aed7f670ea705c3addb1e97ca47a81ab8e5d0ddbba257fdff7e987f0f0e.jpg", "alt": "A drone flying in the desert", "width": 1368, "height": 912}
 draft: false
 ---
 
@@ -95,4 +95,4 @@ The answer lies in the interplay of **lift, sensors, computing, and control**. T
 
 At FlyingStars, we specialize in **high-quality drone light shows**, combining innovative tech with creative concepts to deliver spectacular visual experiences – for sports events, city festivals, corporate events, and private parties.
 
-👉 Discover our pricing and book your drone show today.
+[View pricing](/en/drohnenshow-preise/)

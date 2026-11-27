@@ -5,7 +5,7 @@ title: "Drohnen Aufbau: Wie funktioniert eine Drohne?"
 description: "Wie funktioniert eine Drohne? Erfahre alles über den Drohnen-Aufbau. Für Einsteiger und Profis. Jetzt mehr erfahren!"
 date: "2025-03-31"
 updated: "2026-09-22"
-cover: {"src": "/assets/eafcc3076282b4392baa5721dba18fb51f564df26bb2c994b30cb4005c99ad6b.webp", "alt": "Überkopfaufnahme, mehrere Hände halten eine helle Kameradrohne", "width": 960, "height": 480}
+cover: {"src": "/media/wordpress/f34c529e214e81009302208e2c19a0139793d84e0c0086d149931fffc583668e.jpg", "alt": "Zwei Personen halten eine Drohne in den Händen", "width": 1100, "height": 733}
 draft: false
 ---
 
@@ -94,12 +94,8 @@ Die Antwort ist ein Zusammenspiel aus Auftrieb, Sensorik, Rechentechnik und Steu
 
 Als Experten für **hochwertige Drohnen-Lichtshows** bringen wir innovative Technologie und kreative Konzepte zusammen, um spektakuläre visuelle Erlebnisse zu schaffen. Ob für Sport-Events, große Stadtfeste, Company Evens oder auch private Feiern.
 
-![FlyingStars Logo schwarz-lila-türkis](/media/wordpress/350a8cc09aa9f85f1626c8c5e166eaac33cc2e79a4cd8041453ac8536b470ff0.jpg)
-
 ## Drohnenshows von Flyingstars
 
 Neben dem privaten und gewerblichen Einsatz von Drohnen erfreuen sich spektakuläre Drohnenshows immer größerer Beliebtheit. FlyingStars ist führender Anbieter in diesem Bereich und kreiert Lichtshows mit synchronisierten Drohnen. Diese Shows werden für Events, Firmenfeiern, Hochzeiten und große Festivals eingesetzt und bieten eine nachhaltige Alternative zu klassischen Feuerwerken.
 
 Die [Kosten für eine Drohnenshow](/drohnenshow-preise/) variieren je nach Umfang, Anzahl der Drohnen und individuellen Anforderungen.
-
-[Anfragen](/kontakt/)

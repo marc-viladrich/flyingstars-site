@@ -85,12 +85,8 @@ Ein besonders beeindruckender Bereich: Drohnen-Lichtshows. Sobald dutzende oder 
 
 Gerade bei Nacht wirken diese Shows besonders stark: Der dunkle Himmel bietet die perfekte Leinwand für leuchtende Bewegungsmuster und Farben.
 
-![FlyingStars Logo schwarz-lila-türkis](/media/wordpress/350a8cc09aa9f85f1626c8c5e166eaac33cc2e79a4cd8041453ac8536b470ff0.jpg)
-
 ## Drohnenshows von Flyingstars
 
 Neben dem privaten und gewerblichen Einsatz von Drohnen erfreuen sich spektakuläre Drohnenshows immer größerer Beliebtheit. FlyingStars ist führender Anbieter in diesem Bereich und kreiert Lichtshows mit synchronisierten Drohnen. Diese Shows werden für Events, Firmenfeiern, Hochzeiten und große Festivals eingesetzt und bieten eine nachhaltige Alternative zu klassischen Feuerwerken.
 
 Die [Kosten für eine Drohnenshow](/drohnenshow-preise/) variieren je nach Umfang, Anzahl der Drohnen und individuellen Anforderungen.
-
-[Anfragen](/kontakt/)

@@ -5,7 +5,7 @@ title: "Wo darf man Drohnen fliegen?"
 description: "Wo darf man mit Drohnen fliegen? Erfahre, welche Regeln gelten – inkl. Tipps zu Drohnenführerschein, Flugzonen & Gebäuden. Jetzt informieren!"
 date: "2025-05-08"
 updated: "2026-09-18"
-cover: {"src": "/assets/33214b4c69eaffd7328e3dec8d49daaad184d4f8006288c139032509284704ea.webp", "alt": "Eine Frau hält ihre Hand unter eine vor ihr schwebende Drohne", "width": 960, "height": 480}
+cover: {"src": "/media/wordpress/425b6e9ad170f85ad0da2c40803e3df88f504494ce7a520bbb2d6350d7158a6f.jpg", "alt": "Frau streckt Hand raus, um Drohne aufzufangen", "width": 1100, "height": 733}
 draft: false
 ---
 
@@ -100,8 +100,4 @@ Beachtet jedoch: Auch wenn kein Führerschein notwendig ist, gelten weiterhin **
 
 Als Expert\*innen für **hochwertige Drohnen-Lichtshows** bringen wir innovative Technologie und kreative Konzepte zusammen, um spektakuläre visuelle Erlebnisse zu schaffen. Ob für Sport-Events, große Stadtfeste, Company Evens oder auch private Feiern.
 
-Jetzt [Preise](/drohnenshow-preise/) entdecken und Drohnenshow buchen.
-
-![FlyingStars Logo schwarz-lila-türkis](/media/wordpress/350a8cc09aa9f85f1626c8c5e166eaac33cc2e79a4cd8041453ac8536b470ff0.jpg)
-
-[Anfragen](/kontakt/)
+[Preise ansehen](/drohnenshow-preise/)

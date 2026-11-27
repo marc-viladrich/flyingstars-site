@@ -5,7 +5,7 @@ title: "Was kostet eine Drohne?"
 description: "Was kostet eine Drohne? Erfahre alles über die Anschaffungskosten und laufende Kosten für Versicherung, Wartung für Einsteiger und Profis."
 date: "2025-02-28"
 updated: "2026-09-22"
-cover: {"src": "/assets/8b97c9b2d3feef8814ca2fc60004d32f5042f5d87b9cf3f82d666164c7a57b04.webp", "alt": "Große Drohne im Vordergrund, eine Person mit Videobrille und Fernsteuerung dahinter", "width": 960, "height": 480}
+cover: {"src": "/media/wordpress/d7c41f59b1a09d7b661c248579fe1f5045f7b52735d1668de10efeb9b3bb6f6c.jpg", "alt": "Drohne wird von einem Mann mit VR Brille geflogen", "width": 1200, "height": 585}
 draft: false
 ---
 
@@ -61,12 +61,8 @@ Neben der reinen Anschaffung gibt es diverse laufende Kosten, die beim Betrieb e
 - **Zubehör und Ersatzteile:** Ersatzakkus, zusätzliche Propeller, ND-Filter und schützende Transporttaschen sind häufig notwendige Investitionen, um den sicheren und effizienten Betrieb der Drohne zu gewährleisten. Um ein realistisches Flugerlebnis aus der Ich-Perspektive zu bieten, können zusätzliche Kosten für FPV-Drohnen und deren Zubehör anfallen.
 - **Wartung und Reparaturen:** Auch wenn Drohnen robust konstruiert sind, können durch Unfälle oder Verschleiß Reparaturen erforderlich werden. Diese Kosten sollten als Puffer eingeplant werden, vor allem bei intensiver Nutzung.
 
-![FlyingStars Logo schwarz-lila-türkis](/media/wordpress/350a8cc09aa9f85f1626c8c5e166eaac33cc2e79a4cd8041453ac8536b470ff0.jpg)
-
 ## Drohnenshows von Flyingstars
 
 Neben dem privaten und gewerblichen Einsatz von Drohnen erfreuen sich spektakuläre Drohnenshows immer größerer Beliebtheit. FlyingStars ist führender Anbieter in diesem Bereich und kreiert Lichtshows mit synchronisierten Drohnen. Diese Shows werden für Events, Firmenfeiern, Hochzeiten und große Festivals eingesetzt und bieten eine nachhaltige Alternative zu klassischen Feuerwerken.
 
 Die [Kosten für eine Drohnenshow](/drohnenshow-preise/) variieren je nach Umfang, Anzahl der Drohnen und individuellen Anforderungen.
-
-[Anfragen](/kontakt/)

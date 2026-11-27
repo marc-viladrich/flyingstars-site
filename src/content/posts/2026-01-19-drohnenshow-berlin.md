@@ -5,7 +5,7 @@ title: "Drohnenshow Berlin: Spektakuläre Lichtshows über der Hauptstadt"
 description: "Drohne Spanien: Alle wichtigen Regeln zu Registrierung, Flugzonen, Bußgeldern und Mallorca-Besonderheiten übersichtlich erklärt."
 date: "2026-01-19"
 updated: "2026-09-18"
-cover: {"src": "/assets/68daa8c2e059588c4cb90ba928b4a8e0dc7a8f84e1ca18c72253d70e06f8c6ab.webp", "alt": "Illustration mit dem Schriftzug Drohnenshow Berlin, Stadtsilhouette und einer Drohne", "width": 960, "height": 480}
+cover: {"src": "/media/wordpress/42dc93f429cac3c76427a9ba8122025c587ecf2f8c8956ae75e2a4dd6efc5124.png", "alt": "Drohnenshow Berlin", "width": 768, "height": 512}
 draft: false
 ---
 
@@ -60,7 +60,3 @@ Ein besonders eventorientiertes Format ist die **DroneArt Show**, die 2025 ihre 
 Ob Weltrekord, Protestaktion, Wissenschafts-Event oder Stadion-Show: Die Beispiele zeigen, wie vielseitig eine **Drohnenshow in Berlin** sein kann. Und das dürfte erst der Anfang sein. Mit weiteren öffentlichen Formaten, neuen Locations und besseren Technologien wird Berlin in den kommenden Jahren sehr wahrscheinlich noch häufiger zum Schauplatz spektakulärer Drohnen-Lichtinszenierungen.
 
 Wenn ihr eine **Drohnenshow Berlin** plant (Event, Festival, Stadtteilfest oder Corporate), lohnt sich eine frühzeitige Abstimmung zu Genehmigungen, Sicherheitskonzept und Location – denn gerade in Berlin ist der Himmel gut reguliert, aber auch voller Möglichkeiten.
-
-![FlyingStars Logo schwarz-lila-türkis](/media/wordpress/350a8cc09aa9f85f1626c8c5e166eaac33cc2e79a4cd8041453ac8536b470ff0.jpg)
-
-[Anfragen](/kontakt/)

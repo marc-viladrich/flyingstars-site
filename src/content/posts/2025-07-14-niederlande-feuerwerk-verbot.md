@@ -5,7 +5,7 @@ title: "Niederlande Feuerwerk Verbot: Auswirkungen auf Silvester 2026"
 description: "Ab 2026 gilt in den Niederlanden ein Feuerwerksverbot. Warum Drohnenshows die nachhaltige Alternative sein könnten, erfährst du hier."
 date: "2025-07-14"
 updated: "2025-08-05"
-cover: {"src": "/assets/40290492203d59bae00aea14600755663db1d159b79f1d7fe98535a41473384f.webp", "alt": "Blaue Lichtspirale und beleuchteter Turm über einem Veranstaltungsort bei Nacht", "width": 960, "height": 480}
+cover: {"src": "/media/wordpress/4fdadf8d904679918754b531133c62cc58fd63da244b579198843865dd42d347.jpg", "alt": "Eine Drohnenshow an Silvester", "width": 1560, "height": 822}
 draft: false
 ---
 
@@ -70,7 +70,7 @@ Schon jetzt setzen erste Gemeinden auf lichtbasierte Events statt Knallerei. Fly
 
 Wir als Flyingstars gehören zu den führenden Anbietern in Europa, wenn es um choreografierte Drohnenshows geht. Ob zu Silvester, Stadtfesten, Konzerten oder Firmenjubiläen – wir versuchen Technologie, Kunst und Emotionen auf faszinierende Weise zu verbinden.
 
-Jetzt [Preise](/drohnenshow-preise/)entdecken und Drohnenshow buchen.
+[Preise ansehen](/drohnenshow-preise/)
 
 ### Warum Flyingstars?
 
@@ -83,7 +83,3 @@ Jetzt [Preise](/drohnenshow-preise/)entdecken und Drohnenshow buchen.
 Ob 200, 500 oder sogar über 1.000 Drohnen – Flyingstars nutzt modernste Flugdrohnen mit LED-Technik, GPS-Steuerung und musikalischer Untermalung.
 
 Ein Silvesterabend mit einer **Flyingstars-Show** ersetzt nicht nur das Feuerwerk, sondern hebt das Erlebnis auf ein völlig neues Niveau.
-
-![FlyingStars Logo schwarz-lila-türkis](/media/wordpress/350a8cc09aa9f85f1626c8c5e166eaac33cc2e79a4cd8041453ac8536b470ff0.jpg)
-
-[Anfragen](/kontakt/)

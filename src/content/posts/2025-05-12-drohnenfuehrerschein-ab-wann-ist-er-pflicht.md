@@ -5,7 +5,7 @@ title: "Drohnenführerschein – Ab wann ist er Pflicht?"
 description: "Erfahre, ab wann ein Drohnenführerschein in Deutschland Pflicht ist, welche Drohnen betroffen sind und welche Ausnahmen gelten."
 date: "2025-05-12"
 updated: "2026-09-18"
-cover: {"src": "/assets/427bc11d9f5ba8c26da66652fa593751d3298e84a9e02cde7a79cfca1ed55a1d.webp", "alt": "Eine Person mit Fernsteuerung und eine Drohne vor einer Berglandschaft", "width": 960, "height": 480}
+cover: {"src": "/media/wordpress/997b7ee0ae9b78b3736e9dfa4e6e58dcde12df0f447a55b68c5415761c672167.jpg", "alt": "Ein Mann steuert eine Drohne vor einer Berglandschaft", "width": 1000, "height": 667}
 draft: false
 ---
 
@@ -112,7 +112,7 @@ Die einfache Antwort: **Ab 250 g braucht ihr den kleinen EU-Drohnenführerschei
 
 Mit dem Führerschein fliegt ihr sicherer, vermeidet Bußgelder und ihr könnt euch auf das konzentrieren, was wirklich zählt: eindrucksvolle Perspektiven und verantwortungsbewusstes Fliegen.
 
-**Mehr erfahren?** In unseren weiteren Beiträgen lest ihr, wie **Drohnen im Dunkeln** fliegen, was eine **Showdrohne kostet** oder warum **Drohnenshows das Feuerwerk der Zukunft** sind.
+In unseren weiteren Beiträgen lest ihr, wie [Drohnen im Dunkeln fliegen](/blog/2025-03-31-drohnen-fliegen-nachts-dunkel/), was eine [Showdrohne kostet](/blog/2025-02-28-drohne-kosten/) und wie sich [Drohnenshows als Alternative zu Feuerwerk](/blog/2025-03-31-drohnen-feuerwerk-als-alternative/) einsetzen lassen.
 
 ## Drohnenshows von Flyingstars
 
@@ -120,8 +120,4 @@ Als Expert:innen für **hochwertige Drohnen-Lichtshows** bringen wir innovative 
 
 Unsere Shows werden in der **speziellen Kategorie** gemäß EU-Drohnenverordnung geflogen. Wir verfügen über eine entsprechende **Genehmigung des Luftfahrt-Bundesamts (LBA)**. Zudem besitzen alle unsere Pilot:innen das **EU-Fernpilotenzeugnis A2** („großer Drohnenführerschein“) – damit stehen Sicherheit und Qualität bei uns an erster Stelle.
 
-Jetzt [Preise](/drohnenshow-preise/) entdecken und Drohnenshow buchen.
-
-![FlyingStars Logo schwarz-lila-türkis](/media/wordpress/350a8cc09aa9f85f1626c8c5e166eaac33cc2e79a4cd8041453ac8536b470ff0.jpg)
-
-[Anfragen](/kontakt/)
+[Preise ansehen](/drohnenshow-preise/)

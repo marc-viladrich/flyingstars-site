@@ -6,7 +6,7 @@ import { checkPlan, splitSections, withoutStaticLogo, type CornerstoneArticle, t
 import type { Story } from './story-scene';
 import { optimizedImage } from '../../lib/media';
 import { bundledImageName } from '../../lib/bundled-media.mjs';
-import { formationPosition, renderPostLinks } from './post-links.mjs';
+import { brandedShowSection, renderPostLinks } from './post-links.mjs';
 
 interface Props { postId: string; article?: CornerstoneArticle; preserveImages?: boolean }
 const { postId, article, preserveImages } = Astro.props;
@@ -26,7 +26,7 @@ const rendered = original.replace(/<img\b[^>]*>/g, tag => byTag.get(tag) ?? tag)
 const html = renderPostLinks(preserveImages ? rendered : withoutStaticLogo(rendered), id =>
   existsSync(`public/media/blog/youtube/${id}.webp`)
 );
-const formationAt = preserveImages ? formationPosition(html) : undefined;
+const show = preserveImages ? brandedShowSection(html) : undefined;
 const sections = article ? splitSections(html, article.layout !== 'basic' && article.dropBodyImages) : [];
 const stories = new Map<CornerstoneBlock, Story>();
 if (article && article.layout !== 'basic') {
@@ -38,18 +38,22 @@ if (problem) console.warn(`[cornerstone] ${postId}: ${problem} – normales Blog
 {article && !problem
   ? <Cornerstone article={article} sections={sections} stories={stories} />
   : <div class="post-body">
-      {formationAt === undefined ? <Fragment set:html={html} /> : <>
-        <Fragment set:html={html.slice(0, formationAt)} />
-        <div class="post-formation"><FormationFinale visualOnly /></div>
-        <Fragment set:html={html.slice(formationAt)} />
-      </>}
+      {show ? <>
+        <Fragment set:html={html.slice(0, show.start)} />
+        <section class="post-show-section" aria-labelledby={show.id}>
+          <Fragment set:html={html.slice(show.start, show.content)} />
+          <div class="post-formation"><FormationFinale visualOnly /></div>
+          <Fragment set:html={html.slice(show.content, show.end)} />
+        </section>
+        <Fragment set:html={html.slice(show.end)} />
+      </> : <Fragment set:html={html} />}
     </div>}
 {!preserveImages && (!article || problem || article.layout === 'basic') && <FormationFinale visualOnly />}
 
 <style is:global>
-  .post-body .post-formation { margin-block: clamp(var(--space-10), 6vw, var(--space-14)) var(--space-5); }
-  .post-body .post-formation .ff { margin-block: 0; }
-  .post-body .post-formation + h2 { margin-top: 0; }
+  .post-body .post-show-section { margin-top: clamp(var(--space-9), 6vw, var(--space-14)); }
+  .post-show-section .post-formation { margin-top: var(--space-2); }
+  .post-formation .ff, .post-formation .ff-sky { margin-block: 0; }
   .post-media-link {
     display: grid;
     position: relative;

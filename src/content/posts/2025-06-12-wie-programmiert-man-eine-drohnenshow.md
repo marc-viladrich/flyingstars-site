@@ -5,7 +5,7 @@ title: "Wie programmiert man eine Drohnenshow?"
 description: "Wie programmiert man eine Drohnenshow? - Alles zu Abläufen und den Kosten, wenn man eine programmieren lassen möchte."
 date: "2025-06-12"
 updated: "2026-09-18"
-cover: {"src": "/assets/170995b8dc1c5692f6a115f1f186fef074979d4e78daff49e742232d1e99f7cd.webp", "alt": "Ein Mann hält einen Quadrocopter im Büro, gegenüber steht eine Frau", "width": 960, "height": 480}
+cover: {"src": "/media/wordpress/94d1ca9baa8870a62ae2942a7e503612e2943e9e6d295815c0a1efb9b785c6be.jpg", "alt": "Ein Mann hält eine Drohne neben einem geöffneten Laptop", "width": 1680, "height": 1120}
 draft: false
 ---
 
@@ -67,8 +67,4 @@ Vor dem Event erfolgen letzte Sicherheitschecks: **GPS-Signalstärke, Wetter, Fl
 
 Als Expert:innen für **hochwertige Drohnen-Lichtshows** bringen wir innovative Technologie und kreative Konzepte zusammen, um spektakuläre visuelle Erlebnisse zu schaffen. Ob für Sport-Events, große Stadtfeste, Company Events oder auch private Feiern.
 
-Jetzt [Preise](/drohnenshow-preise/) entdecken und Drohnenshow buchen.
-
-![FlyingStars Logo schwarz-lila-türkis](/media/wordpress/350a8cc09aa9f85f1626c8c5e166eaac33cc2e79a4cd8041453ac8536b470ff0.jpg)
-
-[Anfragen](/kontakt/)
+[Preise ansehen](/drohnenshow-preise/)

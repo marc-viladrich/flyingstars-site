@@ -84,4 +84,4 @@ Night enhances the effect: the dark sky becomes the perfect canvas for glowing p
 
 We specialize in **professional drone light shows**, blending cutting-edge technology with creative concepts to deliver spectacular visual experiences. From sports events to city festivals, corporate events, or even private parties – we’ve got you covered.
 
-👉 Discover our pricing and book your drone show now!
+[View pricing](/en/drohnenshow-preise/)

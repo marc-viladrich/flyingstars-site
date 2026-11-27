@@ -5,7 +5,7 @@ title: "Drohnenshow China: Weltrekorde, Technik & magische Lichtshows"
 description: "Die spektakulärsten Drohnenshows in China im Überblick – mit Weltrekorden, die Technik dahinter und Videos."
 date: "2026-06-30"
 updated: "2026-09-22"
-cover: {"src": "/assets/be0b18ccb5645a7ea5c419394ec739c2c38989d9ba997d5858666c045ad9e6bf.webp", "alt": "Eine Drohne vor hellem Himmel über Wohnhochhäusern", "width": 960, "height": 480}
+cover: {"src": "/media/wordpress/b82c64d94f9e301a17539c481b3104038ef69cecea360fc860dc402dfb7e9c90.jpg", "alt": "Grafik von Drohnenshows China", "width": 1500, "height": 645}
 draft: false
 ---
 
@@ -113,8 +113,4 @@ Ja. Professionelle Anbieter wie FlyingStars bieten vergleichbare Technologien un
 
 Als Expert:innen für **hochwertige Drohnen-Lichtshows** bringen wir innovative Technologie und kreative Konzepte zusammen, um spektakuläre visuelle Erlebnisse zu schaffen. Ob für Sport-Events, große Stadtfeste, Company Events oder auch private Feiern. Lasst euch inspirieren und plant euer eigenes Licht-Spektakel. Moderne Technologie, kreative Choreografie und nachhaltige Umsetzung – das ist die Zukunft am Himmel.
 
-Jetzt [Preise](/drohnenshow-preise/) entdecken und Drohnenshow buchen.
-
-![FlyingStars Logo schwarz-lila-türkis](/media/wordpress/350a8cc09aa9f85f1626c8c5e166eaac33cc2e79a4cd8041453ac8536b470ff0.jpg)
-
-[Anfragen](/kontakt/)
+[Preise ansehen](/drohnenshow-preise/)

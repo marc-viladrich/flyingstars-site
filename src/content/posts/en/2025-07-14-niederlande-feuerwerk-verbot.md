@@ -5,7 +5,7 @@ title: "Netherlands Fireworks Ban: Impact on New Year’s Celebrations 2026"
 description: "From 2026, private fireworks will be banned in the Netherlands. Find out why Flyingstars drone shows could be the sustainable alternative."
 date: "2026-07-06"
 updated: "2026-07-07"
-cover: {"src": "/assets/82a04e96c27ab4032052a783384ef92a1dcb4c7cc63dc4fea54ca31ed5af542a.webp", "alt": "A spiral of lights and an illuminated tower above a crowd at night", "width": 960, "height": 480}
+cover: {"src": "/media/wordpress/51e2b6830b62aaed760cf6d53b725102dea2cb65a0ec1643cf5e8e28978ca1a5.jpg", "alt": "A drone show at new years eve", "width": 1560, "height": 1040}
 draft: false
 ---
 
@@ -118,8 +118,4 @@ Perhaps it’s also time for Germany to reconsider – moving away from noise an
 
 **As experts in premium drone light shows, we combine innovative technology with creative concepts to create spectacular visual experiences** – whether for sporting events, major city festivals, corporate events, or even private celebrations.
 
-**Discover our [pricing](/en/drohnenshow-preise/) and book your drone show now.**
-
-![FlyingStars Logo schwarz-lila-türkis](/media/wordpress/350a8cc09aa9f85f1626c8c5e166eaac33cc2e79a4cd8041453ac8536b470ff0.jpg)
-
-[Inquiries](/en/kontakt/)
+[View pricing](/en/drohnenshow-preise/)

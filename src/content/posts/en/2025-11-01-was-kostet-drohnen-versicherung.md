@@ -5,7 +5,7 @@ title: "How much does drone insurance cost"
 description: "UK drone insurance costs: Understand cover options, when insurance is mandatory, and CAA-compliant policies."
 date: "2026-07-06"
 updated: "2026-07-07"
-cover: {"src": "/assets/e0605bf96c2b8ca63ef25bd11035573fdf8185af7b311a08b52a8a41c2c351a6.webp", "alt": "Three people inspect a drone on a table in the woods", "width": 960, "height": 480}
+cover: {"src": "/media/wordpress/953171bd091637d0454f986e9fe3daeb0c93280c5c0f178375420c2d124b8557.jpg", "alt": "Drone insurance at a glance", "width": 1000, "height": 667}
 draft: false
 ---
 
@@ -85,7 +85,7 @@ In the UK, hobbyists can secure basic liability from **\~£17–£25 per year**,
 
 At *FlyingStars*, we’re among Europe’s leading providers of choreographed drone shows. Whether for New Year’s Eve, city festivals, concerts, or corporate anniversaries – we aim to combine technology, art, and emotion in a truly captivating way.
 
-**Discover our [pricing](/en/drohnenshow-preise/) and book your drone show now.**
+[View pricing](/en/drohnenshow-preise/)
 
 **Why FlyingStars?**
 
@@ -96,7 +96,3 @@ At *FlyingStars*, we’re among Europe’s leading providers of choreographed d
 - **Sustainable:** Reusable drones, resource-saving and future-proof
 
 Whether it’s 200, 500 or even over 1,000 drones – FlyingStars uses state-of-the-art flying drones with LED technology, GPS navigation, and synchronised music.
-
-![FlyingStars Logo schwarz-lila-türkis](/media/wordpress/350a8cc09aa9f85f1626c8c5e166eaac33cc2e79a4cd8041453ac8536b470ff0.jpg)
-
-[Anfragen](/en/kontakt/)

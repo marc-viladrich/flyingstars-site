@@ -5,7 +5,7 @@ title: "How does a drone show work?"
 description: "How do they do the drone light show? Discover how synchronized drones create stunning light shows—perfect for events & celebrations!"
 date: "2025-02-19"
 updated: "2025-02-20"
-cover: {"src": "/assets/9ba24b13176763b05216cff183a4c2a733706a3e85cd9a7c853b22a97723c6fa.webp", "alt": "Two people hold quadcopters of different sizes", "width": 960, "height": 480}
+cover: {"src": "/media/wordpress/f950eb3d083151b96c9c6781f67f4a754f52ba8b97b4a40b2393ac8128fa1c86.jpg", "alt": "Teacher shows how a drone show works", "width": 1600, "height": 1067}
 draft: false
 ---
 
