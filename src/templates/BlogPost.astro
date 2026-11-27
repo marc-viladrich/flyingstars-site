@@ -17,7 +17,6 @@ import { optimizedImage } from '../lib/media';
 import { authorOf, dateOf, readingMinutes, topicOf, sortPosts } from '../components/blog/post-meta';
 import PostBody from '../components/blog/PostBody.astro';
 import { cornerstoneOf } from '../components/blog/cornerstone';
-import previewCovers from '../components/blog/preview-covers.json';
 interface Props { post: CollectionEntry<'posts'> }
 const { post } = Astro.props;
 const alternateLocales = (await getCollection('posts', (entry) => !entry.data.draft && sourceId(entry.id) === sourceId(post.id))).map((entry) => localeOfId(entry.id));
@@ -34,8 +33,6 @@ const face = await optimizedImage(AUTHOR.image.src, 160);
 const more = sortPosts(await localizedCollection('posts', locale, p => !p.data.draft && p.id !== post.id)).slice(0, 3);
 const updated = post.data.updated && post.data.updated.valueOf() !== post.data.date.valueOf() ? new Intl.DateTimeFormat(formatLocale, { dateStyle: 'long' }).format(post.data.updated) : undefined;
 const editing = editorBuild();
-const previewCover = !editing && locale === 'de' && post.data.legacyPath && Astro.site?.hostname.endsWith('.pages.dev')
-  ? previewCovers[sourceId(post.id) as keyof typeof previewCovers] : undefined;
 const cs = editing ? undefined : cornerstoneOf(post);
 const layout = cs?.layout ?? (cs ? 'cornerstone' : 'basic');
 const coverAlt = cs ? t(`${cs.i18n}.${cs.cover.alt}`) : undefined;
@@ -67,18 +64,7 @@ const jsonLd = JSON.stringify({
       </div>
     </header>
     {cs ? <figure class="post-cover" data-curtain><picture><source srcset={cs.cover.avif} type="image/avif" /><img src={cs.cover.webp} width={cs.cover.width} height={cs.cover.height} alt={coverAlt} loading="eager" decoding="async" fetchpriority="high" /></picture></figure>
-      : cover && <figure class="post-cover" data-curtain><img data-preview-cover={previewCover ? '' : undefined} src={cover.src} {...cover.attributes} width={cover.width} height={cover.height} alt={post.data.cover!.alt} loading="eager" decoding="async" fetchpriority="high" /></figure>}
-    {previewCover && <script define:vars={{ previewCover }}>
-      if (new URLSearchParams(location.search).get('bild') === 'flyingstars') {
-        const image = document.querySelector('[data-preview-cover]');
-        if (image) {
-          image.removeAttribute('srcset');
-          image.removeAttribute('sizes');
-          image.alt = previewCover.alt;
-          image.src = previewCover.src;
-        }
-      }
-    </script>}
+      : cover && <figure class="post-cover" data-curtain><img src={cover.src} {...cover.attributes} width={cover.width} height={cover.height} alt={post.data.cover!.alt} loading="eager" decoding="async" fetchpriority="high" /></figure>}
     {editing ? <div class="post-body" {...body(post)}><Content /></div>
       : <PostBody postId={post.id} article={cs} preserveImages={Boolean(post.data.legacyPath)}>
           {contents.length > 0 && <details class="post-toc">

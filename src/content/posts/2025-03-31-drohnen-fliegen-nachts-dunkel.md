@@ -5,7 +5,7 @@ title: "Drohnen im Dunkeln fliegen – Was du wissen musst"
 description: "Drohnen im Dunkeln fliegen - Alles, was du wissen musst. Rechtliches und Sicherheitstipps für den Flug bei Nacht."
 date: "2025-03-31"
 updated: "2026-09-22"
-cover: {"src": "https://flyingstars.art/wp-content/uploads/2025/03/drohne-im-dunkeln.jpg", "alt": "Drohne fliegt im Dunkeln", "width": 1478, "height": 698}
+cover: {"src": "/assets/be264b2bff2420beab51f34aef42c9d37d3c2d684e4270aa35705a899b300174.webp", "alt": "Grün leuchtende Drohnen in einem Raster auf einer nächtlichen Wiese", "width": 1600, "height": 800}
 draft: false
 ---
 
