@@ -26,7 +26,7 @@ const popId = `lang-${id}`;
   </div>
 </div>
 <script>
-  import { LOCALE_CHOICE_KEY } from '../i18n/routing.mjs';
+  import { LOCALE_CHOICE_KEY, LOCALE_SWITCHED_COOKIE } from '../i18n/routing.mjs';
   // Preserve configurator selections, selected extras and deep section links when switching language.
   document.querySelectorAll<HTMLAnchorElement>('[data-language-link]').forEach((link) => {
     const target = new URL(link.href);
@@ -38,6 +38,10 @@ const popId = `lang-${id}`;
       } catch {
         // Auch bei gesperrtem Sitzungsspeicher bleibt das Linkziel erreichbar.
       }
+      // The hosting layer only needs to know that the tab may have its own preference.
+      try {
+        document.cookie = `${LOCALE_SWITCHED_COOKIE}=1; Path=/; SameSite=Lax; Secure`;
+      } catch { /* The link still navigates to the selected language. */ }
     });
   });
   // Vergleichsvariante nur mit Symbol (Marc: „vielleicht reicht das Icon schon“)
