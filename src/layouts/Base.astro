@@ -14,8 +14,9 @@ const site = getSite(forPath(Astro.url.pathname).locale);
 import Logo from '../components/Logo.astro';
 import Icon from '../components/Icon.astro';
 import { optimizedImage } from '../lib/media';
-import { LOCALES, localeFromPath, sourcePath, localizedHref, type Locale } from '../i18n/routing.mjs';
+import { LOCALES, LOCALE_CHOICE_KEY, localeFromPath, sourcePath, localizedHref, type Locale } from '../i18n/routing.mjs';
 import LanguageSwitch from '../components/LanguageSwitch.astro';
+import homeLanguage from '../scripts/home-language.js?raw';
 import { CONTACT } from '../components/people';
 const SOCIAL = [
   { label: 'Instagram', icon: 'instagram', href: 'https://www.instagram.com/flyingstars.art/' },
@@ -57,6 +58,14 @@ const inNav = (href: string) => site.nav.some((item) => item.href === href);
 <html lang={locale}>
   <head>
     <meta charset="utf-8" />
+    {Astro.url.pathname === '/' && process.env.AFE_MODE !== 'editor' && (
+      <script
+        is:inline
+        data-home-locale-routes={JSON.stringify(Object.fromEntries(LOCALES.map((language) => [language, localizedHref('/', language)])))}
+        data-locale-choice-key={LOCALE_CHOICE_KEY}
+        set:html={homeLanguage}
+      ></script>
+    )}
     {/* UI-Wörterbuch der Seitensprache vor allen Modul-Skripten (defer läuft in Dokumentreihenfolge), siehe src/i18n/ui.mjs */}
     <script is:inline defer data-fs-ui src={`/media/i18n/${locale}.js`}></script>
     {/* Above-the-fold fonts: avoid moving the blog grid when fallback metrics are replaced. */}

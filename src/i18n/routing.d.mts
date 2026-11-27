@@ -1,5 +1,6 @@
 export type Locale = 'de' | 'en' | 'nl';
 export const LOCALES: readonly Locale[];
+export const LOCALE_CHOICE_KEY: string;
 export const LOCALE_NAMES: Record<Locale, string>;
 export function localeFromPath(path: string): Locale;
 export function localeOfId(id: string): Locale;
