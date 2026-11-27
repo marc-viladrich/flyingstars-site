@@ -5,7 +5,7 @@ title: "Drones As An Alternative To Fireworks: An Eco-Friendly Light Spectacle"
 description: "Eco-friendly, silent, and stunning: Drone light shows are the modern alternative to fireworks – with zero noise, waste, or pollution."
 date: "2025-03-31"
 updated: "2025-06-03"
-cover: {"src": "https://flyingstars.art/wp-content/uploads/2025/03/drone_vs_firework.jpg", "alt": "A drone show at night", "width": 1091, "height": 652}
+cover: {"src": "/media/wordpress/f5b5accaba4f87bc8e7d3c329f23f8f6f0bb84a5877cee74272b1a9f09dce954.jpg", "alt": "A drone show at night", "width": 1091, "height": 652}
 draft: false
 ---
 
@@ -36,7 +36,7 @@ Drones open up entirely new creative possibilities: thanks to advanced 3D techno
 - **Corporate events**: Product launches, company anniversaries, parties
 - **National celebrations**: New Year’s Eve, national holidays
 
-![How does a drone show work at dusk?](https://flyingstars.art/wp-content/uploads/2025/01/drone-at-dusk-1.jpg)
+![How does a drone show work at dusk?](/media/wordpress/49d8cfc8d81233c28e4916dfcdf4b3e61ade8c4032c4f513896855606e65ca34.jpg)
 
 ## Safety and Risk Management in Drone Shows
 

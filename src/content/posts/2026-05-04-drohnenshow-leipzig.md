@@ -5,13 +5,13 @@ title: "Drohnenshow in Leipzig: Spektakuläre Lichtshows über der Stadt"
 description: "Drohnen in Leipzig: Alle Shows, Termine und Orte im Überblick. Infos zu Weihnachts-Events, Red Bull Arena und Einsätzen bei der EM 2024."
 date: "2026-05-04"
 updated: "2026-09-17"
-cover: {"src": "https://flyingstars.art/wp-content/uploads/2026/05/Drohnenshow-Leipzeig.png", "alt": "Drohnenshow Leipzig", "width": 768, "height": 512}
+cover: {"src": "/media/wordpress/57e2124ec5d26c4ddc6e262105b70ab49b28a7ab71ec9d0228ade002e1ff8db4.png", "alt": "Drohnenshow Leipzig", "width": 768, "height": 512}
 draft: false
 ---
 
 In den letzten Jahren hat sich Leipzig zu einem Ort entwickelt, an dem Drohnen bei verschiedenen Veranstaltungen eingesetzt werden. Dabei reicht die Nutzung von aufwendig inszenierten Lichtshows bis hin zu technischen Einsätzen im Hintergrund großer Events. Besonders rund um saisonale Highlights und internationale Veranstaltungen wurden Drohnen sichtbar eingesetzt. Im Folgenden bekommt ihr einen detaillierten Überblick über konkrete Events, Orte und Zeitpunkte.
 
-![drohnen fliegen im himmel](https://flyingstars.art/wp-content/uploads/2026/05/drohne-fliegt-im-himmel-1024x604.jpg)
+![drohnen fliegen im himmel](/media/wordpress/0f417c1fd084750b6133f33af9c61ca49e725364e7651e64346d4456d18ce02f.jpg)
 
 ## Weihnachtsshow 2023 am Paunsdorf Center
 
@@ -58,6 +58,6 @@ Von saisonalen Highlights bis hin zu Großveranstaltungen sind individuelle Konz
 **Flying Stars** setzt genau solche Shows um – abgestimmt auf Anlass, Location und Publikum.\
 So entstehen visuelle Erlebnisse, die perfekt in moderne Events integriert werden können.
 
-![FlyingStars Logo schwarz-lila-türkis](https://flyingstars.art/wp-content/uploads/2025/02/was-kostet-eine-drohne-flyingstars-logo-1024x499.jpg)
+![FlyingStars Logo schwarz-lila-türkis](/media/wordpress/350a8cc09aa9f85f1626c8c5e166eaac33cc2e79a4cd8041453ac8536b470ff0.jpg)
 
 [Anfragen](/kontakt/)

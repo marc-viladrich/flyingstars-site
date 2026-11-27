@@ -9,7 +9,7 @@ tags:
   - Feuerwerk
   - Nachhaltigkeit
 cover:
-  src: https://flyingstars.art/wp-content/uploads/2025/03/drohnen-feuerwerk-alternative.jpg
+  src: /media/wordpress/f6c83353613bc39de64d9e5f38f318b5d7740f10540b9851bab444beb12c6dc5.jpg
   alt: Blauwe lichtdrones vormen twee vlinders boven een verlichte stad bij nacht.
   width: 1200
   height: 915
@@ -46,7 +46,7 @@ Vuurwerk hoort al eeuwen bij feesten, van oud en nieuw en bruiloften tot grote e
 
 Deze lichtshows met drones maken beelden aan de [nachthemel](https://flyingstars.art/drohnen-fliegen-nachts-dunkel), zonder de uitstoot en knallen van pyrotechniek. De planning en uitvoering kunnen ook een kostenefficiënte en veilige optie voor organisatoren zijn.
 
-![Een droneshow bij nacht als alternatief voor vuurwerk](https://flyingstars.art/wp-content/uploads/2025/03/drohnen-feuerwerk-alternative-1024x781.jpg)
+![Een droneshow bij nacht als alternatief voor vuurwerk](/media/wordpress/5d61cf182cf245d752210ea383165b5472af32ef790ba864cd1350b97635f6b1.jpg)
 
 ## Wat zijn droneshows?
 
@@ -95,7 +95,7 @@ We zijn gespecialiseerd in **drone-lichtshows** en combineren techniek met creat
 
 Bekijk onze prijzen en vraag een show aan.
 
-![FlyingStars-logo in zwart, paars en turquoise](https://flyingstars.art/wp-content/uploads/2025/02/was-kostet-eine-drohne-flyingstars-logo-1024x499.jpg)
+![FlyingStars-logo in zwart, paars en turquoise](/media/wordpress/350a8cc09aa9f85f1626c8c5e166eaac33cc2e79a4cd8041453ac8536b470ff0.jpg)
 
 ## Droneshows van FlyingStars
 

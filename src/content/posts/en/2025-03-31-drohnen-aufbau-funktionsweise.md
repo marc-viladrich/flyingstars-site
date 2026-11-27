@@ -5,7 +5,7 @@ title: "Drone Anatomy: How Does a Drone Work?"
 description: "Drones fly using rotors, sensors, and GPS – simply explained by FlyingStars, experts in creative drone light shows."
 date: "2025-03-31"
 updated: "2025-04-24"
-cover: {"src": "https://flyingstars.art/wp-content/uploads/2025/03/how_does_a_drone_work.jpg", "alt": "A drone flying in the desert", "width": 1368, "height": 912}
+cover: {"src": "/media/wordpress/d8c50aed7f670ea705c3addb1e97ca47a81ab8e5d0ddbba257fdff7e987f0f0e.jpg", "alt": "A drone flying in the desert", "width": 1368, "height": 912}
 draft: false
 ---
 
@@ -60,7 +60,7 @@ Essential for stability and positioning, drones use a variety of sensors:
 
 Many drones feature cameras for photos, videos, or live streaming. A **gimbal** stabilizes the camera for smooth footage, even in windy or fast-moving situations.
 
-![How does a drone show work at dusk?](https://flyingstars.art/wp-content/uploads/2025/01/drone-at-dusk-1.jpg)
+![How does a drone show work at dusk?](/media/wordpress/49d8cfc8d81233c28e4916dfcdf4b3e61ade8c4032c4f513896855606e65ca34.jpg)
 
 ## How Is a Drone Controlled?
 

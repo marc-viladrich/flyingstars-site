@@ -5,7 +5,7 @@ title: "Drohne in Spanien – Drohnenregeln verstehen und sicher anwenden"
 description: "Drohne Spanien: Alle wichtigen Regeln zu Registrierung, Flugzonen, Bußgeldern und Mallorca-Besonderheiten übersichtlich erklärt."
 date: "2025-12-18"
 updated: "2026-07-07"
-cover: {"src": "https://flyingstars.art/wp-content/uploads/2025/12/Drohne-in-Spanien.jpg", "alt": "Grafik einer Drohne die in SPanien über den Strand fliegt", "width": 1510, "height": 1000}
+cover: {"src": "/media/wordpress/6fb77c48c4916f39a706d88d052790195a146ca38ed6eaab077790229fec9429.jpg", "alt": "Grafik einer Drohne die in SPanien über den Strand fliegt", "width": 1510, "height": 1000}
 draft: false
 ---
 
@@ -13,7 +13,7 @@ Der **Drohnenflug in Spanien** erfreut sich großer Beliebtheit, insbesondere be
 
 Wer eine **Drohne in Spanien** betreibt, unterliegt europaweit harmonisierten Vorschriften, die auch im Urlaub vollständig gelten.
 
-![Grafik einer Drohne die in SPanien über den Strand fliegt](https://flyingstars.art/wp-content/uploads/2025/12/Drohne-in-Spanien-1024x678.jpg)
+![Grafik einer Drohne die in SPanien über den Strand fliegt](/media/wordpress/faa4cad13b2cf18acae11a49c0919d394653091080ee743e6393e36f871509bc.jpg)
 
 ## Drohnen fliegen in Spanien – rechtlicher Überblick
 
@@ -117,6 +117,6 @@ Als Expert:innen für **hochwertige Drohnen-Lichtshows** bringen wir innovative 
 
 Jetzt [Preise](/drohnenshow-preise/) entdecken und Drohnenshow buchen.
 
-![FlyingStars Logo schwarz-lila-türkis](https://flyingstars.art/wp-content/uploads/2025/02/was-kostet-eine-drohne-flyingstars-logo-1024x499.jpg)
+![FlyingStars Logo schwarz-lila-türkis](/media/wordpress/350a8cc09aa9f85f1626c8c5e166eaac33cc2e79a4cd8041453ac8536b470ff0.jpg)
 
 [Anfragen](/kontakt/)

@@ -38,11 +38,11 @@ sections:
       - { name: Bosch, file: /brand/logos/kunde-bosch-weiss.svg, "_key": "k_88919f9d5d0054ca40ca" }
       - { name: Amazon, file: /brand/logos/kunde-amazon-weiss.svg, "_key": "k_89fca65d167a2a6348a8" }
       - name: NFL
-        image: { src: https://flyingstars.art/wp-content/uploads/2023/04/National_Football_League_2008_weiss.png, alt: NFL, width: 300, height: 409 }
+        image: { src: /media/wordpress/e2d5bb1321388ba1a33048a3354eddf5d2389b64b1d4dbc0fe6a22303a0c64a9.png, alt: NFL, width: 300, height: 409 }
         _key: k_4134829d3e210965460d
       - { name: McKinsey, file: /brand/logos/kunde-mckinsey-weiss.svg, "_key": "k_1018ce7a22e92b18f011" }
       - name: PUMA
-        image: { src: https://flyingstars.art/wp-content/uploads/2023/04/Puma_Logo_weiss.png, alt: PUMA, width: 300, height: 161 }
+        image: { src: /media/wordpress/56dd26f219b6fb3b228b088ef32ce786e53e33de8f064404e18a9c5ba9075183.png, alt: PUMA, width: 300, height: 161 }
         _key: k_a26d3bd58a3517710106
       - { name: Prada, file: /brand/logos/kunde-prada-weiss.svg, "_key": "k_3cd14713f52a1f878606" }
       - { name: Volkswagen, file: /brand/logos/kunde-volkswagen-weiss.svg, "_key": "k_29cdfefa34bc5c5a690b" }
@@ -50,7 +50,7 @@ sections:
       - { name: Ford, file: /brand/logos/kunde-ford-weiss.svg, "_key": "k_c45fe385388e4eb43006" }
       - { name: Siemens, file: /brand/logos/kunde-siemens-weiss.svg, "_key": "k_a068be2a16fed074f7dd" }
       - name: Deutsche Umwelthilfe
-        image: { src: https://flyingstars.art/wp-content/uploads/2023/04/Deutsche_Umwelthilfe_weiss.png, alt: Deutsche Umwelthilfe, width: 300, height: 37 }
+        image: { src: /media/wordpress/b786b91b5e0099c8299feb86651da3b2b7dec43babcf8cdb5592a9517655077a.png, alt: Deutsche Umwelthilfe, width: 300, height: 37 }
         _key: k_0e11a0bbd30ec783e5b2
     _key: k_7e591746d03a417c3c9c
 

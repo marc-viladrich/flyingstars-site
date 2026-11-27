@@ -12,6 +12,7 @@ import {environmentNames,NativeStore,git,NativePublisher,createTranslationCore,t
 import {resolveRuntimeOptions,startNativeServers} from './server.mjs';
 import {createFlyingStarsAdapter,compatibility} from './flyingstars-adapter.mjs';
 import {manageAccounts} from './manage-accounts.mjs';
+import {BUILD_PAIR_TIMEOUT,i18nFixture} from './i18n-test-fixture.mjs';
 // Accounts in the private state of a test, created through the FlyingStars launcher like an operator would.
 const addAccount=(state,name,secret)=>manageAccounts(['add','tester','--name',name,'--email','tester@example.invalid'],{runtime:resolveRuntimeOptions({env:{},args:['--site-root',siteRoot,'--state-dir',state]}),password:async()=>secret,print:()=>{}});
 
@@ -101,9 +102,9 @@ test('Injected adapter controls routes and translation fields; custom branches r
 
 async function freePort(){const server=net.createServer();await new Promise((resolve,reject)=>{server.once('error',reject);server.listen(0,'127.0.0.1',resolve);});const port=server.address().port;await new Promise(resolve=>server.close(resolve));return port;}
 
-test('Real CLI from /tmp builds WORKTREE and serves authenticated /editor/ with isolated private state', {timeout:120000},async t=>{
+test('Real CLI from /tmp builds WORKTREE and serves authenticated /editor/ with isolated private state', {timeout:BUILD_PAIR_TIMEOUT+30_000},async t=>{
  const root=await temporary(t),state=path.join(root,'state');
- const {i18nFixture}=await import('./i18n-test-fixture.mjs'),isolated=await i18nFixture(t),siteRoot=isolated.source,draftBranch='content/draft';isolated.store.sync.close();
+ const isolated=await i18nFixture(t),siteRoot=isolated.source,draftBranch='content/draft';isolated.store.sync.close();
  const password='Listener-Test äöü';
  await addAccount(state,'Listener Test',password);
  let port;try{port=await freePort();}catch(error){if(error.code==='EPERM'||error.code==='EACCES'){t.skip('Sandbox verweigert Loopback-Listener mit '+error.code+'; realer Socket-Nachweis ausstehend.');return;}throw error;}let publicPort=await freePort();while(publicPort===port)publicPort=await freePort();
@@ -113,10 +114,22 @@ test('Real CLI from /tmp builds WORKTREE and serves authenticated /editor/ with 
  const child=spawn(process.execPath,[fileURLToPath(new URL('./server.mjs',import.meta.url)),
   '--site-root',siteRoot,'--state-dir',state,'--port',String(port),'--public-port',String(publicPort),
   '--auth','on','--preview','off','--git-remote','off','--draft-branch',draftBranch,'--published-branch',draftBranch,'--offline-media','1'],{cwd:os.tmpdir(),env,stdio:['ignore','pipe','pipe']});
- let output='';child.stdout.on('data',bytes=>output+=bytes);child.stderr.on('data',bytes=>output+=bytes);
+ let output = '';
+ const ready = new Promise(resolve => {
+  child.stdout.on('data', bytes => {
+   output += bytes;
+   if (output.includes('(listening on ')) resolve();
+  });
+ });
+ child.stderr.on('data', bytes => {output += bytes;});
  t.after(async()=>{if(child.exitCode===null&&child.signalCode===null){child.kill('SIGTERM');await once(child,'exit');}});
- const exited=once(child,'exit').then(([code])=>{throw Error('CLI exited '+code+': '+output);});
- await Promise.race([exited,(async()=>{for(let i=0;i<1000;i++){if(output.includes('(listening on '))return;await new Promise(resolve=>setTimeout(resolve,80));}throw Error('Listener timeout: '+output);})()]);
+ const exited=once(child,'exit').then(([code, signal])=>{throw Error('CLI exited '+(code ?? signal)+': '+output);});
+ let readyTimer;
+ const deadline = new Promise((_, reject) => {
+  readyTimer = setTimeout(() => reject(Error('Listener timeout: '+output)), BUILD_PAIR_TIMEOUT);
+ });
+ try {await Promise.race([exited, ready, deadline]);}
+ finally {clearTimeout(readyTimer);}
  const denied=await fetch(origin+'/editor/',{redirect:'manual'});assert.equal(denied.status,302);assert.match(denied.headers.get('location'),/^\/editor\/login/);
  const login=await fetch(origin+'/editor/api/login',{method:'POST',headers:{origin,'content-type':'application/json'},body:JSON.stringify({username:'tester',password})});
  assert.equal(login.status,200);const cookie=login.headers.getSetCookie().find(value=>value.startsWith('fs_editor=')).split(';')[0];
@@ -132,9 +145,9 @@ test('Real CLI from /tmp builds WORKTREE and serves authenticated /editor/ with 
  await assert.rejects(fs.access(bad));
 });
 
-test('Composition from /tmp initializes both builds and authenticated editor handlers without sockets', {timeout:120000},async t=>{
+test('Composition from /tmp initializes both builds and authenticated editor handlers without sockets', {timeout:BUILD_PAIR_TIMEOUT+30_000},async t=>{
  const root=await temporary(t),state=path.join(root,'state');
- const {i18nFixture}=await import('./i18n-test-fixture.mjs'),isolated=await i18nFixture(t),siteRoot=isolated.source,draftBranch='content/draft';isolated.store.sync.close();
+ const isolated=await i18nFixture(t),siteRoot=isolated.source,draftBranch='content/draft';isolated.store.sync.close();
  const password='Handler-Test äöü';
  await addAccount(state,'Handler Test',password);
  const script=`
@@ -155,6 +168,6 @@ test('Composition from /tmp initializes both builds and authenticated editor han
  `;
  const env=Object.fromEntries(['PATH','HOME','TMPDIR','LANG'].filter(k=>process.env[k]).map(k=>[k,process.env[k]]));
  const result=await run(process.execPath,['--input-type=module','--eval',script,'--',
-  '--site-root',siteRoot,'--state-dir',state,'--auth','on','--preview','off','--git-remote','off','--draft-branch',draftBranch,'--published-branch',draftBranch,'--offline-media','1'],{cwd:os.tmpdir(),env,timeout:110000,maxBuffer:1000000});
+  '--site-root',siteRoot,'--state-dir',state,'--auth','on','--preview','off','--git-remote','off','--draft-branch',draftBranch,'--published-branch',draftBranch,'--offline-media','1'],{cwd:os.tmpdir(),env,timeout:BUILD_PAIR_TIMEOUT,maxBuffer:1000000});
  assert.match(result.stdout,/Authenticated \/editor\//);
 });

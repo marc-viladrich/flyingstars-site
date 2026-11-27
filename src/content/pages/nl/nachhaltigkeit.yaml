@@ -1,14 +1,14 @@
 title: "Duurzaamheid: droneshows van FlyingStars (vs. vuurwerk)"
 description: Geen knal. Geen afval. Geen rook. ✓ Droneshows voor sociaal en ecologisch engagement. ☎︎ {{contact.phone.international}}
 noindex: false
-image: https://flyingstars.art/wp-content/uploads/2025/10/Extraschicht_Duisburg.jpg
+image: /media/wordpress/b434bb6c604ab3d7eabf6d4819ee32c0b19e737e4f04ee8d0c1e8bb234a51cb6.jpg
 sections:
   - type: hero
     kicker: Duurzaamheid
     headline: Geen knal. *Geen afval.* Geen rook.
     text: Onze droneshows laten zien dat groot spektakel ook stil, lokaal emissievrij en opgeruimd kan. En zo heten ze alle gasten van harte welkom – ook honden, kinderen en de natuur ter plaatse.
     image:
-      src: https://flyingstars.art/wp-content/uploads/2025/10/Extraschicht_Duisburg.jpg
+      src: /media/wordpress/b434bb6c604ab3d7eabf6d4819ee32c0b19e737e4f04ee8d0c1e8bb234a51cb6.jpg
       alt: Wereldbol van drones boven de Rijn tijdens de Extraschicht in Duisburg, publiek aan de oever
       width: 2544
       height: 1493
@@ -41,7 +41,7 @@ sections:
         unit: "%"
         text: We laden onze drones steeds opnieuw op met 100% groene stroom van naturstrom.
         logo:
-          src: https://flyingstars.art/wp-content/uploads/2024/10/NATURSTROM-Logo_weiss.png
+          src: /media/wordpress/ed5736b75eb7157acf82c5d401ef1dc7e1436e7a86c6ef49680a2db24acc814b.png
           alt: naturstrom
           width: 301
           height: 71
@@ -152,7 +152,7 @@ sections:
     headline: We vliegen met *engagement*
     text: Als partner van ngo's mogen we regelmatig tekens voor democratie en milieubescherming aan de hemel zetten.
     image:
-      src: https://flyingstars.art/wp-content/uploads/2024/07/D_Umwelthilfe_cover_img.png
+      src: /media/wordpress/6f3a50ece7898dadf23ca168f542a760617c3dc687806252d8f08bc763ce8cf3.png
       alt: "Kleurrijke vuurwerkbloem van drones boven Berlijn tijdens de campagne #Böllerciao van de Deutsche Umwelthilfe, toeschouwers filmen met hun telefoon"
       width: 1920
       height: 987
@@ -194,13 +194,13 @@ sections:
     tags:
       - nachhaltigkeit-moritz
     _key: k_f58d716d01838151fc17
-translationSourceHash: 70fe43ee547f6f7653f5008b917a3d313a9194f4d8ae92626dc23c776be9321d
+translationSourceHash: 3b7cd3f671e0baf2cc94c5cb73f2f8ed0d73d4941603211c43e58f98808cf141
 translationContractVersion: 2
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: nl
-  sourceFingerprint: 70fe43ee547f6f7653f5008b917a3d313a9194f4d8ae92626dc23c776be9321d
+  sourceFingerprint: 3b7cd3f671e0baf2cc94c5cb73f2f8ed0d73d4941603211c43e58f98808cf141
   fields:
     - address: /description
       sourceFingerprint: cf4c0afdd114a9e000ee105745e2d9b110c7f1765fd33ded04e809dc372678bc
@@ -259,7 +259,7 @@ translationEvidence:
       targetFingerprint: 7439a1caaf518089eba232cf35af534ca9806ecca9d09c26f0e6548f91f0a3ab
       status: adopted-existing
     - address: /sections/@k_7b3ad6aa4b4e3680cb02/image/alt
-      sourceFingerprint: 0aca58953f2cc8886483814dc583484edb2433b76a308698816a19a314185179
+      sourceFingerprint: 948eba89a021f107a1de191e26944c34964699e4fb71eb4486f7484eb839a1f6
       targetFingerprint: 774deaa5733acea978233b70f33878ae03045ed59c1984af204bb422fc2dea62
       status: adopted-existing
     - address: /sections/@k_7b3ad6aa4b4e3680cb02/kicker
@@ -487,7 +487,7 @@ translationEvidence:
       targetFingerprint: 53ad565bb789feaf1977bf7b638fc0c85d7196eb36b30c254a8ad18ba3006153
       status: adopted-existing
     - address: /sections/@k_b58e8e802d7c6c5c47eb/facts/@k_3c9e5a71f0b24d68e1a7/logo/alt
-      sourceFingerprint: b2d0efeb9afb360276ede616d9344003848aa3e34332dafe796a967f7146227d
+      sourceFingerprint: 0a31bdff85d630c6d7eaee82e470c5f7f1bb8a9fc9e487c50faec9fe13b9fc23
       targetFingerprint: acb72b45cd1286a435183da7abacfeeac266e7139c402b22c07b6953779e34ee
       status: adopted-existing
     - address: /sections/@k_b58e8e802d7c6c5c47eb/facts/@k_3c9e5a71f0b24d68e1a7/text
@@ -603,7 +603,7 @@ translationEvidence:
       targetFingerprint: d365bfc41cd3009466efe6578a74fe6608b59c39c53b6430c8b1fbdc961d2ae2
       status: adopted-existing
     - address: /sections/@k_ef572ac0e4ba13d454af/image/alt
-      sourceFingerprint: 23b5f86bcfbee98b26689852b86c0f953b1a4d846a30110e673e93c289aca15d
+      sourceFingerprint: 28d736da532593979b17591a2578d72b85b057b0ebcee37c462245be0dd2c203
       targetFingerprint: 8b327e2928f314c8d0c952c8599855e56a03d2bdb3d8094291fa3ef4846b59c6
       status: adopted-existing
     - address: /sections/@k_ef572ac0e4ba13d454af/kicker

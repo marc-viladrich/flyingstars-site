@@ -5,7 +5,7 @@ title: "How do you program a drone show?"
 description: "How to program a drone show: Step-by-Step Guide and Cost Overview"
 date: "2025-05-26"
 updated: "2025-10-23"
-cover: {"src": "https://flyingstars.art/wp-content/uploads/2025/05/drone-programming.jpg", "alt": "A man holds a drone beside an open laptop", "width": 1680, "height": 1120}
+cover: {"src": "/media/wordpress/94d1ca9baa8870a62ae2942a7e503612e2943e9e6d295815c0a1efb9b785c6be.jpg", "alt": "A man holds a drone beside an open laptop", "width": 1680, "height": 1120}
 draft: false
 ---
 
@@ -13,7 +13,7 @@ Whether at city festivals, corporate anniversaries, or music events – drone sh
 
 In this article, we’ll walk you through how a drone show is programmed – from the initial idea to a perfectly synchronized formation. You’ll also gain insight into the technology, software, and challenges of this innovative form of entertainment.
 
-![](https://flyingstars.art/wp-content/uploads/2025/05/drone-programming-1024x683.jpg)
+![](/media/wordpress/0bb0965834ac5f92c9e687dda34482ca07df2ea842dc1a084b152efece898e92.jpg)
 
 ## What is Drone Programming?
 
@@ -68,7 +68,7 @@ Pre-show safety checks include GPS signal quality, weather conditions, and airsp
 - **Safety Protocols**: A robust fail-safe strategy is essential – e.g., emergency landings in case of technical issues.
 - **Airspace Authorization**: Authorities like aviation bodies must grant flight clearance – especially for night operations.
 - **Synchronization**: Perfect timing is key – particularly when music, lighting, and movement need to align.
-[![Digitale Dipul Karte](https://flyingstars.art/wp-content/uploads/2025/05/digitale-karte-drohnen-1024x302.jpg)](https://maptool-dipul.dfs.de/)
+[![Digitale Dipul Karte](/media/wordpress/41faf1d040d40bb3d8155c62cd8114e485a8a354f885090fd08ad36fe4e44ff2.jpg)](https://maptool-dipul.dfs.de/)
 
 maptool-dipul.dfs.de
 
@@ -84,6 +84,6 @@ If you’re passionate about technology, lighting design, or digital storytellin
 
 **Want to Learn More?** Check out our other posts: how drones fly at night, the cost of show drones, and why drone shows are the future of fireworks.
 
-![FlyingStars Logo schwarz-lila-türkis](https://flyingstars.art/wp-content/uploads/2025/02/was-kostet-eine-drohne-flyingstars-logo-1024x499.jpg)
+![FlyingStars Logo schwarz-lila-türkis](/media/wordpress/350a8cc09aa9f85f1626c8c5e166eaac33cc2e79a4cd8041453ac8536b470ff0.jpg)
 
 [Anfragen](/en/kontakt/)

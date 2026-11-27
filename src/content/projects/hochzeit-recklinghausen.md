@@ -22,7 +22,7 @@
     "field": "drones"
   },
   "cover": {
-    "src": "https://flyingstars.art/wp-content/uploads/2024/12/Hochzeit_cover.jpg",
+    "src": "/media/wordpress/fd177b57c14fd153e04de89139a0a67fb612c3fd753465774ca08ab0046bbf34.jpg",
     "alt": "Zwei Blüten aus violetten und blauen Drohnen über Bäumen in Recklinghausen",
     "width": 1518,
     "height": 854
@@ -100,7 +100,7 @@
         "title": "Die Familie plant die Überraschung.",
         "text": "Vier Monate vor der Hochzeit fragte die Familie des Brautpaars an. Für den 29. Juni 2024 entstand eine Show mit {{project.hochzeit-recklinghausen.drones}} Drohnen. Motive und Musik wurden mit der Familie abgestimmt.",
         "image": {
-          "src": "https://flyingstars.art/wp-content/uploads/2024/12/Hochzeit_cover.jpg",
+          "src": "/media/wordpress/fd177b57c14fd153e04de89139a0a67fb612c3fd753465774ca08ab0046bbf34.jpg",
           "alt": "Zwei Blüten aus violetten und blauen Drohnen über Bäumen in Recklinghausen",
           "caption": "Zwei Blüten aus violetten und blauen Drohnen über Bäumen in Recklinghausen"
         },
@@ -110,7 +110,7 @@
         "title": "Die Startfläche bleibt unbemerkt.",
         "text": "Ein Nachbargrundstück bot Platz für Start und Landung. FlyingStars richtete die Fläche ohne Wissen des Brautpaars ein und sicherte sie ab. Auf dem ungeeigneten Untergrund bekam jede Drohne eine mobile Holzplattform.",
         "image": {
-          "src": "https://flyingstars.art/wp-content/uploads/2024/12/Hochzeit_cover.jpg",
+          "src": "/media/wordpress/fd177b57c14fd153e04de89139a0a67fb612c3fd753465774ca08ab0046bbf34.jpg",
           "alt": "Zwei Blüten aus violetten und blauen Drohnen über Bäumen in Recklinghausen",
           "caption": "Zwei Blüten aus violetten und blauen Drohnen über Bäumen in Recklinghausen"
         },
@@ -120,7 +120,7 @@
         "title": "Die Show wartet das Gewitter ab.",
         "text": "Eine Gewitterfront verzögerte den Start. Das Team packte die bereits aufgestellten Drohnen wieder ein und verschob die Show in Absprache mit der Familie. Später konnten Tauben, Ringe, Herzen und persönliche Initialen fliegen.",
         "image": {
-          "src": "https://flyingstars.art/wp-content/uploads/2024/12/Hochzeit_cover.jpg",
+          "src": "/media/wordpress/fd177b57c14fd153e04de89139a0a67fb612c3fd753465774ca08ab0046bbf34.jpg",
           "alt": "Zwei Blüten aus violetten und blauen Drohnen über Bäumen in Recklinghausen",
           "caption": "Zwei Blüten aus violetten und blauen Drohnen über Bäumen in Recklinghausen"
         },

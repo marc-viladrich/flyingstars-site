@@ -5,7 +5,7 @@ title: "How does a drone show work?"
 description: "How do they do the drone light show? Discover how synchronized drones create stunning light shows—perfect for events & celebrations!"
 date: "2025-02-19"
 updated: "2025-02-20"
-cover: {"src": "https://flyingstars.art/wp-content/uploads/2025/01/teacher-showing-how-droneshow-works.jpg", "alt": "Teacher shows how a drone show works", "width": 1600, "height": 1067}
+cover: {"src": "/media/wordpress/f950eb3d083151b96c9c6781f67f4a754f52ba8b97b4a40b2393ac8128fa1c86.jpg", "alt": "Teacher shows how a drone show works", "width": 1600, "height": 1067}
 draft: false
 ---
 
@@ -15,7 +15,7 @@ How does a drone show actually work? Imagine hundreds of drones dancing perfectl
 
 A drone is an unmanned aerial vehicle that is controlled remotely or autonomously through software. Drones have multiple propellers that provide lift and enable movement in different directions. Sensors such as GPS, accelerometers, and gyroscopes allow the drone to precisely determine its position and speed. Light show drones are equipped with LED lights, which are used to create visual light and color effects.
 
-![How does a drone show work at dusk?](https://flyingstars.art/wp-content/uploads/2025/01/drone-at-dusk-1.jpg)
+![How does a drone show work at dusk?](/media/wordpress/49d8cfc8d81233c28e4916dfcdf4b3e61ade8c4032c4f513896855606e65ca34.jpg)
 
 ## Technology and Programming Behind Drone Shows
 

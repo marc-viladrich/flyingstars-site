@@ -5,13 +5,13 @@ title: "Was kostet eine Drohne?"
 description: "Was kostet eine Drohne? Erfahre alles über die Anschaffungskosten und laufende Kosten für Versicherung, Wartung für Einsteiger und Profis."
 date: "2025-02-28"
 updated: "2026-09-22"
-cover: {"src": "https://flyingstars.art/wp-content/uploads/2025/01/was-kostet-eine-drohne.jpg", "alt": "Drohne wird von einem Mann mit VR Brille geflogen", "width": 1200, "height": 585}
+cover: {"src": "/media/wordpress/d7c41f59b1a09d7b661c248579fe1f5045f7b52735d1668de10efeb9b3bb6f6c.jpg", "alt": "Drohne wird von einem Mann mit VR Brille geflogen", "width": 1200, "height": 585}
 draft: false
 ---
 
 Drohnen sind längst mehr als nur Spielzeuge – sie haben sich zu vielseitigen Werkzeugen in der Fotografie, Filmproduktion, Landwirtschaft, Vermessung und vielen anderen Bereichen entwickelt. Doch bevor man in das Abenteuer Drohnenflug startet, lohnt es sich, einen Blick auf die verschiedenen Kostenpunkte zu werfen. Neben den reinen Anschaffungskosten spielen auch laufende Kosten wie Versicherungen, Lizenzen, die UAS-Betreiberregistrierung und ein Drohnenführerschein eine wichtige Rolle.
 
-![Drohne wird von einem Mann mit VR Brille geflogen](https://flyingstars.art/wp-content/uploads/2025/01/was-kostet-eine-drohne-1024x499.jpg)
+![Drohne wird von einem Mann mit VR Brille geflogen](/media/wordpress/e3e83727be63eeada511a099495bc650cbbad8be4ce8ca27956f4687a880adc2.jpg)
 
 ## Anschaffungs-Kosten: Was kostet eine Drohne?
 
@@ -61,7 +61,7 @@ Neben der reinen Anschaffung gibt es diverse laufende Kosten, die beim Betrieb e
 - **Zubehör und Ersatzteile:** Ersatzakkus, zusätzliche Propeller, ND-Filter und schützende Transporttaschen sind häufig notwendige Investitionen, um den sicheren und effizienten Betrieb der Drohne zu gewährleisten. Um ein realistisches Flugerlebnis aus der Ich-Perspektive zu bieten, können zusätzliche Kosten für FPV-Drohnen und deren Zubehör anfallen.
 - **Wartung und Reparaturen:** Auch wenn Drohnen robust konstruiert sind, können durch Unfälle oder Verschleiß Reparaturen erforderlich werden. Diese Kosten sollten als Puffer eingeplant werden, vor allem bei intensiver Nutzung.
 
-![FlyingStars Logo schwarz-lila-türkis](https://flyingstars.art/wp-content/uploads/2025/02/was-kostet-eine-drohne-flyingstars-logo-1024x499.jpg)
+![FlyingStars Logo schwarz-lila-türkis](/media/wordpress/350a8cc09aa9f85f1626c8c5e166eaac33cc2e79a4cd8041453ac8536b470ff0.jpg)
 
 ## Drohnenshows von Flyingstars
 

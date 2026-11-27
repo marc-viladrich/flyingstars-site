@@ -5,7 +5,7 @@ title: "Drohnenshow Oberhausen: Spektakuläre Lichtmomente im Ruhrgebiet"
 description: "Magische Drohnenshows in Oberhausen: Faszinierende Lichtkunst am Himmel für unvergessliche Momente bei jedem Event."
 date: "2026-05-04"
 updated: "2026-05-19"
-cover: {"src": "https://flyingstars.art/wp-content/uploads/2026/05/Drohnenshow-Oberhausen.png", "alt": "Drohnenshow Oberhausen", "width": 768, "height": 512}
+cover: {"src": "/media/wordpress/c5cc897388eff5af7352a7b572eadd11740340a079b4eab149ed1ace53438947.png", "alt": "Drohnenshow Oberhausen", "width": 768, "height": 512}
 draft: false
 ---
 
@@ -13,7 +13,7 @@ Wenn in der Neuen Mitte Oberhausen die Weihnachtszeit beginnt, verwandelt sich d
 
 Statt klassischem Feuerwerk steigen dabei hunderte Drohnen auf und bilden leuchtende Figuren am Himmel. Besonders zur Eröffnung des Weihnachtsmarktes ist die Show für viele Besucher ein Höhepunkt des Abends.
 
-![drohnen fliegen am himmel](https://flyingstars.art/wp-content/uploads/2026/05/drohnen-fliegen-am-himmel-1024x683.jpg)
+![drohnen fliegen am himmel](/media/wordpress/b1d93f7680e806bebc5f184d972ef9f440c8a398b4c69db9e41734cbbde35657.jpg)
 
 ## Weihnachtsmarkt im Westfield Centro als Kulisse der Drohnenshow
 
@@ -70,6 +70,6 @@ Gerade bei Events wie Weihnachtsmärkten lassen sich damit einzigartige visuelle
 Unternehmen wie **Flying Stars** setzen solche Shows professionell um – von der Idee bis zur fertigen Inszenierung.\
 So können auch eigene Events mit einer maßgeschneiderten Drohnenshow auf ein neues Level gehoben werden.
 
-![FlyingStars Logo schwarz-lila-türkis](https://flyingstars.art/wp-content/uploads/2025/02/was-kostet-eine-drohne-flyingstars-logo-1024x499.jpg)
+![FlyingStars Logo schwarz-lila-türkis](/media/wordpress/350a8cc09aa9f85f1626c8c5e166eaac33cc2e79a4cd8041453ac8536b470ff0.jpg)
 
 [Anfragen](/kontakt/)

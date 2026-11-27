@@ -5,7 +5,7 @@ title: "Drohnen als Alternative zum Feuerwerk: Ein umweltschonendes Lichtspektak
 description: "Was kostet eine Drohne? Erfahre alles über die Anschaffungskosten und laufende Kosten für Versicherung, Wartung für Einsteiger und Profis."
 date: "2025-03-31"
 updated: "2026-09-22"
-cover: {"src": "https://flyingstars.art/wp-content/uploads/2025/03/drohnen-feuerwerk-alternative.jpg", "alt": "Drohnenshow bie Nacht als Feuerwerk Alternative", "width": 1200, "height": 915}
+cover: {"src": "/media/wordpress/f6c83353613bc39de64d9e5f38f318b5d7740f10540b9851bab444beb12c6dc5.jpg", "alt": "Drohnenshow bie Nacht als Feuerwerk Alternative", "width": 1200, "height": 915}
 draft: false
 ---
 
@@ -13,7 +13,7 @@ Feuerwerke sind seit Jahrhunderten ein fester Bestandteil von Feierlichkeiten �
 
 Diese Lichtshows mit Drohnen bieten spektakuläre Effekte am [Nachthimmel](/blog/2025-03-31-drohnen-fliegen-nachts-dunkel/) – ganz ohne schädliche Emissionen oder Lärm. Die Planung und Durchführung einer Drohnen-Show ist zudem kosteneffizient und sicher, was sie zu einer attraktiven Option für viele Veranstalter macht.
 
-![Drohnenshow bie Nacht als Feuerwerk Alternative](https://flyingstars.art/wp-content/uploads/2025/03/drohnen-feuerwerk-alternative-1024x781.jpg)
+![Drohnenshow bie Nacht als Feuerwerk Alternative](/media/wordpress/5d61cf182cf245d752210ea383165b5472af32ef790ba864cd1350b97635f6b1.jpg)
 
 ## Was sind Drohnenshows?
 
@@ -65,7 +65,7 @@ Als Experten für **hochwertige Drohnen-Lichtshows** bringen wir innovative Tech
 
 Jetzt Preise entdecken und Drohnenshow buchen.
 
-![FlyingStars Logo schwarz-lila-türkis](https://flyingstars.art/wp-content/uploads/2025/02/was-kostet-eine-drohne-flyingstars-logo-1024x499.jpg)
+![FlyingStars Logo schwarz-lila-türkis](/media/wordpress/350a8cc09aa9f85f1626c8c5e166eaac33cc2e79a4cd8041453ac8536b470ff0.jpg)
 
 ## Drohnenshows von Flyingstars
 

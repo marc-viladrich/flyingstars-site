@@ -8,4 +8,10 @@ Die Elementor-Hülle entfällt im Astro-Layout. Die Artikelkörper liegen als ge
 
 Die Redirects kommen aus dem vorhandenen URL-Inventar. `node scripts/generate-public-delivery.mjs` generiert die Apache-Regeln und die Blog-Redirects für Cloudflare Pages. `node --test scripts/public-routes.test.mjs` prüft alle 28 Zielpfade, ihre Eindeutigkeit, Sprache und die Regeln beider Hosts. `node scripts/check-i18n-build.mjs` prüft die gebauten Sprachziele.
 
-Marc hat das FlyingStars-Titelbild zum deutschen Artikel „Drohnen im Dunkeln fliegen“ freigegeben. Es liegt als inhaltsadressierter Upload im Medienverzeichnis. Die übrigen Titelbilder behalten zunächst das WordPress-Motiv. Vor der Umschaltung der Live-Domain den dauerhaften Zugriff auf die Originalmedien unter `/wp-content/uploads/` für neue Builds sicherstellen. Astro liefert generierte Bilddateien im gebauten Webroot aus.
+Marc hat das FlyingStars-Titelbild zum deutschen Artikel „Drohnen im Dunkeln fliegen“ freigegeben. Es liegt als inhaltsadressierter Upload im Medienverzeichnis. Die übrigen Titelbilder behalten zunächst das WordPress-Motiv.
+
+## WordPress-Medien
+
+Alle aktiven Verweise auf den bisherigen WordPress-Medienpfad wurden lokalisiert. Die Prüfliste `wordpress-media-migration.json` dokumentiert Herkunft und SHA-256 jedes Imports. Die Originalbilder liegen in `src/assets/wordpress` und werden als lokale Medien ausgeliefert. Astro erzeugt Titelbilder und geteilte Komponentenvarianten beim Build aus diesen Quellen. Zwei bisher aus WordPress gestreamte MP4-Dateien liegen unter `public/media/video`. WordPress wird zum Ausliefern und für spätere Builds nicht benötigt.
+
+`node --test scripts/wordpress-media.test.mjs` prüft die Originaldateien und blockiert aktive externe WordPress-Medienverweise.

@@ -5,7 +5,7 @@ title: "Netherlands Fireworks Ban: Impact on New Year’s Celebrations 2026"
 description: "From 2026, private fireworks will be banned in the Netherlands. Find out why Flyingstars drone shows could be the sustainable alternative."
 date: "2025-08-05"
 updated: "2025-10-01"
-cover: {"src": "https://flyingstars.art/wp-content/uploads/2025/07/a-drone-show-at-new-years.jpg", "alt": "A drone show at new years eve", "width": 1560, "height": 1040}
+cover: {"src": "/media/wordpress/51e2b6830b62aaed760cf6d53b725102dea2cb65a0ec1643cf5e8e28978ca1a5.jpg", "alt": "A drone show at new years eve", "width": 1560, "height": 1040}
 draft: false
 ---
 
@@ -24,7 +24,7 @@ The key reasons include:
 - Environmental protection and reduction of fine dust pollution
 - Consideration for animals and noise pollution
 
-![A drone show at new years eve](https://flyingstars.art/wp-content/uploads/2025/07/a-drone-show-at-new-years-1024x683.jpg)
+![A drone show at new years eve](/media/wordpress/981a8ac1462ab6492b57f1294699d9cb1f25cb23cb152f90d8fcb42a8175a4a9.jpg)
 
 ## Impact on the Public
 
@@ -106,6 +106,6 @@ Whether it’s 200, 500 or even over 1,000 drones – FlyingStars uses state-of-
 
 A New Year’s Eve with a FlyingStars show doesn’t just replace fireworks – it takes the experience to a whole new level.
 
-![FlyingStars Logo schwarz-lila-türkis](https://flyingstars.art/wp-content/uploads/2025/02/was-kostet-eine-drohne-flyingstars-logo-1024x499.jpg)
+![FlyingStars Logo schwarz-lila-türkis](/media/wordpress/350a8cc09aa9f85f1626c8c5e166eaac33cc2e79a4cd8041453ac8536b470ff0.jpg)
 
 [Inquiries](/en/kontakt/)

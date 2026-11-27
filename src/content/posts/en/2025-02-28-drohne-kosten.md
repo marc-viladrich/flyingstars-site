@@ -5,13 +5,13 @@ title: "How much do drones cost?"
 description: "Drones range in price from $50 to over $10,000, depending on the model. Learn everything about costs, categories and key buying factors"
 date: "2025-02-28"
 updated: "2025-03-19"
-cover: {"src": "https://flyingstars.art/wp-content/uploads/2025/02/what-do-drones-cost.jpg", "alt": "Drone controlled by man with VR", "width": 1200, "height": 585}
+cover: {"src": "/media/wordpress/d7c41f59b1a09d7b661c248579fe1f5045f7b52735d1668de10efeb9b3bb6f6c.jpg", "alt": "Drone controlled by man with VR", "width": 1200, "height": 585}
 draft: false
 ---
 
 Drones are no longer just toys – they have evolved into versatile tools used in photography, film production, agriculture, surveying, and many other fields. However, before embarking on the adventure of drone flying, it’s worth taking a look at the various costs involved. In addition to the initial purchase price, ongoing expenses such as insurance, licenses, UAS operator registration, and a drone pilot license also play a crucial role.
 
-![Drone controlled by man with VR](https://flyingstars.art/wp-content/uploads/2025/02/what-do-drones-cost-1024x499.jpg)
+![Drone controlled by man with VR](/media/wordpress/e3e83727be63eeada511a099495bc650cbbad8be4ce8ca27956f4687a880adc2.jpg)
 
 ## Acquisition Costs: How Much Does a Drone Cost?
 
@@ -71,7 +71,7 @@ In addition to the initial purchase, various ongoing costs can arise when operat
 - Even though drones are built to be durable, **accidents or wear and tear** may require repairs.
 - These expenses should be considered, particularly for **frequent or intensive** drone use.
 
-![FlyingStars black logo with FS in pink and blue](https://flyingstars.art/wp-content/uploads/2025/02/what-does-a-drone-cost-flyingstars-logo-1024x499.jpg)
+![FlyingStars black logo with FS in pink and blue](/media/wordpress/350a8cc09aa9f85f1626c8c5e166eaac33cc2e79a4cd8041453ac8536b470ff0.jpg)
 
 ## Drone Shows by FlyingStars
 

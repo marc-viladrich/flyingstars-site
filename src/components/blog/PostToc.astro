@@ -1,0 +1,88 @@
+---
+// Inhaltsverzeichnis der übernommenen WordPress-Artikel (Blog-Bestandsmigration). Quelle sind allein die `headings`, die Astro
+// aus dem Markdown rendert: Reihenfolge, Text und Slug (= Anker-ID der Überschrift) bleiben unverändert. Natives <details>, damit
+// es ohne JavaScript, per Tastatur und mit Screenreader funktioniert; Öffnen gleitet wie das FAQ-Akkordeon (Faq.astro), nur in CSS.
+import type { MarkdownHeading } from 'astro';
+import Icon from '../Icon.astro';
+
+interface Props { headings: MarkdownHeading[]; locale: string }
+const { headings, locale } = Astro.props;
+const COPY = {
+  de: { label: 'Inhaltsverzeichnis', one: 'Abschnitt', many: 'Abschnitte' },
+  en: { label: 'Table of contents', one: 'section', many: 'sections' },
+  nl: { label: 'Inhoudsopgave', one: 'sectie', many: 'secties' },
+} as const;
+const copy = COPY[locale as keyof typeof COPY] ?? COPY.de;
+// Oberste vorkommende Ebene = Hauptpunkte, tiefere Ebenen hängen am vorangehenden Hauptpunkt (Zwischentitel vor dem ersten
+// Hauptpunkt bleiben eigene Hauptpunkte, damit kein Eintrag verloren geht)
+const top = Math.min(...headings.map((h) => h.depth));
+const groups: { head: MarkdownHeading; subs: MarkdownHeading[] }[] = [];
+for (const h of headings) {
+  const last = groups.at(-1);
+  if (h.depth > top && last) last.subs.push(h);
+  else groups.push({ head: h, subs: [] });
+}
+const count = `${groups.length} ${groups.length === 1 ? copy.one : copy.many}`;
+---
+{headings.length > 0 && <details class="post-toc">
+  <summary>
+    <span class="toc-title">{copy.label}</span>
+    <span class="toc-count mono">{count}</span>
+    <Icon name="plus" size={20} class="toc-ico" />
+  </summary>
+  <nav class="toc-panel" aria-label={copy.label}>
+    <ol class="toc-list">
+      {groups.map(({ head, subs }) => <li class="toc-item">
+        <a class="toc-link" href={`#${head.slug}`}><span class="hover-line">{head.text}</span></a>
+        {subs.length > 0 && <ul class="toc-subs">
+          {subs.map((s) => <li><a class="toc-sub" href={`#${s.slug}`}><span class="hover-line">{s.text}</span></a></li>)}
+        </ul>}
+      </li>)}
+    </ol>
+  </nav>
+</details>}
+
+<style>
+  /* Steht als erstes Kind in .post-body; die Lesespalten-Regeln für Listen und Links (BlogPost.astro) gelten hier nicht,
+     die gescopten Selektoren unten sind spezifischer */
+  .post-toc { margin-bottom: clamp(var(--space-8), 4vw, var(--space-10)); border: 1px solid var(--line); border-radius: var(--radius-12); background: rgb(var(--rgb-text) / 0.025); transition: border-color var(--dur-control), background-color var(--dur-control); }
+  .post-toc:hover, .post-toc[open] { border-color: var(--line-strong); }
+  .post-toc summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: var(--space-3); padding: var(--space-4-5) var(--space-5); border-radius: var(--radius-12); font: 500 1.0625rem/1.3 var(--display); letter-spacing: -0.01em; color: var(--head); --focus-offset: -0.1875rem; }
+  .post-toc summary::-webkit-details-marker { display: none; }
+  .toc-count { margin-left: auto; font-size: var(--text-xs); letter-spacing: 0.06em; color: var(--faint); white-space: nowrap; }
+  /* Lucide „plus“ wie im FAQ: dreht beim Öffnen weich zum X */
+  .post-toc :global(.toc-ico) { flex: 0 0 auto; color: var(--text); transition: transform var(--dur-disclose) var(--ease-glide), color var(--dur-control); }
+  .post-toc summary:hover :global(.toc-ico) { color: var(--accent); }
+  .post-toc[open] > summary :global(.toc-ico) { transform: rotate(45deg); }
+
+  @supports (interpolate-size: allow-keywords) {
+    .post-toc::details-content { interpolate-size: allow-keywords; block-size: 0; overflow-y: clip; opacity: 0; }
+    .post-toc[open]::details-content { block-size: auto; opacity: 1; }
+    @media (prefers-reduced-motion: no-preference) {
+      :global(html:not(.motion-paused)) .post-toc::details-content {
+        transition: block-size var(--dur-disclose) var(--ease-glide), opacity var(--dur-standard) var(--ease-default),
+          content-visibility var(--dur-disclose) allow-discrete;
+      }
+    }
+  }
+  @media (prefers-reduced-motion: reduce) { .post-toc, .post-toc :global(.toc-ico) { transition: none; } }
+
+  /* Hauptpunkte nummeriert wie die Setlist der Projektseiten (case.css): Ziffer in Orange, Haarlinie zwischen den Punkten */
+  .toc-panel { padding: 0 var(--space-5) var(--space-3); }
+  .post-toc .toc-list { list-style: none; margin: 0; padding: 0; counter-reset: toc; border-top: 1px solid var(--line); }
+  .post-toc .toc-list > li { counter-increment: toc; display: grid; grid-template-columns: 2.25rem minmax(0, 1fr); padding: var(--space-3) 0; margin: 0; }
+  .post-toc .toc-list > li + li { border-top: 1px solid var(--line); }
+  .post-toc .toc-list > li::before { content: counter(toc, decimal-leading-zero); padding-top: 0.3em; font: 500 var(--text-xs)/1 var(--mono); letter-spacing: 0.1em; color: var(--accent); }
+  .post-toc .toc-link, .post-toc .toc-sub { width: fit-content; border: 0; text-wrap: pretty; transition: color var(--dur-control); }
+  .post-toc .toc-link { grid-column: 2; font: 500 1rem/1.4 var(--display); letter-spacing: -0.005em; color: var(--text); }
+  .post-toc .toc-subs { grid-column: 2; list-style: none; margin: var(--space-2) 0 0; padding: 0; display: grid; gap: var(--space-1-5); }
+  .post-toc .toc-subs li { margin: 0; padding: 0; }
+  .post-toc .toc-sub { display: block; font-size: var(--text-sm); line-height: 1.45; color: var(--muted); }
+  .post-toc :is(.toc-link, .toc-sub):hover { color: var(--head); }
+
+  @media (max-width: 45em) {
+    .post-toc summary { padding: var(--space-4) var(--space-4); }
+    .toc-panel { padding-inline: var(--space-4); }
+    .post-toc .toc-list > li { grid-template-columns: 2rem minmax(0, 1fr); }
+  }
+</style>

@@ -5,7 +5,7 @@ title: "Wie funktioniert eine Drohnenshow?"
 description: "Wie funktioniert eine Drohnenshow? Entdecke, wie synchronisierte Drohnen beeindruckende Lichtbilder schaffen – jetzt mehr erfahren!"
 date: "2025-01-14"
 updated: "2026-09-22"
-cover: {"src": "https://flyingstars.art/wp-content/uploads/2025/01/lehrer-zeigt-wie-drohnenshow-funktioniert.jpg", "alt": "Lehrer zeigt, wie eine Drohne oder Drohnenshow funktioniert.", "width": 1600, "height": 1067}
+cover: {"src": "/media/wordpress/f950eb3d083151b96c9c6781f67f4a754f52ba8b97b4a40b2393ac8128fa1c86.jpg", "alt": "Lehrer zeigt, wie eine Drohne oder Drohnenshow funktioniert.", "width": 1600, "height": 1067}
 draft: false
 ---
 
@@ -15,7 +15,7 @@ Wie funktioniert eigentlich eine Drohnenshow? Stellt euch vor, Hunderte von Droh
 
 Eine Drohne ist ein unbemanntes Fluggerät, das per Fernsteuerung oder autonom durch Software gesteuert wird. Drohnen besitzen mehrere Propeller, die für Auftrieb und Bewegungen in verschiedene Richtungen sorgen. Sensoren wie GPS, Beschleunigungsmesser und Gyroskope ermöglichen es der Drohne, ihre Position und Geschwindigkeit präzise zu bestimmen. [Wie funktioniert eine Drohne](/blog/2025-03-31-drohnen-aufbau-funktionsweise/) – dieser Frage gehen viele nach, wenn sie mehr über die Technik und Steuerung dieser Fluggeräte erfahren möchten. Lichtshow-Drohnen verfügen über LED-Leuchten, die für visuelle Licht- und Farbeffekte eingesetzt werden.
 
-![Wie funktioniert Drohnenshow in der Dämmerung](https://flyingstars.art/wp-content/uploads/2025/01/drohne-in-daemmerung-e1737555383718.jpg)
+![Wie funktioniert Drohnenshow in der Dämmerung](/media/wordpress/49d8cfc8d81233c28e4916dfcdf4b3e61ade8c4032c4f513896855606e65ca34.jpg)
 
 ## Technik und Programmierung hinter Drohnenshows
 

@@ -4,6 +4,7 @@ export async function onRequestGet({ request }: { request: Request }): Promise<R
   const key = new URL(request.url).searchParams.get('asset') ?? '';
   const source = Object.entries(videos).find(([asset]) => asset === key)?.[1];
   if (!source) return new Response('Nicht gefunden', { status: 404 });
+  if (source.startsWith('/')) return Response.redirect(new URL(source, request.url), 308);
   const headers = new Headers();
   const range = request.headers.get('range');
   if (range) headers.set('range', range);

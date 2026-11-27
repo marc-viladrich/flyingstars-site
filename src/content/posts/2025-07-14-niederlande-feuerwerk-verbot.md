@@ -5,7 +5,7 @@ title: "Niederlande Feuerwerk Verbot: Auswirkungen auf Silvester 2026"
 description: "Ab 2026 gilt in den Niederlanden ein Feuerwerksverbot. Warum Drohnenshows die nachhaltige Alternative sein könnten, erfährst du hier."
 date: "2025-07-14"
 updated: "2025-08-05"
-cover: {"src": "https://flyingstars.art/wp-content/uploads/2025/07/a-big-stage-with-lights-in-the-background-and-peop-2025-02-11-20-12-29-utc-1-e1752501546978.jpg", "alt": "Eine Drohnenshow an Silvester", "width": 1560, "height": 822}
+cover: {"src": "/media/wordpress/4fdadf8d904679918754b531133c62cc58fd63da244b579198843865dd42d347.jpg", "alt": "Eine Drohnenshow an Silvester", "width": 1560, "height": 822}
 draft: false
 ---
 
@@ -24,7 +24,7 @@ Die wichtigsten Gründe:
 - Umweltschutz und Reduktion von Feinstaub
 - Rücksicht auf Tiere und Lärmbelastung
 
-![Eine Drohnenshow an Silvester](https://flyingstars.art/wp-content/uploads/2025/07/a-big-stage-with-lights-in-the-background-and-peop-2025-02-11-20-12-29-utc-1-e1752501546978-1024x540.jpg)
+![Eine Drohnenshow an Silvester](/media/wordpress/24370ee6c3e01400d7f0f5c647af96856a5fede9170460b8b56084b25b5cf636.jpg)
 
 ## Auswirkungen auf die Bevölkerung
 
@@ -84,6 +84,6 @@ Ob 200, 500 oder sogar über 1.000 Drohnen – Flyingstars nutzt modernste Flugd
 
 Ein Silvesterabend mit einer **Flyingstars-Show** ersetzt nicht nur das Feuerwerk, sondern hebt das Erlebnis auf ein völlig neues Niveau.
 
-![FlyingStars Logo schwarz-lila-türkis](https://flyingstars.art/wp-content/uploads/2025/02/was-kostet-eine-drohne-flyingstars-logo-1024x499.jpg)
+![FlyingStars Logo schwarz-lila-türkis](/media/wordpress/350a8cc09aa9f85f1626c8c5e166eaac33cc2e79a4cd8041453ac8536b470ff0.jpg)
 
 [Anfragen](/kontakt/)
