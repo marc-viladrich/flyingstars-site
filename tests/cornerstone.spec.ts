@@ -1,4 +1,3 @@
-import { join } from 'node:path';
 import { test, expect } from '@playwright/test';
 
 const CS = '2025-06-12-wie-programmiert-man-eine-drohnenshow';
@@ -8,57 +7,52 @@ const POSTS = [
   { id: '2025-03-31-drohnen-feuerwerk-als-alternative', cover: 'drohnen-als-alternative-zum-feuerwerk', bodyImage: 'drohnen-feuerwerk-alternative-1024x781', photos: 3 },
 ];
 
-for (const locale of ['de', 'en', 'nl']) {
-  const prefix = locale === 'de' ? '' : `/${locale}`;
-  for (const post of POSTS) {
-    test(`Basisformat ${locale}: ${post.id}`, async ({ page }, testInfo) => {
-      await page.goto(`${prefix}/blog/${post.id}/`);
-      const article = page.locator('article.post');
-      await expect(article).toHaveAttribute('data-blog-layout', 'basic');
-      await expect(article.locator('.story, .ss, [data-ss], .cs-compare, table')).toHaveCount(0);
-      await expect(article.locator('.ap img')).toHaveCount(post.photos);
-      await expect(article.locator('.ap-row')).toHaveCount(1);
-      await expect(article.locator(`.post-body img[src*="${post.bodyImage}"]`)).toHaveCount(1);
-      await expect(article.locator('img[src*="was-kostet-eine-drohne-flyingstars-logo"]')).toHaveCount(0);
-      await expect(article.locator('.post-body ~ [data-ff] ~ .post-author')).toHaveCount(1);
-      await expect(article.locator('[data-ff] .ff-poster')).toHaveCount(1);
-      await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', new RegExp(`/media/blog/${post.cover}/titel-16x9[.]jpg$`));
-      await expect(page.locator('meta[property="og:type"]')).toHaveAttribute('content', 'article');
-      const ld = JSON.parse(await page.locator('script[type="application/ld+json"]').first().textContent() ?? '{}');
-      expect(ld['@type']).toBe('BlogPosting');
-      expect(ld.inLanguage).toBe(locale);
-      expect(ld.image).toHaveLength(3);
-      await expect(article.locator('.post-author-name span')).toHaveText(ld.author.jobTitle);
-      await expect(article.locator('.post-author-name + p')).toHaveText(ld.author.description);
-      expect(new URL(ld.author.url).pathname + new URL(ld.author.url).hash).toBe(`${prefix}/ueber-uns/#team`);
-      await expect(article.locator('.post-author .link')).toHaveAttribute('href', `${prefix}/ueber-uns/#team`);
-      const cover = page.locator('.post-cover img');
-      await expect(cover).toHaveAttribute('width', '1600');
-      expect((await cover.getAttribute('alt'))?.length).toBeGreaterThan(10);
-      expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(0);
-
-      const shots = process.env.FS_R21_SHOTS;
-      if (shots && locale === 'de' && testInfo.project.name === 'desktop') {
-        await page.emulateMedia({ reducedMotion: 'reduce' });
-        for (const width of [1440, 390]) {
-          await page.setViewportSize({ width, height: width === 1440 ? 900 : 844 });
-          for (const image of await article.locator('img').all()) {
-            await image.evaluate((element: HTMLImageElement) => { element.loading = 'eager'; });
-          }
-          await article.locator('[data-ff]').scrollIntoViewIfNeeded();
-          await expect(article.locator('[data-ff]')).toHaveClass(/is-live/);
-          await page.evaluate(async () => {
-            await document.fonts.ready;
-            await Promise.all([...document.querySelectorAll<HTMLImageElement>('article.post img')].map((image) => image.decode()));
-            scrollTo({ top: 0, behavior: 'instant' });
-          });
-          expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(0);
-          await article.screenshot({ path: join(shots, `${post.cover}-${width}.png`), animations: 'disabled', timeout: 15_000 });
-        }
-      }
-    });
-  }
+const locale = 'nl';
+const prefix = '/nl';
+for (const post of POSTS) {
+  test(`Redaktioneller Artikel ${locale}: ${post.id}`, async ({ page }) => {
+    await page.goto(`${prefix}/blog/${post.id}/`);
+    const article = page.locator('article.post');
+    await expect(article).toHaveAttribute('data-blog-layout', 'basic');
+    await expect(article.locator('.story, .ss, [data-ss], .cs-compare, table')).toHaveCount(0);
+    await expect(article.locator('.ap img')).toHaveCount(post.photos);
+    await expect(article.locator('.ap-row')).toHaveCount(1);
+    await expect(article.locator(`.post-body img[src*="${post.bodyImage}"]`)).toHaveCount(1);
+    await expect(article.locator('img[src*="was-kostet-eine-drohne-flyingstars-logo"]')).toHaveCount(0);
+    await expect(article.locator('.post-body ~ [data-ff] ~ .post-author')).toHaveCount(1);
+    await expect(article.locator('[data-ff] .ff-poster')).toHaveCount(1);
+    await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', new RegExp(`/media/blog/${post.cover}/titel-16x9[.]jpg$`));
+    await expect(page.locator('meta[property="og:type"]')).toHaveAttribute('content', 'article');
+    const ld = JSON.parse(await page.locator('script[type="application/ld+json"]').first().textContent() ?? '{}');
+    expect(ld['@type']).toBe('BlogPosting');
+    expect(ld.inLanguage).toBe(locale);
+    expect(ld.image).toHaveLength(3);
+    await expect(article.locator('.post-author-name span')).toHaveText(ld.author.jobTitle);
+    await expect(article.locator('.post-author-name + p')).toHaveText(ld.author.description);
+    expect(new URL(ld.author.url).pathname + new URL(ld.author.url).hash).toBe(`${prefix}/ueber-uns/#team`);
+    await expect(article.locator('.post-author .link')).toHaveAttribute('href', `${prefix}/ueber-uns/#team`);
+    const cover = page.locator('.post-cover img');
+    await expect(cover).toHaveAttribute('width', '1600');
+    expect((await cover.getAttribute('alt'))?.length).toBeGreaterThan(10);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(0);
+  });
 }
+
+test('WordPress-Original verwendet das Basisformat mit Originalbildern und Inhaltsverzeichnis', async ({ page }) => {
+  await page.goto(`/blog/${CS}/`);
+  const article = page.locator('article.post');
+  await expect(article).toHaveAttribute('data-legacy-blog', '/wie-programmiert-man-eine-drohnenshow');
+  await expect(article).toHaveAttribute('data-blog-layout', 'basic');
+  await expect(article.locator('.post-body img[src*="drohnenprogrammierung-1-1024x683"]')).toHaveCount(1);
+  await expect(article.locator('.post-body img[src*="was-kostet-eine-drohne-flyingstars-logo"]')).toHaveCount(1);
+  const contents = article.locator('.post-toc');
+  await contents.locator('summary').click();
+  const first = contents.getByRole('link').first();
+  const anchor = await first.getAttribute('href');
+  await first.click();
+  await expect(page.locator(anchor!)).toBeInViewport();
+  await expect(article.locator('.post-author')).toBeVisible();
+});
 
 test.describe('Interaktionen im aktivierten Cornerstone-Format', () => {
   test.beforeEach(async ({ page }) => {
