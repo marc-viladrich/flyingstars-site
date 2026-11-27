@@ -27,13 +27,14 @@ const SOCIAL = [
 ];
 import HimmelFolge from '../components/HimmelFolge.astro';
 import HimmelStart from '../components/HimmelStart.astro';
-import Consent from '../components/Consent.astro';
+import consentStyles from '../styles/consent-bundle.css?url';
 import { trackingConfig } from '../lib/consent.mjs';
 const tracking = trackingConfig({
   ga: import.meta.env.PUBLIC_GA_ID ?? '',
   ads: import.meta.env.PUBLIC_GOOGLE_ADS_ID ?? '',
   label: import.meta.env.PUBLIC_GOOGLE_ADS_LABEL ?? '',
 });
+const Consent = (tracking.ga || tracking.ads) ? (await import('../components/Consent.astro')).default : undefined;
 // social: fertiges Vorschaubild (z. B. Cornerstone-Titelbild im Lichtraster) statt image, das hier optimiert wird; ogType: article
 // für Blogartikel; Slot „head“ für seitenspezifische Angaben (Structured Data)
 interface Props { title: string; description: string; noindex?: boolean; canonicalPath?: string; image?: string; social?: { src: string; width: number; height: number }; ogType?: 'website' | 'article'; navSection?: string; fullBleed?: boolean; alternateLocales?: readonly Locale[]; }
@@ -72,6 +73,7 @@ const inNav = (href: string) => site.nav.some((item) => item.href === href);
     {/* Above-the-fold fonts: avoid moving the blog grid when fallback metrics are replaced. */}
     <link rel="preload" href="/fonts/space-grotesk-0.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/inter-latin-400-700-v1.woff2" as="font" type="font/woff2" crossorigin />
+    {Consent && <link rel="preload" as="style" href={consentStyles} data-consent-styles />}
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title} | {site.name}</title>
     <meta name="description" content={factText(description,locale)} />
@@ -124,7 +126,7 @@ const inNav = (href: string) => site.nav.some((item) => item.href === href);
       </div>
       <div class="base mono"><span>© {new Date().getFullYear()} FlyingStars GmbH</span><nav aria-label={t('base.legal')}>{site.footer.legal.map((item) => <a href={localHref(item.href)}>{item.label}</a>)}</nav><button type="button" class="consent-reopen" data-consent-open hidden aria-label={t('consent.reopen')} title={t('consent.reopen')}><Icon name="cookie" size={18} /></button></div>
     </footer>
-    {(tracking.ga || tracking.ads) && <Consent config={tracking} />}
+    {Consent && <Consent config={tracking} />}
     {current === '/' ? <HimmelFolge /> : <HimmelStart />}
     <script>
       import '../scripts/site';
