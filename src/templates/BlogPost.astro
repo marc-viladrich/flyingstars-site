@@ -16,6 +16,7 @@ import SectionHead from '../components/SectionHead.astro';
 import { optimizedImage } from '../lib/media';
 import { authorOf, dateOf, readingMinutes, topicOf, sortPosts } from '../components/blog/post-meta';
 import PostBody from '../components/blog/PostBody.astro';
+import PostToc from '../components/blog/PostToc.astro';
 import { cornerstoneOf } from '../components/blog/cornerstone';
 interface Props { post: CollectionEntry<'posts'> }
 const { post } = Astro.props;
@@ -67,10 +68,7 @@ const jsonLd = JSON.stringify({
       : cover && <figure class="post-cover" data-curtain><img src={cover.src} {...cover.attributes} width={cover.width} height={cover.height} alt={post.data.cover!.alt} loading="eager" decoding="async" fetchpriority="high" /></figure>}
     {editing ? <div class="post-body" {...body(post)}><Content /></div>
       : <PostBody postId={post.id} article={cs} preserveImages={Boolean(post.data.legacyPath)}>
-          {contents.length > 0 && <details class="post-toc">
-            <summary>{locale === 'en' ? 'Table of contents' : 'Inhaltsverzeichnis'}</summary>
-            <ul>{contents.map(({ slug, text }) => <li><a href={`#${slug}`}>{text}</a></li>)}</ul>
-          </details>}
+          <PostToc headings={contents} locale={locale} />
           <Content />
         </PostBody>}
     <aside class="post-author" aria-label={t('blogpost.aboutTheAuthor')}>
@@ -126,8 +124,6 @@ const jsonLd = JSON.stringify({
   .post :global(.post-body li::marker) { color: var(--accent); }
   .post :global(.post-body ol > li::marker) { font: 500 0.95em var(--display); }
   .post :global(.post-body p:has(> img:only-child)) { margin-block: 2em; }
-  .post :global(.post-toc) { padding: var(--space-4); border: 1px solid var(--line); border-radius: var(--radius-12); margin-bottom: var(--space-6); }
-  .post :global(.post-toc summary) { cursor: pointer; }
   .post :global(.post-body img) { width: 100%; height: auto; border-radius: var(--radius-14); }
   .post :global(.post-body blockquote) { margin-inline: 0; padding-left: var(--space-5); border-left: 2px solid; border-image: var(--grad) 1; color: var(--head); }
 
