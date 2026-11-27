@@ -9,7 +9,7 @@ tags:
   - Drohnenshow
   - Programmierung
 cover:
-  src: https://flyingstars.art/wp-content/uploads/2025/05/drohnenprogrammierung-1.jpg
+  src: /media/wordpress/94d1ca9baa8870a62ae2942a7e503612e2943e9e6d295815c0a1efb9b785c6be.jpg
   alt: Een man houdt een drone naast een laptop, terwijl een vrouw met een tablet ernaast staat.
   width: 1680
   height: 1120
@@ -46,7 +46,7 @@ Op stadsfeesten, bedrijfsjubilea en muziekfestivals trekken droneshows wereldwij
 
 In dit artikel leggen we uit hoe een droneshow wordt geprogrammeerd, van het eerste idee tot een synchroon vliegende formatie.
 
-![Een man houdt een drone naast een laptop, terwijl een vrouw met een tablet ernaast staat.](https://flyingstars.art/wp-content/uploads/2025/05/drohnenprogrammierung-1-1024x683.jpg)
+![Een man houdt een drone naast een laptop, terwijl een vrouw met een tablet ernaast staat.](/media/wordpress/0bb0965834ac5f92c9e687dda34482ca07df2ea842dc1a084b152efece898e92.jpg)
 
 ## Wat is droneprogrammering?
 
@@ -102,4 +102,4 @@ We zijn gespecialiseerd in **drone-lichtshows** en combineren techniek met creat
 
 Bekijk onze [prijzen](/nl/drohnenshow-preise/) en vraag een show aan.
 
-![FlyingStars-logo in zwart, paars en turquoise](https://flyingstars.art/wp-content/uploads/2025/02/was-kostet-eine-drohne-flyingstars-logo-1024x499.jpg)
+![FlyingStars-logo in zwart, paars en turquoise](/media/wordpress/350a8cc09aa9f85f1626c8c5e166eaac33cc2e79a4cd8041453ac8536b470ff0.jpg)

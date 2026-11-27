@@ -9,7 +9,4 @@ const names = ['title', 'summary', 'choices', 'privacy', 'analytics', 'ads', 're
 const copy = Object.fromEntries(names.map((name) => [name, t(`consent.${name}`)]));
 ---
 <div id="consent-config" hidden data-config={JSON.stringify(config)} data-copy={JSON.stringify(copy)} data-privacy={localHref('/datenschutz/')}></div>
-<script>
-  // No IDs means no component, no import and no consent CSS/library download.
-  if (document.querySelector('#consent-config')) import('../scripts/consent');
-</script>
+<script>import '../scripts/consent';</script>

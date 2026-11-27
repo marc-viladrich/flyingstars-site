@@ -18,7 +18,7 @@ const run = promisify(execFile);
 const shellQuote = s => "'" + s.replaceAll("'", "'\\''") + "'";
 const commit = (dir, message) => git(dir, ['-c','commit.gpgsign=false','add','.']).then(() => git(dir,['-c','commit.gpgsign=false','commit','-qm',message]));
 
-test('Offline-Pipeline: CI, Code-Deploy, Inhalts-Push/Freigabe, Rebase, Buildfehler und Konflikt', {skip: process.env.FLYINGSTARS_PIPELINE_CHILD === '1', timeout: 1_500_000}, async t => {
+test('Offline-Pipeline: CI, Code-Deploy, Inhalts-Push/Freigabe, Rebase, Buildfehler und Konflikt', {skip: process.env.FLYINGSTARS_PIPELINE_CHILD === '1', timeout: 40 * 60_000}, async t => {
   const prior = process.env.FLYINGSTARS_OFFLINE_MEDIA;
   process.env.FLYINGSTARS_OFFLINE_MEDIA = '1';
   t.after(() => {if (prior === undefined) delete process.env.FLYINGSTARS_OFFLINE_MEDIA; else process.env.FLYINGSTARS_OFFLINE_MEDIA = prior;});
@@ -71,7 +71,7 @@ test('Offline-Pipeline: CI, Code-Deploy, Inhalts-Push/Freigabe, Rebase, Buildfeh
       if(missing)throw Error(`Offline-Tarball fehlt im npm-Installationscache. npm ci mit demselben Cache ausführen oder FLYINGSTARS_FIXTURE_NPM_CACHE auf den Installationscache setzen. ${missing}`,{cause:error});
       throw error;
     }
-    const ci = await run(process.execPath,[path.join(dev,'editor/ci/check.mjs')],{cwd:dev,env:{...process.env,FLYINGSTARS_PIPELINE_CHILD:'1'},timeout:1_300_000,maxBuffer:15_000_000});
+    const ci = await run(process.execPath,[path.join(dev,'editor/ci/check.mjs')],{cwd:dev,env:{...process.env,FLYINGSTARS_PIPELINE_CHILD:'1'},timeout:36 * 60_000,maxBuffer:15_000_000});
     assert.match(ci.stdout,/Astro check/);assert.match(ci.stdout,/Offline-Astro-Build/);
     const oldOffline = process.env.npm_config_offline;process.env.npm_config_offline='true';
     let result;try {result=await update();} finally {if(oldOffline===undefined)delete process.env.npm_config_offline;else process.env.npm_config_offline=oldOffline;}

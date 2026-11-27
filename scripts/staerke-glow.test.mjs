@@ -26,8 +26,9 @@ test('Verlaufsworte: dünner Start nur mit Bewegung, Endstärke sonst sofort', (
 // (Chromium und WebKit, 390/1440/1920): Nachbartext und Hüllen 0,000 px, Zeilenzahl unverändert.
 test('Verlaufsworte: Breite steht vom ersten Bild an fest, ohne Zeichenabstands-Ausgleich', () => {
   const css = read('src/styles/himmel.css'), ts = read('src/scripts/himmel/staerke.ts');
-  assert.match(css, /\.grad \.st-w \{ display: inline-block; \}/);
-  assert.match(css, /\.grad \.st-w::before \{ content: attr\(data-t\); display: block; height: 0; overflow: hidden; visibility: hidden; white-space: nowrap; \}/);
+  assert.match(css, /\.grad \.st-w \{ display: inline-block; white-space: nowrap; \}/);
+  // Ein Block mit generiertem Text unterbricht die Phrasensuche in Gecko.
+  assert.match(css, /\.grad \.st-w::before \{ content: attr\(data-t\); display: inline-block; height: 0; overflow: hidden; visibility: hidden; white-space: nowrap; margin-inline-end: -100%; \}/);
   assert.match(css, /\.grad \.st-v \{ display: inline-block; width: 0; min-width: 100%; white-space: nowrap; \}/);
   // Grid-/Flex-Stapel sind Blöcke: Kopieren und innerText bekämen Leerraum vor ein folgendes Satzzeichen
   assert.doesNotMatch(css, /\.st-w[^{]*\{[^}]*display: inline-(grid|flex)/);
@@ -116,7 +117,7 @@ test('Browser: Verlaufsworte sichtbar, ohne Anschnitt, Satzzeichen kleben, Umbru
     for (const name of engines) {
       const browser = await pw[name].launch();
       for (const width of widths) {
-        const page = await (await browser.newContext({ viewport: { width, height: 900 } })).newPage(); page.setDefaultTimeout(15000);
+        const page = await (await browser.newContext({ locale: 'de-DE', viewport: { width, height: 900 } })).newPage(); page.setDefaultTimeout(15000);
         for (const path of pages) {
           log(`${name} ${width} ${path} start`);
           await page.goto(base + path, { waitUntil: 'domcontentloaded' }); await page.evaluate(() => document.fonts.ready);

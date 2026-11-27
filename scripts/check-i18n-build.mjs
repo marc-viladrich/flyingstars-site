@@ -13,7 +13,13 @@ export function checkI18nBuild(dist = new URL('../dist/', import.meta.url)) {
   for (const file of german) for (const locale of LOCALES.filter((l) => l !== 'de')) {
     const localizedFile = file === '404.html' ? `${locale}/404/index.html` : `${locale}/${file}`;
     const target = new URL(localizedFile, dist);
-    assert.ok(existsSync(target), `Missing deployed ${locale} route for ${file}`);
+    const germanHtml = readFileSync(new URL(file, dist), 'utf8');
+    const available = existsSync(target);
+    if (!available && germanHtml.includes('data-legacy-blog')) {
+      assert.ok(!germanHtml.includes(`hreflang="${locale}" href="`), file);
+      continue;
+    }
+    assert.ok(available, `Missing deployed ${locale} route for ${file}`);
     const html = readFileSync(target, 'utf8');
     if (/<meta http-equiv="refresh"/i.test(html)) { redirects++; continue; }
     content++;
@@ -22,6 +28,8 @@ export function checkI18nBuild(dist = new URL('../dist/', import.meta.url)) {
     assert.equal(new URL(canonical).pathname, localizedHref(routeOf(file), locale), localizedFile);
     if (!/<meta[^>]*name="robots"[^>]*content="noindex"/.test(html)) {
       for (const alternate of LOCALES) {
+        const alternateFile = alternate === 'de' ? file : file === '404.html' ? `${alternate}/404/index.html` : `${alternate}/${file}`;
+        if (germanHtml.includes('data-legacy-blog') && !existsSync(new URL(alternateFile, dist))) continue;
         const href = new RegExp(`<link[^>]*hreflang="${alternate}"[^>]*href="([^"]+)"`).exec(html)?.[1];
         assert.ok(href, `${localizedFile}: missing ${alternate} alternate`);
         assert.equal(new URL(href).pathname, localizedHref(routeOf(file), alternate), localizedFile);

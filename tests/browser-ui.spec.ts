@@ -55,12 +55,9 @@ for (const locale of ['de', 'en'] as const) {
     await expect(page.locator('[data-lh-art]')).toHaveText(/2D|3D/);
 
     await page.goto(prefix + article);
-    const scene = page.locator('[data-ss]').first();
-    await scene.scrollIntoViewIfNeeded();
-    await expect(scene.locator('[data-now]')).not.toBeEmpty();
-    const finale = page.locator('[data-ff]');
-    await finale.scrollIntoViewIfNeeded();
-    await expect(finale).toHaveClass(/is-live/);
+    const contents = page.locator('.post-toc');
+    await contents.locator('summary').click();
+    await expect(contents.getByRole('link').first()).toBeVisible();
 
     await page.goto(`${prefix}/kontakt/#anfrage`);
     const next = page.locator('#inquiry-form [data-next]');

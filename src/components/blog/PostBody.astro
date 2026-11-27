@@ -1,13 +1,32 @@
 ---
+import { existsSync } from 'node:fs';
 import Cornerstone from './Cornerstone.astro';
 import FormationFinale from './FormationFinale.astro';
 import { checkPlan, splitSections, withoutStaticLogo, type CornerstoneArticle, type CornerstoneBlock } from './cornerstone/types';
 import type { Story } from './story-scene';
+import { optimizedImage } from '../../lib/media';
+import { bundledImageName } from '../../lib/bundled-media.mjs';
+import { brandedShowSection, renderPostLinks } from './post-links.mjs';
 
-interface Props { postId: string; article?: CornerstoneArticle }
-const { postId, article } = Astro.props;
+interface Props { postId: string; article?: CornerstoneArticle; preserveImages?: boolean }
+const { postId, article, preserveImages } = Astro.props;
 // Use Astro's rendered Markdown so original images keep their optimized sources and dimensions.
-const html = withoutStaticLogo(await Astro.slots.render('default'));
+const original = await Astro.slots.render('default');
+// Astro leaves public Markdown URLs as plain image tags. Use the local image pipeline
+// for these sources just as we do for covers, while preserving the Markdown alt/title.
+const media = await Promise.all([...original.matchAll(/<img\b[^>]*>/g)].map(async ([tag]) => {
+  const source = /\ssrc="([^"]+)"/.exec(tag);
+  if (!source || !bundledImageName(source[1])) return [tag, tag];
+  const image = await optimizedImage(source[1]);
+  const rest = tag.replace(/\s(?:src|width|height|loading|decoding)="[^"]*"/g, '').replace(/\s*\/?>$/, '');
+  return [tag, `${rest} src="${image.src}" width="${image.width}" height="${image.height}" loading="lazy" decoding="async">`];
+}));
+const byTag = new Map(media.map(([tag, replacement]) => [tag, replacement]));
+const rendered = original.replace(/<img\b[^>]*>/g, tag => byTag.get(tag) ?? tag);
+const html = renderPostLinks(preserveImages ? rendered : withoutStaticLogo(rendered), id =>
+  existsSync(`public/media/blog/youtube/${id}.webp`)
+);
+const show = preserveImages ? brandedShowSection(html) : undefined;
 const sections = article ? splitSections(html, article.layout !== 'basic' && article.dropBodyImages) : [];
 const stories = new Map<CornerstoneBlock, Story>();
 if (article && article.layout !== 'basic') {
@@ -18,5 +37,45 @@ if (problem) console.warn(`[cornerstone] ${postId}: ${problem} – normales Blog
 ---
 {article && !problem
   ? <Cornerstone article={article} sections={sections} stories={stories} />
-  : <div class="post-body" set:html={html} />}
-{(!article || problem || article.layout === 'basic') && <FormationFinale visualOnly />}
+  : <div class="post-body">
+      {show ? <>
+        <Fragment set:html={html.slice(0, show.start)} />
+        <section class="post-show-section" aria-labelledby={show.id}>
+          <div class="post-formation"><FormationFinale visualOnly /></div>
+          <Fragment set:html={html.slice(show.start, show.content)} />
+          <Fragment set:html={html.slice(show.content, show.end)} />
+        </section>
+        <Fragment set:html={html.slice(show.end)} />
+      </> : <Fragment set:html={html} />}
+    </div>}
+{!preserveImages && (!article || problem || article.layout === 'basic') && <FormationFinale visualOnly />}
+
+<style is:global>
+  .post-show-section { display: flow-root; }
+  .post-show-section > .post-formation { margin-block: clamp(var(--space-9), 6vw, var(--space-14)) var(--space-2); }
+  .post-formation .ff, .post-formation .ff-sky { margin-block: 0; }
+  .post-media-link {
+    display: grid;
+    position: relative;
+    isolation: isolate;
+    width: min(100%, 30rem);
+    border-radius: var(--radius-14);
+    overflow: clip;
+    background: var(--media-ground);
+  }
+  .post-media-link > img { grid-area: 1 / 1; aspect-ratio: 16 / 9; object-fit: cover; }
+  .post-media-link .btn {
+    grid-area: 1 / 1;
+    align-self: end;
+    justify-self: start;
+    margin: var(--space-4);
+    background: var(--ground);
+  }
+  .post-media-link:hover .btn { border-color: var(--accent); }
+  .post-media-play {
+    width: 0.7em;
+    aspect-ratio: 1;
+    background: currentColor;
+    clip-path: polygon(0 0, 100% 50%, 0 100%);
+  }
+</style>

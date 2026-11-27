@@ -3,7 +3,7 @@
 # Umstellung offen). #agenturen = Vorteile (NDA, „Wir fliegen, ihr glänzt“), Ziel der Agentur-Links in Navigation und Startseite.
 title: Drohnenshow für Werbung & Marketing (150+ Shows)
 description: "Euer Logo, Produkt & Claim auf der größten Bühne der Welt ✓ u. a. Spotify, L’Oréal, E.ON ☎︎ {{contact.phone.international}}"
-image: https://flyingstars.art/wp-content/uploads/2024/12/VW50Golf.jpg
+image: /media/wordpress/55b5c15ff91c895ee218102ee9e1cebb950fd703d5dac54d916e1e7582448802.jpg
 sections:
   - type: landingHero
     kicker: Drohnenshow für Werbung und Marketing
@@ -38,7 +38,7 @@ sections:
       - { name: Ford, file: /brand/logos/kunde-ford-weiss.svg, "_key": "k_7cb68e08b7052d41473c" }
       - { name: Volkswagen, file: /brand/logos/kunde-volkswagen-weiss.svg, "_key": "k_9d3e0dc226969af06770" }
       - name: PUMA
-        image: { src: https://flyingstars.art/wp-content/uploads/2023/04/Puma_Logo_weiss.png, alt: PUMA, width: 300, height: 161 }
+        image: { src: /media/wordpress/56dd26f219b6fb3b228b088ef32ce786e53e33de8f064404e18a9c5ba9075183.png, alt: PUMA, width: 300, height: 161 }
         _key: k_026697622e1aeb8e03b3
       - { name: Prada, file: /brand/logos/kunde-prada-weiss.svg, "_key": "k_7ee4a9ed1ae5975513e0" }
       - { name: L’Oréal, file: /brand/logos/kunde-loreal-weiss.svg, "_key": "k_ce391cd91b69d54344cb" }
@@ -51,7 +51,7 @@ sections:
       - { name: McKinsey, file: /brand/logos/kunde-mckinsey-weiss.svg, "_key": "k_401386dfa999f2801f1a" }
       - { name: Bulgari, file: /brand/logos/kunde-bulgari-weiss.svg, "_key": "k_fec36d49653d51da53bc" }
       - name: NFL
-        image: { src: https://flyingstars.art/wp-content/uploads/2023/04/National_Football_League_2008_weiss.png, alt: NFL, width: 300, height: 409 }
+        image: { src: /media/wordpress/e2d5bb1321388ba1a33048a3354eddf5d2389b64b1d4dbc0fe6a22303a0c64a9.png, alt: NFL, width: 300, height: 409 }
         _key: k_6575c0d35122892e9ce1
     pressLabel: Ihr kennt uns aus
     pressItems:

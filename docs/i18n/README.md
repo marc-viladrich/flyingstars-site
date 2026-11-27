@@ -2,6 +2,16 @@
 
 DE bleibt am Root. EN und NL bleiben vollständige Sprachdateien. Gemeinsame Werte werden aus DE erzeugt. Die Feldzuständigkeit steht am Zod-Schema in `x-afe.translatable`. Namen, Labels, SEO, Prosa und Alt-Texte bleiben übersetzbar.
 
+## Sprache beim Besuch
+
+Astro baut die Seiten für DE, EN und NL mit festen URLs. `src/i18n/routing.mjs` ist die Quelle für die Sprachpfade. Bei einem Einstieg über `/` wertet ein kurzes Skript vor der ersten Darstellung die Browserpräferenzen aus. Es nutzt die erste unterstützte Sprache und berücksichtigt regionale Varianten wie `en-GB` und `nl-BE`. Ohne Treffer bleibt die deutsche Startseite. Direkte Einstiege auf Unterseiten und interne Links behalten die verlinkte Sprache.
+
+Die Sprachwahl gilt für weitere Einstiege über `/` im selben Tab. Sie liegt im Sitzungsspeicher des Browsers. Query und Sprungmarke bleiben beim Sprachwechsel erhalten. In der Editor-Vorschau bleibt die aufgerufene Sprache stehen. Die [Astro-Spracherkennung](https://docs.astro.build/en/guides/internationalization/#browser-language-detection) auf dem Server setzt eine Seite voraus, die Astro zur Anfragezeit rendert.
+
+Das Editor-Paket kann Sprachvorschläge über [LibreTranslate oder DeepL](../editor-designsprache.md) erzeugen. Der öffentliche Sprachwechsel lädt die übersetzten Inhaltsdateien aus dem Build und ruft keinen Übersetzungsdienst auf.
+
+Prüfung: `node --test src/scripts/home-language.test.mjs`. Im gebauten HTML sind `/`, `/en/` und `/nl/` eigene Seiten, die man auch über die Sprachwahl öffnen kann.
+
 ## Im Editor
 
 Ändere technische Werte wie Linkziele und Bildmaße in DE. Beim Speichern folgen EN und NL automatisch. Dafür erscheint keine Sprachprüfung. Die gemeinsamen Felder sind in EN und NL gesperrt.

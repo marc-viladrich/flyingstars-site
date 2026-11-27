@@ -1,105 +1,85 @@
 ---
-authorId: florian-becker
-title: How do you programme a drone show?
-description: "How a drone show is programmed: show drones, choreography software, flight paths, simulations
-  and tests before the live show."
-date: "2025-06-12T00:00:00.000Z"
-updated: "2026-09-18T00:00:00.000Z"
-tags:
-  - Drohnenshow
-  - Programmierung
-cover:
-  src: https://flyingstars.art/wp-content/uploads/2025/05/drohnenprogrammierung-1.jpg
-  alt: A man holds a drone beside a laptop while a woman stands next to him with a tablet.
-  width: 1680
-  height: 1120
+authorId: "florian-becker"
+legacyPath: "/en/how-do-you-program-a-drone-show"
+title: "How do you program a drone show?"
+description: "How to program a drone show: Step-by-Step Guide and Cost Overview"
+date: "2025-05-26"
+updated: "2025-10-23"
+cover: {"src": "/media/wordpress/94d1ca9baa8870a62ae2942a7e503612e2943e9e6d295815c0a1efb9b785c6be.jpg", "alt": "A man holds a drone beside an open laptop", "width": 1680, "height": 1120}
 draft: false
-translationSourceHash: 6178e682d917f1b87f31c47350ae7a637590ccc2e513d3036fb4190da7476f28
-translationContractVersion: 2
-translationEvidence:
-  version: 2
-  addressing: stable-keys
-  locale: en
-  sourceFingerprint: 6178e682d917f1b87f31c47350ae7a637590ccc2e513d3036fb4190da7476f28
-  legacy:
-    provenanceFile: docs/i18n/content-provenance.json
-    migration: I01-v2-2026-11-04
-  fields:
-    - address: /body
-      sourceFingerprint: 256af8bf49f7d2411b41837eecb163e3efd60f18b839ef77b765fb371ce3a924
-      targetFingerprint: 61060236dc74c707ae80aeaf9b9d11aa3a76ce11b0bd8eb931b48924c3bfbcde
-      status: adopted-existing
-    - address: /cover/alt
-      sourceFingerprint: c77be7984da8ca55607921e741bcc3c774e96227a765307dc811e54cff2b0243
-      targetFingerprint: 66de5e7d066e16815d3df572eba7d85a358df7d066b6773e2777d10a15bfecfa
-      status: adopted-existing
-    - address: /description
-      sourceFingerprint: ccc352593482a4ed6bff39a6ff1defe6a8401d43f4e10d0b7ea680257606382a
-      targetFingerprint: e68c49e2535f793b23ce32ffba3751a221b2205c2d10e87fb30e4991603f2e3b
-      status: adopted-existing
-    - address: /title
-      sourceFingerprint: fcc6e42b2001364688f42c3ee74186057378157cd51caf8d05ba36b92855ec4b
-      targetFingerprint: e330e7c53c81817c6f6ec6917a2e432f4ac6642bbe0de725d28e2c1d9e111254
-      status: adopted-existing
 ---
-At city festivals, company anniversaries and music festivals, drone shows draw audiences around the world. Illuminated drones rise into the sky and form logos, hearts and moving animations. How is a show like this made? What technology is involved, and how does drone programming work?
 
-This article explains how a drone show is programmed, from the initial idea to a formation flying in sync.
+Whether at city festivals, corporate anniversaries, or music events – drone shows are captivating audiences around the globe. Instead of fireworks, glowing drones rise into the sky, forming logos, hearts, or animated sequences. But how is such a show created? What technology is behind it? And most importantly: how does **drone programming** work?
 
-![A man holds a drone beside a laptop while a woman stands next to him with a tablet.](https://flyingstars.art/wp-content/uploads/2025/05/drohnenprogrammierung-1-1024x683.jpg)
+In this article, we’ll walk you through how a drone show is programmed – from the initial idea to a perfectly synchronized formation. You’ll also gain insight into the technology, software, and challenges of this innovative form of entertainment.
 
-## What is drone programming?
+![](/media/wordpress/0bb0965834ac5f92c9e687dda34482ca07df2ea842dc1a084b152efece898e92.jpg)
 
-Drone programming is the technical basis of every drone show. It covers the **precise planning, synchronisation and execution** of an entire performance, usually involving dozens or hundreds of drones, as well as the control of individual aircraft.
+## What is Drone Programming?
 
-A show drone follows a **predefined GPS-based flight path**, rather than being flown with a remote control. These paths are programmed and simulated on a computer in advance, then transferred to each drone.
+Drone programming is the technical foundation of every drone show. It’s not just about flying individual drones but about precisely planning, synchronizing, and executing a complex aerial performance – often involving dozens or even hundreds of drones.
+A show drone doesn’t operate via remote control. It follows a pre-defined, GPS-based flight path. These paths are created beforehand on a computer, simulated, and then uploaded to each individual drone.
 
-## The main building blocks of a drone show
+## Key Components of a Drone Show
 
-### 1. Dedicated show drones
+### 1\. Special Show Drones
 
-[Show drones](/en/blog/2025-03-31-drohnen-feuerwerk-als-alternative/) are **smaller and lighter** than conventional camera drones. They have bright LEDs and are designed to fly in sync. They usually have **GPS, an altimeter and a gyroscope**, and some also use RTK, or Real Time Kinematics, for very precise positioning.
+These [show drones](/en/blog/2025-03-31-drohnen-feuerwerk-als-alternative/) are smaller and lighter than standard camera drones. They feature powerful LEDs, are optimized for synchronization, and usually include GPS, altimeters, gyroscopes, and sometimes RTK (Real Time Kinematics) technology for highly accurate positioning.
 
-### 2. Planning and choreography software
+### 2\. Planning and Choreography Software
 
-Software such as **[DroneShowSoftware](https://www.droneshowsoftware.com/)**, **Blender** with suitable plugins, or manufacturer solutions from **Verity** or Intel is used to design every flight movement.
+This is where the core of drone programming happens. Software like [DroneShowSoftware](https://www.droneshowsoftware.com/), Blender with custom plugins, or proprietary tools from providers like Verity or Intel allow you to choreograph each drone’s movement.
 
-Each drone receives its own route, timing and lighting sequence. The challenge is to avoid collisions, create smooth transitions and readable shapes, all coordinated with music and lighting.
+Each drone receives its own flight path, timing, and lighting instructions. The challenge: no collisions, smooth transitions, impressive shapes – all synchronized with music and lights.
 
-### 3. Simulation and tests
+### 3\. Simulation \& Testing
 
-Before flying outdoors, everything is simulated on a computer. Data from the drone hardware is assessed to check the reliability of the show. Wind, flight speed and starting positions are checked before testing can begin.
+Before taking to the skies, everything is simulated on a computer. Wind, speed, and take-off positions are verified. Only once everything checks out can the drones be tested in the field.
 
-### 4. Communication and safety systems
+### 4\. Communication \& Safety Systems
 
-A **central ground station** communicates with the whole drone fleet. A stable connection to every aircraft is essential. The station supervises the show and intervenes when needed, for example if GPS fails or a collision is threatened.
+A central [ground station](https://www.sphengineering.com/flight-planning/ugcs) communicates with the entire drone fleet. It manages show execution and intervenes if needed – for instance, in the case of GPS loss or risk of collision.
 
-## A possible programming process
+## The Process of Programming a Drone Show
 
-### 1. The idea and 3D design
+### 1\. Concept and 3D Design
 
-It starts with a concept: a company logo in the sky, a dancer or an animated story in several scenes. These motifs are usually designed in **3D software**.
+Every show starts with an idea: a company logo in the sky? A dancing figure? An animated storyline in multiple scenes? These visuals are typically created in 3D modeling software.
 
-### 2. Flight paths and lighting
+### 2\. Flight Paths and Lighting Effects
 
-The 3D models are converted into individual points, each represented by a drone. Every movement needs a **flight path**, and every lighting cue needs a **time assignment**. This is where the programming takes shape.
+The 3D designs are broken down into points – each represented by a single drone. Every movement needs a flight path, every light signal a time cue. This is the essence of drone programming.
 
-### 3. Computer simulation
+### 3\. PC Simulation
 
-Planning software simulates flight paths in real time. This reveals close encounters and jerky movements. Changes are easier to make at this stage than out in the field.
+Flight paths are simulated in real-time within the planning software. This stage reveals whether any drones come too close or movements appear too abrupt. Adjustments are far easier here than during field tests.
 
-### 4. Upload and field tests
+### 4\. Upload \& Field Test
 
-Once simulations pass, the final code is **loaded onto the drones**. Test flights under real conditions are used to refine the remaining details.
+Once simulations are approved, the final code is uploaded to the drones. Real-world test flights help fine-tune the performance.
 
-### 5. The live show
+### 5\. Live Show Execution
 
-Final safety checks before the event cover **GPS signal strength, weather and no-fly zones**. During the show, the ground station supervises the sequence while each drone autonomously follows its path.
+Pre-show safety checks include GPS signal quality, weather conditions, and airspace regulations. During the show, the ground station manages the sequence, while each drone follows its programmed route.
 
-## Drone shows by FlyingStars
+## Challenges in Drone Programming
 
-We specialise in **drone light shows**, combining technology and creative concepts for sporting events, large city festivals, corporate events and private celebrations.
+- **Weather Dependency**: Strong wind or rain can make drone shows unsafe.
+- **Safety Protocols**: A robust fail-safe strategy is essential – e.g., emergency landings in case of technical issues.
+- **Airspace Authorization**: Authorities like aviation bodies must grant flight clearance – especially for night operations.
+- **Synchronization**: Perfect timing is key – particularly when music, lighting, and movement need to align.
+[![Digitale Dipul Karte](/media/wordpress/41faf1d040d40bb3d8155c62cd8114e485a8a354f885090fd08ad36fe4e44ff2.jpg)](https://maptool-dipul.dfs.de/)
 
-Explore our [prices](/en/drohnenshow-preise/) and enquire about a show.
+maptool-dipul.dfs.de
 
-![FlyingStars logo in black, purple and turquoise](https://flyingstars.art/wp-content/uploads/2025/02/was-kostet-eine-drohne-flyingstars-logo-1024x499.jpg)
+## How Much Does Drone Programming Cost?
+
+Programming is one part of the total show cost. Depending on length, complexity, and number of drones, total show prices range from €3,000 to €100,000. Programming typically accounts for 10–20% of that – a worthwhile investment for a flawless performance.
+
+## Conclusion: Drone Programming is Precision and Art Combined
+
+Drone shows may look magical, but they are built on meticulous planning, advanced technology, and sophisticated software. Drone programming transforms creative ideas into millimeter-precise flight displays.
+
+If you’re passionate about technology, lighting design, or digital storytelling, this is a fascinating field – one with the power to evoke awe and lasting impressions.
+
+Read more about [flying drones at night](/en/blog/2025-03-31-drohnen-fliegen-nachts-dunkel/), [the cost of show drones](/en/blog/2025-02-28-drohne-kosten/) and [drone shows as an alternative to fireworks](/en/blog/2025-03-31-drohnen-feuerwerk-als-alternative/).

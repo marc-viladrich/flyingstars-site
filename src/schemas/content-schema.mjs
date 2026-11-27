@@ -85,7 +85,7 @@ const rawSectionSchema = z.discriminatedUnion('type', [
     headline: fieldPolicy(z.string().min(1), 'translatable'), text: fieldPolicy(z.string().min(1), 'translatable'), eyebrow: fieldPolicy(z.string().optional().describe('Kicker über der Headline'), 'translatable'),
     words: z.array(keyedText(fieldPolicy(z.string().min(1), 'translatable'))).optional().describe('Wechselndes Wort im Verlauf hinter der Headline'),
     cta: link, secondary: link.optional(),
-    poster: image, video: fieldPolicy(z.url(), 'shared'), stats: z.array(z.object({ label: fieldPolicy(z.string(), 'translatable'), value: businessValueSchema })).optional(),
+    poster: image, video: z.union([fieldPolicy(z.url(), 'shared'),fieldPolicy(z.string().regex(/^\/media\/video\/wordpress-[a-f0-9]{64}\.mp4$/), 'shared')]), stats: z.array(z.object({ label: fieldPolicy(z.string(), 'translatable'), value: businessValueSchema })).optional(),
   }),
   z.object({
     type: fieldPolicy(z.literal('occasions'), 'shared'), ...sectionHeading,
@@ -523,13 +523,15 @@ export const pageSchema = keyedSchema(z.object({
     description: fieldPolicy(z.string().refine(text=>{const n=factText(text).length;return n>=50&&n<=160;},'Beschreibung braucht nach Faktenprojektion 50–160 Zeichen'), 'translatable'),
     noindex: fieldPolicy(z.boolean().default(false), 'shared'),
     // Optional preview image for social shares; must come from an approved media host.
-    image: fieldPolicy(z.url().optional(), 'shared'),
+    image: imageSource.optional(),
     navLabel: fieldPolicy(z.string().optional().describe('Kurzer Name in Listen. Anlass-Seiten: Menü und Footer nutzen menuLabel aus src/content/occasions.json'), 'translatable'),
     sections: z.array(sectionSchema).min(1),
   }));
 
 export const postSchema = keyedSchema(z.object({
     authorId:personId,
+    // Bestehende WordPress-Fassung mit eigenen Sprachversionen, Bildern und Datumsangaben.
+    legacyPath: fieldPolicy(z.string().regex(/^\/(?:en\/)?[a-z0-9-]+$/).optional(), 'shared'),
     ...translationMeta,
     title: fieldPolicy(z.string().min(1), 'translatable'),
     description: fieldPolicy(z.string().refine(text=>{const n=factText(text).length;return n>=50&&n<=160;},'Beschreibung braucht nach Faktenprojektion 50–160 Zeichen'), 'translatable'),

@@ -3,11 +3,11 @@ import {parseArgs} from 'node:util';
 import {fileURLToPath} from 'node:url';import path from 'node:path';
 import {createSite} from './flyingstars-adapter.mjs';
 import {readContractRecords} from '../src/i18n/read-contracts.mjs';
-import {dependenciesFromRecords,isSource,verifyCurrent,prepareLocale,stamp,same,contentData} from '../src/i18n/transaction.mjs';
+import {dependenciesFromRecords,requiresTranslation,verifyCurrent,prepareLocale,stamp,same,contentData} from '../src/i18n/transaction.mjs';
 const {values}=parseArgs({options:{locale:{type:'string'},source:{type:'string'},'site-root':{type:'string'},'state-dir':{type:'string'},'dry-run':{type:'boolean'},'sync-shared':{type:'boolean'},print:{type:'boolean'}}});
 if(!['en','nl'].includes(values.locale))throw Error('--locale en oder --locale nl angeben.');
 if(!values['dry-run']&&!values['sync-shared'])throw Error('Die Site verwendet vollständige Sprachdateien. --dry-run prüft den Vertrag; --sync-shared synchronisiert ausschließlich gemeinsame Werte ohne Textfreigabe.');
-const root=path.resolve(values['site-root']||values.source||fileURLToPath(new URL('../',import.meta.url))),site=await createSite(root),records=readContractRecords(root,site),dependencies=dependenciesFromRecords(records),sources=records.filter(r=>isSource(r.id)),findings=[],proposals=[];
+const root=path.resolve(values['site-root']||values.source||fileURLToPath(new URL('../',import.meta.url))),site=await createSite(root),records=readContractRecords(root,site),dependencies=dependenciesFromRecords(records),sources=records.filter(requiresTranslation),findings=[],proposals=[];
 for(const source of sources)for(const locale of values['sync-shared']?['en','nl']:[values.locale]){const id=source.id.replace('/',`/${locale}/`),target=records.find(r=>r.id===id);if(!target){findings.push({id,state:'missing'});continue;}
  try{verifyCurrent(site.sourceFor(source.id).schema,source.data,target.data,locale,dependencies);}catch(error){findings.push({id,state:'stale',reason:error.message});}
  if(values['sync-shared']){const {result,needed}=prepareLocale(site.sourceFor(source.id).schema,source.data,target.data,locale,dependencies);if(needed.length)throw Error('Textprüfung nötig: '+id+' '+needed.join(', '));if(!same(result.projection,contentData(target.data)))proposals.push({id,data:{...stamp(result),translationSourceHash:target.data.translationSourceHash,translationContractVersion:target.data.translationContractVersion,translationEvidence:target.data.translationEvidence}});}

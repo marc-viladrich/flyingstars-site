@@ -1,12 +1,12 @@
 /** Fixed sources only: this cannot be used as an arbitrary URL proxy. */
 export const videos = {
-  showreel: 'https://flyingstars.art/wp-content/uploads/2026/05/Flyingstars-Showreel.mp4',
+  showreel: '/media/video/wordpress-3ac827bd54aa2febfe1d422f230ff2d5463b871772e3da48da704a3a3339214d.mp4',
   bokkenrijders: 'https://flyingstars-relaunch.vercel.app/media/projekte/bokkenrijders.mp4',
   nfl: 'https://flyingstars-relaunch.vercel.app/media/projekte/nfl.mp4',
   ford: 'https://flyingstars-relaunch.vercel.app/media/projekte/ford.mp4',
   puma: 'https://flyingstars-relaunch.vercel.app/media/projekte/puma.mp4',
   // Indoor-Show Siemens, Hannover Messe 03/2025. Alle sechs Originale sind bereits ohne Tonspur.
-  siemensIndoor: 'https://flyingstars.art/wp-content/uploads/2025/04/Siemens-Overview.mp4',
+  siemensIndoor: '/media/video/wordpress-37f6bb19e91c84f3b74f41ed4e3f780ac7d46fd42b53931c7cf5a993a300179b.mp4',
 } as const;
 type VideoKey = keyof typeof videos;
 
@@ -33,7 +33,8 @@ export function videoPath(src: string, variant: 'full' | 'preview' | 'mobile' = 
   if (!key) throw new Error('Videoquelle ist nicht registriert.');
   if (variant === 'preview') return videoPreviews[key];
   if (variant === 'mobile') return videoMobile[key] ?? videoPreviews[key];
-  // Originale bleiben extern. Im Dev-Server gibt es die Pages Function nicht; Build und Produktion nutzen
+  if (videos[key].startsWith('/')) return videos[key];
+  // Andere registrierte Originale bleiben extern. Im Dev-Server gibt es die Pages Function nicht; Build und Produktion nutzen
   // denselben festen Proxy wie bisher. Keine erfundenen WebM-Aliase auf eine MP4-Quelle.
   return import.meta.env?.DEV || (import.meta.env?.SSR && process.env.AFE_MODE==='editor') ? videos[key] : `/api/media?asset=${key}`;
 }

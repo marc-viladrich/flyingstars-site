@@ -4,10 +4,13 @@ type Connection = EventTarget & { saveData?: boolean };
 let reduced: MediaQueryList | undefined;
 const listeners = new Set<(policy: MotionPolicy) => void>();
 let stop: (() => void) | undefined;
+export function readMotionPolicy(preference = matchMedia('(prefers-reduced-motion: reduce)')): MotionPolicy {
+  return { reduced: preference.matches, globalPaused: document.documentElement.classList.contains('motion-paused'), pageVisible: !document.hidden,
+    saveData: Boolean((navigator as Navigator & { connection?: Connection }).connection?.saveData) };
+}
 export function getMotionPolicy(): MotionPolicy {
   reduced ??= matchMedia('(prefers-reduced-motion: reduce)');
-  return { reduced: reduced.matches, globalPaused: document.documentElement.classList.contains('motion-paused'), pageVisible: !document.hidden,
-    saveData: Boolean((navigator as Navigator & { connection?: Connection }).connection?.saveData) };
+  return readMotionPolicy(reduced);
 }
 export function subscribeMotionPolicy(listener: (policy: MotionPolicy) => void): () => void {
   listeners.add(listener);

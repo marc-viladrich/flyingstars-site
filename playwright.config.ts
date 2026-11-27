@@ -8,7 +8,8 @@ export default defineConfig({
   fullyParallel: true,
   retries: process.env.CI ? 1 : 0,
   reporter: process.env.CI ? [['list'], ['html', { open: 'never' }]] : 'list',
-  use: { baseURL: `http://127.0.0.1:${port}`, trace: 'retain-on-failure' },
+  // Die Seitentests starten in der deutschen Fassung. Sprachpräferenztests setzen ihren eigenen Browser-Locale.
+  use: { locale: 'de-DE', baseURL: `http://127.0.0.1:${port}`, trace: 'retain-on-failure' },
   webServer: { command: `npx astro preview --ignore-lock --host 127.0.0.1 --port ${port}`, url: `http://127.0.0.1:${port}/`, reuseExistingServer: false, timeout: 60_000 },
   projects: [
     { name: 'desktop', use: { ...devices['Desktop Chrome'] } },

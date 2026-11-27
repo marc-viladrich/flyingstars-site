@@ -22,7 +22,7 @@
     "field": "drones"
   },
   "cover": {
-    "src": "https://flyingstars.art/wp-content/uploads/2025/07/Heiratsantrag_Headerbild.jpg",
+    "src": "/media/wordpress/e5335e03c0f24b635a352d38986c5c1699fe65d337d73502a9a20db4b558f8c9.jpg",
     "alt": "Eine Hand mit Ring aus Drohnen über den Baumkronen am Schloss Hugenpoet",
     "width": 2063,
     "height": 1303
@@ -95,7 +95,7 @@
         "title": "Musik führt zum Antrag.",
         "text": "Am 10. September 2024 begleitete eine Violinistin die künftige Braut vom Innenhof durch Schloss Hugenpoet. Im Garten wartete ihr Partner. Über ihm leuchtete das Datum 10.09., der gemeinsame Geburtstag der beiden.",
         "image": {
-          "src": "https://flyingstars.art/wp-content/uploads/2025/07/Heiratsantrag_Headerbild.jpg",
+          "src": "/media/wordpress/e5335e03c0f24b635a352d38986c5c1699fe65d337d73502a9a20db4b558f8c9.jpg",
           "alt": "Eine Hand mit Ring aus Drohnen über den Baumkronen am Schloss Hugenpoet",
           "caption": "Eine Hand mit Ring aus Drohnen über den Baumkronen am Schloss Hugenpoet"
         },
@@ -105,7 +105,7 @@
         "title": "Aus der Schatulle wird ein Ring.",
         "text": "{{project.heiratsantrag-hugenpoet.drones}} Drohnen bildeten über den Baumkronen eine Schmuckschatulle. Ein Ring bewegte sich daraus an den Finger einer dargestellten Hand. Diese Abfolge verband das Motiv mit dem bevorstehenden Antrag.",
         "image": {
-          "src": "https://flyingstars.art/wp-content/uploads/2025/07/Heiratsantrag_Headerbild.jpg",
+          "src": "/media/wordpress/e5335e03c0f24b635a352d38986c5c1699fe65d337d73502a9a20db4b558f8c9.jpg",
           "alt": "Eine Hand mit Ring aus Drohnen über den Baumkronen am Schloss Hugenpoet",
           "caption": "Eine Hand mit Ring aus Drohnen über den Baumkronen am Schloss Hugenpoet"
         },
@@ -115,7 +115,7 @@
         "title": "Die Frage steht am Himmel.",
         "text": "Danach formten die Drohnen die Frage „Do you want to be my Forever?“. Sie sagte Ja. Freund:innen und Familie waren als Überraschungsgäste dabei und sahen anschließend weitere Showmotive.",
         "image": {
-          "src": "https://flyingstars.art/wp-content/uploads/2025/07/Heiratsantrag_Headerbild.jpg",
+          "src": "/media/wordpress/e5335e03c0f24b635a352d38986c5c1699fe65d337d73502a9a20db4b558f8c9.jpg",
           "alt": "Eine Hand mit Ring aus Drohnen über den Baumkronen am Schloss Hugenpoet",
           "caption": "Eine Hand mit Ring aus Drohnen über den Baumkronen am Schloss Hugenpoet"
         },

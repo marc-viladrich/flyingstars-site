@@ -1,98 +1,74 @@
 ---
-authorId: florian-becker
-title: How does a drone show work?
-description: The technology, programming and production of a drone show, plus creative uses and the
-  requirements for staging one.
-date: "2025-01-14T00:00:00.000Z"
-updated: "2026-09-22T00:00:00.000Z"
-tags:
-  - Drohnenshow
-  - Technik
-cover:
-  src: https://flyingstars.art/wp-content/uploads/2025/01/lehrer-zeigt-wie-drohnenshow-funktioniert.jpg
-  alt: A man explains a white drone while a child holds a green drone.
-  width: 1600
-  height: 1067
+authorId: "florian-becker"
+legacyPath: "/en/how-do-they-do-the-drone-light-show"
+title: "How does a drone show work?"
+description: "How do they do the drone light show? Discover how synchronized drones create stunning light shows—perfect for events & celebrations!"
+date: "2025-02-19"
+updated: "2025-02-20"
+cover: {"src": "/media/wordpress/f950eb3d083151b96c9c6781f67f4a754f52ba8b97b4a40b2393ac8128fa1c86.jpg", "alt": "Teacher shows how a drone show works", "width": 1600, "height": 1067}
 draft: false
-translationSourceHash: f5b1aeea95da30c50d8c7e39bddeae867b36c6e4eda5a4f61ea198cfe64cfe6f
-translationContractVersion: 2
-translationEvidence:
-  version: 2
-  addressing: stable-keys
-  locale: en
-  sourceFingerprint: f5b1aeea95da30c50d8c7e39bddeae867b36c6e4eda5a4f61ea198cfe64cfe6f
-  legacy:
-    provenanceFile: docs/i18n/content-provenance.json
-    migration: I01-v2-2026-11-04
-  fields:
-    - address: /body
-      sourceFingerprint: 31e4baaf544149a2174750e9eac534b3265478cabca4d296e9d99c356c87dbcb
-      targetFingerprint: bb0bd09c92ae6a3836dc92aec74dde7560f83f3389a06365592b09bf8038a86a
-      status: adopted-existing
-    - address: /cover/alt
-      sourceFingerprint: fdad0e41028426439fae2c60f8dd86512891c27f83285e8ce73a6a290e34931b
-      targetFingerprint: 32adb80a2f487ebfc9dd3ebd6a0b96310f60a006f6c17c0bd0538628eb31cc06
-      status: adopted-existing
-    - address: /description
-      sourceFingerprint: ec1f10aeebaf0a8b2aa49b9b3222a8f016038ec0ec0de6e229d8262ddcbdde4d
-      targetFingerprint: fed52e37f16d70a3e4e66bb5e943f5cba96dee51e35a5f904535e55a7b397870
-      status: adopted-existing
-    - address: /title
-      sourceFingerprint: 4165c1ef92233adf11fd78cf9c4cb3c6815a943848a4873c748fe7276e362b7b
-      targetFingerprint: e0479f3b591b678b96c312b6efaa476ae2a050f97be0a4eae737a6bc34d2120c
-      status: adopted-existing
 ---
-How does a drone show work? Picture hundreds of drones moving in sync across the night sky, forming illuminated pictures, symbols and animations. Behind the performance are flight technology, creative programming and precise coordination. This article explains the technology, programming and design that make a drone show possible.
+
+How does a drone show actually work? Imagine hundreds of drones dancing perfectly synchronized in the night sky, forming glowing images, symbols, or even animations. Behind these breathtaking spectacles lies a fascinating blend of high-tech, creative programming, and precision. But how exactly does a drone show work? In this article, we take a closer look at the technology, programming, and creative artistry behind these mesmerizing performances.
 
 ## What is a drone and how does it work?
 
-A drone is an unmanned aircraft controlled remotely or autonomously by software. Several propellers provide lift and move it in different directions. Sensors such as GPS, accelerometers and gyroscopes help determine its position and speed. Our article on [how a drone works](https://flyingstars.art/drohnen-aufbau-funktionsweise) explains more about the technology and controls. Light-show drones also have LEDs that create the colours and effects seen in the sky.
+A drone is an unmanned aerial vehicle that is controlled remotely or autonomously through software. Drones have multiple propellers that provide lift and enable movement in different directions. Sensors such as GPS, accelerometers, and gyroscopes allow the drone to precisely determine its position and speed. Light show drones are equipped with LED lights, which are used to create visual light and color effects.
 
-![A drone show at dusk](https://flyingstars.art/wp-content/uploads/2025/01/drohne-in-daemmerung-e1737555383718.jpg)
+![How does a drone show work at dusk?](/media/wordpress/49d8cfc8d81233c28e4916dfcdf4b3e61ade8c4032c4f513896855606e65ca34.jpg)
 
-## The technology and programming behind drone shows
+## Technology and Programming Behind Drone Shows
 
-Drone movements are programmed using specialist software. It calculates the choreography in advance so the aircraft can fly in sync and safely. This coordination makes animated pictures and light effects possible.
+The technology behind drone shows is highly complex. The movements of the drones are programmed using specialized software. This software calculates the choreography of the flying devices in advance, allowing them to fly synchronously and safely. Synchronization is crucial for creating impressive animations and lighting effects.
 
-### Key parts of the programming
+### Important Elements of Programming:
 
-1. **Software and sensors:** Software controls flight paths, speed and position.
-2. **Choreography and animation:** Creative programming defines movements and formations, combining technical work with design.
-3. **LEDs:** These produce coloured light effects and pictures in the night sky.
+1. **Software and Sensors:** Drones are equipped with powerful software that controls flight routes, speed, and position.
 
-## How a drone show unfolds
+1. **Choreography and Animations:** Movements and formations are determined through creative programming. This is where technology meets art.
 
-A drone show starts on the ground. The drones are prepared and loaded with the information they need for the performance. After take-off, they follow a precise choreography to create pictures and animations.
+1. **LED:** They create colorful lighting effects and images in the night sky.
 
-### The main stages
+## Process of a Drone Show
 
-- **Preparation:** The required number of drones is positioned according to a planned animation grid.
-- **Take-off and formations:** The drones take off in sync and fly into predefined formations.
-- **Movement and animation:** Precise flight paths create moving pictures and light effects.
-- **Return and finish:** After the show, the drones return safely to their starting point.
+A drone show begins on the ground, where the drones are prepared and programmed with the necessary information for their upcoming performance. After takeoff, the drones move according to a precise choreography to create various images and animations.
 
-## Creative uses
+### Key Steps in the Process:
 
-Drone shows are both technical productions and artistic performances. Businesses and event organisers use them for city festivals, corporate events and private celebrations. Clients value the flexibility and freedom to create their own designs.
+- **Preparation:** The required number of drones is positioned according to a pre-designed animation grid.
 
-### Typical occasions
+- **Takeoff and Formations:** The drones lift off synchronously and fly in pre-determined formations.
 
-- **Events:** Drone shows can be a highlight at large events and festivals.
-- **Businesses:** Companies use them for PR campaigns and product launches.
-- **Arts and culture:** Drone shows can become moving works of art.
+- **Movements and Animations:** Spectacular images and light shows are created through precise flight movements.
 
-## Limits and challenges
+- **Return and Conclusion:** After the show, the drones safely return to their starting point.
 
-The number of drones a show can use depends on having enough space that can be secured for the duration of the show, as well as consent from the landowners. Permits from the relevant authorities and suitable technical infrastructure are also essential. All applicable flight regulations must be followed.
+## Creative Possibilities and Applications
 
-## Tips for planning a drone show
+Drone shows are not only technical masterpieces but also artistic performances. Companies and event organizers use them for city festivals, corporate events, and even private celebrations. Clients appreciate the flexibility and creative freedom that drone shows offer.
 
-If you're planning a drone show, consider the following:
+### Typical Use Cases:
 
-- **Choose an experienced provider:** Experience helps deliver a professional performance.
-- **Check the setting:** The venue needs enough space and a clear view of the sky.
-- **Develop a creative choreography:** Music, movement and lighting work together to make the show memorable.
+- **Events:** Drone shows are highlights at large events and festivals.
 
-## How it all comes together
+- **Companies:** Businesses use them for PR campaigns and product launches.
 
-Drone shows combine technology, art and creative design. They can be used as an [alternative to fireworks](/en/blog/2025-03-31-drohnen-feuerwerk-als-alternative/). Precise programming and specialist software coordinate flight movements, light effects and choreography to create a visual performance in the night sky for many kinds of events.
+- **Art and Culture:** Drone shows serve as moving works of art.
+
+## Limits and Challenges
+
+The number of drones that can be used in a show depends on the available space, which must be secured for the duration of the show, as well as the necessary approvals from property owners. Additionally, permissions from relevant authorities and the technical infrastructure are crucial. Furthermore, all legal regulations for flight operations must be followed.
+
+## Tips for Successful Drone Shows
+
+If you are planning a drone show, consider the following tips:
+
+- **Choose experienced providers:** Companies with experience offer professional performances.
+
+- **Consider the setting:** The venue should provide enough space and a clear view of the sky.
+
+- **Opt for creative choreographies:** Innovative choreography with music and lighting effects ensures an unforgettable experience.
+
+## Conclusion – How Drone Shows Work
+
+Drone shows are mesmerizing light displays that combine technology, art, and creativity. Through precise programming and powerful software, spectacular performances come to life in the night sky. With a combination of synchronized flight movements, lighting effects, and artistic design, they offer a unique visual experience for events of all kinds.

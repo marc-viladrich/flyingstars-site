@@ -7,8 +7,8 @@
 import { LOCALES, LOCALE_NAMES, localizedHref, type Locale } from '../i18n/routing.mjs';
 import { createTranslator } from '../i18n/ui.mjs';
 import Icon from './Icon.astro';
-interface Props { locale: Locale; path: string; id: string; }
-const { locale, path, id } = Astro.props;
+interface Props { locale: Locale; path: string; id: string; available?: readonly Locale[]; }
+const { locale, path, id, available = LOCALES } = Astro.props;
 const t = createTranslator(locale);
 const popId = `lang-${id}`;
 ---
@@ -20,17 +20,29 @@ const popId = `lang-${id}`;
   </button>
   <div id={popId} class="lang-pop">
     <ul class="glide-list" style={`--n: ${LOCALES.length}`} aria-label={t('language.choose')}>
-      {LOCALES.map((language) => <li><a href={localizedHref(path, language)} lang={language} hreflang={language} aria-current={language === locale ? 'page' : undefined} data-language-link><span>{LOCALE_NAMES[language]}</span><span class="lang-code">{language.toUpperCase()}</span></a></li>)}
+      {LOCALES.map((language) => <li><a href={localizedHref(available.includes(language) ? path : '/blog/', language)} lang={language} hreflang={language} aria-current={language === locale ? 'page' : undefined} data-language-link><span>{LOCALE_NAMES[language]}</span><span class="lang-code">{language.toUpperCase()}</span></a></li>)}
       <li class="glide-mark" aria-hidden="true"></li>
     </ul>
   </div>
 </div>
 <script>
+  import { LOCALE_CHOICE_KEY, LOCALE_SWITCHED_COOKIE } from '../i18n/routing.mjs';
   // Preserve configurator selections, selected extras and deep section links when switching language.
   document.querySelectorAll<HTMLAnchorElement>('[data-language-link]').forEach((link) => {
     const target = new URL(link.href);
     target.search = location.search; target.hash = location.hash;
     link.href = target.href;
+    link.addEventListener('click', () => {
+      try {
+        sessionStorage.setItem(LOCALE_CHOICE_KEY, link.hreflang);
+      } catch {
+        // Auch bei gesperrtem Sitzungsspeicher bleibt das Linkziel erreichbar.
+      }
+      // The hosting layer only needs to know that the tab may have its own preference.
+      try {
+        document.cookie = `${LOCALE_SWITCHED_COOKIE}=1; Path=/; SameSite=Lax; Secure`;
+      } catch { /* The link still navigates to the selected language. */ }
+    });
   });
   // Vergleichsvariante nur mit Symbol (Marc: „vielleicht reicht das Icon schon“)
   if (new URLSearchParams(location.search).get('sprache') === 'icon') document.documentElement.dataset.langSwitch = 'icon';

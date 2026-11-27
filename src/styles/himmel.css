@@ -91,14 +91,13 @@ main:has(+ .footer) > div:last-of-type > section:last-of-type {
    Der markierte Begriff jeder Überschrift (.grad) steht zuerst in der dünnsten Stärke der Space Grotesk (300) und füllt sich,
    wenn er gut im Bild ist (staerke.ts setzt .st-an), in einem Schwung zur Stärke seiner Überschrift: kurz stehen bleiben,
    dann schnell füllen und weich ankommen, ohne über das Ziel hinaus (Runde 9, Marc: „deutlich lebendigeres Auffüllen“).
-   Hülle je Wort (staerke.ts): ::before ist die unsichtbare Kopie in der Endstärke (Block der Höhe 0 vor der Textzeile, damit
-   die Grundlinie die des sichtbaren Worts bleibt) und bestimmt allein die Breite; .st-v (das sichtbare Wort) trägt mit
-   width: 0 nichts dazu bei (die Prozent-Mindestbreite zählt beim Ausmessen nicht) und füllt dann die Hülle. So verschiebt sich
-   beim Dickerwerden nichts, und der Umbruch steht vom ersten Bild an. Vor dem Einhüllen (erste Millisekunden) ist das ganze
-   Wort dünn. Ohne Bewegung (kein html.reveal, html.motion-paused) steht sofort die Endstärke. Kein Schein, kein Einblenden. */
+   Hülle je Wort (staerke.ts): ::before misst das Wort in der Endstärke und bleibt als unsichtbarer Inline-Block in derselben
+   Zeile. Ein Block unterbricht die Phrasensuche in Firefox. Das sichtbare Wort (.st-v) zählt bei der Breitenmessung nicht mit
+   (width: 0, prozentuale Mindestbreite). Der negative Endabstand der Kopie lässt das sichtbare Wort am Zeilenanfang
+   der Hülle beginnen. Beim Dickerwerden bleiben Position und Umbruch fest. Vor dem Einhüllen ist das ganze Wort dünn. Ohne Bewegung (kein html.reveal, html.motion-paused) steht sofort die Endstärke. Kein Schein, kein Einblenden. */
 /* .grad davor: schlägt allgemeine span-Regeln von Überschriften (etwa .eco-title span { display: block }) */
-.grad .st-w { display: inline-block; }
-.grad .st-w::before { content: attr(data-t); display: block; height: 0; overflow: hidden; visibility: hidden; white-space: nowrap; }
+.grad .st-w { display: inline-block; white-space: nowrap; }
+.grad .st-w::before { content: attr(data-t); display: inline-block; height: 0; overflow: hidden; visibility: hidden; white-space: nowrap; margin-inline-end: -100%; }
 .grad .st-v { display: inline-block; width: 0; min-width: 100%; white-space: nowrap; }
 /* Verlauf je Wort, ausgerichtet am ganzen Begriff (staerke.ts verlauf(): --st-bw Breite des Begriffs, --st-bx Versatz des
    Worts); nötig, weil WebKit background-clip: text nicht in inline-block-Kinder malt. Die Malfläche reicht 0,3 em über die

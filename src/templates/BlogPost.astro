@@ -3,12 +3,12 @@ import {body,field,editorBuild} from 'astro-frontend-editor/markers';
 import { localizedCollection } from '../i18n/content';
 import { forPath } from '../i18n/server';
 const { t, localHref, formatLocale } = forPath(Astro.url.pathname);
-import { localeFromPath } from '../i18n/routing.mjs';
+import { localeFromPath, localeOfId, sourceId } from '../i18n/routing.mjs';
 const locale = localeFromPath(Astro.url.pathname);
 // Blogartikel auf Seitenniveau (Marc, 31.10.2026, Runde 8): Kicker mit Thema, Titel, Autor mit Foto, Datum und Lesezeit,
 // Titelbild mit Vorhang, lesbare Spalte (rund 68 Zeichen), am Ende Autor, Anfrage und zwei weitere Beiträge.
 // Der Artikeltext bleibt wörtlich wie auf flyingstars.art (Import 31.10.2026), Moritz überarbeitet ihn später.
-import { render, type CollectionEntry } from 'astro:content';
+import { getCollection, render, type CollectionEntry } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import Cta from '../components/sections/Cta.astro';
 import PostGrid from '../components/blog/PostGrid.astro';
@@ -16,16 +16,19 @@ import SectionHead from '../components/SectionHead.astro';
 import { optimizedImage } from '../lib/media';
 import { authorOf, dateOf, readingMinutes, topicOf, sortPosts } from '../components/blog/post-meta';
 import PostBody from '../components/blog/PostBody.astro';
+import PostToc from '../components/blog/PostToc.astro';
 import { cornerstoneOf } from '../components/blog/cornerstone';
 interface Props { post: CollectionEntry<'posts'> }
 const { post } = Astro.props;
+const alternateLocales = (await getCollection('posts', (entry) => !entry.data.draft && sourceId(entry.id) === sourceId(post.id))).map((entry) => localeOfId(entry.id));
 const AUTHOR = authorOf(post);
 const authorRole = AUTHOR.role[locale];
 const authorBio = AUTHOR.authorBio?.[locale]
   ?? `${AUTHOR.name} ${t('blogpost.runsFlyingstarsTogetherWithRonjaDonsbachAndErwinWilmsHe')}`;
 const teamHref = localHref('/ueber-uns/#team');
 const authorRecord = { collection: 'people', id: AUTHOR.id };
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
+const contents = post.data.legacyPath ? headings : [];
 const cover = post.data.cover ? await optimizedImage(post.data.cover.src, 1600) : undefined;
 const face = await optimizedImage(AUTHOR.image.src, 160);
 const more = sortPosts(await localizedCollection('posts', locale, p => !p.data.draft && p.id !== post.id)).slice(0, 3);
@@ -46,14 +49,14 @@ const jsonLd = JSON.stringify({
   image: cs ? cs.cover.social.map((s) => abs(s.src)) : cover ? [abs(cover.src)] : undefined,
 }).replace(/</g, '\\u003c');
 ---
-<Base title={post.data.title} description={post.data.description} image={cs ? undefined : post.data.cover?.src} social={cs?.cover.social[0]} ogType="article" navSection="/blog/">
+<Base title={post.data.title} description={post.data.description} image={cs ? undefined : post.data.cover?.src} social={cs?.cover.social[0]} ogType="article" navSection="/blog/" alternateLocales={alternateLocales}>
   <Fragment slot="head">
     <meta name="robots" content="max-image-preview:large" />
     <script type="application/ld+json" set:html={jsonLd} />
   </Fragment>
-  <article class="section post" aria-labelledby="post-h" data-blog-layout={layout}>
+  <article class="section post" aria-labelledby="post-h" data-blog-layout={layout} data-legacy-blog={post.data.legacyPath}>
     <header class="post-head">
-      <a class="kicker mono post-back" href={localHref("/blog/")}><span aria-hidden="true">←</span> Blog · {topicOf(post)}</a>
+      <a class="btn small post-back" href={localHref("/blog/")}><span aria-hidden="true">←</span> Blog · {topicOf(post)}</a>
       <h1 id="post-h">{post.data.title}</h1>
       <div class="byline">
         <img class="face" src={face.src} width={face.width} height={face.height} alt="" loading="eager" decoding="async" />
@@ -64,13 +67,16 @@ const jsonLd = JSON.stringify({
     {cs ? <figure class="post-cover" data-curtain><picture><source srcset={cs.cover.avif} type="image/avif" /><img src={cs.cover.webp} width={cs.cover.width} height={cs.cover.height} alt={coverAlt} loading="eager" decoding="async" fetchpriority="high" /></picture></figure>
       : cover && <figure class="post-cover" data-curtain><img src={cover.src} {...cover.attributes} width={cover.width} height={cover.height} alt={post.data.cover!.alt} loading="eager" decoding="async" fetchpriority="high" /></figure>}
     {editing ? <div class="post-body" {...body(post)}><Content /></div>
-      : <PostBody postId={post.id} article={cs}><Content /></PostBody>}
+      : <PostBody postId={post.id} article={cs} preserveImages={Boolean(post.data.legacyPath)}>
+          <PostToc headings={contents} locale={locale} />
+          <Content />
+        </PostBody>}
     <aside class="post-author" aria-label={t('blogpost.aboutTheAuthor')}>
       <img class="face" src={face.src} width={face.width} height={face.height} alt={AUTHOR.name} loading="lazy" decoding="async" />
       <div>
         <p class="post-author-name"><b {...field(authorRecord, ['name'])}>{AUTHOR.name}</b> <span {...field(authorRecord, ['role', locale])}>{authorRole}</span></p>
         <p {...(AUTHOR.authorBio && field(authorRecord, ['authorBio', locale]))}>{authorBio}</p>
-        <a class="link" href={teamHref}>{t('blogpost.theTeam')} <span aria-hidden="true">→</span></a>
+        <a class="btn small" href={teamHref}>{t('blogpost.theTeam')} <span aria-hidden="true">→</span></a>
       </div>
     </aside>
   </article>
@@ -101,8 +107,9 @@ const jsonLd = JSON.stringify({
 
   /* Lesespalte: Fließtext in Inter, Zwischentitel in Space Grotesk, Links und Listenpunkte in Orange */
   .post :global(.post-body) { max-width: var(--measure); font-size: var(--text-md); line-height: 1.72; color: #c9bfb0; }
-  .post :global(.post-body > * + *) { margin-top: 1.1em; }
+  .post :global(.post-body > * + :not(.post-show-section), .post-show-section > * + :not(h2)) { margin-top: 1.1em; }
   .post :global(.post-body h2) { font-size: clamp(1.625rem, 2.4vw, 2.125rem); line-height: 1.12; margin-top: 1.6em; }
+  .post :global(.post-body .post-show-section > h2) { margin-top: 0; }
   .post :global(.post-body h3) { font-size: clamp(1.25rem, 1.7vw, 1.4375rem); line-height: 1.25; margin-top: 1.6em; }
   .post :global(.post-body :is(h2, h3) + *) { margin-top: 0.6em; }
   /* Ein Zwischentitel am Anfang eines Blocks (Cornerstone: Textblock, Szenenschritt, Kapitel) bringt keinen eigenen Abstand mit;
@@ -110,8 +117,8 @@ const jsonLd = JSON.stringify({
      Subheadings sind viel zu groß“, gemessen am iPhone: 82 px vor jedem Zwischentitel, bis 167 px zwischen Szenenschritten). */
   .post :global(.post-body :is(h2, h3):first-child) { margin-top: 0; }
   .post :global(.post-body strong) { color: var(--head); font-weight: 600; }
-  .post :global(.post-body a) { color: var(--accent); border-bottom: 1px solid var(--accent-line); transition: border-color var(--dur-control), color var(--dur-control); }
-  .post :global(.post-body a:hover) { color: var(--amber-light); border-color: var(--accent); }
+  .post :global(.post-body a:where(:not(.btn, .post-media-link))) { color: var(--accent); border-bottom: 1px solid var(--accent-line); transition: border-color var(--dur-control), color var(--dur-control); }
+  .post :global(.post-body a:where(:not(.btn, .post-media-link)):hover) { color: var(--amber-light); border-color: var(--accent); }
   .post :global(.post-body :is(ul, ol)) { padding-left: 1.3em; margin-bottom: 0; }
   .post :global(.post-body li) { padding-left: 0.3em; }
   .post :global(.post-body li + li) { margin-top: 0.5em; }
@@ -125,7 +132,7 @@ const jsonLd = JSON.stringify({
   .post-author .face { width: 4rem; height: 4rem; }
   .post-author-name { display: flex; flex-wrap: wrap; column-gap: var(--space-2); margin-bottom: var(--space-2); }
   .post-author b { color: var(--head); font-weight: 500; }
-  .post-author .link { margin-top: var(--space-2-5); display: flex; }
+  .post-author .btn { margin-top: var(--space-2-5); }
   .post-more { padding-top: 0; }
 
   @media (max-width: 45em) {

@@ -1,0 +1,17 @@
+# WordPress-Blogbestand vom 27. November 2026
+
+Ein Abgleich von Live-Sitemap, öffentlicher WordPress-REST-Antwort und Inventar ergab dieselben 64 Beitrags-URLs. Das Blog enthält die 28 Originalfassungen außerhalb der 36 Showberichte. Davon sind 18 deutsch und 10 englisch. Die beiden englischen Artikel zum niederländischen Feuerwerksverbot haben jeweils einen eigenen Pfad. Für die vorhandenen drei niederländischen Astro-Artikel und den Astro-Testflug bleiben die redaktionellen Fassungen erhalten.
+
+Die importierten Einträge haben einen `legacyPath`: Diese Originale können je Sprache in Inhalt, Datum und Bildern abweichen. Die deutschen Originale starten keinen Übersetzungsauftrag. Editor, Vorschau, Build und Übersetzungsprüfung verwenden dafür dieselbe Regel. Der Editor speichert Originale separat und schützt die historische URL. Blogdetailseiten setzen Hreflang anhand der tatsächlich vorhandenen öffentlichen Geschwister und verlinken im Sprachmenü bei fehlender Fassung auf die jeweilige Blogübersicht.
+
+Die Elementor-Hülle entfällt im Astro-Layout. Die Artikelkörper liegen als gewöhnliches Markdown vor, das Inhaltsverzeichnis entsteht aus den Zwischentiteln. Artikelüberschriften, Text, Listen, Links und Originalbilder werden übernommen. Drei fehlende Alternativtexte der Titelbilder sind ergänzt. Das HTML benutzt die Autorenbox für Florian gemäß Projektbriefing. Die alte dynamische Empfehlungen-Liste wird durch das Astro-Blogmodul ersetzt. Externe WordPress-Videoeinbettungen verweisen auf die jeweiligen Videos, ohne die Player beim Öffnen der Seite zu laden.
+
+Die Redirects kommen aus dem vorhandenen URL-Inventar. `node scripts/generate-public-delivery.mjs` generiert die Apache-Regeln und die Blog-Redirects für Cloudflare Pages. `node --test scripts/public-routes.test.mjs` prüft alle 28 Zielpfade, ihre Eindeutigkeit, Sprache und die Regeln beider Hosts. `node scripts/check-i18n-build.mjs` prüft die gebauten Sprachziele.
+
+Marc hat das FlyingStars-Titelbild zum deutschen Artikel „Drohnen im Dunkeln fliegen“ freigegeben. Es liegt als inhaltsadressierter Upload im Medienverzeichnis. Die übrigen Titelbilder behalten zunächst das WordPress-Motiv.
+
+## WordPress-Medien
+
+Alle aktiven Verweise auf den bisherigen WordPress-Medienpfad wurden lokalisiert. Die Prüfliste `wordpress-media-migration.json` dokumentiert Herkunft und SHA-256 jedes Imports. Die Originalbilder liegen in `src/assets/wordpress` und werden als lokale Medien ausgeliefert. Astro erzeugt Titelbilder und geteilte Komponentenvarianten beim Build aus diesen Quellen. Zwei bisher aus WordPress gestreamte MP4-Dateien liegen unter `public/media/video`. WordPress wird zum Ausliefern und für spätere Builds nicht benötigt.
+
+`node --test scripts/wordpress-media.test.mjs` prüft die Originaldateien und blockiert aktive externe WordPress-Medienverweise.

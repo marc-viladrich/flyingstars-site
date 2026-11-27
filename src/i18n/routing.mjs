@@ -1,5 +1,7 @@
 /** Locale and URL identities. Content IDs/slugs, anchors, query values and assets stay stable. */
 export const LOCALES = ['de', 'en', 'nl'];
+export const LOCALE_CHOICE_KEY = 'flyingstars:language';
+export const LOCALE_SWITCHED_COOKIE = 'fs-language-switched';
 export const LOCALE_NAMES = { de: 'Deutsch', en: 'English', nl: 'Nederlands' };
 export const localeFromPath = (path) => /^\/(en|nl)(?:\/|$)/.exec(path)?.[1] ?? 'de';
 export const localeOfId = (id) => /^(en|nl)\//.exec(id)?.[1] ?? 'de';

@@ -14,6 +14,10 @@ Git-Historie, Commit `b31d7c9`). Verbindliche Regeln: `docs/DESIGN.md` → „Hi
 - **Schriftstärke der Verlaufsworte:** der markierte Begriff jeder Überschrift wird beim Hineinscrollen einmal von 300 zur
   Stärke der Überschrift dicker (seit Runde 7, 19.11.2026; ersetzt den Lichtlauf der H1). Regeln: `docs/DESIGN.md` → Himmel.
 
+## Browsersuche in Verlaufsüberschriften
+
+Die Schriftanimation misst jedes farbige Wort mit einem unsichtbaren `::before`. Firefox behandelt den darin generierten Text bei `display: block` als Abschnittsgrenze für die Seitensuche. Das trennte „rund fliegt“ auf der Startseite. Die Messkopie bleibt jetzt als `inline-block` in der Zeile. Ihr negativer Endabstand bringt das sichtbare Wort an denselben Zeilenanfang zurück. Der gemeinsame Guard in `scripts/staerke-glow.test.mjs` sichert diese Layoutregel.
+
 ## Bühnenplan
 
 Eine Bühne spielt nur, wenn ihre ID im DOM steht und neben dem Section-Kopf Platz ist (`free()`); sonst passiert dort nichts.
@@ -235,6 +239,12 @@ LCP 1,1–1,9 s; Vorschau 96 Punkte, LCP 2,7 s.
   als das Standbild darunter (`FlightHero.astro`). Chrome meldet ein späteres Element nur, wenn es größer ist; so bleibt das
   Standbild (`fetchpriority="high"`, 720er-Fassung per `srcset`) das LCP-Element. Das Video trägt kein `poster` mehr: Es ist erst
   sichtbar, wenn es spielt, und das `poster` lud ein zweites Standbild im kritischen Pfad.
+  **Aktualisierung vom 27.11.:** Der auf LCP-Einstufung zielende Inset wurde entfernt. Bildgröße, Ladepriorität und regelbasierter
+  Autoplay-Start folgen weiter der Nutzbarkeit. Die Frame-Zeit wird zusätzlich zum LCP geprüft.
+- **Mobiler Startseitenfilm früher anfordern:** Wenn das Showreel der erste Abschnitt ist, fragt der Browser die mobile Quelle
+  beim Lesen des HTML an. Die Decoder-Abfrage wählt weiterhin zwischen AV1 und H.264. Der bestehende Player übernimmt dieselbe Anfrage. Das Standbild bleibt bis zur Wiedergabe sichtbar. Reduzierte Bewegung, Datensparmodus, gespeicherte
+  Pause, Sprachweiterleitung sowie Anker- und Verlaufssprünge überspringen diesen frühen Abruf. Die Startregel für reguläre
+  Wiedergabe und für den Play-Knopf liegt weiter beim bestehenden Player.
 - **Schwarm nach dem ersten Bild:** `index.ts` lädt `schwarm.ts` per `import()` erst nach `load` und dem ersten Bild des
   Hero-Videos (spätestens 2,5 s nach `load`, Seiten ohne Video 1,5 s), dann im Leerlauf; wer vorher scrollt, bekommt ihn sofort.
   Motive lädt der Schwarm erst, wenn ihre Bühne näher als gut eine Bildschirmhöhe ist. (Die Himmelszeile stand dafür sofort im
