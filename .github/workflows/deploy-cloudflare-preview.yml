@@ -11,6 +11,7 @@ on:
         options:
           - manual-preview
           - feat-designsprache-poc
+          - hero-ladevergleich
 concurrency:
   group: deploy-${{ github.head_ref || github.ref_name }}
   cancel-in-progress: true
