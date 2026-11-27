@@ -17,6 +17,7 @@ import { optimizedImage } from '../lib/media';
 import { LOCALES, LOCALE_CHOICE_KEY, localeFromPath, sourcePath, localizedHref, type Locale } from '../i18n/routing.mjs';
 import LanguageSwitch from '../components/LanguageSwitch.astro';
 import homeLanguage from '../scripts/home-language.js?raw';
+import { mobileHeroStart } from '../scripts/mobile-hero-start';
 import { CONTACT } from '../components/people';
 const SOCIAL = [
   { label: 'Instagram', icon: 'instagram', href: 'https://www.instagram.com/flyingstars.art/' },
@@ -89,6 +90,7 @@ const inNav = (href: string) => site.nav.some((item) => item.href === href);
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     {/* Reveal-Startzustand vor dem ersten Bild: nur mit Bewegung (keine reduzierte Bewegung, keine gespeicherte Pause) */}
     <script is:inline>(function(){var s=null;try{s=sessionStorage.getItem('flyingstars:motion')}catch(e){}var still=s?s==='paused':matchMedia('(prefers-reduced-motion: reduce)').matches;if(still)document.documentElement.classList.add('motion-paused');if(!still&&'IntersectionObserver' in window)document.documentElement.classList.add('reveal')})();</script>
+    {current === '/' && process.env.AFE_MODE !== 'editor' && <script is:inline set:html={mobileHeroStart}></script>}
   </head>
   <body>
     <a class="skip" href="#main">{t('base.skipToContent')}</a>

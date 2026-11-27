@@ -9,16 +9,18 @@ const homeLocaleRoutes = JSON.stringify(Object.fromEntries(LOCALES.map((locale) 
 
 function entry({ languages = ['en-GB'], language, preference = null, path = '/', referrer = '', search = '', hash = '', storageBlocked = false } = {}) {
   const redirects = [];
+  const attrs = new Map();
   runInNewContext(script, {
     location: { origin: 'https://flyingstars.example', pathname: path, search, hash, replace: (target) => redirects.push(target) },
     navigator: { languages, language },
-    document: { referrer, currentScript: { dataset: { homeLocaleRoutes, localeChoiceKey: LOCALE_CHOICE_KEY } } },
+    document: { referrer, documentElement: { setAttribute: (name, value) => attrs.set(name, value) }, currentScript: { dataset: { homeLocaleRoutes, localeChoiceKey: LOCALE_CHOICE_KEY } } },
     sessionStorage: { getItem(key) {
       assert.equal(key, LOCALE_CHOICE_KEY);
       if (storageBlocked) throw new Error('Storage blocked');
       return preference;
     } },
   });
+  assert.equal(attrs.has('data-language-redirecting'), redirects.length > 0);
   return redirects;
 }
 

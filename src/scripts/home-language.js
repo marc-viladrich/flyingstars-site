@@ -20,6 +20,7 @@
 
   const target = routes[locale];
   if (typeof target === 'string' && target !== location.pathname) {
+    document.documentElement.setAttribute('data-language-redirecting', '');
     location.replace(target + location.search + location.hash);
   }
 })();

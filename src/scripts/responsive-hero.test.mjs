@@ -56,6 +56,31 @@ test('Responsive hero uses the real controller and bounded source lifecycle', as
       reduced.change(false); await tick(); assert.deepEqual(video.requests, ['/h264-1280.mp4']);
       controller.dispose(); assert.equal(observerCount, 0);
     });
+    await t.test('a prepared mobile AV1 continues without a new request and retains its H264 fallback', async () => {
+      reset(); mobile.matches = true;
+      const video = new Video();
+      video.src = sources.mobile.preferred.src;
+      video.mobileRendition = Promise.resolve(sources.mobile.preferred);
+      const controller = await mountResponsiveHero(video, sources);
+      visibleCallback(true); await tick();
+      assert.deepEqual(video.requests, ['/av1-640.mp4']);
+      assert.equal(video.paused, false);
+      video.dispatchEvent(new Event('error')); await tick();
+      assert.deepEqual(video.requests, ['/av1-640.mp4', '/h264-640.mp4']);
+      controller.dispose();
+    });
+    await t.test('an AV1 error before the player mounts falls back on the first permitted play', async () => {
+      reset(); mobile.matches = true;
+      const video = new Video();
+      video.src = sources.mobile.preferred.src;
+      video.error = { code: 4 };
+      video.mobileRendition = Promise.resolve(sources.mobile.preferred);
+      const controller = await mountResponsiveHero(video, sources);
+      assert.deepEqual(video.requests, ['/av1-640.mp4']);
+      visibleCallback(true); await tick();
+      assert.deepEqual(video.requests, ['/av1-640.mp4', '/h264-640.mp4']);
+      controller.dispose();
+    });
     await t.test('geometry changed during the AV1 probe uses current H264, without a second probe', async () => {
       reset(); let resolve, probes = 0; decodingInfo = () => { probes++; return new Promise(r => { resolve = r; }); };
       const video = new Video(), controller = await mountResponsiveHero(video, sources);

@@ -1,10 +1,11 @@
 import { createVideoController, VIDEO_MOBILE_QUERY, type VideoTrigger } from './video-controller.ts';
 import { getMotionPolicy } from './motion-policy.ts';
 import { chooseVideo } from './video-lab-selection.mjs';
+import type { MobileHeroVideo } from './mobile-hero-start.ts';
 import { selectHeroPair, heroUpgrade, UPGRADE_STABLE_MS, type HeroPair, type HeroSources, type Rendition } from './hero-video-sizing.ts';
 export type { HeroSources } from './hero-video-sizing.ts';
 
-export async function mountResponsiveHero(reel: HTMLVideoElement, sources: HeroSources, {
+export async function mountResponsiveHero(reel: MobileHeroVideo, sources: HeroSources, {
   trigger = 'ambient', onSelected = (_video: Rendition, _reason: string) => {}, onState = (_on: boolean) => {},
 } = {} as { trigger?: VideoTrigger; onSelected?: (video: Rendition, reason: string) => void; onState?: (on: boolean) => void }) {
   const host = reel.closest<HTMLElement>('[data-reel-host]') ?? reel.parentElement!;
@@ -17,6 +18,18 @@ export async function mountResponsiveHero(reel: HTMLVideoElement, sources: HeroS
   let selected: Rendition | undefined, selectedPair: HeroPair | undefined, upgradePair: HeroPair | undefined;
   let preparedUpgrade: Rendition | undefined, stabilityGeneration = 0;
   let disposed = false, av1Failed = false, upgraded = false, playing = false, sourceGeneration = 0;
+  // If the homepage started this request during parsing, the normal controller takes over the same element.
+  const warmed = reel.mobileRendition ? await reel.mobileRendition : undefined;
+  if (warmed && reel.error) {
+    av1Failed = warmed.codec === 'av1';
+    reel.preload = 'none';
+    reel.removeAttribute('src');
+    reel.load();
+  } else if (warmed) {
+    selected = warmed;
+    selectedPair = sources.mobile;
+    onSelected(warmed, 'Mobilquelle vor Wiedergabestart geladen');
+  }
   let timer: ReturnType<typeof setTimeout> | undefined;
   const clearTimer = () => { clearTimeout(timer); timer = undefined; stabilityGeneration++; };
   const upgrade = () => {
