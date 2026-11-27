@@ -5,6 +5,8 @@ export const contentData=data=>Object.fromEntries(Object.entries(data).filter(([
 export const baseId=id=>id.replace(/\/(en|nl)\//,'/');
 export const localeOf=id=>/\/(en|nl)\//.exec(id)?.[1];
 export const isSource=id=>/^(page|post|project|faq)\/[^/]+$/.test(id);
+// WordPress originals are editorially independent, even when two languages cover the same topic.
+export const requiresTranslation=record=>isSource(record.id)&&!record.data.legacyPath;
 export function dependenciesFromRecords(records){
  const get=id=>records.find(r=>r.id===id)?.data;
  const owners=(prefix)=>Object.fromEntries(records.filter(r=>r.id.startsWith(prefix+'/')&&!localeOf(r.id)).map(r=>[r.id.slice(prefix.length+1),{file:r.file??`src/content/${prefix==='person'?'people':'projects'}/${r.id.slice(prefix.length+1)}.${prefix==='person'?'json':'md'}`,data:contentData(r.data)}]));

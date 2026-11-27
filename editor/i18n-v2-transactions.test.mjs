@@ -13,16 +13,16 @@ test.before(async()=>{fixture=await i18nFixture();store=fixture.store;});
 test.after(async()=>{store?.sync.close();await import('node:fs/promises').then(fs=>fs.rm(fixture.root,{recursive:true,force:true}));});
 const draftFor=state=>{const draft=new NativeDraft();draft.reset(state.records);return draft;};
 const savedFile=(locale='')=>path.join(store.root,'src/content/pages',locale,'index.yaml');
-test('AFE state has the same 194 verified translations as the full-file CLI',async()=>{
+test('AFE state has the same 188 verified translations as the full-file CLI',async()=>{
  const state=await store.state();
- assert.equal(auditContracts(store.site,state.records).length,194);
+ assert.equal(auditContracts(store.site,state.records).length,188);
 });
 test('AFE: changing one shared URL produces both projections and writes no review status',async()=>{
  const state=await store.state(),d=draftFor(state),evidence=['en','nl'].map(l=>d.get(`page/${l}/index`).data.translationEvidence);
  d.set('page/index',['sections',0,'cta','href'],'/kontakt/?proof=shared');const proposals=localeProposals(d);assert.ok(proposals.every(p=>p.needed.length===0));applyLocaleProposals(d,proposals);
  const saved=await store.save(d.request(state.head,crypto.randomUUID()));
  for(const[l,i]of ['en','nl'].map((l,i)=>[l,i])){const target=saved.records.find(r=>r.id===`page/${l}/index`);assert.equal(target.data.sections[0].cta.href,'/kontakt/?proof=shared');assert.deepEqual(target.data.translationEvidence,evidence[i]);assert.equal(target.data.translationReview,undefined);}
- assert.equal(auditContracts(store.site,saved.records).length,194);
+ assert.equal(auditContracts(store.site,saved.records).length,188);
 });
 test('AFE: source text needs explicit field review; cancellation and proposals save nothing',async()=>{
  const state=await store.state(),d=draftFor(state),before=await readFile(savedFile());d.set('page/index',['title'],'Titel mit expliziter Prüfung');const p=localeProposals(d),snapshot=structuredClone([...d.local]);p[0].data.title='Unaccepted suggestion';assert.deepEqual([...d.local],snapshot);assert.equal(await store.head(),state.head);assert.deepEqual(await readFile(savedFile()),before);
@@ -45,7 +45,7 @@ test('AFE: direct EN correction preserves DE bytes and updates only the correcte
 test('AFE: repeated section type with reorder plus text edit keeps translated ownership after save/reload',async()=>{
  let state=await store.state(),source=state.records.find(r=>r.id==='page/index');const copy=sectionMutation(source.data.sections,0,'duplicate');state=await store.save(reviewedRequest(state,[[source.id,['sections'],copy]]));source=state.records.find(r=>r.id==='page/index');const d=draftFor(state),sections=structuredClone(source.data.sections),key=sections[0]._key;[sections[0],sections[1]]=[sections[1],sections[0]];sections[1].headline+=' Umgestellt';d.set(source.id,['sections'],sections);
  const p=localeProposals(d);for(const proposal of p){assert.equal(proposal.data.sections[1]._key,key);assert.ok(proposal.needed.includes('/sections/@'+key+'/headline'));assert.equal(proposal.data.sections[1].headline,state.records.find(r=>r.id===proposal.id).data.sections[0].headline);}
- applyLocaleProposals(d,p,{reviewed:true});const saved=await store.save(d.request(state.head,crypto.randomUUID()));assert.equal(auditContracts(store.site,saved.records).length,194);
+ applyLocaleProposals(d,p,{reviewed:true});const saved=await store.save(d.request(state.head,crypto.randomUUID()));assert.equal(auditContracts(store.site,saved.records).length,188);
 });
 test('AFE: an external DE change rejects a target correction without overwriting either file',async()=>{
  const state=await store.state(),de=await readFile(savedFile(),'utf8'),en=await readFile(savedFile('en'),'utf8');await writeFile(savedFile(),de+'\n# simultaneous external source change\n');try{await assert.rejects(store.save(request(state,[['page/en/index',['title'],'Concurrent correction']])),/außerhalb/);assert.equal(await store.head(),state.head);assert.equal(await readFile(savedFile('en'),'utf8'),en);assert.equal(await readFile(savedFile(),'utf8'),de+'\n# simultaneous external source change\n');}finally{await writeFile(savedFile(),de);}
@@ -58,4 +58,17 @@ test('AFE: preview projects the same shared values while preserving stale text e
  const files=new Map([[file,next]]),extra=store.site.extensions.collect('previewFiles',{head:state.head,files});
  for(const l of ['en','nl']){const name=`src/content/pages/${l}/index.yaml`,entry=extra.find(([f])=>f===name),data=codecs.yaml.parse(entry[1]);assert.equal(data.sections[0].cta.href,'/kontakt/?preview');assert.deepEqual(data.translationEvidence,state.records.find(r=>r.id===`page/${l}/index`).data.translationEvidence);assert.equal(data.translationReview,undefined);}
  assert.equal(await store.head(),state.head);
+});
+
+test('WordPress original can be edited independently and its historical URL is protected', async () => {
+ const state = await store.state();
+ const source = state.records.find(record => record.id === 'post/2025-06-12-wie-programmiert-man-eine-drohnenshow');
+ const english = state.records.find(record => record.id === 'post/en/2025-06-12-wie-programmiert-man-eine-drohnenshow');
+ const draft = draftFor(state);
+ draft.set(source.id, ['title'], 'Wie entsteht die Programmierung einer Drohnenshow?');
+ assert.deepEqual(localeProposals(draft), []);
+ const saved = await store.save(draft.request(state.head, crypto.randomUUID()));
+ assert.equal(saved.records.find(record => record.id === source.id).data.title, 'Wie entsteht die Programmierung einer Drohnenshow?');
+ assert.deepEqual(saved.records.find(record => record.id === english.id).data, english.data);
+ await assert.rejects(store.save(request(saved, [[source.id, ['legacyPath'], '/anderer-pfad']])));
 });

@@ -1,7 +1,7 @@
 import {readFileSync, readdirSync} from 'node:fs';
 import path from 'node:path';
 import {codecs} from 'astro-frontend-editor/runtime/extensions';
-import {contentData} from '../../src/i18n/transaction.mjs';
+import {contentData,requiresTranslation} from '../../src/i18n/transaction.mjs';
 import {createFlyingStarsAdapter} from '../flyingstars-adapter.mjs';
 
 export async function contractFixtures(root = process.cwd()) {
@@ -19,6 +19,7 @@ export async function contractFixtures(root = process.cwd()) {
     for (const file of readdirSync(path.join(root, 'src/content', directory)).filter(file => file.endsWith('.' + extension))) {
       const sourceFile = `src/content/${directory}/${file}`, sourceRaw = readFileSync(path.join(root, sourceFile), 'utf8');
       const source = schema.parse(codecs[format].parse(sourceRaw));
+      if (!requiresTranslation({id: `${prefix}/${file}`, data: source})) continue;
       for (const locale of ['en', 'nl']) {
         const targetFile = `src/content/${directory}/${locale}/${file}`, targetRaw = readFileSync(path.join(root, targetFile), 'utf8');
         pairs.push({id: `${prefix}/${locale}/${file}`, sourceFile, targetFile, format, schema, source, target: schema.parse(codecs[format].parse(targetRaw)), sourceRaw, locale, dependencies});

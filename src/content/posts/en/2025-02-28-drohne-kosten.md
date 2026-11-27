@@ -9,19 +9,74 @@ cover: {"src": "https://flyingstars.art/wp-content/uploads/2025/02/what-do-drone
 draft: false
 ---
 
-<details class="post-toc"><summary>Table of contents</summary><ul><li><a href="#acquisition-costs-how-much-does-a-drone-cost">Acquisition Costs: How Much Does a Drone Cost?</a></li><li><a href="#drones-for-beginners-under-200">Drones for Beginners (Under €200)</a></li><li><a href="#drones-for-advanced-users-200-1-000">Drones for Advanced Users (€200 – €1,000)</a></li><li><a href="#industrial-and-specialized-drones-from-5-000">Industrial and Specialized Drones (From €5,000)</a></li><li><a href="#ongoing-costs-what-does-operating-a-drone-cost">Ongoing Costs: What Does Operating a Drone Cost?</a></li><li><a href="#drone-insurance">Drone Insurance</a></li><li><a href="#license-drone-pilot-certificate">License &amp; Drone Pilot Certificate</a></li><li><a href="#uas-operator-registration">UAS Operator Registration</a></li><li><a href="#additional-costs">Additional Costs</a></li><li><a href="#drone-shows-by-flyingstars">Drone Shows by FlyingStars</a></li></ul></details>
+Drones are no longer just toys – they have evolved into versatile tools used in photography, film production, agriculture, surveying, and many other fields. However, before embarking on the adventure of drone flying, it’s worth taking a look at the various costs involved. In addition to the initial purchase price, ongoing expenses such as insurance, licenses, UAS operator registration, and a drone pilot license also play a crucial role.
 
-<p>Drones are no longer just toys – they have evolved into versatile tools used in photography, film production, agriculture, surveying, and many other fields. However, before embarking on the adventure of drone flying, it’s worth taking a look at the various costs involved. In addition to the initial purchase price, ongoing expenses such as insurance, licenses, UAS operator registration, and a drone pilot license also play a crucial role.</p>
+![Drone controlled by man with VR](https://flyingstars.art/wp-content/uploads/2025/02/what-do-drones-cost-1024x499.jpg)
 
-<img alt="Drone controlled by man with VR" decoding="async" height="380" loading="lazy" sizes="(max-width: 45em) 92vw, 42rem" src="https://flyingstars.art/wp-content/uploads/2025/02/what-do-drones-cost-1024x499.jpg" srcset="https://flyingstars.art/wp-content/uploads/2025/02/what-do-drones-cost-1024x499.jpg 1024w, https://flyingstars.art/wp-content/uploads/2025/02/what-do-drones-cost-300x146.jpg 300w, https://flyingstars.art/wp-content/uploads/2025/02/what-do-drones-cost.jpg 1200w" width="780"/>
+## Acquisition Costs: How Much Does a Drone Cost?
 
-<h2 id="acquisition-costs-how-much-does-a-drone-cost">Acquisition Costs: How Much Does a Drone Cost?</h2> <p>The purchase price of drones varies widely – from affordable entry-level models to professional systems designed for specialized applications.</p><h3 id="drones-for-beginners-under-200">Drones for Beginners (Under €200)</h3><p>For hobbyists and beginners, there are numerous affordable models available that provide an easy introduction to the world of drones.</p><ul><li><strong>Example models:</strong> DJI Tello, DJI Ryze Tello, or Holy Stone HS110D</li><li><strong>Features:</strong> These drones offer simple controls, limited camera quality, and short-range capabilities. They are ideal for gaining initial flight experience.</li></ul><h3 id="drones-for-advanced-users-200-1-000">Drones for Advanced Users (€200 – €1,000)</h3><p>For ambitious hobby photographers and enthusiasts looking for more performance and better image quality, mid-range models are a great choice.</p><ul><li><strong>Example models:</strong> DJI Mini 2 SE Base, DJI Mini 3, or Autel Robotics Evo Nano+</li><li><strong>Features:</strong> These drones offer improved cameras, more stable flight performance, and additional features like obstacle detection. They are suitable for private photography as well as initial commercial applications.</li></ul><h3 id="industrial-and-specialized-drones-from-5-000">Industrial and Specialized Drones (From €5,000)</h3><p>In commercial and specialized fields—such as agriculture, rescue operations, or precise surveying—customized drone solutions are often required.</p><ul><li><strong>Features:</strong> These systems come with advanced functionalities like integrated sensors, thermal imaging, LiDAR technology, and modular expansion options. The high investment costs reflect their specialized use, as well as the demand for reliability and precision. Additionally, these drones typically offer extended flight times.</li></ul><h2 id="ongoing-costs-what-does-operating-a-drone-cost">Ongoing Costs: What Does Operating a Drone Cost?</h2><p>In addition to the initial purchase, various ongoing costs can arise when operating a drone.</p><h3 id="drone-insurance">Drone Insurance</h3><p><strong>Liability Insurance:</strong> In Germany, liability insurance is mandatory for all drones.</p><ul><li><strong>Costs:</strong> The premiums vary depending on the model and scope of use. Annual costs typically range from a low to mid-double-digit amount (€30–€100). For commercial use, costs may be higher due to additional risk factors that need to be considered.</li></ul><h3 id="license-drone-pilot-certificate">License &amp; Drone Pilot Certificate</h3><p><strong>Drone Pilot Certificate:</strong> For certain drone classes, especially drones over 2 kg or flights in complex airspace, a certification (drone license) is required.</p><ul><li><strong>Costs:</strong> Exam fees and preparation courses typically range between <strong>€50 and €200</strong>. The exact price depends on the provider and the type of certification (e.g., <strong>A1/A3 EU Competency Certificate vs. A2 Certificate</strong>).</li></ul><h3 id="uas-operator-registration">UAS Operator Registration</h3><p><strong>Registration Requirement:</strong> Operators of drones used for commercial purposes or exceeding specific weight limits must register in a <strong>UAS operator database</strong>.</p><ul><li><strong>Costs:</strong> Registration fees are usually moderate and often around <strong>€20</strong>, depending on the country and specific regulations.</li></ul><h3 id="additional-costs">Additional Costs</h3><p><strong>Accessories &amp; Spare Parts:</strong></p><ul><li>Extra <strong>batteries, propellers, ND filters, and protective carrying cases</strong> are often necessary investments to ensure safe and efficient drone operation.</li><li>For <strong>FPV drones</strong>, additional costs for <strong>goggles and controllers</strong> may apply to provide an immersive first-person flight experience.</li></ul><p><strong>Maintenance &amp; Repairs:</strong></p><ul><li>Even though drones are built to be durable, <strong>accidents or wear and tear</strong> may require repairs.</li><li>These expenses should be considered, particularly for <strong>frequent or intensive</strong> drone use.</li></ul>
+The purchase price of drones varies widely – from affordable entry-level models to professional systems designed for specialized applications.
 
-<img alt="FlyingStars black logo with FS in pink and blue" decoding="async" height="380" loading="lazy" sizes="(max-width: 45em) 92vw, 42rem" src="https://flyingstars.art/wp-content/uploads/2025/02/what-does-a-drone-cost-flyingstars-logo-1024x499.jpg" srcset="https://flyingstars.art/wp-content/uploads/2025/02/what-does-a-drone-cost-flyingstars-logo-1024x499.jpg 1024w, https://flyingstars.art/wp-content/uploads/2025/02/what-does-a-drone-cost-flyingstars-logo-300x146.jpg 300w, https://flyingstars.art/wp-content/uploads/2025/02/what-does-a-drone-cost-flyingstars-logo.jpg 1200w" width="780"/>
+### Drones for Beginners (Under €200)
 
-<h2 id="drone-shows-by-flyingstars">Drone Shows by FlyingStars</h2><p>In addition to private and commercial drone use, spectacular drone shows are becoming increasingly popular. FlyingStars is a leading provider in this field, creating light shows with synchronized drones. These shows are used for events, corporate celebrations, weddings, and large festivals, offering a sustainable alternative to traditional fireworks.</p><p>The <a href="/en/drohnenshow-preise/">cost of a drone show</a> varies depending on the scale, number of drones, and specific requirements of the event.</p>
+For hobbyists and beginners, there are numerous affordable models available that provide an easy introduction to the world of drones.
 
-<a href="/en/kontakt/">
+- **Example models:** DJI Tello, DJI Ryze Tello, or Holy Stone HS110D
+- **Features:** These drones offer simple controls, limited camera quality, and short-range capabilities. They are ideal for gaining initial flight experience.
 
-Inquiry
-</a>
+### Drones for Advanced Users (€200 – €1,000)
+
+For ambitious hobby photographers and enthusiasts looking for more performance and better image quality, mid-range models are a great choice.
+
+- **Example models:** DJI Mini 2 SE Base, DJI Mini 3, or Autel Robotics Evo Nano\+
+- **Features:** These drones offer improved cameras, more stable flight performance, and additional features like obstacle detection. They are suitable for private photography as well as initial commercial applications.
+
+### Industrial and Specialized Drones (From €5,000)
+
+In commercial and specialized fields—such as agriculture, rescue operations, or precise surveying—customized drone solutions are often required.
+
+- **Features:** These systems come with advanced functionalities like integrated sensors, thermal imaging, LiDAR technology, and modular expansion options. The high investment costs reflect their specialized use, as well as the demand for reliability and precision. Additionally, these drones typically offer extended flight times.
+
+## Ongoing Costs: What Does Operating a Drone Cost?
+
+In addition to the initial purchase, various ongoing costs can arise when operating a drone.
+
+### Drone Insurance
+
+**Liability Insurance:** In Germany, liability insurance is mandatory for all drones.
+
+- **Costs:** The premiums vary depending on the model and scope of use. Annual costs typically range from a low to mid-double-digit amount (€30–€100). For commercial use, costs may be higher due to additional risk factors that need to be considered.
+
+### License \& Drone Pilot Certificate
+
+**Drone Pilot Certificate:** For certain drone classes, especially drones over 2 kg or flights in complex airspace, a certification (drone license) is required.
+
+- **Costs:** Exam fees and preparation courses typically range between **€50 and €200**. The exact price depends on the provider and the type of certification (e.g., **A1/A3 EU Competency Certificate vs. A2 Certificate**).
+
+### UAS Operator Registration
+
+**Registration Requirement:** Operators of drones used for commercial purposes or exceeding specific weight limits must register in a **UAS operator database**.
+
+- **Costs:** Registration fees are usually moderate and often around **€20**, depending on the country and specific regulations.
+
+### Additional Costs
+
+**Accessories \& Spare Parts:**
+
+- Extra **batteries, propellers, ND filters, and protective carrying cases** are often necessary investments to ensure safe and efficient drone operation.
+- For **FPV drones**, additional costs for **goggles and controllers** may apply to provide an immersive first-person flight experience.
+
+**Maintenance \& Repairs:**
+
+- Even though drones are built to be durable, **accidents or wear and tear** may require repairs.
+- These expenses should be considered, particularly for **frequent or intensive** drone use.
+
+![FlyingStars black logo with FS in pink and blue](https://flyingstars.art/wp-content/uploads/2025/02/what-does-a-drone-cost-flyingstars-logo-1024x499.jpg)
+
+## Drone Shows by FlyingStars
+
+In addition to private and commercial drone use, spectacular drone shows are becoming increasingly popular. FlyingStars is a leading provider in this field, creating light shows with synchronized drones. These shows are used for events, corporate celebrations, weddings, and large festivals, offering a sustainable alternative to traditional fireworks.
+
+The [cost of a drone show](/en/drohnenshow-preise/) varies depending on the scale, number of drones, and specific requirements of the event.
+
+[Inquiry](/en/kontakt/)

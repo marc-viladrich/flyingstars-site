@@ -3,7 +3,7 @@ import path from 'node:path';
 import {createHash} from 'node:crypto';
 import {codecs} from 'astro-frontend-editor/runtime/extensions';
 import {project,reviewRequired,parseContent} from '../../src/i18n/contract.mjs';
-import {metadataKeys,contentData,dependenciesFromRecords,isSource,baseId,localeOf,seedTranslation,stamp,survivingEvidence,verifyCurrent,same} from '../../src/i18n/transaction.mjs';
+import {metadataKeys,contentData,dependenciesFromRecords,requiresTranslation,isSource,baseId,localeOf,seedTranslation,stamp,survivingEvidence,verifyCurrent,same} from '../../src/i18n/transaction.mjs';
 const failure=message=>Object.assign(new Error(message),{status:409});
 export function localeTransactions(root,sourceFor) {
  // Cache only successful checks of exact content + owner snapshots. Changed bytes
@@ -23,12 +23,13 @@ export function localeTransactions(root,sourceFor) {
  };
  return {
   validateWrite(source,before,after){
+   if(before?.legacyPath!==after?.legacyPath)throw failure('Historische Blog-URLs werden im Migrationsinventar gepflegt.');
    if(source.id==='site/ui')for(const [key,value]of Object.entries(after)){const tokens=text=>[...text.matchAll(/\{(\w+)\}/g)].map(m=>m[1]).sort().join(',');if(tokens(value.de)!==tokens(value.en)||tokens(value.de)!==tokens(value.nl))throw failure('Platzhalter stimmen nicht überein: '+key);}
    const walk=value=>{if(typeof value==='string'&&/^(?:javascript|data|vbscript):/i.test(value.trim()))throw failure('Ausführbare URLs sind nicht erlaubt.');if(value&&typeof value==='object')Object.values(value).forEach(walk);};walk(after);
   },
   previewFiles({files}){
    const records=fileRecords(files),deps=dependenciesFromRecords(records),extra=[];
-   for(const source of records.filter(r=>isSource(r.id)))for(const locale of ['en','nl']){
+   for(const source of records.filter(requiresTranslation))for(const locale of ['en','nl']){
     const id=source.id.replace('/',`/${locale}/`),target=records.find(r=>r.id===id);if(!target)throw failure('Sprachfassung fehlt: '+id);
     const schema=sourceFor(source.id).schema,result=project(schema,source.data,seedTranslation(schema,source.data,target.data),locale,deps);
     const data={...stamp(result),translationEvidence:target.data.translationEvidence},descriptor=sourceFor(id),current=files.get(target.file)??readFileSync(path.join(root,target.file),'utf8');
@@ -44,7 +45,7 @@ export function localeTransactions(root,sourceFor) {
     for(const key of metadataKeys)if(key!=='translationReview'&&!same(old.data[key],now.data[key]))throw failure('Übersetzungsnachweise werden vom Vertrag verwaltet: '+key);
     if(isSource(id)&&now.data.translationReview)throw failure('Sprachprüfung gehört zur Zielsprache.');
    }
-   for(const source of nextRecords.filter(r=>isSource(r.id))){
+   for(const source of nextRecords.filter(requiresTranslation)){
     const targets=['en','nl'].map(locale=>source.id.replace('/',`/${locale}/`));
     if(!seen.has(source.id)&&!targets.some(id=>seen.has(id))){for(const id of targets){const target=nextRecords.find(r=>r.id===id);if(!target)throw failure('Sprachfassung fehlt: '+id);verify(source,target,localeOf(id),dependencies,depsKey);}continue;}
     if(seen.has(source.id)&&!targets.every(id=>seen.has(id)))throw failure(`Bitte beide Sprachfassungen gemeinsam prüfen und mitspeichern: ${targets.join(', ')}.`);
@@ -75,7 +76,7 @@ export function localeTransactions(root,sourceFor) {
   },
   validateTransaction({nextRecords}){
    const deps=dependenciesFromRecords(nextRecords),depsKey=JSON.stringify(deps);
-   for(const source of nextRecords.filter(r=>isSource(r.id)))for(const locale of ['en','nl']){const target=nextRecords.find(r=>r.id===source.id.replace('/',`/${locale}/`));verify(source,target,locale,deps,depsKey);}
+   for(const source of nextRecords.filter(requiresTranslation))for(const locale of ['en','nl']){const target=nextRecords.find(r=>r.id===source.id.replace('/',`/${locale}/`));verify(source,target,locale,deps,depsKey);}
   },
  };
 }

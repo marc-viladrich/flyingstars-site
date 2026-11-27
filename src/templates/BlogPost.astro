@@ -27,7 +27,8 @@ const authorBio = AUTHOR.authorBio?.[locale]
   ?? `${AUTHOR.name} ${t('blogpost.runsFlyingstarsTogetherWithRonjaDonsbachAndErwinWilmsHe')}`;
 const teamHref = localHref('/ueber-uns/#team');
 const authorRecord = { collection: 'people', id: AUTHOR.id };
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
+const contents = post.data.legacyPath ? headings : [];
 const cover = post.data.cover ? await optimizedImage(post.data.cover.src, 1600) : undefined;
 const face = await optimizedImage(AUTHOR.image.src, 160);
 const more = sortPosts(await localizedCollection('posts', locale, p => !p.data.draft && p.id !== post.id)).slice(0, 3);
@@ -79,7 +80,13 @@ const jsonLd = JSON.stringify({
       }
     </script>}
     {editing ? <div class="post-body" {...body(post)}><Content /></div>
-      : <PostBody postId={post.id} article={cs} preserveImages={Boolean(post.data.legacyPath)}><Content /></PostBody>}
+      : <PostBody postId={post.id} article={cs} preserveImages={Boolean(post.data.legacyPath)}>
+          {contents.length > 0 && <details class="post-toc">
+            <summary>{locale === 'en' ? 'Table of contents' : 'Inhaltsverzeichnis'}</summary>
+            <ul>{contents.map(({ slug, text }) => <li><a href={`#${slug}`}>{text}</a></li>)}</ul>
+          </details>}
+          <Content />
+        </PostBody>}
     <aside class="post-author" aria-label={t('blogpost.aboutTheAuthor')}>
       <img class="face" src={face.src} width={face.width} height={face.height} alt={AUTHOR.name} loading="lazy" decoding="async" />
       <div>

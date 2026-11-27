@@ -1,5 +1,5 @@
 import {project} from '../../src/i18n/contract.mjs';
-import {seedTranslation,dependenciesFromRecords,isSource,prepareLocale,contentData,stamp,approvalFor} from '../../src/i18n/transaction.mjs';
+import {seedTranslation,dependenciesFromRecords,requiresTranslation,isSource,prepareLocale,contentData,stamp,approvalFor} from '../../src/i18n/transaction.mjs';
 import {renewKeys} from '../../src/i18n/keys.mjs';
 const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
 export const locales=['en','nl'];
@@ -24,7 +24,7 @@ const set=(object,path,value)=>{let node=object;for(const key of path.slice(0,-1
 /** Review planning has no side effects. Cancel, suggestions and preview cannot approve fields. */
 export function localeProposals(draft){
  const records=draft.records(),dependencies=dependenciesFromRecords(records),proposals=[];
- for(const source of records.filter(r=>isSource(r.id))){
+ for(const source of records.filter(requiresTranslation)){
   for(const locale of locales){
    const id=source.id.replace('/',`/${locale}/`),target=draft.get(id);if(!target)throw Error('Sprachfassung fehlt: '+id);
    const {result,needed}=prepareLocale(source.schema,source.data,target.data,locale,dependencies);

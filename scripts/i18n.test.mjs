@@ -2,7 +2,7 @@ import {readEntry} from './test-support/read.mjs';
 import {contentSchemas} from '../src/schemas/content-schema.mjs';
 import {createSite} from '../editor/flyingstars-adapter.mjs';
 import {readContractRecords,auditContracts} from '../src/i18n/read-contracts.mjs';
-import {isSource} from '../src/i18n/transaction.mjs';
+import {requiresTranslation} from '../src/i18n/transaction.mjs';
 const contractSite=await createSite(process.cwd());
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -56,7 +56,7 @@ test('Every UI message has all locales and exactly the same interpolation fields
 
 test('All real source entries have current EN/NL content and stable structural identities', () => {
   const all = readContractRecords(process.cwd(), contractSite);
-  const required = all.filter(record => isSource(record.id) && !record.data.legacyPath);
+  const required = all.filter(requiresTranslation);
   assert.equal(auditContracts(contractSite, all).length, required.length * (LOCALES.length - 1));
   const identity = new Set(['type', 'id', 'personId', 'authorId', 'project', 'field', 'display', 'href', 'src', 'file', 'logo', 'video', 'heroVideo', 'route', 'nextRoute', 'icon', 'shape', 'color', 'accent', 'variant', 'zone', 'loop', 'reel', 'occasion', 'package', 'mediaSide']);
   const sameStructure = (source, target, at = '') => {
