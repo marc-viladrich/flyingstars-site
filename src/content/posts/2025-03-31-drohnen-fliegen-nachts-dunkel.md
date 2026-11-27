@@ -85,7 +85,7 @@ Ein besonders beeindruckender Bereich: Drohnen-Lichtshows. Sobald dutzende oder 
 
 Gerade bei Nacht wirken diese Shows besonders stark: Der dunkle Himmel bietet die perfekte Leinwand für leuchtende Bewegungsmuster und Farben.
 
-![FlyingStars Logo schwarz-lila-türkis](https://flyingstars.art/wp-content/uploads/2025/02/was-kostet-eine-drohne-flyingstars-logo-1024x499.jpg)
+![FlyingStars Logo schwarz-lila-türkis](/media/wordpress/350a8cc09aa9f85f1626c8c5e166eaac33cc2e79a4cd8041453ac8536b470ff0.jpg)
 
 ## Drohnenshows von Flyingstars
 

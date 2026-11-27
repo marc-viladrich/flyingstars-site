@@ -79,7 +79,7 @@ sections:
         tall: false
       - name: NFL
         image:
-          src: https://flyingstars.art/wp-content/uploads/2023/04/National_Football_League_2008_weiss.png
+          src: /media/wordpress/e2d5bb1321388ba1a33048a3354eddf5d2389b64b1d4dbc0fe6a22303a0c64a9.png
           alt: NFL
           width: 300
           height: 409
@@ -93,7 +93,7 @@ sections:
         tall: false
       - name: PUMA
         image:
-          src: https://flyingstars.art/wp-content/uploads/2023/04/Puma_Logo_weiss.png
+          src: /media/wordpress/56dd26f219b6fb3b228b088ef32ce786e53e33de8f064404e18a9c5ba9075183.png
           alt: PUMA
           width: 300
           height: 161
@@ -127,7 +127,7 @@ sections:
         tall: false
       - name: Deutsche Umwelthilfe
         image:
-          src: https://flyingstars.art/wp-content/uploads/2023/04/Deutsche_Umwelthilfe_weiss.png
+          src: /media/wordpress/b786b91b5e0099c8299feb86651da3b2b7dec43babcf8cdb5592a9517655077a.png
           alt: Deutsche Umwelthilfe
           width: 300
           height: 37
@@ -144,14 +144,14 @@ sections:
       label: Request a show
       href: /kontakt/
     _key: k_c1a5be42dc3124d739c0
-translationSourceHash: 71aca7b959c373dd1fce54b8f277ce8978fd1ac4d92b09cea0881a54dbc85834
+translationSourceHash: da5eeb58dcc8618e7079612d512c7b67e220f7f15e2c6bb7c17c8bd4a5ad6072
 noindex: false
 translationContractVersion: 2
 translationEvidence:
   version: 2
   addressing: stable-keys
   locale: en
-  sourceFingerprint: 71aca7b959c373dd1fce54b8f277ce8978fd1ac4d92b09cea0881a54dbc85834
+  sourceFingerprint: da5eeb58dcc8618e7079612d512c7b67e220f7f15e2c6bb7c17c8bd4a5ad6072
   legacy:
     provenanceFile: docs/i18n/content-provenance.json
     migration: I01-v2-2026-11-04
@@ -189,7 +189,7 @@ translationEvidence:
       targetFingerprint: a631293fe52e7656c2305ed6613f2c042d03b956343edd0c34a278f32fa4fa17
       status: adopted-existing
     - address: /sections/@k_7e591746d03a417c3c9c/logos/@k_0e11a0bbd30ec783e5b2/image/alt
-      sourceFingerprint: e2d4691a1164bcbcce4dde672d3eb9b453eca8843cd2ab3c8481a2b07c89617a
+      sourceFingerprint: 65f6dba5573fb80f9aaecdab369b7b89b871ff416675aa30b3eee6ea7ee99026
       targetFingerprint: ef89c9359fd8cc9434bf995740346b811ff515fb2155ef72e91d22e903c4b5ae
       status: adopted-existing
     - address: /sections/@k_7e591746d03a417c3c9c/logos/@k_0e11a0bbd30ec783e5b2/name
@@ -237,7 +237,7 @@ translationEvidence:
       targetFingerprint: 5512591d6019b30f17e893b78815faf874b93ac96bbb66dc2a4b71a99dfb4119
       status: adopted-existing
     - address: /sections/@k_7e591746d03a417c3c9c/logos/@k_4134829d3e210965460d/image/alt
-      sourceFingerprint: fefe2f379634a66ed292750230e3eb180c4f651fa4d01b77ecb457fc2426fe56
+      sourceFingerprint: a18f9c964c130ba29a29d2965cdabfdbfd47f285056a9d6a5a16d4a7d3df2598
       targetFingerprint: df0b1a109174f5bd4a8f61c6aff6e9ab01f329d727aaca02088bff9da0cda315
       status: adopted-existing
     - address: /sections/@k_7e591746d03a417c3c9c/logos/@k_4134829d3e210965460d/name
@@ -285,7 +285,7 @@ translationEvidence:
       targetFingerprint: 4cca751c63bccbf03c7f24371a75927dab5b1dfb05f894f67b3dc7de0652a7db
       status: adopted-existing
     - address: /sections/@k_7e591746d03a417c3c9c/logos/@k_a26d3bd58a3517710106/image/alt
-      sourceFingerprint: da83f3623400af07c167f32f27bc6b3534b39339de351e50bc635127417bfd69
+      sourceFingerprint: 174358ad967be79cf66cb0673b53994eca9cd899bd8823008647a0e3bc9d829c
       targetFingerprint: c4cab2190987ab30acdb791cdf25f456af092358f9b3f5b8ce5d6ef372db4a7f
       status: adopted-existing
     - address: /sections/@k_7e591746d03a417c3c9c/logos/@k_a26d3bd58a3517710106/name

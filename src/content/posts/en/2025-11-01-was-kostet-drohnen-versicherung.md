@@ -5,7 +5,7 @@ title: "How much does drone insurance cost"
 description: "UK drone insurance costs: Understand cover options, when insurance is mandatory, and CAA-compliant policies."
 date: "2026-07-06"
 updated: "2026-07-07"
-cover: {"src": "https://flyingstars.art/wp-content/uploads/2025/08/drone_insurance.jpg", "alt": "Drone insurance at a glance", "width": 1000, "height": 667}
+cover: {"src": "/media/wordpress/953171bd091637d0454f986e9fe3daeb0c93280c5c0f178375420c2d124b8557.jpg", "alt": "Drone insurance at a glance", "width": 1000, "height": 667}
 draft: false
 ---
 
@@ -13,7 +13,7 @@ A public-liability policy for drones isn’t a universal legal must in Britain �
 
 What you pay depends chiefly on liability limit, any excess, how you use the drone (hobby vs. commercial), the value of your aircraft and kit, and optional add-ons. For hobbyists, entry-level public-liability cover typically starts around **£17–£25 per year** via UK associations and specialist providers; commercial annual policies usually start in the **low hundreds of pounds** and scale with the liability limit, equipment value, and operations. Adding “hull/equipment” cover increases the premium in line with your drone’s value.
 
-![Drone insurance at a glance](https://flyingstars.art/wp-content/uploads/2025/08/drone_insurance.jpg)
+![Drone insurance at a glance](/media/wordpress/953171bd091637d0454f986e9fe3daeb0c93280c5c0f178375420c2d124b8557.jpg)
 
 ## Introduction to drone insurance
 
@@ -97,6 +97,6 @@ At *FlyingStars*, we’re among Europe’s leading providers of choreographed d
 
 Whether it’s 200, 500 or even over 1,000 drones – FlyingStars uses state-of-the-art flying drones with LED technology, GPS navigation, and synchronised music.
 
-![FlyingStars Logo schwarz-lila-türkis](https://flyingstars.art/wp-content/uploads/2025/02/was-kostet-eine-drohne-flyingstars-logo-1024x499.jpg)
+![FlyingStars Logo schwarz-lila-türkis](/media/wordpress/350a8cc09aa9f85f1626c8c5e166eaac33cc2e79a4cd8041453ac8536b470ff0.jpg)
 
 [Anfragen](/en/kontakt/)

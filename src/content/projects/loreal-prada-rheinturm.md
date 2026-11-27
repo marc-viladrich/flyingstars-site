@@ -22,7 +22,7 @@
     "field": "drones"
   },
   "cover": {
-    "src": "https://flyingstars.art/wp-content/uploads/2024/07/Prada_Cover_img.jpg",
+    "src": "/media/wordpress/bd7b6e3cd83847cc488f898689263fe67b53185b77d01fe51b466fa929afb809.jpg",
     "alt": "L’Oréal × Prada am Rheinturm: Drohnenshow von FlyingStars",
     "width": 1920,
     "height": 985
@@ -96,7 +96,7 @@
         "title": "Das Produkt gibt die Form vor.",
         "text": "L’Oréal Deutschland beauftragte die Show zum Influencer-Event für Prada Paradoxe im Düsseldorfer Rheinturm am 11. Oktober 2023. Die Form des Parfümflacons wurde zum Motiv für {{project.loreal-prada-rheinturm.drones}} Drohnen.",
         "image": {
-          "src": "https://flyingstars.art/wp-content/uploads/2024/07/prada1.png",
+          "src": "/media/wordpress/df346e245f1e3239ea8319bead9ed0564780f2f435b2efcb398de50d5d160aba.png",
           "alt": "Parfümflacon Prada Paradoxe als Produktvorlage",
           "caption": "Parfümflacon Prada Paradoxe als Produktvorlage"
         },
@@ -106,7 +106,7 @@
         "title": "Die Marke stimmt jedes Detail ab.",
         "text": "Das Design entstand im Austausch mit L’Oréal Deutschland und dem Team in Paris. Die Show verband den dreidimensionalen Flacon mit einem Mobile aus Flacons sowie den Schriftzügen PARADOXE und PRADA.",
         "image": {
-          "src": "https://flyingstars.art/wp-content/uploads/2024/07/prada2.png",
+          "src": "/media/wordpress/07a3e4154a17009cad8fc4cc590253f564a2b0bd392858075951caa13cd1d253.png",
           "alt": "Dreidimensionaler Flacon aus Drohnen am Nachthimmel",
           "caption": "Dreidimensionaler Flacon aus Drohnen am Nachthimmel"
         },
@@ -116,7 +116,7 @@
         "title": "Die Show bleibt vom Rheinturm sichtbar.",
         "text": "FlyingStars suchte gemeinsam mit Stadt und Eigentümer:innen nach einer geeigneten Fläche. Der gefundene Flugort lag 1,5 Kilometer vom Veranstaltungsort entfernt. Die Gäste sahen die Motive vom Rheinturm aus über der Stadt.",
         "image": {
-          "src": "https://flyingstars.art/wp-content/uploads/2024/07/Prada_Cover_img.jpg",
+          "src": "/media/wordpress/bd7b6e3cd83847cc488f898689263fe67b53185b77d01fe51b466fa929afb809.jpg",
           "alt": "Flacon aus Drohnen über der Düsseldorfer Skyline mit Rheinturm",
           "caption": "Flacon aus Drohnen über der Düsseldorfer Skyline mit Rheinturm"
         },
@@ -125,19 +125,19 @@
     ],
     "gallery": [
       {
-        "src": "https://flyingstars.art/wp-content/uploads/2024/07/prada1.png",
+        "src": "/media/wordpress/df346e245f1e3239ea8319bead9ed0564780f2f435b2efcb398de50d5d160aba.png",
         "alt": "Parfümflacon Prada Paradoxe als Produktvorlage",
         "caption": "Parfümflacon Prada Paradoxe als Produktvorlage",
         "_key": "k_308c5d9a42d339fa17a8"
       },
       {
-        "src": "https://flyingstars.art/wp-content/uploads/2024/07/prada2.png",
+        "src": "/media/wordpress/07a3e4154a17009cad8fc4cc590253f564a2b0bd392858075951caa13cd1d253.png",
         "alt": "Dreidimensionaler Flacon aus Drohnen am Nachthimmel",
         "caption": "Dreidimensionaler Flacon aus Drohnen am Nachthimmel",
         "_key": "k_9fa07299e96a514d8795"
       },
       {
-        "src": "https://flyingstars.art/wp-content/uploads/2024/07/Prada_Cover_img.jpg",
+        "src": "/media/wordpress/bd7b6e3cd83847cc488f898689263fe67b53185b77d01fe51b466fa929afb809.jpg",
         "alt": "Flacon aus Drohnen über der Düsseldorfer Skyline mit Rheinturm",
         "caption": "Flacon aus Drohnen über der Düsseldorfer Skyline mit Rheinturm",
         "_key": "k_571eeed4f9e285cd6962"

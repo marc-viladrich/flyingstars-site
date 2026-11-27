@@ -5,7 +5,7 @@ title: "Drohnenshow Berlin: Spektakuläre Lichtshows über der Hauptstadt"
 description: "Drohne Spanien: Alle wichtigen Regeln zu Registrierung, Flugzonen, Bußgeldern und Mallorca-Besonderheiten übersichtlich erklärt."
 date: "2026-01-19"
 updated: "2026-09-18"
-cover: {"src": "https://flyingstars.art/wp-content/uploads/2026/01/Drohnenshow-Berlin.png", "alt": "Drohnenshow Berlin", "width": 768, "height": 512}
+cover: {"src": "/media/wordpress/42dc93f429cac3c76427a9ba8122025c587ecf2f8c8956ae75e2a4dd6efc5124.png", "alt": "Drohnenshow Berlin", "width": 768, "height": 512}
 draft: false
 ---
 
@@ -15,7 +15,7 @@ Gerade in einer Stadt wie Berlin, in der große Veranstaltungen, Stadien und Kul
 
 In den letzten Jahren gab es mehrere **belegte Drohnenshows in Berlin**, die öffentlich angekündigt und dokumentiert wurden – von Weltrekord-Formationen über politische Kampagnen bis hin zu Kultur- und Wissenschaftsevents. Hier ist ein Überblick über die bekanntesten Shows inklusive Einbettungen der verfügbaren Videos.
 
-![Grafik von Drohnenshow als Silvester Alternative](https://flyingstars.art/wp-content/uploads/2025/09/Drohnenshow-als-Silvester-Alternative-1024x540.jpg)
+![Grafik von Drohnenshow als Silvester Alternative](/media/wordpress/1435b7059474692c6f858e09091ba9c520aa348b2a9faf133686f4da69a053cd.jpg)
 
 ## 1\) Weltrekord-Show im Olympiapark: E.ON „Netze für morgen“ (Mai 2021\)
 
@@ -61,6 +61,6 @@ Ob Weltrekord, Protestaktion, Wissenschafts-Event oder Stadion-Show: Die Beispie
 
 Wenn ihr eine **Drohnenshow Berlin** plant (Event, Festival, Stadtteilfest oder Corporate), lohnt sich eine frühzeitige Abstimmung zu Genehmigungen, Sicherheitskonzept und Location – denn gerade in Berlin ist der Himmel gut reguliert, aber auch voller Möglichkeiten.
 
-![FlyingStars Logo schwarz-lila-türkis](https://flyingstars.art/wp-content/uploads/2025/02/was-kostet-eine-drohne-flyingstars-logo-1024x499.jpg)
+![FlyingStars Logo schwarz-lila-türkis](/media/wordpress/350a8cc09aa9f85f1626c8c5e166eaac33cc2e79a4cd8041453ac8536b470ff0.jpg)
 
 [Anfragen](/kontakt/)

@@ -5,7 +5,7 @@ title: "Wo darf man Drohnen fliegen?"
 description: "Wo darf man mit Drohnen fliegen? Erfahre, welche Regeln gelten – inkl. Tipps zu Drohnenführerschein, Flugzonen & Gebäuden. Jetzt informieren!"
 date: "2025-05-08"
 updated: "2026-09-18"
-cover: {"src": "https://flyingstars.art/wp-content/uploads/2025/05/wo-darf-man-mit-drohnen-fliegen.jpg", "alt": "Frau streckt Hand raus, um Drohne aufzufangen", "width": 1100, "height": 733}
+cover: {"src": "/media/wordpress/425b6e9ad170f85ad0da2c40803e3df88f504494ce7a520bbb2d6350d7158a6f.jpg", "alt": "Frau streckt Hand raus, um Drohne aufzufangen", "width": 1100, "height": 733}
 draft: false
 ---
 
@@ -15,7 +15,7 @@ Doch mit der wachsenden Beliebtheit kommt auch Unsicherheit: **Wo darf man mit D
 
 In diesem Artikel klären wir, was in Deutschland erlaubt ist, wann man eine Lizenz braucht und was beim Überfliegen von Gebäuden zu beachten ist. Das Fliegen von Drohnen macht Spaß, bringt aber auch Verantwortlichkeiten mit sich.
 
-![Frau streckt Hand raus, um Drohne aufzufangen](https://flyingstars.art/wp-content/uploads/2025/05/wo-darf-man-mit-drohnen-fliegen-1024x682.jpg)
+![Frau streckt Hand raus, um Drohne aufzufangen](/media/wordpress/208f6cd3ff0f8e947027bc7bcf884613818beb63d874751aaea8bb2c3f629c7a.jpg)
 
 ## Einführung in den Drohnenflug
 
@@ -51,7 +51,7 @@ Die Beachtung von Geo-Zonen und Luftraumregelungen ist ein wesentlicher Aspekt d
 
 Die Plattform Dipul bietet eine [digitale Karte](https://maptool-dipul.dfs.de/), die euch hilft, die verschiedenen Geo-Zonen und Lufträume in Deutschland zu erkennen. Mit dieser Karte könnt ihr schnell und einfach feststellen, wo ihr eure Drohne sicher und legal fliegen dürft:
 
-[![Digitale Dipul Karte](https://flyingstars.art/wp-content/uploads/2025/05/digitale-karte-drohnen-1024x302.jpg)](https://maptool-dipul.dfs.de/)
+[![Digitale Dipul Karte](/media/wordpress/41faf1d040d40bb3d8155c62cd8114e485a8a354f885090fd08ad36fe4e44ff2.jpg)](https://maptool-dipul.dfs.de/)
 
 maptool-dipul.dfs.de
 
@@ -102,6 +102,6 @@ Als Expert\*innen für **hochwertige Drohnen-Lichtshows** bringen wir innovative
 
 Jetzt [Preise](/drohnenshow-preise/) entdecken und Drohnenshow buchen.
 
-![FlyingStars Logo schwarz-lila-türkis](https://flyingstars.art/wp-content/uploads/2025/02/was-kostet-eine-drohne-flyingstars-logo-1024x499.jpg)
+![FlyingStars Logo schwarz-lila-türkis](/media/wordpress/350a8cc09aa9f85f1626c8c5e166eaac33cc2e79a4cd8041453ac8536b470ff0.jpg)
 
 [Anfragen](/kontakt/)

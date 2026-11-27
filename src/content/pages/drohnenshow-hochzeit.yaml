@@ -2,7 +2,7 @@
 # Texte wortgetreu (schon in Ihr-Form). Route bleibt /drohnenshow-hochzeit/ (Moritz: /drohnenshow/hochzeit/, Umstellung offen).
 title: "Drohnenshow für eure Hochzeit buchen: magische Momente"
 description: "Malt eure Liebesgeschichte in den Himmel ✓ 150+ Shows ✓ Familienfreundlich & wenig Aufwand ☎︎ {{contact.phone.international}}"
-image: https://flyingstars.art/wp-content/uploads/2025/07/Heiratsantrag_Headerbild.jpg
+image: /media/wordpress/e5335e03c0f24b635a352d38986c5c1699fe65d337d73502a9a20db4b558f8c9.jpg
 sections:
   - type: landingHero
     kicker: Drohnenshow zur Hochzeit buchen
@@ -14,7 +14,7 @@ sections:
     # dem Konfigurator als Steigerung 2D → 3D; das Foto bleibt Standbild (LCP, reduzierte Bewegung, ohne JavaScript)
     show: hochzeitHero
     poster:
-      src: https://flyingstars.art/wp-content/uploads/2025/07/Heiratsantrag_Headerbild.jpg
+      src: /media/wordpress/e5335e03c0f24b635a352d38986c5c1699fe65d337d73502a9a20db4b558f8c9.jpg
       alt: Hand mit Ring aus Drohnen am blauen Abendhimmel über Baumkronen, bei einem Heiratsantrag am Schloss Hugenpoet
       width: 2063
       height: 1303

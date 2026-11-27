@@ -5,7 +5,7 @@ title: "Drohnen Aufbau: Wie funktioniert eine Drohne?"
 description: "Wie funktioniert eine Drohne? Erfahre alles über den Drohnen-Aufbau. Für Einsteiger und Profis. Jetzt mehr erfahren!"
 date: "2025-03-31"
 updated: "2026-09-22"
-cover: {"src": "https://flyingstars.art/wp-content/uploads/2025/03/wie-funktioniert-eine-drohne.jpg", "alt": "Zwei Personen halten eine Drohne in den Händen", "width": 1100, "height": 733}
+cover: {"src": "/media/wordpress/f34c529e214e81009302208e2c19a0139793d84e0c0086d149931fffc583668e.jpg", "alt": "Zwei Personen halten eine Drohne in den Händen", "width": 1100, "height": 733}
 draft: false
 ---
 
@@ -16,7 +16,7 @@ Moderne Drohnen kombinieren Sensorik, Rechentechnik und präzise Steuerung auf e
 Drohnen sind unbemannte Fluggeräte, die sich entweder per Fernsteuerung oder autonom durch die Luft bewegen. Technisch gesehen zählen sie zu den sogenannten UAVs (Unmanned Aerial Vehicles).\
 Was früher vor allem militärisch genutzt wurde, ist heute im Alltag angekommen – sei es für Luftaufnahmen, Paketlieferungen, Inspektionen oder einfach als spannendes Hobby.
 
-![Zwei Personen halten eine Drohne in den Händen](https://flyingstars.art/wp-content/uploads/2025/03/wie-funktioniert-eine-drohne-1024x682.jpg)
+![Zwei Personen halten eine Drohne in den Händen](/media/wordpress/266a5a01a9f70230c51da8814c436686de62746a358e4591996679cb0d980310.jpg)
 
 ## Wie bleibt eine Drohne in der Luft?
 
@@ -94,7 +94,7 @@ Die Antwort ist ein Zusammenspiel aus Auftrieb, Sensorik, Rechentechnik und Steu
 
 Als Experten für **hochwertige Drohnen-Lichtshows** bringen wir innovative Technologie und kreative Konzepte zusammen, um spektakuläre visuelle Erlebnisse zu schaffen. Ob für Sport-Events, große Stadtfeste, Company Evens oder auch private Feiern.
 
-![FlyingStars Logo schwarz-lila-türkis](https://flyingstars.art/wp-content/uploads/2025/02/was-kostet-eine-drohne-flyingstars-logo-1024x499.jpg)
+![FlyingStars Logo schwarz-lila-türkis](/media/wordpress/350a8cc09aa9f85f1626c8c5e166eaac33cc2e79a4cd8041453ac8536b470ff0.jpg)
 
 ## Drohnenshows von Flyingstars
 

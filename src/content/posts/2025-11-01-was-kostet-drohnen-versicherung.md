@@ -5,7 +5,7 @@ title: "Was kostet die Drohnen-Versicherung: Ein Überblick"
 description: "Drohnen-Versicherung kosten: Verstehe Abdeckungsoptionen und wann eine Versicherung Pflicht ist. | Flying Stars"
 date: "2025-11-01"
 updated: "2026-09-18"
-cover: {"src": "https://flyingstars.art/wp-content/uploads/2025/08/drohnen_versicherung.jpg", "alt": "Drohnenversicherung auf einen Blick", "width": 1000, "height": 667}
+cover: {"src": "/media/wordpress/953171bd091637d0454f986e9fe3daeb0c93280c5c0f178375420c2d124b8557.jpg", "alt": "Drohnenversicherung auf einen Blick", "width": 1000, "height": 667}
 draft: false
 ---
 
@@ -13,7 +13,7 @@ Eine Drohnen-Haftpflicht ist in Deutschland gesetzlich vorgeschrieben – unabh�
 
 Was die Versicherung kostet, hängt vor allem von Deckungssumme, Selbstbeteiligung, Nutzung (privat/gewerblich), Drohnenwert und Zusatzbausteinen ab. Für Freizeitpilot:innen starten Tarife bereits **ab ca. 15–20 € pro Jahr**, gewerbliche Haftpflichtpakete liegen meist **ab etwa 119 € pro Jahr**. Kasko/„Vollkasko“ für die eigene Drohne beginnt häufig **ab ca. 120–180 € pro Jahr** (je nach Drohnenwert).
 
-![Drohnenversicherung auf einen Blick](https://flyingstars.art/wp-content/uploads/2025/08/drohnen_versicherung.jpg)
+![Drohnenversicherung auf einen Blick](/media/wordpress/953171bd091637d0454f986e9fe3daeb0c93280c5c0f178375420c2d124b8557.jpg)
 
 ## Welche Versicherungen gibt es?
 
@@ -92,6 +92,6 @@ Als Expert:innen für **hochwertige Drohnen-Lichtshows** bringen wir innovative 
 
 Jetzt [Preise](/drohnenshow-preise/) entdecken und Drohnenshow buchen.
 
-![FlyingStars Logo schwarz-lila-türkis](https://flyingstars.art/wp-content/uploads/2025/02/was-kostet-eine-drohne-flyingstars-logo-1024x499.jpg)
+![FlyingStars Logo schwarz-lila-türkis](/media/wordpress/350a8cc09aa9f85f1626c8c5e166eaac33cc2e79a4cd8041453ac8536b470ff0.jpg)
 
 [Anfragen](/kontakt/)

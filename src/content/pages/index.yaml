@@ -4,7 +4,7 @@
 # preise, ueber, anfrage, faq). Zahlen nach Moritz (seit 2021, 150+ Shows, ab 7.900 €), nicht aus business-facts.json.
 title: Drohnenshow buchen vom Anbieter mit 150+ Shows
 description: "Für Firmen, Städte & privat in DACH & weltweit ✓ u.a. VW, NFL & Umwelthilfe ✓ Ab 7900 € ☎︎ {{contact.phone.international}}"
-image: https://flyingstars.art/wp-content/uploads/2024/07/Prada_Cover_img.jpg
+image: /media/wordpress/bd7b6e3cd83847cc488f898689263fe67b53185b77d01fe51b466fa929afb809.jpg
 sections:
   - type: showreelHero
     eyebrow: Drohnenshow buchen
@@ -14,11 +14,11 @@ sections:
     cta: { label: Show anfragen, href: "#anfrage" }
     secondary: { label: "☎︎ {{contact.phone.international}}", href: "{{contact.phone.href}}" }
     poster:
-      src: https://flyingstars.art/wp-content/uploads/2024/07/Prada_Cover_img.jpg
+      src: /media/wordpress/bd7b6e3cd83847cc488f898689263fe67b53185b77d01fe51b466fa929afb809.jpg
       alt: Drohnenformation über der Skyline von Düsseldorf mit Rheinturm
       width: 1600
       height: 900
-    video: https://flyingstars.art/wp-content/uploads/2026/05/Flyingstars-Showreel.mp4
+    video: /media/video/wordpress-3ac827bd54aa2febfe1d422f230ff2d5463b871772e3da48da704a3a3339214d.mp4
     # Eckdaten in den Rahmenecken wie im Prototyp; Showzahl nach Moritz („über 150“)
     stats:
       - { label: Shows, value: "150+", "_key": "k_1abc2d9b5b6179bc92c4" }
@@ -34,7 +34,7 @@ sections:
     logos:
       - { name: E.ON, file: /brand/logos/kunde-eon-weiss.svg, "_key": "k_5ed46311387955e2857c" }
       - name: NFL
-        image: { src: https://flyingstars.art/wp-content/uploads/2023/04/National_Football_League_2008_weiss.png, alt: NFL, width: 300, height: 409 }
+        image: { src: /media/wordpress/e2d5bb1321388ba1a33048a3354eddf5d2389b64b1d4dbc0fe6a22303a0c64a9.png, alt: NFL, width: 300, height: 409 }
         _key: k_96d6920ee9e3018e33f6
       - { name: REWE, file: /brand/logos/kunde-rewe-weiss.svg, "_key": "k_1a399e3ba47608b2a429" }
       - { name: Spotify, file: /brand/logos/kunde-spotify-weiss.svg, "_key": "k_e9c10d6391d8d7fcd449" }
@@ -43,26 +43,26 @@ sections:
       - { name: Amazon, file: /brand/logos/kunde-amazon-weiss.svg, "_key": "k_f6cb639885bedbe1012a" }
       - { name: McKinsey, file: /brand/logos/kunde-mckinsey-weiss.svg, "_key": "k_d8b216f1b29a48bcde19" }
       - name: PUMA
-        image: { src: https://flyingstars.art/wp-content/uploads/2023/04/Puma_Logo_weiss.png, alt: PUMA, width: 300, height: 161 }
+        image: { src: /media/wordpress/56dd26f219b6fb3b228b088ef32ce786e53e33de8f064404e18a9c5ba9075183.png, alt: PUMA, width: 300, height: 161 }
         _key: k_c8b04d4bb211cfc5ff25
       - { name: Prada, file: /brand/logos/kunde-prada-weiss.svg, "_key": "k_135f6b274f5ff8f93c25" }
       - { name: Volkswagen, file: /brand/logos/kunde-volkswagen-weiss.svg, "_key": "k_241fa1a44078fdf4ba7d" }
       - name: Red Bull
-        image: { src: https://flyingstars.art/wp-content/uploads/2024/10/RED-BULL_white.png, alt: Red Bull, width: 400, height: 200 }
+        image: { src: /media/wordpress/5fa930efe583f401013ba7aaeae193add8519cbc8ddda8cf147d0e61a051d12f.png, alt: Red Bull, width: 400, height: 200 }
         _key: k_0c8b8a711577f92aa65f
       - { name: Bulgari, file: /brand/logos/kunde-bulgari-weiss.svg, "_key": "k_836b51e7d3d32cad742e" }
       - { name: Ford, file: /brand/logos/kunde-ford-weiss.svg, "_key": "k_7f6e1360484198d9116b" }
       - { name: Siemens, file: /brand/logos/kunde-siemens-weiss.svg, "_key": "k_0f17650e43d86db6b9cc" }
       - { name: Lamborghini, file: /brand/logos/kunde-lamborghini-weiss.svg, "_key": "k_ad9c625d212ceff25d60" }
       - name: Deutsche Umwelthilfe
-        image: { src: https://flyingstars.art/wp-content/uploads/2023/04/Deutsche_Umwelthilfe_weiss.png, alt: Deutsche Umwelthilfe, width: 300, height: 37 }
+        image: { src: /media/wordpress/b786b91b5e0099c8299feb86651da3b2b7dec43babcf8cdb5592a9517655077a.png, alt: Deutsche Umwelthilfe, width: 300, height: 37 }
         _key: k_756c13577a99a532844d
       - name: Bentley
         detail: true
-        image: { src: https://flyingstars.art/wp-content/uploads/2023/04/Bentley_logo_weiss.png, alt: Bentley, width: 400, height: 200 }
+        image: { src: /media/wordpress/351b3bd3c32ba4ae220a02ada6dee4a7921c916ed45ec622cdee1a7c7d86ff73.png, alt: Bentley, width: 400, height: 200 }
         _key: k_51df7215f7dcf70ddb96
       - name: ABUS
-        image: { src: https://flyingstars.art/wp-content/uploads/2023/04/ABUS_Logo_weiss.png, alt: ABUS, width: 400, height: 200 }
+        image: { src: /media/wordpress/a5465b267911f8c5cf05d2785c95cdc1200988d7ccf2a64aeeea8f53a249f2f9.png, alt: ABUS, width: 400, height: 200 }
         _key: k_7d170b53d2934dc76107
     pressLabel: Ihr kennt uns aus
     pressItems:
@@ -84,7 +84,7 @@ sections:
       - occasion: unternehmen
         title: An eurem Logo kommt niemand vorbei
         text: Eure Claims, Produkte und Story, aus Kilometern zu sehen. Für strahlende Marketing-KPIs oder als Gesprächsthema bei der Firmenfeier.
-        image: { src: "https://flyingstars.art/wp-content/uploads/2024/12/VW50Golf.jpg", alt: "Volkswagen-Logo aus Drohnen über dem Wolfgangsee, Gäste auf einer Terrasse", width: 1920, height: 1281 }
+        image: { src: "/media/wordpress/55b5c15ff91c895ee218102ee9e1cebb950fd703d5dac54d916e1e7582448802.jpg", alt: "Volkswagen-Logo aus Drohnen über dem Wolfgangsee, Gäste auf einer Terrasse", width: 1920, height: 1281 }
         facts: [ {"_key":"k_fa5696e53d86593fb5c4","value":"Erfahrung aus 150+ Shows mit tausenden Zuschauer:innen"}, {"_key":"k_ef4d20e6e23698f677f1","value":"Ihr segnet alle Motive markensicher ab"}, {"_key":"k_c86071087a2b56eaf89f","value":"Wir übernehmen alle Genehmigungen"} ]
         cta: { label: Für Unternehmen }
         _key: k_b81c8aa30611eb91692a
@@ -98,7 +98,7 @@ sections:
       - occasion: gemeinden
         title: Ein Fest, bei dem alle mitfeiern
         text: "Ob beim Volksfest, zu Weihnachten oder zu Silvester und Neujahr: Eure Wahrzeichen am Himmel verbinden die ganze Gemeinde."
-        image: { src: "https://flyingstars.art/wp-content/uploads/2025/10/Extraschicht_Duisburg.jpg", alt: Weltkugel aus Drohnen über dem Rhein bei der Extraschicht in Duisburg, width: 2544, height: 1493 }
+        image: { src: "/media/wordpress/b434bb6c604ab3d7eabf6d4819ee32c0b19e737e4f04ee8d0c1e8bb234a51cb6.jpg", alt: Weltkugel aus Drohnen über dem Rhein bei der Extraschicht in Duisburg, width: 2544, height: 1493 }
         facts: [ {"_key":"k_8ffd61ed67fcb00c916c","value":"Familienfreundlich ohne Knall und ohne Müll"}, {"_key":"k_3dc515322cc15f410b0b","value":"Stabiles Sicherheitskonzept für Großveranstaltungen"}, {"_key":"k_4b32252c8291bfb523a4","value":"10 % Rabatt für frühe Buchungen im Vorjahr"} ]
         cta: { label: Für Gemeinden }
         _key: k_1304e6d833f230e8e89e
@@ -112,14 +112,14 @@ sections:
       - occasion: privat
         title: Der Hingucker im Familienalbum
         text: Überrascht eure Liebsten mit einem Highlight, das bisher kaum eine Hochzeit, ein Heiratsantrag oder ein Geburtstag bietet.
-        image: { src: "https://flyingstars.art/wp-content/uploads/2024/12/Hochzeit_cover.jpg", alt: Zwei Blüten aus Drohnen am Abendhimmel über einer Hochzeitsfeier, width: 1518, height: 854 }
+        image: { src: "/media/wordpress/fd177b57c14fd153e04de89139a0a67fb612c3fd753465774ca08ab0046bbf34.jpg", alt: Zwei Blüten aus Drohnen am Abendhimmel über einer Hochzeitsfeier, width: 1518, height: 854 }
         facts: [ {"_key":"k_95e416914f8f765c759a","value":"Eure Initialen, Geburtsdaten oder Liebesschwüre"}, {"_key":"k_1bbac5ff279bd896dfc8","value":"Kaum Aufwand für euch – wir organisieren alles"}, {"_key":"k_e0268d8514ab1904ccb2","value":"Kleine Pakete passend zu eurem Budget"} ]
         cta: { label: Für Privatpersonen }
         _key: k_e784a3482a7296d6e2a3
       - occasion: indoor
         title: Holt den Himmel rein
         text: Wir hüllen eure Halle für ein paar Minuten in pure Magie. Für Messen, überdachte Konzerte oder ganz besondere Jubiläen.
-        image: { src: "https://flyingstars.art/wp-content/uploads/2025/04/drohnenshow-indoor-2.jpg", alt: Leuchtende Drohnen in Formation vor der Bühne eines voll besetzten Saals, width: 1200, height: 764 }
+        image: { src: "/media/wordpress/b0f2a720fbab953725665065ec21fc510a923344a6fcc132974110004575903a.jpg", alt: Leuchtende Drohnen in Formation vor der Bühne eines voll besetzten Saals, width: 1200, height: 764 }
         facts: [ {"_key":"k_25df9662ccdb280b6523","value":"Die Alternative zur Lichtshow"}, {"_key":"k_ac44ab461441e0d3a01e","value":"Wir erfüllen strenge Sicherheitsauflagen"}, {"_key":"k_4b852be218db38f099c0","value":"Schon ab {{offer.indoor.ceilingMin}} Metern Deckenhöhe"} ]
         cta: { label: Indoor-Drohnenshows }
         _key: k_b52ddd7e74db16f54f73

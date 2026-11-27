@@ -5,7 +5,7 @@ title: "Drohnenführerschein – Ab wann ist er Pflicht?"
 description: "Erfahre, ab wann ein Drohnenführerschein in Deutschland Pflicht ist, welche Drohnen betroffen sind und welche Ausnahmen gelten."
 date: "2025-05-12"
 updated: "2026-09-18"
-cover: {"src": "https://flyingstars.art/wp-content/uploads/2025/05/drohnen-fuehrerschein.jpg", "alt": "Ein Mann steuert eine Drohne vor einer Berglandschaft", "width": 1000, "height": 667}
+cover: {"src": "/media/wordpress/997b7ee0ae9b78b3736e9dfa4e6e58dcde12df0f447a55b68c5415761c672167.jpg", "alt": "Ein Mann steuert eine Drohne vor einer Berglandschaft", "width": 1000, "height": 667}
 draft: false
 ---
 
@@ -15,7 +15,7 @@ Seit Inkrafttreten der EU-Drohnenverordnung 2021 gelten in allen Mitgliedsstaate
 
 In diesem Beitrag erfahrt ihr alles Wichtige über den EU-Drohnenführerschein, welche Varianten es gibt, wann ihr ihn benötigt, wie ihr ihn bekommt – und warum es sich auch ohne Pflicht lohnen kann, einen zu machen.
 
-![](https://flyingstars.art/wp-content/uploads/2025/05/drone-license.jpg)
+![](/media/wordpress/997b7ee0ae9b78b3736e9dfa4e6e58dcde12df0f447a55b68c5415761c672167.jpg)
 
 ## Was ist der Drohnenführerschein überhaupt?
 
@@ -122,6 +122,6 @@ Unsere Shows werden in der **speziellen Kategorie** gemäß EU-Drohnenverordnung
 
 Jetzt [Preise](/drohnenshow-preise/) entdecken und Drohnenshow buchen.
 
-![FlyingStars Logo schwarz-lila-türkis](https://flyingstars.art/wp-content/uploads/2025/02/was-kostet-eine-drohne-flyingstars-logo-1024x499.jpg)
+![FlyingStars Logo schwarz-lila-türkis](/media/wordpress/350a8cc09aa9f85f1626c8c5e166eaac33cc2e79a4cd8041453ac8536b470ff0.jpg)
 
 [Anfragen](/kontakt/)

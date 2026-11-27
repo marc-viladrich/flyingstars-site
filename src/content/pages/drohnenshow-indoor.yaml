@@ -3,7 +3,7 @@
 # Zahlen nach Moritz; Preis, Drohnenzahl, Deckenhöhe und Showdauer als Faktenplatzhalter (show-extras.json, show-duration.json).
 title: Magische Indoor-Drohnenshow buchen (20+ Drohnen)
 description: "Indoor-Drohnenshows für Messen, Konzerte & Co. ✓ Projekte u.a. für Siemens ✓ Ab {{offer.indoor.priceAmount}} ☎︎ {{contact.phone.international}}"
-image: https://flyingstars.art/wp-content/uploads/2025/04/IMG_0201.jpg
+image: /media/wordpress/7522153bb44c91be46b6a680b05d7611759838e1ecfe1c2c32a5b8f6e0da28a1.jpg
 sections:
   - type: landingHero
     kicker: Indoor-Drohnenshow
@@ -14,7 +14,7 @@ sections:
     video: siemensIndoor
     videoLabel: Siemens · Hannover Messe
     poster:
-      src: https://flyingstars.art/wp-content/uploads/2025/04/IMG_0201.jpg
+      src: /media/wordpress/7522153bb44c91be46b6a680b05d7611759838e1ecfe1c2c32a5b8f6e0da28a1.jpg
       alt: Dutzende leuchtende Drohnen in Reihen über dem Boden einer abgedunkelten Sporthalle
       width: 2560
       height: 1440
@@ -33,7 +33,7 @@ sections:
     logos:
       - { name: E.ON, file: /brand/logos/kunde-eon-weiss.svg, "_key": "k_5ed46311387955e2857c" }
       - name: NFL
-        image: { src: https://flyingstars.art/wp-content/uploads/2023/04/National_Football_League_2008_weiss.png, alt: NFL, width: 300, height: 409 }
+        image: { src: /media/wordpress/e2d5bb1321388ba1a33048a3354eddf5d2389b64b1d4dbc0fe6a22303a0c64a9.png, alt: NFL, width: 300, height: 409 }
         _key: k_96d6920ee9e3018e33f6
       - { name: REWE, file: /brand/logos/kunde-rewe-weiss.svg, "_key": "k_1a399e3ba47608b2a429" }
       - { name: Spotify, file: /brand/logos/kunde-spotify-weiss.svg, "_key": "k_e9c10d6391d8d7fcd449" }
@@ -42,26 +42,26 @@ sections:
       - { name: Amazon, file: /brand/logos/kunde-amazon-weiss.svg, "_key": "k_f6cb639885bedbe1012a" }
       - { name: McKinsey, file: /brand/logos/kunde-mckinsey-weiss.svg, "_key": "k_d8b216f1b29a48bcde19" }
       - name: PUMA
-        image: { src: https://flyingstars.art/wp-content/uploads/2023/04/Puma_Logo_weiss.png, alt: PUMA, width: 300, height: 161 }
+        image: { src: /media/wordpress/56dd26f219b6fb3b228b088ef32ce786e53e33de8f064404e18a9c5ba9075183.png, alt: PUMA, width: 300, height: 161 }
         _key: k_c8b04d4bb211cfc5ff25
       - { name: Prada, file: /brand/logos/kunde-prada-weiss.svg, "_key": "k_135f6b274f5ff8f93c25" }
       - { name: Volkswagen, file: /brand/logos/kunde-volkswagen-weiss.svg, "_key": "k_241fa1a44078fdf4ba7d" }
       - name: Red Bull
-        image: { src: https://flyingstars.art/wp-content/uploads/2024/10/RED-BULL_white.png, alt: Red Bull, width: 400, height: 200 }
+        image: { src: /media/wordpress/5fa930efe583f401013ba7aaeae193add8519cbc8ddda8cf147d0e61a051d12f.png, alt: Red Bull, width: 400, height: 200 }
         _key: k_0c8b8a711577f92aa65f
       - { name: Bulgari, file: /brand/logos/kunde-bulgari-weiss.svg, "_key": "k_836b51e7d3d32cad742e" }
       - { name: Ford, file: /brand/logos/kunde-ford-weiss.svg, "_key": "k_7f6e1360484198d9116b" }
       - { name: Siemens, file: /brand/logos/kunde-siemens-weiss.svg, "_key": "k_0f17650e43d86db6b9cc" }
       - { name: Lamborghini, file: /brand/logos/kunde-lamborghini-weiss.svg, "_key": "k_ad9c625d212ceff25d60" }
       - name: Deutsche Umwelthilfe
-        image: { src: https://flyingstars.art/wp-content/uploads/2023/04/Deutsche_Umwelthilfe_weiss.png, alt: Deutsche Umwelthilfe, width: 300, height: 37 }
+        image: { src: /media/wordpress/b786b91b5e0099c8299feb86651da3b2b7dec43babcf8cdb5592a9517655077a.png, alt: Deutsche Umwelthilfe, width: 300, height: 37 }
         _key: k_756c13577a99a532844d
       - name: Bentley
         detail: true
-        image: { src: https://flyingstars.art/wp-content/uploads/2023/04/Bentley_logo_weiss.png, alt: Bentley, width: 400, height: 200 }
+        image: { src: /media/wordpress/351b3bd3c32ba4ae220a02ada6dee4a7921c916ed45ec622cdee1a7c7d86ff73.png, alt: Bentley, width: 400, height: 200 }
         _key: k_51df7215f7dcf70ddb96
       - name: ABUS
-        image: { src: https://flyingstars.art/wp-content/uploads/2023/04/ABUS_Logo_weiss.png, alt: ABUS, width: 400, height: 200 }
+        image: { src: /media/wordpress/a5465b267911f8c5cf05d2785c95cdc1200988d7ccf2a64aeeea8f53a249f2f9.png, alt: ABUS, width: 400, height: 200 }
         _key: k_7d170b53d2934dc76107
     pressLabel: Ihr kennt uns aus
     pressItems:
@@ -85,7 +85,7 @@ sections:
       title: Präsentiert Produkte spektakulär
       text: "Individuelle Motive mit Logos, Claims und Co. in euren Farben."
       image:
-        src: https://flyingstars.art/wp-content/uploads/2025/04/0L9A4365.jpg
+        src: /media/wordpress/c2e6d7bdbbe5d81b2fc13916f292769dadb5923df39cfbe34126df83da07b7a8.jpg
         alt: Kleine Drohnen mit Rotorschutz leuchten blau auf einem dunklen Boden
         width: 2560
         height: 1708
@@ -229,7 +229,7 @@ sections:
     kicker: Referenzen
     headline: Einige unserer *liebsten* Darbietungen
     image:
-      src: https://flyingstars.art/wp-content/uploads/2025/04/drohnenshow-indoor-2.jpg
+      src: /media/wordpress/b0f2a720fbab953725665065ec21fc510a923344a6fcc132974110004575903a.jpg
       alt: Leuchtende Drohnen in Formation vor der Bühne eines voll besetzten Saals
       width: 1200
       height: 764

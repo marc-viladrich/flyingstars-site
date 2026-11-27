@@ -5,7 +5,7 @@ title: "Drohnenkennzeichen: Regeln, Kennzeichnungspflicht & eID"
 description: "Alles zum Drohnen Kennzeichen: Kennzeichnungspflicht, Betreiber-ID/eID, Plakettenarten und praktische Hinweise für einen sicheren Flug"
 date: "2026-07-05"
 updated: "2026-09-22"
-cover: {"src": "https://flyingstars.art/wp-content/uploads/2025/11/Drohne-landet-mit-drohnen-kennzeichen.jpg", "alt": "Grafik von Drohne landet mit drohnen kennzeichen", "width": 6016, "height": 4016}
+cover: {"src": "/media/wordpress/735588a53527eacb1ae92cdfe2015f81ccf0243113fc53b14ed780edc62f1905.jpg", "alt": "Grafik von Drohne landet mit drohnen kennzeichen", "width": 6016, "height": 4016}
 draft: false
 ---
 
@@ -13,7 +13,7 @@ Wer eine Drohne nutzt, kommt am Thema Drohnenkennzeichen nicht vorbei. Die Kennz
 
 Durch die europäischen Drohnenregeln hat sich der Fokus von der rein physischen Beschriftung hin zur digitalen **Betreiber-ID (eID)** verschoben – dennoch bleibt die richtige Kennzeichnung der Drohne ein praktischer Kernpunkt für alle Pilotinnen und Piloten.
 
-![Grafik von Drohne landet mit drohnen kennzeichen](https://flyingstars.art/wp-content/uploads/2025/11/Drohne-landet-mit-drohnen-kennzeichen-1024x684.jpg)
+![Grafik von Drohne landet mit drohnen kennzeichen](/media/wordpress/661c53fd1141b379738a0a87aeefea8343b93fe92475a1510e381f5ab7c9d3d5.jpg)
 
 ## Was bedeutet „Drohnen­kennzeichen“?
 
@@ -127,6 +127,6 @@ Als Expert:innen für **hochwertige Drohnen-Lichtshows** bringen wir innovative 
 
 Jetzt [Preise](/drohnenshow-preise/) entdecken und Drohnenshow buchen.
 
-![FlyingStars Logo schwarz-lila-türkis](https://flyingstars.art/wp-content/uploads/2025/02/was-kostet-eine-drohne-flyingstars-logo-1024x499.jpg)
+![FlyingStars Logo schwarz-lila-türkis](/media/wordpress/350a8cc09aa9f85f1626c8c5e166eaac33cc2e79a4cd8041453ac8536b470ff0.jpg)
 
 [Anfragen](/kontakt/)

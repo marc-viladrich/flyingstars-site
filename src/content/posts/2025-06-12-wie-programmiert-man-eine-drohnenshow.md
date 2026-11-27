@@ -5,7 +5,7 @@ title: "Wie programmiert man eine Drohnenshow?"
 description: "Wie programmiert man eine Drohnenshow? - Alles zu Abläufen und den Kosten, wenn man eine programmieren lassen möchte."
 date: "2025-06-12"
 updated: "2026-09-18"
-cover: {"src": "https://flyingstars.art/wp-content/uploads/2025/05/drohnenprogrammierung-1.jpg", "alt": "Ein Mann hält eine Drohne neben einem geöffneten Laptop", "width": 1680, "height": 1120}
+cover: {"src": "/media/wordpress/94d1ca9baa8870a62ae2942a7e503612e2943e9e6d295815c0a1efb9b785c6be.jpg", "alt": "Ein Mann hält eine Drohne neben einem geöffneten Laptop", "width": 1680, "height": 1120}
 draft: false
 ---
 
@@ -13,7 +13,7 @@ Ob bei Stadtfesten, Firmenjubiläen oder Musikfestivals – Drohnenshows begeist
 
 In diesem Beitrag erklären wir euch, wie eine Drohnenshow programmiert wird – von der Idee bis zur synchron fliegenden Formation.
 
-![](https://flyingstars.art/wp-content/uploads/2025/05/drohnenprogrammierung-1-1024x683.jpg)
+![](/media/wordpress/0bb0965834ac5f92c9e687dda34482ca07df2ea842dc1a084b152efece898e92.jpg)
 
 ## Was ist Drohnen Programmierung?
 
@@ -69,6 +69,6 @@ Als Expert:innen für **hochwertige Drohnen-Lichtshows** bringen wir innovative 
 
 Jetzt [Preise](/drohnenshow-preise/) entdecken und Drohnenshow buchen.
 
-![FlyingStars Logo schwarz-lila-türkis](https://flyingstars.art/wp-content/uploads/2025/02/was-kostet-eine-drohne-flyingstars-logo-1024x499.jpg)
+![FlyingStars Logo schwarz-lila-türkis](/media/wordpress/350a8cc09aa9f85f1626c8c5e166eaac33cc2e79a4cd8041453ac8536b470ff0.jpg)
 
 [Anfragen](/kontakt/)

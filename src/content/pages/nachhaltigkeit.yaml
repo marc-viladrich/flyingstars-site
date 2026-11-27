@@ -3,7 +3,7 @@
 # „Über uns“. Kein Vergleich Drohne/Feuerwerk/Laser (Moritz). Nur Aussagen über die Show vor Ort (EmpCo).
 title: "Nachhaltigkeit: Drohnenshows von FlyingStars (vs. Feuerwerk)"
 description: "Kein Knall. Kein Müll. Kein Rauch. ✓ Drohnenshows für soziales und ökologisches Engagement. ☎︎ {{contact.phone.international}}"
-image: https://flyingstars.art/wp-content/uploads/2025/10/Extraschicht_Duisburg.jpg
+image: /media/wordpress/b434bb6c604ab3d7eabf6d4819ee32c0b19e737e4f04ee8d0c1e8bb234a51cb6.jpg
 sections:
   # „Kein Müll.“ im Logoverlauf wie auf der Startseite (DESIGN); Weltkugel aus Drohnen bei der Extraschicht als Bild.
   - type: hero
@@ -11,7 +11,7 @@ sections:
     headline: Kein Knall. *Kein Müll.* Kein Rauch.
     text: Unsere Drohnenshows zeigen, dass großes Spektakel auch leise, lokal emissionsfrei und aufgeräumt geht. Und heißt so alle Gäste herzlich willkommen – auch Hunde, Kinder und die Natur vor Ort.
     image:
-      src: https://flyingstars.art/wp-content/uploads/2025/10/Extraschicht_Duisburg.jpg
+      src: /media/wordpress/b434bb6c604ab3d7eabf6d4819ee32c0b19e737e4f04ee8d0c1e8bb234a51cb6.jpg
       alt: Weltkugel aus Drohnen über dem Rhein bei der Extraschicht in Duisburg, Publikum am Ufer
       width: 2544
       height: 1493
@@ -33,7 +33,7 @@ sections:
         value: { fact: renewablePercent }
         unit: "%"
         text: "Wir laden unsere Drohnen mit 100 % Ökostrom von naturstrom immer wieder auf."
-        logo: { src: "https://flyingstars.art/wp-content/uploads/2024/10/NATURSTROM-Logo_weiss.png", alt: naturstrom, width: 301, height: 71 }
+        logo: { src: "/media/wordpress/ed5736b75eb7157acf82c5d401ef1dc7e1436e7a86c6ef49680a2db24acc814b.png", alt: naturstrom, width: 301, height: 71 }
         _key: k_3c9e5a71f0b24d68e1a7
     # Vergleich direkt an der Aussage, vor der Scrollstory (Marc, Runde 5: „auch mit Lasershows. Das ist ja schon sehr
     # essentiell“; Runde 6: gehört zu „Die Alternative zum Feuerwerk“). Outdoor-Fassung: am Himmel, Verbote bei Trockenheit.
@@ -81,7 +81,7 @@ sections:
     kicker: Referenzen
     headline: Wir fliegen mit *Engagement*
     text: Als Partner von NGOs dürfen wir regelmäßig Zeichen für Demokratie und Umweltschutz in den Himmel setzen.
-    image: { src: "https://flyingstars.art/wp-content/uploads/2024/07/D_Umwelthilfe_cover_img.png", alt: "Bunte Feuerwerksblüte aus Drohnen über Berlin bei der Kampagne #Böllerciao der Deutschen Umwelthilfe, Zuschauer:innen filmen mit dem Handy", width: 1920, height: 987 }
+    image: { src: "/media/wordpress/6f3a50ece7898dadf23ca168f542a760617c3dc687806252d8f08bc763ce8cf3.png", alt: "Bunte Feuerwerksblüte aus Drohnen über Berlin bei der Kampagne #Böllerciao der Deutschen Umwelthilfe, Zuschauer:innen filmen mit dem Handy", width: 1920, height: 987 }
     tags: [ { value: "#BÖLLERCIAO · Berlin", "_key": "k_189b36fdbb3bf810d7d6" } ]
     entries:
       - { kicker: Kein Bock e.V., title: Kein Bock auf Nazis, text: Unsere Drohnenshows mobilisieren für mehr gesellschaftlichen Zusammenhalt., "_key": "k_e6753824ae3f10493a00" }

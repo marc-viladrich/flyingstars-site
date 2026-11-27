@@ -5,7 +5,7 @@ title: "Drone Show China: World Records & Magical Light Shows"
 description: "Experience the most spectacular drone shows in China – with world records, AI-powered technology, and fascinating lights | Flying Stars"
 date: "2026-06-25"
 updated: "2026-07-07"
-cover: {"src": "https://flyingstars.art/wp-content/uploads/2025/10/Drohnenshows-China-e1761819727927.jpg", "alt": "Grafik von Drohnenshows China", "width": 1500, "height": 645}
+cover: {"src": "/media/wordpress/b82c64d94f9e301a17539c481b3104038ef69cecea360fc860dc402dfb7e9c90.jpg", "alt": "Grafik von Drohnenshows China", "width": 1500, "height": 645}
 draft: false
 ---
 
@@ -15,7 +15,7 @@ These spectacular productions captivate not only local audiences, but also visit
 
 Anyone who has witnessed a show above Beijing, Shenzhen, or Liuyang understands why traditional fireworks are slowly fading into the background. Drones are more precise, quieter, and more sustainable – and at the same time, **they create images and light formations that would once have been unimaginable.**
 
-![Grafik von Drohnenshows China](https://flyingstars.art/wp-content/uploads/2025/10/Drohnenshows-China-e1761819727927-1024x440.jpg)
+![Grafik von Drohnenshows China](/media/wordpress/9ce60223fef4ef6cd034f9cc612861e8ee638b4dc011e03b0ba2bf6ba94a6de9.jpg)
 
 ## Records That Make History
 
@@ -115,6 +115,6 @@ As experts in premium drone light shows, we combine innovative technology with c
 
 Discover our [pricing](/en/drohnenshow-preise/) now and book your drone show – and bring the spirit of Drone Show China to your next event.
 
-![FlyingStars Logo schwarz-lila-türkis](https://flyingstars.art/wp-content/uploads/2025/02/was-kostet-eine-drohne-flyingstars-logo-1024x499.jpg)
+![FlyingStars Logo schwarz-lila-türkis](/media/wordpress/350a8cc09aa9f85f1626c8c5e166eaac33cc2e79a4cd8041453ac8536b470ff0.jpg)
 
 [Request a quote now!](/en/kontakt/)

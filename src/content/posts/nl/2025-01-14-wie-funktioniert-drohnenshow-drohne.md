@@ -9,7 +9,7 @@ tags:
   - Drohnenshow
   - Technik
 cover:
-  src: https://flyingstars.art/wp-content/uploads/2025/01/lehrer-zeigt-wie-drohnenshow-funktioniert.jpg
+  src: /media/wordpress/f950eb3d083151b96c9c6781f67f4a754f52ba8b97b4a40b2393ac8128fa1c86.jpg
   alt: Een man geeft uitleg over een witte drone, terwijl een kind een groene drone vasthoudt.
   width: 1600
   height: 1067
@@ -48,7 +48,7 @@ Hoe werkt een droneshow? Stel jullie honderden drones voor die synchroon door de
 
 Een drone is een onbemand luchtvaartuig dat op afstand of zelfstandig via software wordt bestuurd. Meerdere propellers zorgen voor lift en beweging in verschillende richtingen. Sensoren zoals GPS, versnellingsmeters en gyroscopen helpen de drone zijn positie en snelheid te bepalen. In ons artikel over [de werking van een drone](https://flyingstars.art/drohnen-aufbau-funktionsweise) staat meer over de techniek en besturing. Lichtshowdrones hebben ook leds die de kleuren en lichteffecten aan de hemel maken.
 
-![Een droneshow in de schemering](https://flyingstars.art/wp-content/uploads/2025/01/drohne-in-daemmerung-e1737555383718.jpg)
+![Een droneshow in de schemering](/media/wordpress/49d8cfc8d81233c28e4916dfcdf4b3e61ade8c4032c4f513896855606e65ca34.jpg)
 
 ## Techniek en programmering achter droneshows
 

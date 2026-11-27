@@ -3,11 +3,24 @@ import Cornerstone from './Cornerstone.astro';
 import FormationFinale from './FormationFinale.astro';
 import { checkPlan, splitSections, withoutStaticLogo, type CornerstoneArticle, type CornerstoneBlock } from './cornerstone/types';
 import type { Story } from './story-scene';
+import { optimizedImage } from '../../lib/media';
+import { bundledImageName } from '../../lib/bundled-media.mjs';
 
 interface Props { postId: string; article?: CornerstoneArticle; preserveImages?: boolean }
 const { postId, article, preserveImages } = Astro.props;
 // Use Astro's rendered Markdown so original images keep their optimized sources and dimensions.
-const rendered = await Astro.slots.render('default');
+const original = await Astro.slots.render('default');
+// Astro leaves public Markdown URLs as plain image tags. Use the local image pipeline
+// for these sources just as we do for covers, while preserving the Markdown alt/title.
+const media = await Promise.all([...original.matchAll(/<img\b[^>]*>/g)].map(async ([tag]) => {
+  const source = /\ssrc="([^"]+)"/.exec(tag);
+  if (!source || !bundledImageName(source[1])) return [tag, tag];
+  const image = await optimizedImage(source[1]);
+  const rest = tag.replace(/\s(?:src|width|height|loading|decoding)="[^"]*"/g, '').replace(/\s*\/?>$/, '');
+  return [tag, `${rest} src="${image.src}" width="${image.width}" height="${image.height}" loading="lazy" decoding="async">`];
+}));
+const byTag = new Map(media.map(([tag, replacement]) => [tag, replacement]));
+const rendered = original.replace(/<img\b[^>]*>/g, tag => byTag.get(tag) ?? tag);
 const html = preserveImages ? rendered : withoutStaticLogo(rendered);
 const sections = article ? splitSections(html, article.layout !== 'basic' && article.dropBodyImages) : [];
 const stories = new Map<CornerstoneBlock, Story>();
