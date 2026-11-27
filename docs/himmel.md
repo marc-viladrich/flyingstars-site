@@ -14,6 +14,10 @@ Git-Historie, Commit `b31d7c9`). Verbindliche Regeln: `docs/DESIGN.md` → „Hi
 - **Schriftstärke der Verlaufsworte:** der markierte Begriff jeder Überschrift wird beim Hineinscrollen einmal von 300 zur
   Stärke der Überschrift dicker (seit Runde 7, 19.11.2026; ersetzt den Lichtlauf der H1). Regeln: `docs/DESIGN.md` → Himmel.
 
+## Browsersuche in Verlaufsüberschriften
+
+Die Schriftanimation misst jedes farbige Wort mit einem unsichtbaren `::before`. Firefox behandelt den darin generierten Text bei `display: block` als Abschnittsgrenze für die Seitensuche. Das trennte „rund fliegt“ auf der Startseite. Die Messkopie bleibt jetzt als `inline-block` in der Zeile. Ihr negativer Endabstand bringt das sichtbare Wort an denselben Zeilenanfang zurück. Der gemeinsame Guard in `scripts/staerke-glow.test.mjs` sichert diese Layoutregel.
+
 ## Bühnenplan
 
 Eine Bühne spielt nur, wenn ihre ID im DOM steht und neben dem Section-Kopf Platz ist (`free()`); sonst passiert dort nichts.
