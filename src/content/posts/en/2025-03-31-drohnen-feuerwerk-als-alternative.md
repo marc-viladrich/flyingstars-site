@@ -5,13 +5,15 @@ title: "Drones As An Alternative To Fireworks: An Eco-Friendly Light Spectacle"
 description: "Eco-friendly, silent, and stunning: Drone light shows are the modern alternative to fireworks – with zero noise, waste, or pollution."
 date: "2025-03-31"
 updated: "2025-06-03"
-cover: {"src": "/media/wordpress/f5b5accaba4f87bc8e7d3c329f23f8f6f0bb84a5877cee74272b1a9f09dce954.jpg", "alt": "A drone show at night", "width": 1091, "height": 652}
+cover: {"src": "/assets/07610766227ffac4be3b68f03a0399b2cae66f5c68e986d7b5ff6cbfaa503be7.webp", "alt": "A spiral of drone lights above Berlin’s Cantianstadion during the Böllerciao show", "width": 1440, "height": 740}
 draft: false
 ---
 
 Fireworks have been a staple of celebrations for centuries – from New Year’s Eve to weddings and major events. But while these colorful explosions light up the sky, they also come with significant downsides: noise, fine dust, and chemical residues that harm the environment and health. The loud bangs are especially stressful for animals. Drone fireworks offer an environmentally friendly alternative – no noise, no waste, yet still visually stunning.
 
 These drone light shows deliver spectacular effects in the sky – without harmful emissions or loud sounds. Planning and executing a drone show is also cost-efficient and safe, making it an attractive option for many organizers.
+
+See how FlyingStars put this idea into practice at the [Böllerciao show in Berlin](/en/boellerciao/).
 
 ## What Are Drone Shows?
 

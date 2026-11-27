@@ -29,5 +29,12 @@ const legacyAstroAliases={
  '/warum-wir':'/ueber-uns/',
  '/show-konfigurator':'/drohnenshow-preise/#konfigurator',
 };
-export const astroRedirects=()=>Object.fromEntries(LOCALES.flatMap(locale=>Object.entries(legacyAstroAliases).map(([from,to])=>[localizedHref(from,locale),localizedHref(to,locale)])));
+const consolidatedPostAliases={
+ '/en/blog/2025-08-05-netherlands-fireworks-ban-impact-on-new-years-celebrations-2026-new':'/en/blog/2025-07-14-niederlande-feuerwerk-verbot/',
+ '/en/netherlands-fireworks-ban-impact-on-new-years-celebrations-2026-new':'/en/blog/2025-07-14-niederlande-feuerwerk-verbot/',
+};
+export const astroRedirects=()=>({
+ ...Object.fromEntries(LOCALES.flatMap(locale=>Object.entries(legacyAstroAliases).map(([from,to])=>[localizedHref(from,locale),localizedHref(to,locale)]))),
+ ...consolidatedPostAliases,
+});
 export const projectAliases=(id,data)=>data.showcase?LOCALES.map(locale=>({from:localizedHref(`/projekte/${sourceId(id)}/`,locale),to:contentRoute('projects',locale==='de'?sourceId(id):`${locale}/${sourceId(id)}`,data)})):[];

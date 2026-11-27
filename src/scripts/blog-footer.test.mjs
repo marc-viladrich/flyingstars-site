@@ -36,3 +36,22 @@ test('migrated posts use the shared enquiry and omit legacy artwork and emoji', 
     assert.doesNotMatch(body, /\p{Extended_Pictographic}/u, file);
   }
 });
+
+test('the superseded English fireworks article points directly to its canonical article', async () => {
+  const { astroRedirects } = await import('../i18n/public-routes.mjs');
+  const root = new URL('../../', import.meta.url);
+  const slug = 'netherlands-fireworks-ban-impact-on-new-years-celebrations-2026-new';
+  const article = `/en/blog/2025-08-05-${slug}`;
+  const alternate = `/en/${slug}`;
+  const canonical = '/en/blog/2025-07-14-niederlande-feuerwerk-verbot/';
+  assert.match(readFileSync(new URL(`src/content/posts/en/2025-08-05-${slug}.md`, root), 'utf8'), /^draft: true$/m);
+  const pagesRedirects = readFileSync(new URL('public/_redirects', root), 'utf8').split('\n');
+  const apacheRedirects = readFileSync(new URL('public/.htaccess', root), 'utf8').split('\n');
+  const astro = astroRedirects();
+  for (const source of [article, alternate]) {
+    assert.equal(astro[source], canonical);
+    assert.ok(pagesRedirects.includes(`${source} ${canonical} 301`));
+    assert.ok(pagesRedirects.includes(`${source}/ ${canonical} 301`));
+    assert.ok(apacheRedirects.includes(`RewriteRule ^${source.slice(1)}/?$ ${canonical} [R=301,L]`));
+  }
+});

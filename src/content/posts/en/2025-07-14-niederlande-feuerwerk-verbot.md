@@ -11,7 +11,7 @@ draft: false
 
 **New Year’s Eve – for many, a celebration full of emotion, lights, and loud bangs.** But that is exactly what is set to fundamentally change in the Netherlands starting with New Year’s Eve 2026/2027. After lengthy political debate, the Dutch parliament has passed a nationwide fireworks ban for private individuals. The reasons: safety, environmental protection, and animal welfare.
 
-Was bedeutet dieser Schritt für die Niederlande – und könnte er auch ein Vorbild für Deutschland sein? In diesem Beitrag werfen wir einen Blick auf das neue Gesetz, die Reaktionen aus der Bevölkerung und vor allem auf **zukunftsweisende Alternativen wie die Drohnenshows von Flyingstars**, die schon heute zeigen, wie ein modernes und nachhaltiges Silvester aussehen kann.
+What does this mean for the Netherlands, and could it set an example for Germany? We look at the new law, how people responded and how drone shows offer another way to celebrate New Year’s Eve.
 
 ## Introduction to the Ban
 

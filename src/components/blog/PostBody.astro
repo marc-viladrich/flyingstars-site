@@ -41,8 +41,8 @@ if (problem) console.warn(`[cornerstone] ${postId}: ${problem} – normales Blog
       {show ? <>
         <Fragment set:html={html.slice(0, show.start)} />
         <section class="post-show-section" aria-labelledby={show.id}>
-          <Fragment set:html={html.slice(show.start, show.content)} />
           <div class="post-formation"><FormationFinale visualOnly /></div>
+          <Fragment set:html={html.slice(show.start, show.content)} />
           <Fragment set:html={html.slice(show.content, show.end)} />
         </section>
         <Fragment set:html={html.slice(show.end)} />
@@ -51,8 +51,8 @@ if (problem) console.warn(`[cornerstone] ${postId}: ${problem} – normales Blog
 {!preserveImages && (!article || problem || article.layout === 'basic') && <FormationFinale visualOnly />}
 
 <style is:global>
-  .post-body .post-show-section { margin-top: clamp(var(--space-9), 6vw, var(--space-14)); }
-  .post-show-section .post-formation { margin-top: var(--space-2); }
+  .post-show-section { display: flow-root; }
+  .post-show-section > .post-formation { margin-block: clamp(var(--space-9), 6vw, var(--space-14)) var(--space-2); }
   .post-formation .ff, .post-formation .ff-sky { margin-block: 0; }
   .post-media-link {
     display: grid;

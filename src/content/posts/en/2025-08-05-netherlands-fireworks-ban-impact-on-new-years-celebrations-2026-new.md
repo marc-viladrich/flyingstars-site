@@ -6,7 +6,7 @@ description: "From 2026, private fireworks will be banned in the Netherlands. Fi
 date: "2025-08-05"
 updated: "2025-10-01"
 cover: {"src": "/media/wordpress/51e2b6830b62aaed760cf6d53b725102dea2cb65a0ec1643cf5e8e28978ca1a5.jpg", "alt": "A drone show at new years eve", "width": 1560, "height": 1040}
-draft: false
+draft: true
 ---
 
 The Netherlands has taken a major step toward greater safety and sustainability: From New Year’s Eve 2026/2027 onwards, private individuals will no longer be allowed to set off fireworks. The ban was passed by both chambers of parliament with a significant majority.
