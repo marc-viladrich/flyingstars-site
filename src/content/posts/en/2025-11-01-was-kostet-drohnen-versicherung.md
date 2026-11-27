@@ -5,7 +5,7 @@ title: "How much does drone insurance cost"
 description: "UK drone insurance costs: Understand cover options, when insurance is mandatory, and CAA-compliant policies."
 date: "2026-07-06"
 updated: "2026-07-07"
-cover: {"src": "/media/wordpress/953171bd091637d0454f986e9fe3daeb0c93280c5c0f178375420c2d124b8557.jpg", "alt": "Drone insurance at a glance", "width": 1000, "height": 667}
+cover: {"src": "/assets/e0605bf96c2b8ca63ef25bd11035573fdf8185af7b311a08b52a8a41c2c351a6.webp", "alt": "Three people inspect a drone on a table in the woods", "width": 960, "height": 480}
 draft: false
 ---
 

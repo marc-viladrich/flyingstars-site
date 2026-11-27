@@ -5,7 +5,7 @@ title: "Wo darf man Drohnen fliegen?"
 description: "Wo darf man mit Drohnen fliegen? Erfahre, welche Regeln gelten – inkl. Tipps zu Drohnenführerschein, Flugzonen & Gebäuden. Jetzt informieren!"
 date: "2025-05-08"
 updated: "2026-09-18"
-cover: {"src": "/media/wordpress/425b6e9ad170f85ad0da2c40803e3df88f504494ce7a520bbb2d6350d7158a6f.jpg", "alt": "Frau streckt Hand raus, um Drohne aufzufangen", "width": 1100, "height": 733}
+cover: {"src": "/assets/33214b4c69eaffd7328e3dec8d49daaad184d4f8006288c139032509284704ea.webp", "alt": "Eine Frau hält ihre Hand unter eine vor ihr schwebende Drohne", "width": 960, "height": 480}
 draft: false
 ---
 

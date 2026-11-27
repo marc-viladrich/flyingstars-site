@@ -5,7 +5,7 @@ title: "Was kostet eine Drohne?"
 description: "Was kostet eine Drohne? Erfahre alles über die Anschaffungskosten und laufende Kosten für Versicherung, Wartung für Einsteiger und Profis."
 date: "2025-02-28"
 updated: "2026-09-22"
-cover: {"src": "/media/wordpress/d7c41f59b1a09d7b661c248579fe1f5045f7b52735d1668de10efeb9b3bb6f6c.jpg", "alt": "Drohne wird von einem Mann mit VR Brille geflogen", "width": 1200, "height": 585}
+cover: {"src": "/assets/8b97c9b2d3feef8814ca2fc60004d32f5042f5d87b9cf3f82d666164c7a57b04.webp", "alt": "Große Drohne im Vordergrund, eine Person mit Videobrille und Fernsteuerung dahinter", "width": 960, "height": 480}
 draft: false
 ---
 

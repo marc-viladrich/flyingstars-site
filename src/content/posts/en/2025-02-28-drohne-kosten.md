@@ -5,7 +5,7 @@ title: "How much do drones cost?"
 description: "Drones range in price from $50 to over $10,000, depending on the model. Learn everything about costs, categories and key buying factors"
 date: "2025-02-28"
 updated: "2025-03-19"
-cover: {"src": "/media/wordpress/d7c41f59b1a09d7b661c248579fe1f5045f7b52735d1668de10efeb9b3bb6f6c.jpg", "alt": "Drone controlled by man with VR", "width": 1200, "height": 585}
+cover: {"src": "/assets/8b97c9b2d3feef8814ca2fc60004d32f5042f5d87b9cf3f82d666164c7a57b04.webp", "alt": "A large drone in the foreground and a person wearing video goggles behind it", "width": 960, "height": 480}
 draft: false
 ---
 

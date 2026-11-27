@@ -1,7 +1,7 @@
 ---
 // Inhaltsverzeichnis der übernommenen WordPress-Artikel (Blog-Bestandsmigration). Quelle sind allein die `headings`, die Astro
 // aus dem Markdown rendert: Reihenfolge, Text und Slug (= Anker-ID der Überschrift) bleiben unverändert. Natives <details>, damit
-// es ohne JavaScript, per Tastatur und mit Screenreader funktioniert; Öffnen gleitet wie das FAQ-Akkordeon (Faq.astro), nur in CSS.
+// es ohne JavaScript, per Tastatur und mit Screenreader funktioniert; Die Animation nutzt denselben Mechanismus wie das FAQ-Akkordeon.
 import type { MarkdownHeading } from 'astro';
 import Icon from '../Icon.astro';
 
@@ -24,23 +24,29 @@ for (const h of headings) {
 }
 const count = `${groups.length} ${groups.length === 1 ? copy.one : copy.many}`;
 ---
-{headings.length > 0 && <details class="post-toc">
+{headings.length > 0 && <details class="post-toc" data-disclosure>
   <summary>
     <span class="toc-title">{copy.label}</span>
     <span class="toc-count mono">{count}</span>
     <Icon name="plus" size={20} class="toc-ico" />
   </summary>
-  <nav class="toc-panel" aria-label={copy.label}>
-    <ol class="toc-list">
-      {groups.map(({ head, subs }) => <li class="toc-item">
-        <a class="toc-link" href={`#${head.slug}`}><span class="hover-line">{head.text}</span></a>
-        {subs.length > 0 && <ul class="toc-subs">
-          {subs.map((s) => <li><a class="toc-sub" href={`#${s.slug}`}><span class="hover-line">{s.text}</span></a></li>)}
-        </ul>}
-      </li>)}
-    </ol>
-  </nav>
+  <div data-disclosure-panel>
+    <nav class="toc-panel" aria-label={copy.label} data-disclosure-content>
+      <ol class="toc-list">
+        {groups.map(({ head, subs }) => <li class="toc-item">
+          <a class="toc-link" href={`#${head.slug}`}><span class="hover-line">{head.text}</span></a>
+          {subs.length > 0 && <ul class="toc-subs">
+            {subs.map((s) => <li><a class="toc-sub" href={`#${s.slug}`}><span class="hover-line">{s.text}</span></a></li>)}
+          </ul>}
+        </li>)}
+      </ol>
+    </nav>
+  </div>
 </details>}
+
+<script>
+  import '../../scripts/details-disclosure';
+</script>
 
 <style>
   /* Steht als erstes Kind in .post-body; die Lesespalten-Regeln für Listen und Links (BlogPost.astro) gelten hier nicht,
@@ -53,7 +59,7 @@ const count = `${groups.length} ${groups.length === 1 ? copy.one : copy.many}`;
   /* Lucide „plus“ wie im FAQ: dreht beim Öffnen weich zum X */
   .post-toc :global(.toc-ico) { flex: 0 0 auto; color: var(--text); transition: transform var(--dur-disclose) var(--ease-glide), color var(--dur-control); }
   .post-toc summary:hover :global(.toc-ico) { color: var(--accent); }
-  .post-toc[open] > summary :global(.toc-ico) { transform: rotate(45deg); }
+  .post-toc[open]:not([data-closing]) > summary :global(.toc-ico) { transform: rotate(45deg); }
 
   @supports (interpolate-size: allow-keywords) {
     .post-toc::details-content { interpolate-size: allow-keywords; block-size: 0; overflow-y: clip; opacity: 0; }

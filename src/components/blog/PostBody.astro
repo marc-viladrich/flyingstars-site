@@ -1,10 +1,12 @@
 ---
+import { existsSync } from 'node:fs';
 import Cornerstone from './Cornerstone.astro';
 import FormationFinale from './FormationFinale.astro';
 import { checkPlan, splitSections, withoutStaticLogo, type CornerstoneArticle, type CornerstoneBlock } from './cornerstone/types';
 import type { Story } from './story-scene';
 import { optimizedImage } from '../../lib/media';
 import { bundledImageName } from '../../lib/bundled-media.mjs';
+import { formationPosition, renderPostLinks } from './post-links.mjs';
 
 interface Props { postId: string; article?: CornerstoneArticle; preserveImages?: boolean }
 const { postId, article, preserveImages } = Astro.props;
@@ -21,7 +23,10 @@ const media = await Promise.all([...original.matchAll(/<img\b[^>]*>/g)].map(asyn
 }));
 const byTag = new Map(media.map(([tag, replacement]) => [tag, replacement]));
 const rendered = original.replace(/<img\b[^>]*>/g, tag => byTag.get(tag) ?? tag);
-const html = preserveImages ? rendered : withoutStaticLogo(rendered);
+const html = renderPostLinks(preserveImages ? rendered : withoutStaticLogo(rendered), id =>
+  existsSync(`public/media/blog/youtube/${id}.webp`)
+);
+const formationAt = preserveImages ? formationPosition(html) : undefined;
 const sections = article ? splitSections(html, article.layout !== 'basic' && article.dropBodyImages) : [];
 const stories = new Map<CornerstoneBlock, Story>();
 if (article && article.layout !== 'basic') {
@@ -32,5 +37,41 @@ if (problem) console.warn(`[cornerstone] ${postId}: ${problem} – normales Blog
 ---
 {article && !problem
   ? <Cornerstone article={article} sections={sections} stories={stories} />
-  : <div class="post-body" set:html={html} />}
+  : <div class="post-body">
+      {formationAt === undefined ? <Fragment set:html={html} /> : <>
+        <Fragment set:html={html.slice(0, formationAt)} />
+        <div class="post-formation"><FormationFinale visualOnly /></div>
+        <Fragment set:html={html.slice(formationAt)} />
+      </>}
+    </div>}
 {!preserveImages && (!article || problem || article.layout === 'basic') && <FormationFinale visualOnly />}
+
+<style is:global>
+  .post-body .post-formation { margin-block: clamp(var(--space-10), 6vw, var(--space-14)) var(--space-5); }
+  .post-body .post-formation .ff { margin-block: 0; }
+  .post-body .post-formation + h2 { margin-top: 0; }
+  .post-media-link {
+    display: grid;
+    position: relative;
+    isolation: isolate;
+    width: min(100%, 30rem);
+    border-radius: var(--radius-14);
+    overflow: clip;
+    background: var(--media-ground);
+  }
+  .post-media-link > img { grid-area: 1 / 1; aspect-ratio: 16 / 9; object-fit: cover; }
+  .post-media-link .btn {
+    grid-area: 1 / 1;
+    align-self: end;
+    justify-self: start;
+    margin: var(--space-4);
+    background: var(--ground);
+  }
+  .post-media-link:hover .btn { border-color: var(--accent); }
+  .post-media-play {
+    width: 0.7em;
+    aspect-ratio: 1;
+    background: currentColor;
+    clip-path: polygon(0 0, 100% 50%, 0 100%);
+  }
+</style>

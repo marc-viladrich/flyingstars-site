@@ -5,7 +5,7 @@ title: "Drohnenshow China: Weltrekorde, Technik & magische Lichtshows"
 description: "Die spektakulärsten Drohnenshows in China im Überblick – mit Weltrekorden, die Technik dahinter und Videos."
 date: "2026-06-30"
 updated: "2026-09-22"
-cover: {"src": "/media/wordpress/b82c64d94f9e301a17539c481b3104038ef69cecea360fc860dc402dfb7e9c90.jpg", "alt": "Grafik von Drohnenshows China", "width": 1500, "height": 645}
+cover: {"src": "/assets/be0b18ccb5645a7ea5c419394ec739c2c38989d9ba997d5858666c045ad9e6bf.webp", "alt": "Eine Drohne vor hellem Himmel über Wohnhochhäusern", "width": 960, "height": 480}
 draft: false
 ---
 

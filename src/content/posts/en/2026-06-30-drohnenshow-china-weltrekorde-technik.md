@@ -5,7 +5,7 @@ title: "Drone Show China: World Records & Magical Light Shows"
 description: "Experience the most spectacular drone shows in China – with world records, AI-powered technology, and fascinating lights | Flying Stars"
 date: "2026-06-25"
 updated: "2026-07-07"
-cover: {"src": "/media/wordpress/b82c64d94f9e301a17539c481b3104038ef69cecea360fc860dc402dfb7e9c90.jpg", "alt": "Grafik von Drohnenshows China", "width": 1500, "height": 645}
+cover: {"src": "/assets/be0b18ccb5645a7ea5c419394ec739c2c38989d9ba997d5858666c045ad9e6bf.webp", "alt": "A drone in the sky above residential tower blocks", "width": 960, "height": 480}
 draft: false
 ---
 

@@ -5,7 +5,7 @@ title: "Drohnenshow Berlin: Spektakuläre Lichtshows über der Hauptstadt"
 description: "Drohne Spanien: Alle wichtigen Regeln zu Registrierung, Flugzonen, Bußgeldern und Mallorca-Besonderheiten übersichtlich erklärt."
 date: "2026-01-19"
 updated: "2026-09-18"
-cover: {"src": "/media/wordpress/42dc93f429cac3c76427a9ba8122025c587ecf2f8c8956ae75e2a4dd6efc5124.png", "alt": "Drohnenshow Berlin", "width": 768, "height": 512}
+cover: {"src": "/assets/68daa8c2e059588c4cb90ba928b4a8e0dc7a8f84e1ca18c72253d70e06f8c6ab.webp", "alt": "Illustration mit dem Schriftzug Drohnenshow Berlin, Stadtsilhouette und einer Drohne", "width": 960, "height": 480}
 draft: false
 ---
 

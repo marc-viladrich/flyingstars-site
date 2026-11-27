@@ -5,7 +5,7 @@ title: "Drohnenkennzeichen: Regeln, Kennzeichnungspflicht & eID"
 description: "Alles zum Drohnen Kennzeichen: Kennzeichnungspflicht, Betreiber-ID/eID, Plakettenarten und praktische Hinweise für einen sicheren Flug"
 date: "2026-07-05"
 updated: "2026-09-22"
-cover: {"src": "/media/wordpress/735588a53527eacb1ae92cdfe2015f81ccf0243113fc53b14ed780edc62f1905.jpg", "alt": "Grafik von Drohne landet mit drohnen kennzeichen", "width": 6016, "height": 4016}
+cover: {"src": "/assets/3d7c9f5b91909e1807a8d06236fb0565d1fde5acb3e1f6719c10d45bb444f6e5.webp", "alt": "Drohne auf einem runden Zeichen auf einer blauen Startmatte", "width": 960, "height": 480}
 draft: false
 ---
 

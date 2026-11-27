@@ -56,7 +56,7 @@ const jsonLd = JSON.stringify({
   </Fragment>
   <article class="section post" aria-labelledby="post-h" data-blog-layout={layout} data-legacy-blog={post.data.legacyPath}>
     <header class="post-head">
-      <a class="kicker mono post-back" href={localHref("/blog/")}><span aria-hidden="true">←</span> Blog · {topicOf(post)}</a>
+      <a class="btn small post-back" href={localHref("/blog/")}><span aria-hidden="true">←</span> Blog · {topicOf(post)}</a>
       <h1 id="post-h">{post.data.title}</h1>
       <div class="byline">
         <img class="face" src={face.src} width={face.width} height={face.height} alt="" loading="eager" decoding="async" />
@@ -76,7 +76,7 @@ const jsonLd = JSON.stringify({
       <div>
         <p class="post-author-name"><b {...field(authorRecord, ['name'])}>{AUTHOR.name}</b> <span {...field(authorRecord, ['role', locale])}>{authorRole}</span></p>
         <p {...(AUTHOR.authorBio && field(authorRecord, ['authorBio', locale]))}>{authorBio}</p>
-        <a class="link" href={teamHref}>{t('blogpost.theTeam')} <span aria-hidden="true">→</span></a>
+        <a class="btn small" href={teamHref}>{t('blogpost.theTeam')} <span aria-hidden="true">→</span></a>
       </div>
     </aside>
   </article>
@@ -116,8 +116,8 @@ const jsonLd = JSON.stringify({
      Subheadings sind viel zu groß“, gemessen am iPhone: 82 px vor jedem Zwischentitel, bis 167 px zwischen Szenenschritten). */
   .post :global(.post-body :is(h2, h3):first-child) { margin-top: 0; }
   .post :global(.post-body strong) { color: var(--head); font-weight: 600; }
-  .post :global(.post-body a) { color: var(--accent); border-bottom: 1px solid var(--accent-line); transition: border-color var(--dur-control), color var(--dur-control); }
-  .post :global(.post-body a:hover) { color: var(--amber-light); border-color: var(--accent); }
+  .post :global(.post-body a:where(:not(.btn, .post-media-link))) { color: var(--accent); border-bottom: 1px solid var(--accent-line); transition: border-color var(--dur-control), color var(--dur-control); }
+  .post :global(.post-body a:where(:not(.btn, .post-media-link)):hover) { color: var(--amber-light); border-color: var(--accent); }
   .post :global(.post-body :is(ul, ol)) { padding-left: 1.3em; margin-bottom: 0; }
   .post :global(.post-body li) { padding-left: 0.3em; }
   .post :global(.post-body li + li) { margin-top: 0.5em; }
@@ -131,7 +131,7 @@ const jsonLd = JSON.stringify({
   .post-author .face { width: 4rem; height: 4rem; }
   .post-author-name { display: flex; flex-wrap: wrap; column-gap: var(--space-2); margin-bottom: var(--space-2); }
   .post-author b { color: var(--head); font-weight: 500; }
-  .post-author .link { margin-top: var(--space-2-5); display: flex; }
+  .post-author .btn { margin-top: var(--space-2-5); }
   .post-more { padding-top: 0; }
 
   @media (max-width: 45em) {

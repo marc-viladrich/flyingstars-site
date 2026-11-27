@@ -5,7 +5,7 @@ title: "Drohnen als Alternative zum Feuerwerk: Ein umweltschonendes Lichtspektak
 description: "Was kostet eine Drohne? Erfahre alles über die Anschaffungskosten und laufende Kosten für Versicherung, Wartung für Einsteiger und Profis."
 date: "2025-03-31"
 updated: "2026-09-22"
-cover: {"src": "/media/wordpress/f6c83353613bc39de64d9e5f38f318b5d7740f10540b9851bab444beb12c6dc5.jpg", "alt": "Drohnenshow bie Nacht als Feuerwerk Alternative", "width": 1200, "height": 915}
+cover: {"src": "/assets/cece8fa9701f544b468c8a2bff65a0e3a8507d582740920492d4c024e7b106ea.webp", "alt": "Zwei blütenartige Figuren aus blauen Lichtpunkten am Nachthimmel", "width": 960, "height": 480}
 draft: false
 ---
 

@@ -5,7 +5,7 @@ title: "Was kostet die Drohnen-Versicherung: Ein Überblick"
 description: "Drohnen-Versicherung kosten: Verstehe Abdeckungsoptionen und wann eine Versicherung Pflicht ist. | Flying Stars"
 date: "2025-11-01"
 updated: "2026-09-18"
-cover: {"src": "/media/wordpress/953171bd091637d0454f986e9fe3daeb0c93280c5c0f178375420c2d124b8557.jpg", "alt": "Drohnenversicherung auf einen Blick", "width": 1000, "height": 667}
+cover: {"src": "/assets/e0605bf96c2b8ca63ef25bd11035573fdf8185af7b311a08b52a8a41c2c351a6.webp", "alt": "Drei Personen beugen sich im Wald über eine Drohne auf einem Tisch", "width": 960, "height": 480}
 draft: false
 ---
 

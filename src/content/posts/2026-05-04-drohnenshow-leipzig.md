@@ -5,7 +5,7 @@ title: "Drohnenshow in Leipzig: Spektakuläre Lichtshows über der Stadt"
 description: "Drohnen in Leipzig: Alle Shows, Termine und Orte im Überblick. Infos zu Weihnachts-Events, Red Bull Arena und Einsätzen bei der EM 2024."
 date: "2026-05-04"
 updated: "2026-09-17"
-cover: {"src": "/media/wordpress/57e2124ec5d26c4ddc6e262105b70ab49b28a7ab71ec9d0228ade002e1ff8db4.png", "alt": "Drohnenshow Leipzig", "width": 768, "height": 512}
+cover: {"src": "/assets/7af59f612e903be252285a478e4b5b45f7e49f76bdba0d6c999e1c21ed309789.webp", "alt": "Illustration mit dem Schriftzug Leipzig Drohnenshow und einer gezeichneten Stadtansicht", "width": 960, "height": 480}
 draft: false
 ---
 

@@ -5,7 +5,7 @@ title: "Drohnenshow Oberhausen: Spektakuläre Lichtmomente im Ruhrgebiet"
 description: "Magische Drohnenshows in Oberhausen: Faszinierende Lichtkunst am Himmel für unvergessliche Momente bei jedem Event."
 date: "2026-05-04"
 updated: "2026-05-19"
-cover: {"src": "/media/wordpress/c5cc897388eff5af7352a7b572eadd11740340a079b4eab149ed1ace53438947.png", "alt": "Drohnenshow Oberhausen", "width": 768, "height": 512}
+cover: {"src": "/assets/b216940dc200c406134094adb374878c2dbb90ad0d1059c12404561a5858666f.webp", "alt": "Illustration mit dem Schriftzug Drohnenshow Oberhausen, Gebäudeumrissen und einer Drohne", "width": 960, "height": 480}
 draft: false
 ---
 

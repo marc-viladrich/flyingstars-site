@@ -5,7 +5,7 @@ title: "Drones As An Alternative To Fireworks: An Eco-Friendly Light Spectacle"
 description: "Eco-friendly, silent, and stunning: Drone light shows are the modern alternative to fireworks – with zero noise, waste, or pollution."
 date: "2025-03-31"
 updated: "2025-06-03"
-cover: {"src": "/media/wordpress/f5b5accaba4f87bc8e7d3c329f23f8f6f0bb84a5877cee74272b1a9f09dce954.jpg", "alt": "A drone show at night", "width": 1091, "height": 652}
+cover: {"src": "/assets/9ed0dfc8dee997d6159da43f01f8dd698ff854f132f954aed5e0f2f706b45c36.webp", "alt": "A spiral of blue lights and an illuminated tower at night", "width": 960, "height": 480}
 draft: false
 ---
 

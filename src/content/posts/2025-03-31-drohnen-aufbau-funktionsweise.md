@@ -5,7 +5,7 @@ title: "Drohnen Aufbau: Wie funktioniert eine Drohne?"
 description: "Wie funktioniert eine Drohne? Erfahre alles über den Drohnen-Aufbau. Für Einsteiger und Profis. Jetzt mehr erfahren!"
 date: "2025-03-31"
 updated: "2026-09-22"
-cover: {"src": "/media/wordpress/f34c529e214e81009302208e2c19a0139793d84e0c0086d149931fffc583668e.jpg", "alt": "Zwei Personen halten eine Drohne in den Händen", "width": 1100, "height": 733}
+cover: {"src": "/assets/eafcc3076282b4392baa5721dba18fb51f564df26bb2c994b30cb4005c99ad6b.webp", "alt": "Überkopfaufnahme, mehrere Hände halten eine helle Kameradrohne", "width": 960, "height": 480}
 draft: false
 ---
 

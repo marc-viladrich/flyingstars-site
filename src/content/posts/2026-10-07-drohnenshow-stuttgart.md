@@ -5,7 +5,7 @@ title: "Drohnenshow Stuttgart: Moderne Lichtinszenierung beim Stuttgarter Lichte
 description: "Drohnenshow Stuttgart: Moderne Lichtshow beim Stuttgarter Lichterfest – Highlights, Technik und Event-Inszenierung im Überblick."
 date: "2026-10-07"
 updated: "2026-10-08"
-cover: {"src": "/media/wordpress/075a222943556427cec033cbaca0891453b929712892bec977711b6e43cdf2b4.png", "alt": "Drohnenshow Stuttgart", "width": 768, "height": 512}
+cover: {"src": "/assets/383a5f42f7a5f90734ebb3718c6cddd41bfe775135a52d7be9b6986c51582b10.webp", "alt": "Illustration mit dem Schriftzug Stuttgart über einer nächtlichen Stadtsilhouette", "width": 960, "height": 480}
 draft: false
 ---
 

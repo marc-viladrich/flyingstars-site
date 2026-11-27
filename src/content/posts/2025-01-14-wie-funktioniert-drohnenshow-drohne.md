@@ -5,7 +5,7 @@ title: "Wie funktioniert eine Drohnenshow?"
 description: "Wie funktioniert eine Drohnenshow? Entdecke, wie synchronisierte Drohnen beeindruckende Lichtbilder schaffen – jetzt mehr erfahren!"
 date: "2025-01-14"
 updated: "2026-09-22"
-cover: {"src": "/media/wordpress/f950eb3d083151b96c9c6781f67f4a754f52ba8b97b4a40b2393ac8128fa1c86.jpg", "alt": "Lehrer zeigt, wie eine Drohne oder Drohnenshow funktioniert.", "width": 1600, "height": 1067}
+cover: {"src": "/assets/9ba24b13176763b05216cff183a4c2a733706a3e85cd9a7c853b22a97723c6fa.webp", "alt": "Zwei Personen halten zwei unterschiedlich große Quadrocopter", "width": 960, "height": 480}
 draft: false
 ---
 

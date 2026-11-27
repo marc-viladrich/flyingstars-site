@@ -5,7 +5,7 @@ title: "Drohne in Spanien – Drohnenregeln verstehen und sicher anwenden"
 description: "Drohne Spanien: Alle wichtigen Regeln zu Registrierung, Flugzonen, Bußgeldern und Mallorca-Besonderheiten übersichtlich erklärt."
 date: "2025-12-18"
 updated: "2026-07-07"
-cover: {"src": "/media/wordpress/6fb77c48c4916f39a706d88d052790195a146ca38ed6eaab077790229fec9429.jpg", "alt": "Grafik einer Drohne die in SPanien über den Strand fliegt", "width": 1510, "height": 1000}
+cover: {"src": "/assets/77336df973d000693338e145ebe29d1f7d06a12d6bf734790c4753c7e20a18be.webp", "alt": "Eine Drohne im Tiefflug vor einem Sandstrand und Felsen", "width": 960, "height": 480}
 draft: false
 ---
 

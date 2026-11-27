@@ -5,7 +5,7 @@ title: "How do you program a drone show?"
 description: "How to program a drone show: Step-by-Step Guide and Cost Overview"
 date: "2025-05-26"
 updated: "2025-10-23"
-cover: {"src": "/media/wordpress/94d1ca9baa8870a62ae2942a7e503612e2943e9e6d295815c0a1efb9b785c6be.jpg", "alt": "A man holds a drone beside an open laptop", "width": 1680, "height": 1120}
+cover: {"src": "/assets/170995b8dc1c5692f6a115f1f186fef074979d4e78daff49e742232d1e99f7cd.webp", "alt": "A man holds a quadcopter while talking to a woman in an office", "width": 960, "height": 480}
 draft: false
 ---
 

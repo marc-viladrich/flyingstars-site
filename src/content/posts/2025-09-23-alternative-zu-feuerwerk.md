@@ -5,7 +5,7 @@ title: "Alternative zum Silvester-Feuerwerk: 6 nachhaltige Optionen"
 description: "Entdecke die beste Alternative zum Feuerwerk Ideal für Silvester, Stadtfeste & Hochzeiten. – nachhaltig, sicher, unvergesslich | FlyingStars"
 date: "2025-09-23"
 updated: "2026-09-18"
-cover: {"src": "/media/wordpress/b560235c7eadbaffae22dd82429f8a583a4754c21233e51857c6f2a6f69446d9.jpg", "alt": "Grafik von Drohnenshow als Silvester Alternative", "width": 1896, "height": 1000}
+cover: {"src": "/assets/3aa13d068cf3f80b94b215c4f248aed8ae507262cf26f77d2630fbed980957b0.webp", "alt": "Silhouetten von Zuschauern vor Lichtpunkten in einem rauchigen Nachthimmel", "width": 960, "height": 480}
 draft: false
 ---
 

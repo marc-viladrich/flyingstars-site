@@ -5,7 +5,7 @@ title: "Flying Drones in the Dark – What You Need to Know"
 description: "Flying drones at night offers creative magic and unique challenges. Learn the rules, risks, and rewards of nighttime drone flights."
 date: "2025-03-31"
 updated: "2025-04-24"
-cover: {"src": "/media/wordpress/8091d6943edaac2ddc99d35d8dc313bde013316fa600433f50acf87ac5428a5a.jpg", "alt": "A drone is flying in a low-light environment", "width": 1478, "height": 698}
+cover: {"src": "/assets/be264b2bff2420beab51f34aef42c9d37d3c2d684e4270aa35705a899b300174.webp", "alt": "Green-lit drones arranged in a grid on a field at night", "width": 1600, "height": 800}
 draft: false
 ---
 

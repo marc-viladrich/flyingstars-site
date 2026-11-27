@@ -5,7 +5,7 @@ title: "Drohnenführerschein – Ab wann ist er Pflicht?"
 description: "Erfahre, ab wann ein Drohnenführerschein in Deutschland Pflicht ist, welche Drohnen betroffen sind und welche Ausnahmen gelten."
 date: "2025-05-12"
 updated: "2026-09-18"
-cover: {"src": "/media/wordpress/997b7ee0ae9b78b3736e9dfa4e6e58dcde12df0f447a55b68c5415761c672167.jpg", "alt": "Ein Mann steuert eine Drohne vor einer Berglandschaft", "width": 1000, "height": 667}
+cover: {"src": "/assets/427bc11d9f5ba8c26da66652fa593751d3298e84a9e02cde7a79cfca1ed55a1d.webp", "alt": "Eine Person mit Fernsteuerung und eine Drohne vor einer Berglandschaft", "width": 960, "height": 480}
 draft: false
 ---
 
